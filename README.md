@@ -1,2 +1,2 @@
-# BSLCustPortalWeb
+# BSLRMGAPI
 Customer Portal Web
