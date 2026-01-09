@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.36631.11
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BSLRMGAPI", "BSLRMGAPI.csproj", "{51BAA640-4C56-40E7-80C7-828F08361F02}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{51BAA640-4C56-40E7-80C7-828F08361F02}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{51BAA640-4C56-40E7-80C7-828F08361F02}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{51BAA640-4C56-40E7-80C7-828F08361F02}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{51BAA640-4C56-40E7-80C7-828F08361F02}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {03D7BDAC-03D2-4A29-A661-07CE52385693}
+	EndGlobalSection
+EndGlobal
