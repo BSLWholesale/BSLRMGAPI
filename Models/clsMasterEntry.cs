@@ -53,6 +53,7 @@ namespace BSLDaman.Models
         public string CreatedOn { get; set; }
         public int ModifiedBy { get; set; }
         public string ModifiedOn { get; set; }
+        public string Section { get; set; }
         public string vErrorMsg { get; set; }
         public int vErrorCode { get; set; }
     }
