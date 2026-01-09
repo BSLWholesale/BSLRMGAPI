@@ -83,9 +83,6 @@ D:\BSLPROJECT\GITProject\BSLRMGAPI\obj\Debug\BSLRMGAPI.csproj.CoreCompileInputs.
 D:\BSLPROJECT\GITProject\BSLRMGAPI\obj\Debug\BSLRMGAPI.csproj.CopyComplete
 D:\BSLPROJECT\GITProject\BSLRMGAPI\obj\Debug\BSLDaman.dll
 D:\BSLPROJECT\GITProject\BSLRMGAPI\obj\Debug\BSLDaman.pdb
-D:\BSLPROJECT\BSL_GitRMGDaman\BSLRMGAPI\bin\BSLRMGAPI.dll.config
-D:\BSLPROJECT\BSL_GitRMGDaman\BSLRMGAPI\bin\BSLRMGAPI.dll
-D:\BSLPROJECT\BSL_GitRMGDaman\BSLRMGAPI\bin\BSLRMGAPI.pdb
 D:\BSLPROJECT\BSL_GitRMGDaman\BSLRMGAPI\bin\roslyn\csc.exe
 D:\BSLPROJECT\BSL_GitRMGDaman\BSLRMGAPI\bin\roslyn\csc.exe.config
 D:\BSLPROJECT\BSL_GitRMGDaman\BSLRMGAPI\bin\roslyn\csc.rsp
@@ -166,5 +163,8 @@ D:\BSLPROJECT\BSL_GitRMGDaman\BSLRMGAPI\bin\Microsoft.CodeDom.Providers.DotNetCo
 D:\BSLPROJECT\BSL_GitRMGDaman\BSLRMGAPI\obj\Debug\BSLRMGAPI.csproj.AssemblyReference.cache
 D:\BSLPROJECT\BSL_GitRMGDaman\BSLRMGAPI\obj\Debug\BSLRMGAPI.csproj.CoreCompileInputs.cache
 D:\BSLPROJECT\BSL_GitRMGDaman\BSLRMGAPI\obj\Debug\BSLRMGAPI.csproj.CopyComplete
-D:\BSLPROJECT\BSL_GitRMGDaman\BSLRMGAPI\obj\Debug\BSLRMGAPI.dll
-D:\BSLPROJECT\BSL_GitRMGDaman\BSLRMGAPI\obj\Debug\BSLRMGAPI.pdb
+D:\BSLPROJECT\BSL_GitRMGDaman\BSLRMGAPI\bin\BSLDaman.dll.config
+D:\BSLPROJECT\BSL_GitRMGDaman\BSLRMGAPI\bin\BSLDaman.dll
+D:\BSLPROJECT\BSL_GitRMGDaman\BSLRMGAPI\bin\BSLDaman.pdb
+D:\BSLPROJECT\BSL_GitRMGDaman\BSLRMGAPI\obj\Debug\BSLDaman.dll
+D:\BSLPROJECT\BSL_GitRMGDaman\BSLRMGAPI\obj\Debug\BSLDaman.pdb
