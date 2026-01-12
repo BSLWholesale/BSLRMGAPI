@@ -83,6 +83,11 @@ D:\BSLPROJECT\GITProject\BSLRMGAPI\obj\Debug\BSLRMGAPI.csproj.CoreCompileInputs.
 D:\BSLPROJECT\GITProject\BSLRMGAPI\obj\Debug\BSLRMGAPI.csproj.CopyComplete
 D:\BSLPROJECT\GITProject\BSLRMGAPI\obj\Debug\BSLDaman.dll
 D:\BSLPROJECT\GITProject\BSLRMGAPI\obj\Debug\BSLDaman.pdb
+D:\BSLPROJECT\BSL_GitRMGDaman\BSLRMGAPI\obj\Debug\BSLRMGAPI.csproj.CoreCompileInputs.cache
+D:\BSLPROJECT\BSL_GitRMGDaman\BSLRMGAPI\obj\Debug\BSLRMGAPI.csproj.AssemblyReference.cache
+D:\BSLPROJECT\BSL_GitRMGDaman\BSLRMGAPI\bin\BSLDaman.dll.config
+D:\BSLPROJECT\BSL_GitRMGDaman\BSLRMGAPI\bin\BSLDaman.dll
+D:\BSLPROJECT\BSL_GitRMGDaman\BSLRMGAPI\bin\BSLDaman.pdb
 D:\BSLPROJECT\BSL_GitRMGDaman\BSLRMGAPI\bin\roslyn\csc.exe
 D:\BSLPROJECT\BSL_GitRMGDaman\BSLRMGAPI\bin\roslyn\csc.exe.config
 D:\BSLPROJECT\BSL_GitRMGDaman\BSLRMGAPI\bin\roslyn\csc.rsp
@@ -160,11 +165,6 @@ D:\BSLPROJECT\BSL_GitRMGDaman\BSLRMGAPI\bin\System.Web.WebPages.Deployment.xml
 D:\BSLPROJECT\BSL_GitRMGDaman\BSLRMGAPI\bin\System.Web.WebPages.Razor.xml
 D:\BSLPROJECT\BSL_GitRMGDaman\BSLRMGAPI\bin\Antlr3.Runtime.pdb
 D:\BSLPROJECT\BSL_GitRMGDaman\BSLRMGAPI\bin\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.xml
-D:\BSLPROJECT\BSL_GitRMGDaman\BSLRMGAPI\obj\Debug\BSLRMGAPI.csproj.AssemblyReference.cache
-D:\BSLPROJECT\BSL_GitRMGDaman\BSLRMGAPI\obj\Debug\BSLRMGAPI.csproj.CoreCompileInputs.cache
 D:\BSLPROJECT\BSL_GitRMGDaman\BSLRMGAPI\obj\Debug\BSLRMGAPI.csproj.CopyComplete
-D:\BSLPROJECT\BSL_GitRMGDaman\BSLRMGAPI\bin\BSLDaman.dll.config
-D:\BSLPROJECT\BSL_GitRMGDaman\BSLRMGAPI\bin\BSLDaman.dll
-D:\BSLPROJECT\BSL_GitRMGDaman\BSLRMGAPI\bin\BSLDaman.pdb
 D:\BSLPROJECT\BSL_GitRMGDaman\BSLRMGAPI\obj\Debug\BSLDaman.dll
 D:\BSLPROJECT\BSL_GitRMGDaman\BSLRMGAPI\obj\Debug\BSLDaman.pdb

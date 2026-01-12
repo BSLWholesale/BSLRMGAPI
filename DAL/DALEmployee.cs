@@ -1,4 +1,5 @@
 ﻿using BSLDaman.Models;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
@@ -156,6 +157,8 @@ namespace BSLDaman.DAL
                     obj.vErrorMsg = "No Record found";
                     objResp.Add(obj);
                 }
+
+               // Logger.ErrorLog(JsonConvert.SerializeObject(objResp), "Response", "Fn_Get_All_Employee_Detail");
             }
             catch (Exception exp)
             {

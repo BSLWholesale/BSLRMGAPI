@@ -172,5 +172,36 @@ namespace BSLDaman.Models
                 }
             }
         }
+
+        public static void ErrorLog(string logMessage, string strRequestType, string strFunctionName)
+        {
+            string LogPath = ConfigurationManager.AppSettings["ErrorLog"] + System.DateTime.Today.ToString("dd-MM-yyyy") + "-RequestResponseLog." + "txt";
+            FileInfo LogFileInfo = new FileInfo(LogPath);
+            DirectoryInfo LogDirInfo = new DirectoryInfo(LogFileInfo.DirectoryName);
+            if (!LogDirInfo.Exists) LogDirInfo.Create();
+            try
+            {
+
+                // Use a lock for thread safety if multiple parts of your application log concurrently
+                lock (typeof(Logger))
+                {
+                    using (StreamWriter w = File.AppendText(LogPath))
+                    {
+                        w.Write("\r\nLog Entry : ");
+                        w.WriteLine("{0} {1}", DateTime.Now.ToLongTimeString(), DateTime.Now.ToLongDateString());
+                        w.WriteLine("--------------Function: " + strFunctionName + "-----------------");
+                        w.WriteLine("--------------Start " + strRequestType + "-----------------");
+                        w.WriteLine(" :{0}", logMessage);
+                        w.WriteLine("---------------End " + strRequestType + "----------------");
+                        w.Flush(); // Ensure data is written immediately
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                // Handle exceptions, e.g., if the file is in use or directory is not found
+                Console.WriteLine($"Error writing to log file: {ex.Message}");
+            }
+        }
     }
 }

@@ -42,7 +42,7 @@ namespace BSLDaman.Models
     {
         public Int64 ProductionOrderNo { get; set; }
         public string OrderDate { get; set; }
-        public string @ProductionDeliveryDate { get; set; }
+        public string ProductionDeliveryDate { get; set; }
         public string Merchandiser { get; set; }
         public int SalesOrderNo { get; set; }
         public int PONo { get; set; }
@@ -60,6 +60,7 @@ namespace BSLDaman.Models
         public string vErrorMsg { get; set; }
         public int vErrorCode { get; set; }
         public string vQueryType { get; set; }
+        public List<clsProductionDetail> _ODetail { get; set; }
     }
 
     public class clsProductionDetail
