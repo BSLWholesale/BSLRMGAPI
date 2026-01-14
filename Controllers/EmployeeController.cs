@@ -23,7 +23,7 @@ namespace BSLDaman.Controllers
             return objResp;
         }
 
-        [System.Web.Http.HttpPost]
+        [System.Web.Http.HttpPut]
         [System.Web.Http.Route("api/Employee/Fn_Update_Employee_Detail")]
         public clsEmployeeDetail Fn_Update_Employee_Detail(clsEmployeeDetail objReq)
         {
@@ -32,7 +32,7 @@ namespace BSLDaman.Controllers
             return objResp;
         }
 
-        [System.Web.Http.HttpPost]
+        [System.Web.Http.HttpGet]
         [System.Web.Http.Route("api/Employee/Fn_Get_All_Employee_Detail")]
         public List<clsEmployeeDetail> Fn_Get_All_Employee_Detail(clsEmployeeDetail objReq)
         {
@@ -61,7 +61,7 @@ namespace BSLDaman.Controllers
             return objResp;
         }
 
-        [System.Web.Http.HttpPost]
+        [System.Web.Http.HttpPut]
         [System.Web.Http.Route("api/Employee/Fn_Update_Color")]
         public clsColorMaster Fn_Update_Color(clsColorMaster objReq)
         {
@@ -70,7 +70,7 @@ namespace BSLDaman.Controllers
             return objResp;
         }
 
-        [System.Web.Http.HttpPost]
+        [System.Web.Http.HttpGet]
         [System.Web.Http.Route("api/Employee/Fn_Get_Color_List")]
         public List<clsColorMaster> Fn_Get_Color_List(clsColorMaster objReq)
         {
