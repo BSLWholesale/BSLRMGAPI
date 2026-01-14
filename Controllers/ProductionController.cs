@@ -42,7 +42,7 @@ namespace BSLDaman.Controllers
             return objResp;
         }
 
-        [System.Web.Http.HttpPatch]
+        [System.Web.Http.HttpPut]
         [System.Web.Http.Route("api/Production/Fn_Update_Production")]
         public clsProductionMastr Fn_Update_Production(clsProductionMastr objReq)
         {
