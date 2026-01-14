@@ -403,5 +403,79 @@ namespace BSLDaman.DAL
         }
 
         #endregion
+
+        public clsEmployee Fn_LogIn_Employee(clsEmployee objReq)
+        {
+            var objResp = new clsEmployee();
+            try
+            {
+                if (objReq.nEmpId == null || objReq.nEmpId == 0)
+                {
+                    objResp.vErrorMsg = "Please Enter Employee Id";
+                }
+                else if (String.IsNullOrWhiteSpace(objReq.vEmpPassword))
+                {
+                    objResp.vErrorMsg = "Please Enter Password";
+                }
+                else
+                {
+                    if (Con.State == ConnectionState.Broken)
+                    { Con.Close(); }
+                    if (Con.State == ConnectionState.Closed)
+                    { Con.Open(); }
+
+                    string encriptPassword = Generic.EncryptText(objReq.vEmpPassword);
+
+                    SqlCommand cmd = new SqlCommand("USP_Employee", Con);
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("@EmpId", objReq.nEmpId);
+                    cmd.Parameters.AddWithValue("@EmpPassword", encriptPassword);
+                    cmd.Parameters.AddWithValue("@QueryType", "LogIn");
+
+                    SqlDataAdapter da = new SqlDataAdapter(cmd);
+                    DataSet ds = new DataSet();
+                    da.Fill(ds);
+                    int i = 0;
+
+                    if (ds.Tables[0].Rows.Count > 0)
+                    {
+                        string decryptTextPassword = Generic.DecryptText(Convert.ToString(ds.Tables[0].Rows[i]["EmpPassword"]));
+                        objResp.nEmpId = Convert.ToInt32(ds.Tables[0].Rows[i]["EmpId"]);
+                        objResp.vEmpName = Convert.ToString(ds.Tables[0].Rows[i]["EmpName"]);
+                        //objResp.vEmpEmailId = Convert.ToString(ds.Tables[0].Rows[i]["EmpEmailId"]);
+                        //objResp.vEmpMobile = Convert.ToString(ds.Tables[0].Rows[i]["EmpMobile"]);
+                        //objResp.vEmpLocation = Convert.ToString(ds.Tables[0].Rows[i]["EmpLocation"]);
+                        //objResp.vEmpGrade = Convert.ToString(ds.Tables[0].Rows[i]["EmpGrade"]);
+                        //objResp.nBSLTravelDesk = Convert.ToInt32(ds.Tables[0].Rows[i]["BSLTravelDesk"]);
+                        //objResp.vEmpType = Convert.ToString(ds.Tables[0].Rows[i]["EmpType"]);
+                        //objResp.Confirmation = Convert.ToString(ds.Tables[0].Rows[i]["Confirmation"]);
+                        objResp.vEmpPassword = decryptTextPassword;
+                        //objResp.EmpRole = Convert.ToString(ds.Tables[0].Rows[i]["EmpRole"]);
+                        objResp.bEmpActiveStatus = Convert.ToBoolean(ds.Tables[0].Rows[i]["EmpActiveStatus"]);
+                        if (objResp.bEmpActiveStatus == true)
+                        {
+                            objResp.vErrorMsg = "Success";
+                        }
+                        else
+                        {
+                            objResp.vErrorMsg = "Your Credentials has been Invalid.";
+                        }                                    
+                    }
+                    cmd.Dispose();
+                }
+            }
+            catch (Exception exp)
+            {
+                Logger.WriteLog("Function Name : Fn_LogIn_Employee", " " + "Error Msg : " + exp.Message.ToString(), new StackTrace(exp, true));
+                objResp.vErrorMsg = exp.Message.ToString();
+            }
+            finally
+            {
+                Con.Close();
+            }
+            return objResp;
+        }
+
+
     }
 }
