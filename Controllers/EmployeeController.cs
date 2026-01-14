@@ -89,5 +89,15 @@ namespace BSLDaman.Controllers
         }
 
         #endregion
+
+        [System.Web.Http.HttpPost]
+        [System.Web.Http.Route("api/Employee/Fn_LogIn_Employee")]
+        public clsEmployee Fn_LogIn_Employee(clsEmployee objReq)
+        {
+            var objResp = new clsEmployee();
+            objResp = _DALEmployee.Fn_LogIn_Employee(objReq);
+            return objResp;
+        }
+
     }
 }
