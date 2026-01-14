@@ -282,8 +282,8 @@ namespace BSLDaman.DAL
                 cmd.CommandType = CommandType.StoredProcedure;
                 cmd.Parameters.AddWithValue("@SectionID", objReq.SectionID);
                 cmd.Parameters.AddWithValue("@DivisionID", objReq.DivisionID);
-                cmd.Parameters.AddWithValue("@vSectionName", objReq.SectionName);
-                cmd.Parameters.AddWithValue("@vSectionHead", objReq.SectionHead);
+                cmd.Parameters.AddWithValue("@SectionName", objReq.SectionName);
+                cmd.Parameters.AddWithValue("@SectionHead", objReq.SectionHead);
                 cmd.Parameters.AddWithValue("@ModifiedBy", objReq.ModifiedBy);
                 cmd.Parameters.AddWithValue("@QueryType", "UpdateSection");
                 int i = 0;
