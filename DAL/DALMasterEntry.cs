@@ -14,6 +14,57 @@ namespace BSLDaman.DAL
     {
         SqlConnection Con = new SqlConnection(ConfigurationManager.ConnectionStrings["BSL"].ConnectionString);
 
+        Int64 mxID = 0;
+
+        public Int64 Fn_Get_MXID(string strTBLName, string strFieldName)
+        {
+            try
+            {
+                if (Con.State == ConnectionState.Broken)
+                { Con.Close(); }
+                if (Con.State == ConnectionState.Closed)
+                { Con.Open(); }
+
+                string strSql = "SELECT MAX(" + strFieldName + ") AS ID FROM " + strTBLName + "";
+                SqlCommand cmd = new SqlCommand(strSql, Con);
+                cmd.CommandType = CommandType.Text;
+                SqlDataAdapter da = new SqlDataAdapter(cmd);
+                DataSet ds = new DataSet();
+                da.Fill(ds);
+                int i = 0;
+                if (ds.Tables[0].Rows.Count > 0)
+                {
+                    while (ds.Tables[0].Rows.Count > i)
+                    {
+                        string strMXID = Convert.ToString(ds.Tables[0].Rows[i]["ID"]);
+                        if (strMXID == "")
+                        {
+                            mxID = 1;
+                        }
+                        else
+                        {
+                            mxID = Convert.ToInt64(ds.Tables[0].Rows[i]["ID"]) + 1;
+                        }
+                        i++;
+                    }
+                }
+                else
+                {
+                    mxID = 1;
+                }
+            }
+            catch (Exception exp)
+            {
+                Logger.WriteLog("Function Name : Fn_Get_MXID", " " + "Error Msg : " + exp.Message.ToString(), new StackTrace(exp, true));
+                exp.Message.ToString();
+            }
+            finally
+            {
+                Con.Close();
+            }
+            return mxID;
+        }
+
         #region Start Division 05-Jan-2026
         public clsDivision Fn_Add_New_Division(clsDivision objReq)
         {
@@ -897,7 +948,7 @@ namespace BSLDaman.DAL
         public clsCustomer Fn_Add_New_Customer(clsCustomer objReq)
         {
             var objResp = new clsCustomer();
-
+            Fn_Get_MXID("CustomerMaster", "ID");
             try
             {
 
@@ -908,6 +959,7 @@ namespace BSLDaman.DAL
 
                 SqlCommand cmd = new SqlCommand("USP_MASTERENTRY", Con);
                 cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@CustomerId", mxID);
                 cmd.Parameters.AddWithValue("@vName", objReq.vName);
                 cmd.Parameters.AddWithValue("@CodeNo", objReq.CodeNo);
                 cmd.Parameters.AddWithValue("@vAddress", objReq.vAddress);
@@ -1043,30 +1095,30 @@ namespace BSLDaman.DAL
 
                 string strSql = "SELECT ID, vName, CodeNo, vAddress, vContact, CreatedBy,";
                 strSql = strSql + " FORMAT(CreatedOn, 'dd-MMM-yyyy') AS CreatedOn FROM CustomerMaster WHERE 1=1";
-                if (objReq.vName != "")
+                if (!String.IsNullOrWhiteSpace(objReq.vName))
                 {
                     strSql = strSql + " AND vName = @vName ";
                 }
-                if (objReq.CodeNo != "")
+                if (!String.IsNullOrWhiteSpace(objReq.CodeNo))
                 {
                     strSql = strSql + " AND CodeNo = @CodeNo ";
                 }
-                if (objReq.vContact != "")
+                if (!String.IsNullOrWhiteSpace(objReq.vContact))
                 {
                     strSql = strSql + " AND vContact = @vContact ";
                 }
 
                 SqlCommand cmd = new SqlCommand(strSql, Con);
                 cmd.CommandType = CommandType.Text;
-                if (objReq.vName != "")
+                if (!String.IsNullOrWhiteSpace(objReq.vName))
                 {
                     cmd.Parameters.AddWithValue("@vName", objReq.vName);
                 }
-                if (objReq.CodeNo != "")
+                if (!String.IsNullOrWhiteSpace(objReq.CodeNo))
                 {
                     cmd.Parameters.AddWithValue("@CodeNo", objReq.CodeNo);
                 }
-                if (objReq.vContact != "")
+                if (!String.IsNullOrWhiteSpace(objReq.vContact))
                 {
                     cmd.Parameters.AddWithValue("@vContact", objReq.vContact);
                 }
@@ -1084,7 +1136,7 @@ namespace BSLDaman.DAL
                         obj.CodeNo = Convert.ToString(ds.Tables[0].Rows[i]["CodeNo"]);
                         obj.vAddress = Convert.ToString(ds.Tables[0].Rows[i]["vAddress"]);
                         obj.vContact = Convert.ToString(ds.Tables[0].Rows[i]["vContact"]);
-                        obj.CreatedBy = Convert.ToInt16(ds.Tables[0].Rows[i]["CreatedBy"]);
+                        obj.CreatedBy = Convert.ToInt32(ds.Tables[0].Rows[i]["CreatedBy"]);
                         obj.CreatedOn = Convert.ToString(ds.Tables[0].Rows[i]["CreatedOn"]);
 
                         obj.vErrorCode = 200;

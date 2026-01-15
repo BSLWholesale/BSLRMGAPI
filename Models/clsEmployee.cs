@@ -120,4 +120,19 @@ namespace BSLDaman.Models
         public int vErrorCode { get; set; }
         public string vQueryType { get; set; }
     }
+
+    public class clsRequestDropdown
+    {
+        public string vFieldName { get; set; }
+        public string vValueField { get; set; }
+        public string vTBLName { get; set; }
+        public string vCriteria { get; set; }
+        public string vErrorMsg { get; set; }
+    }
+    public class clsResponseDropdown
+    {
+        public string vFieldName { get; set; }
+        public string vValueField { get; set; }
+        public string vErrorMsg { get; set; }
+    }
 }
