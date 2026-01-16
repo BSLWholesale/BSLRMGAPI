@@ -444,11 +444,6 @@ namespace BSLDaman.DAL
                         objResp.vEmpName = Convert.ToString(ds.Tables[0].Rows[i]["EmpName"]);
                         //objResp.vEmpEmailId = Convert.ToString(ds.Tables[0].Rows[i]["EmpEmailId"]);
                         //objResp.vEmpMobile = Convert.ToString(ds.Tables[0].Rows[i]["EmpMobile"]);
-                        //objResp.vEmpLocation = Convert.ToString(ds.Tables[0].Rows[i]["EmpLocation"]);
-                        //objResp.vEmpGrade = Convert.ToString(ds.Tables[0].Rows[i]["EmpGrade"]);
-                        //objResp.nBSLTravelDesk = Convert.ToInt32(ds.Tables[0].Rows[i]["BSLTravelDesk"]);
-                        //objResp.vEmpType = Convert.ToString(ds.Tables[0].Rows[i]["EmpType"]);
-                        //objResp.Confirmation = Convert.ToString(ds.Tables[0].Rows[i]["Confirmation"]);
                         objResp.vEmpPassword = decryptTextPassword;
                         //objResp.EmpRole = Convert.ToString(ds.Tables[0].Rows[i]["EmpRole"]);
                         objResp.bEmpActiveStatus = Convert.ToBoolean(ds.Tables[0].Rows[i]["EmpActiveStatus"]);
