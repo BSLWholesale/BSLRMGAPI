@@ -953,7 +953,15 @@ namespace BSLDaman.DAL
         public clsCustomer Fn_Add_New_Customer(clsCustomer objReq)
         {
             var objResp = new clsCustomer();
-            Fn_Get_MXID("CustomerMaster", "ID");
+            if (objReq.ID == 0 || objReq.ID == null)
+            {
+                Fn_Get_MXID("CustomerMaster", "ID");
+            }
+            else
+            {
+                mxID = objReq.ID;
+            }
+
             try
             {
 
@@ -1100,6 +1108,10 @@ namespace BSLDaman.DAL
 
                 string strSql = "SELECT ID, vName, CodeNo, vAddress, vContact, CreatedBy,";
                 strSql = strSql + " FORMAT(CreatedOn, 'dd-MMM-yyyy') AS CreatedOn FROM CustomerMaster WHERE 1=1";
+                if (objReq.ID != 0 && objReq.ID != null)
+                {
+                    strSql = strSql + " AND ID = @ID ";
+                }
                 if (!String.IsNullOrWhiteSpace(objReq.vName))
                 {
                     strSql = strSql + " AND vName = @vName ";
@@ -1115,6 +1127,10 @@ namespace BSLDaman.DAL
 
                 SqlCommand cmd = new SqlCommand(strSql, Con);
                 cmd.CommandType = CommandType.Text;
+                if (objReq.ID != 0 && objReq.ID != null)
+                {
+                    cmd.Parameters.AddWithValue("@ID", objReq.ID);
+                }
                 if (!String.IsNullOrWhiteSpace(objReq.vName))
                 {
                     cmd.Parameters.AddWithValue("@vName", objReq.vName);
@@ -1587,7 +1603,7 @@ namespace BSLDaman.DAL
                 {
                     cmd.Parameters.AddWithValue("@CodeNO", objReq.CodeNO);
                 }
-                
+
                 SqlDataAdapter da = new SqlDataAdapter(cmd);
                 DataSet ds = new DataSet();
                 da.Fill(ds);
@@ -2546,7 +2562,7 @@ namespace BSLDaman.DAL
                 }
                 SqlCommand cmd = new SqlCommand(strSql, Con);
                 cmd.CommandType = CommandType.Text;
-                
+
                 if (objReq.PCSFrom != "")
                 {
                     cmd.Parameters.AddWithValue("@PCSFrom", objReq.PCSFrom);
@@ -2673,7 +2689,7 @@ namespace BSLDaman.DAL
                 { Con.Open(); }
 
                 string strSql = "SELECT ID, Remarks, IsAsset, CreatedBy, FORMAT(CreatedOn, 'dd-MMM-yyyy') AS CreatedOn FROM MaintenanceRemarks WHERE 1=1";
-                
+
                 SqlCommand cmd = new SqlCommand(strSql, Con);
                 cmd.CommandType = CommandType.Text;
                 SqlDataAdapter da = new SqlDataAdapter(cmd);
@@ -2792,7 +2808,7 @@ namespace BSLDaman.DAL
                 {
                     strSql = strSql + " AND Months = @Months";
                 }
-                
+
                 SqlCommand cmd = new SqlCommand(strSql, Con);
                 cmd.CommandType = CommandType.Text;
                 if (objReq.HoliDayDate != "")
@@ -2890,7 +2906,7 @@ namespace BSLDaman.DAL
             {
                 objResp.vErrorCode = 500;
                 Logger.WriteLog("Function Name : Fn_Fetch_DivisionDetails_By_DivID", " " + "Error Msg : " + exp.Message.ToString(), new StackTrace(exp, true));
-                objResp.vErrorMsg = exp.Message.ToString(); 
+                objResp.vErrorMsg = exp.Message.ToString();
             }
             finally
             {
@@ -2899,6 +2915,222 @@ namespace BSLDaman.DAL
             return objResp;
         }
 
+        #region Start Category 16-Jan-2026
+
+        public clsCategory Fn_Add_New_Category(clsCategory objReq)
+        {
+            var objResp = new clsCategory();
+            if (objReq.ID == 0 || objReq.ID == null)
+            {
+                Fn_Get_MXID("CategoryMaster", "ID");
+            }
+            else
+            {
+                mxID = objReq.ID;
+            }
+
+            try
+            {
+
+                if (Con.State == ConnectionState.Broken)
+                { Con.Close(); }
+                if (Con.State == ConnectionState.Closed)
+                { Con.Open(); }
+
+                SqlCommand cmd = new SqlCommand("USP_MASTERENTRY", Con);
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@CustomerId", mxID);
+                cmd.Parameters.AddWithValue("@vName", objReq.Category);
+                cmd.Parameters.AddWithValue("@CreatedBy", objReq.CreatedBy);
+                cmd.Parameters.AddWithValue("@QueryType", "InsertCategory");
+                int i = 0;
+                i = cmd.ExecuteNonQuery();
+                if (i > 0)
+                {
+                    objResp.vErrorCode = 200;
+                    objResp.vErrorMsg = "Success";
+                }
+                else
+                {
+                    objResp.vErrorCode = 400;
+                    objResp.vErrorMsg = "Inserting Failed";
+                }
+            }
+            catch (Exception exp)
+            {
+                objResp.vErrorCode = 500;
+                Logger.WriteLog("Function Name : Fn_Add_New_Category", " " + "Error Msg : " + exp.Message.ToString(), new StackTrace(exp, true));
+                objResp.vErrorMsg = exp.Message.ToString();
+            }
+            finally
+            {
+                Con.Close();
+            }
+            return objResp;
+        }
+
+        public clsCategory Fn_Update_Category(clsCategory objReq)
+        {
+            var objResp = new clsCategory();
+
+            try
+            {
+
+                if (Con.State == ConnectionState.Broken)
+                { Con.Close(); }
+                if (Con.State == ConnectionState.Closed)
+                { Con.Open(); }
+
+                SqlCommand cmd = new SqlCommand("USP_MASTERENTRY", Con);
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@ID", objReq.ID);
+                cmd.Parameters.AddWithValue("@vName", objReq.Category);
+                cmd.Parameters.AddWithValue("@ModifiedBy", objReq.ModifiedBy);
+                cmd.Parameters.AddWithValue("@QueryType", "UpdateCategory");
+                int i = 0;
+                i = cmd.ExecuteNonQuery();
+                if (i > 0)
+                {
+                    objResp.vErrorCode = 200;
+                    objResp.vErrorMsg = "Success";
+                }
+                else
+                {
+                    objResp.vErrorCode = 400;
+                    objResp.vErrorMsg = "Updating Failed";
+                }
+            }
+            catch (Exception exp)
+            {
+                objResp.vErrorCode = 500;
+                Logger.WriteLog("Function Name : Fn_Update_Category", " " + "Error Msg : " + exp.Message.ToString(), new StackTrace(exp, true));
+                objResp.vErrorMsg = exp.Message.ToString();
+            }
+            finally
+            {
+                Con.Close();
+            }
+            return objResp;
+        }
+        public clsCategory Fn_Delete_Category(clsCategory objReq)
+        {
+            var objResp = new clsCategory();
+
+            try
+            {
+
+                if (Con.State == ConnectionState.Broken)
+                { Con.Close(); }
+                if (Con.State == ConnectionState.Closed)
+                { Con.Open(); }
+
+                SqlCommand cmd = new SqlCommand("USP_MASTERENTRY", Con);
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@ID", objReq.ID);
+                cmd.Parameters.AddWithValue("@CreatedBy", objReq.CreatedBy);
+                cmd.Parameters.AddWithValue("@QueryType", "DeleteCategory");
+                int i = 0;
+                i = cmd.ExecuteNonQuery();
+                if (i > 0)
+                {
+                    objResp.vErrorCode = 200;
+                    objResp.vErrorMsg = "Success";
+                }
+                else
+                {
+                    objResp.vErrorCode = 400;
+                    objResp.vErrorMsg = "Deleting Failed";
+                }
+            }
+            catch (Exception exp)
+            {
+                objResp.vErrorCode = 500;
+                Logger.WriteLog("Function Name : Fn_Delete_Category", " " + "Error Msg : " + exp.Message.ToString(), new StackTrace(exp, true));
+                objResp.vErrorMsg = exp.Message.ToString();
+            }
+            finally
+            {
+                Con.Close();
+            }
+            return objResp;
+        }
+
+        public List<clsCategory> Fn_Get_All_Category(clsCategory objReq)
+        {
+            var objResp = new List<clsCategory>();
+            var obj = new clsCategory();
+            try
+            {
+
+                if (Con.State == ConnectionState.Broken)
+                { Con.Close(); }
+                if (Con.State == ConnectionState.Closed)
+                { Con.Open(); }
+
+                string strSql = "SELECT ID, Category, CreatedBy,";
+                strSql = strSql + " FORMAT(CreatedOn, 'dd-MMM-yyyy') AS CreatedOn FROM CategoryMaster WHERE 1=1";
+                if (objReq.ID != 0 && objReq.ID != null)
+                {
+                    strSql = strSql + " AND ID = @ID ";
+                }
+                if (!String.IsNullOrWhiteSpace(objReq.Category))
+                {
+                    strSql = strSql + " AND Category = @Category ";
+                }
+
+                SqlCommand cmd = new SqlCommand(strSql, Con);
+                cmd.CommandType = CommandType.Text;
+                if (objReq.ID != 0 && objReq.ID != null)
+                {
+                    cmd.Parameters.AddWithValue("@ID", objReq.ID);
+                }
+                if (!String.IsNullOrWhiteSpace(objReq.Category))
+                {
+                    cmd.Parameters.AddWithValue("@Category", objReq.Category);
+                }
+
+                SqlDataAdapter da = new SqlDataAdapter(cmd);
+                DataSet ds = new DataSet();
+                da.Fill(ds);
+                int i = 0;
+                if (ds.Tables[0].Rows.Count > 0)
+                {
+                    while (ds.Tables[0].Rows.Count > i)
+                    {
+                        obj = new clsCategory();
+                        obj.ID = Convert.ToInt16(ds.Tables[0].Rows[i]["ID"]);
+                        obj.Category = Convert.ToString(ds.Tables[0].Rows[i]["Category"]);
+                        obj.CreatedBy = Convert.ToInt32(ds.Tables[0].Rows[i]["CreatedBy"]);
+                        obj.CreatedOn = Convert.ToString(ds.Tables[0].Rows[i]["CreatedOn"]);
+
+                        obj.vErrorCode = 200;
+                        obj.vErrorMsg = "Success";
+                        objResp.Add(obj);
+                        i++;
+                    }
+                }
+                else
+                {
+                    obj.vErrorCode = 404;
+                    obj.vErrorMsg = "No Record found";
+                    objResp.Add(obj);
+                }
+            }
+            catch (Exception exp)
+            {
+                obj.vErrorCode = 500;
+                Logger.WriteLog("Function Name : Fn_Get_All_Category", " " + "Error Msg : " + exp.Message.ToString(), new StackTrace(exp, true));
+                obj.vErrorMsg = exp.Message.ToString();
+                objResp.Add(obj);
+            }
+            finally
+            {
+                Con.Close();
+            }
+            return objResp;
+        }
+
+        #endregion End Category 07-Jan-2026
 
     }
 }
