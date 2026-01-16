@@ -529,7 +529,45 @@ namespace BSLDaman.Controllers
             return objResp;
         }
 
+        #region Start Category 16-Jan-2026
 
+        [System.Web.Http.HttpPost]
+        [System.Web.Http.Route("api/MasterEntry/Fn_Add_New_Category")]
+        public clsCategory Fn_Add_New_Category(clsCategory objReq)
+        {
+            var objResp = new clsCategory();
+            objResp = _DALMasterEntry.Fn_Add_New_Category(objReq);
+            return objResp;
+        }
+
+        [System.Web.Http.HttpPost]
+        [System.Web.Http.Route("api/MasterEntry/Fn_Update_Category")]
+        public clsCategory Fn_Update_Customer(clsCategory objReq)
+        {
+            var objResp = new clsCategory();
+            objResp = _DALMasterEntry.Fn_Update_Category(objReq);
+            return objResp;
+        }
+
+        [System.Web.Http.HttpPost]
+        [System.Web.Http.Route("api/MasterEntry/Fn_Delete_Category")]
+        public clsCategory Fn_Delete_Category(clsCategory objReq)
+        {
+            var objResp = new clsCategory();
+            objResp = _DALMasterEntry.Fn_Delete_Category(objReq);
+            return objResp;
+        }
+
+        [System.Web.Http.HttpPost]
+        [System.Web.Http.Route("api/MasterEntry/Fn_Get_All_Category")]
+        public List<clsCategory> Fn_Get_All_Category(clsCategory objReq)
+        {
+            var objResp = new List<clsCategory>();
+            objResp = _DALMasterEntry.Fn_Get_All_Category(objReq);
+            return objResp;
+        }
+
+        #endregion End Customer 16-Jan-2026
 
     }
 }
