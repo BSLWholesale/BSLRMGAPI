@@ -109,7 +109,7 @@ namespace BSLDaman.DAL
             return objResp;
         }
 
-        public clsDivision Fn_Update_Division(clsDivision objReq)
+        public clsDivision Fn_Update_DivisionDetails_By_DivID(clsDivision objReq)
         {
             var objResp = new clsDivision();
 
@@ -143,7 +143,7 @@ namespace BSLDaman.DAL
             catch (Exception exp)
             {
                 objResp.vErrorCode = 500;
-                Logger.WriteLog("Function Name : Fn_Add_New_Division", " " + "Error Msg : " + exp.Message.ToString(), new StackTrace(exp, true));
+                Logger.WriteLog("Function Name : Fn_Update_DivisionDetails_By_DivID", " " + "Error Msg : " + exp.Message.ToString(), new StackTrace(exp, true));
                 objResp.vErrorMsg = exp.Message.ToString();
             }
             finally
@@ -152,6 +152,7 @@ namespace BSLDaman.DAL
             }
             return objResp;
         }
+
         public clsDivision Fn_Delete_Division(clsDivision objReq)
         {
             var objResp = new clsDivision();
@@ -206,30 +207,30 @@ namespace BSLDaman.DAL
                 if (Con.State == ConnectionState.Closed)
                 { Con.Open(); }
 
-                //string strSql = "SELECT ID, Division, FORMAT(CreatedOn, 'dd-MMM-yyyy') AS CreatedOn FROM DivisionMaster WHERE 1=1";
-                //if (objReq.ID != 0)
-                //{
-                //    strSql = strSql + " AND ID = @ID ";
-                //}
-                //if (objReq.Division != "")
-                //{
-                //    strSql = strSql + " AND Division LIKE '%@Division%' ";
-                //}
+                string strSql = "SELECT ID, Division, CreatedBy, FORMAT(CreatedOn, 'dd-MMM-yyyy') AS CreatedOn FROM DivisionMaster WHERE 1=1";
+                if (objReq.ID != 0 && objReq.ID != null)
+                {
+                    strSql = strSql + " AND ID = @ID ";
+                }
+                if (!String.IsNullOrWhiteSpace(objReq.Division))
+                {
+                    strSql = strSql + " AND Division LIKE '%@Division%' ";
+                }
 
-                //SqlCommand cmd = new SqlCommand(strSql, Con);
-                //cmd.CommandType = CommandType.Text;
-                //if (objReq.ID != 0)
-                //{
-                //    cmd.Parameters.AddWithValue("@ID", objReq.ID);
-                //}
-                //if (objReq.Division != "")
-                //{
-                //    cmd.Parameters.AddWithValue("@Division", objReq.Division);
-                //}
+                SqlCommand cmd = new SqlCommand(strSql, Con);
+                cmd.CommandType = CommandType.Text;
+                if (objReq.ID != 0 && objReq.ID != null)
+                {
+                    cmd.Parameters.AddWithValue("@ID", objReq.ID);
+                }
+                if (!String.IsNullOrWhiteSpace(objReq.Division))
+                {
+                    cmd.Parameters.AddWithValue("@Division", objReq.Division);
+                }
 
-                SqlCommand cmd = new SqlCommand("USP_MASTERENTRY", Con);
-                cmd.CommandType = CommandType.StoredProcedure;
-                cmd.Parameters.AddWithValue("@QueryType", "GetAllDivision");
+                //SqlCommand cmd = new SqlCommand("USP_MASTERENTRY", Con);
+                //cmd.CommandType = CommandType.StoredProcedure;
+                //cmd.Parameters.AddWithValue("@QueryType", "GetAllDivision");
 
                 SqlDataAdapter da = new SqlDataAdapter(cmd);
                 DataSet ds = new DataSet();

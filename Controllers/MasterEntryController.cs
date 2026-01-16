@@ -26,11 +26,11 @@ namespace BSLDaman.Controllers
         }
 
         [System.Web.Http.HttpPost]
-        [System.Web.Http.Route("api/MasterEntry/Fn_Update_Division")]
-        public clsDivision Fn_Update_Division(clsDivision objReq)
+        [System.Web.Http.Route("api/MasterEntry/Fn_Update_DivisionDetails_By_DivID")]
+        public clsDivision Fn_Update_DivisionDetails_By_DivID(clsDivision objReq)
         {
             var objResp = new clsDivision();
-            objResp = _DALMasterEntry.Fn_Update_Division(objReq);
+            objResp = _DALMasterEntry.Fn_Update_DivisionDetails_By_DivID(objReq);
             return objResp;
         }
 
