@@ -201,32 +201,36 @@ namespace BSLDaman.DAL
             var obj = new clsDivision();
             try
             {
-
                 if (Con.State == ConnectionState.Broken)
                 { Con.Close(); }
                 if (Con.State == ConnectionState.Closed)
                 { Con.Open(); }
 
-                string strSql = "SELECT ID, Division, FORMAT(CreatedOn, 'dd-MMM-yyyy') AS CreatedOn FROM DivisionMaster WHERE 1=1";
-                if (objReq.ID != 0)
-                {
-                    strSql = strSql + " AND ID = @ID ";
-                }
-                if (objReq.Division != "")
-                {
-                    strSql = strSql + " AND Division LIKE '%@Division%' ";
-                }
+                //string strSql = "SELECT ID, Division, FORMAT(CreatedOn, 'dd-MMM-yyyy') AS CreatedOn FROM DivisionMaster WHERE 1=1";
+                //if (objReq.ID != 0)
+                //{
+                //    strSql = strSql + " AND ID = @ID ";
+                //}
+                //if (objReq.Division != "")
+                //{
+                //    strSql = strSql + " AND Division LIKE '%@Division%' ";
+                //}
 
-                SqlCommand cmd = new SqlCommand(strSql, Con);
-                cmd.CommandType = CommandType.Text;
-                if (objReq.ID != 0)
-                {
-                    cmd.Parameters.AddWithValue("@ID", objReq.ID);
-                }
-                if (objReq.Division != "")
-                {
-                    cmd.Parameters.AddWithValue("@Division", objReq.Division);
-                }
+                //SqlCommand cmd = new SqlCommand(strSql, Con);
+                //cmd.CommandType = CommandType.Text;
+                //if (objReq.ID != 0)
+                //{
+                //    cmd.Parameters.AddWithValue("@ID", objReq.ID);
+                //}
+                //if (objReq.Division != "")
+                //{
+                //    cmd.Parameters.AddWithValue("@Division", objReq.Division);
+                //}
+
+                SqlCommand cmd = new SqlCommand("USP_MASTERENTRY", Con);
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@QueryType", "GetAllDivision");
+
                 SqlDataAdapter da = new SqlDataAdapter(cmd);
                 DataSet ds = new DataSet();
                 da.Fill(ds);
@@ -237,9 +241,9 @@ namespace BSLDaman.DAL
                     {
                         obj = new clsDivision();
                         obj.ID = Convert.ToInt64(ds.Tables[0].Rows[i]["ID"]);
-                        obj.Division = Convert.ToString(ds.Tables[0].Rows[i]["vDivision"]);
+                        obj.Division = Convert.ToString(ds.Tables[0].Rows[i]["Division"]);
                         obj.CreatedOn = Convert.ToString(ds.Tables[0].Rows[i]["CreatedOn"]);
-                        obj.CreatedBy = Convert.ToInt16(ds.Tables[0].Rows[i]["CreatedBy"]);
+                        obj.CreatedBy = Convert.ToInt32(ds.Tables[0].Rows[i]["CreatedBy"]);
 
                         obj.vErrorCode = 200;
                         obj.vErrorMsg = "Success";
@@ -2846,5 +2850,54 @@ namespace BSLDaman.DAL
         }
 
         #endregion End Holiday 07-Jan-2026
+
+
+        public clsDivision Fn_Fetch_DivisionDetails_By_DivID(clsDivision objReq)
+        {
+            var objResp = new clsDivision();
+            try
+            {
+                if (Con.State == ConnectionState.Broken)
+                { Con.Close(); }
+                if (Con.State == ConnectionState.Closed)
+                { Con.Open(); }
+
+                SqlCommand cmd = new SqlCommand("USP_MASTERENTRY", Con);
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@ID", objReq.ID);
+                cmd.Parameters.AddWithValue("@QueryType", "FetchDivisionDetailsById");
+
+                SqlDataAdapter da = new SqlDataAdapter(cmd);
+                DataSet ds = new DataSet();
+                da.Fill(ds);
+
+                if (ds.Tables[0].Rows.Count > 0)
+                {
+                    objResp.ID = Convert.ToInt64(ds.Tables[0].Rows[0]["ID"]);
+                    objResp.Division = Convert.ToString(ds.Tables[0].Rows[0]["Division"]);
+
+                    objResp.vErrorCode = 200;
+                    objResp.vErrorMsg = "Success";
+                }
+                else
+                {
+                    objResp.vErrorCode = 400;
+                    objResp.vErrorMsg = "Division Fetch details failed.";
+                }
+            }
+            catch (Exception exp)
+            {
+                objResp.vErrorCode = 500;
+                Logger.WriteLog("Function Name : Fn_Fetch_DivisionDetails_By_DivID", " " + "Error Msg : " + exp.Message.ToString(), new StackTrace(exp, true));
+                objResp.vErrorMsg = exp.Message.ToString(); 
+            }
+            finally
+            {
+                Con.Close();
+            }
+            return objResp;
+        }
+
+
     }
 }
