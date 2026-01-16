@@ -517,5 +517,19 @@ namespace BSLDaman.Controllers
         }
 
         #endregion End Holiday 07-Jan-2026
+
+
+
+        [System.Web.Http.HttpPost]
+        [System.Web.Http.Route("api/MasterEntry/Fn_Fetch_DivisionDetails_By_DivID")]
+        public clsDivision Fn_Fetch_DivisionDetails_By_DivID(clsDivision objReq)
+        {
+            var objResp = new clsDivision();
+            objResp = _DALMasterEntry.Fn_Fetch_DivisionDetails_By_DivID(objReq);
+            return objResp;
+        }
+
+
+
     }
 }
