@@ -423,19 +423,19 @@ namespace BSLDaman.DAL
                 if (Con.State == ConnectionState.Closed)
                 { Con.Open(); }
 
-                string strSql = "SELECT SectionID, SectionName, SectionHead, CreatedBy,";
+                string strSql = "SELECT SectionID, DivisionID, SectionName, SectionHead, CreatedBy,";
                 strSql = strSql + " FORMAT(CreatedOn, 'dd-MMM-yyyy') AS CreatedOn FROM SectionMaster WHERE 1=1";
                 if (objReq.SectionID != 0)
                 {
                     strSql = strSql + " AND SectionID = @SectionID ";
                 }
-                if (objReq.SectionName != "")
+                if (objReq.SectionName != "" && objReq.SectionName != null)
                 {
-                    strSql = strSql + " AND SectionName LIKE '%@SectionName%; ";
+                    strSql = strSql + " AND SectionName LIKE '%@SectionName%'";
                 }
-                if (objReq.SectionHead != "")
+                if (objReq.SectionHead != "" && objReq.SectionHead != null)
                 {
-                    strSql = strSql + " AND SectionHead LIKE '%@SectionHead%; ";
+                    strSql = strSql + " AND SectionHead LIKE '%@SectionHead%'";
                 }
 
                 SqlCommand cmd = new SqlCommand(strSql, Con);
@@ -444,11 +444,11 @@ namespace BSLDaman.DAL
                 {
                     cmd.Parameters.AddWithValue("@SectionID", objReq.SectionID);
                 }
-                if (objReq.SectionName != "")
+                if (objReq.SectionName != "" && objReq.SectionName != null)
                 {
                     cmd.Parameters.AddWithValue("@SectionName", objReq.SectionName);
                 }
-                if (objReq.SectionHead != "")
+                if (objReq.SectionHead != "" && objReq.SectionHead != null)
                 {
                     cmd.Parameters.AddWithValue("@SectionHead", objReq.SectionHead);
                 }
@@ -463,10 +463,10 @@ namespace BSLDaman.DAL
                         obj = new clsSection();
                         obj.SectionID = Convert.ToInt64(ds.Tables[0].Rows[i]["SectionID"]);
                         obj.DivisionID = Convert.ToInt64(ds.Tables[0].Rows[i]["DivisionID"]);
-                        obj.SectionName = Convert.ToString(ds.Tables[0].Rows[i]["vSectionName"]);
-                        obj.SectionHead = Convert.ToString(ds.Tables[0].Rows[i]["vSectionHead"]);
+                        obj.SectionName = Convert.ToString(ds.Tables[0].Rows[i]["SectionName"]);
+                        obj.SectionHead = Convert.ToString(ds.Tables[0].Rows[i]["SectionHead"]);
                         obj.CreatedOn = Convert.ToString(ds.Tables[0].Rows[i]["CreatedOn"]);
-                        obj.CreatedBy = Convert.ToInt16(ds.Tables[0].Rows[i]["CreatedBy"]);
+                        obj.CreatedBy = Convert.ToInt32(ds.Tables[0].Rows[i]["CreatedBy"]);
 
                         obj.vErrorCode = 200;
                         obj.vErrorMsg = "Success";
