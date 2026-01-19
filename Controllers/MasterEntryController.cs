@@ -569,5 +569,44 @@ namespace BSLDaman.Controllers
 
         #endregion End Customer 16-Jan-2026
 
+        #region Start Season 19-Jan-2026
+
+        [System.Web.Http.HttpPost]
+        [System.Web.Http.Route("api/MasterEntry/Fn_Add_New_Season")]
+        public clsSeason Fn_Add_New_Season(clsSeason objReq)
+        {
+            var objResp = new clsSeason();
+            objResp = _DALMasterEntry.Fn_Add_New_Season(objReq);
+            return objResp;
+        }
+
+        [System.Web.Http.HttpPost]
+        [System.Web.Http.Route("api/MasterEntry/Fn_Update_Season")]
+        public clsSeason Fn_Update_Season(clsSeason objReq)
+        {
+            var objResp = new clsSeason();
+            objResp = _DALMasterEntry.Fn_Update_Season(objReq);
+            return objResp;
+        }
+
+        [System.Web.Http.HttpPost]
+        [System.Web.Http.Route("api/MasterEntry/Fn_Delete_Season")]
+        public clsSeason Fn_Delete_Season(clsSeason objReq)
+        {
+            var objResp = new clsSeason();
+            objResp = _DALMasterEntry.Fn_Delete_Season(objReq);
+            return objResp;
+        }
+
+        [System.Web.Http.HttpPost]
+        [System.Web.Http.Route("api/MasterEntry/Fn_Get_All_Season")]
+        public List<clsSeason> Fn_Get_All_Season(clsSeason objReq)
+        {
+            var objResp = new List<clsSeason>();
+            objResp = _DALMasterEntry.Fn_Get_All_Season(objReq);
+            return objResp;
+        }
+
+        #endregion End Season 19-Jan-2026
     }
 }

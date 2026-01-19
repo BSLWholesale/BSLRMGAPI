@@ -2939,8 +2939,8 @@ namespace BSLDaman.DAL
 
                 SqlCommand cmd = new SqlCommand("USP_MASTERENTRY", Con);
                 cmd.CommandType = CommandType.StoredProcedure;
-                cmd.Parameters.AddWithValue("@CustomerId", mxID);
-                cmd.Parameters.AddWithValue("@vName", objReq.Category);
+                cmd.Parameters.AddWithValue("@ID", mxID);
+                cmd.Parameters.AddWithValue("@Category", objReq.Category);
                 cmd.Parameters.AddWithValue("@CreatedBy", objReq.CreatedBy);
                 cmd.Parameters.AddWithValue("@QueryType", "InsertCategory");
                 int i = 0;
@@ -3132,5 +3132,221 @@ namespace BSLDaman.DAL
 
         #endregion End Category 07-Jan-2026
 
+        #region Start Season 19-Jan-2026
+
+        public clsSeason Fn_Add_New_Season(clsSeason objReq)
+        {
+            var objResp = new clsSeason();
+            if (objReq.ID == 0 || objReq.ID == null)
+            {
+                Fn_Get_MXID("SeasonMaster", "ID");
+            }
+            else
+            {
+                mxID = objReq.ID;
+            }
+
+            try
+            {
+
+                if (Con.State == ConnectionState.Broken)
+                { Con.Close(); }
+                if (Con.State == ConnectionState.Closed)
+                { Con.Open(); }
+
+                SqlCommand cmd = new SqlCommand("USP_MASTERENTRY", Con);
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@ID", mxID);
+                cmd.Parameters.AddWithValue("@Season", objReq.Season);
+                cmd.Parameters.AddWithValue("@CreatedBy", objReq.CreatedBy);
+                cmd.Parameters.AddWithValue("@QueryType", "InsertSeason");
+                int i = 0;
+                i = cmd.ExecuteNonQuery();
+                if (i > 0)
+                {
+                    objResp.vErrorCode = 200;
+                    objResp.vErrorMsg = "Success";
+                }
+                else
+                {
+                    objResp.vErrorCode = 400;
+                    objResp.vErrorMsg = "Inserting Failed";
+                }
+            }
+            catch (Exception exp)
+            {
+                objResp.vErrorCode = 500;
+                Logger.WriteLog("Function Name : Fn_Add_New_Season", " " + "Error Msg : " + exp.Message.ToString(), new StackTrace(exp, true));
+                objResp.vErrorMsg = exp.Message.ToString();
+            }
+            finally
+            {
+                Con.Close();
+            }
+            return objResp;
+        }
+
+        public clsSeason Fn_Update_Season(clsSeason objReq)
+        {
+            var objResp = new clsSeason();
+
+            try
+            {
+
+                if (Con.State == ConnectionState.Broken)
+                { Con.Close(); }
+                if (Con.State == ConnectionState.Closed)
+                { Con.Open(); }
+
+                SqlCommand cmd = new SqlCommand("USP_MASTERENTRY", Con);
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@ID", objReq.ID);
+                cmd.Parameters.AddWithValue("@Season", objReq.Season);
+                cmd.Parameters.AddWithValue("@ModifiedBy", objReq.ModifiedBy);
+                cmd.Parameters.AddWithValue("@QueryType", "UpdateSeason");
+                int i = 0;
+                i = cmd.ExecuteNonQuery();
+                if (i > 0)
+                {
+                    objResp.vErrorCode = 200;
+                    objResp.vErrorMsg = "Success";
+                }
+                else
+                {
+                    objResp.vErrorCode = 400;
+                    objResp.vErrorMsg = "Updating Failed";
+                }
+            }
+            catch (Exception exp)
+            {
+                objResp.vErrorCode = 500;
+                Logger.WriteLog("Function Name : Fn_Update_Season", " " + "Error Msg : " + exp.Message.ToString(), new StackTrace(exp, true));
+                objResp.vErrorMsg = exp.Message.ToString();
+            }
+            finally
+            {
+                Con.Close();
+            }
+            return objResp;
+        }
+        public clsSeason Fn_Delete_Season(clsSeason objReq)
+        {
+            var objResp = new clsSeason();
+
+            try
+            {
+
+                if (Con.State == ConnectionState.Broken)
+                { Con.Close(); }
+                if (Con.State == ConnectionState.Closed)
+                { Con.Open(); }
+
+                SqlCommand cmd = new SqlCommand("USP_MASTERENTRY", Con);
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@ID", objReq.ID);
+                cmd.Parameters.AddWithValue("@CreatedBy", objReq.CreatedBy);
+                cmd.Parameters.AddWithValue("@QueryType", "DeleteSeason");
+                int i = 0;
+                i = cmd.ExecuteNonQuery();
+                if (i > 0)
+                {
+                    objResp.vErrorCode = 200;
+                    objResp.vErrorMsg = "Success";
+                }
+                else
+                {
+                    objResp.vErrorCode = 400;
+                    objResp.vErrorMsg = "Deleting Failed";
+                }
+            }
+            catch (Exception exp)
+            {
+                objResp.vErrorCode = 500;
+                Logger.WriteLog("Function Name : Fn_Delete_Season", " " + "Error Msg : " + exp.Message.ToString(), new StackTrace(exp, true));
+                objResp.vErrorMsg = exp.Message.ToString();
+            }
+            finally
+            {
+                Con.Close();
+            }
+            return objResp;
+        }
+
+        public List<clsSeason> Fn_Get_All_Season(clsSeason objReq)
+        {
+            var objResp = new List<clsSeason>();
+            var obj = new clsSeason();
+            try
+            {
+
+                if (Con.State == ConnectionState.Broken)
+                { Con.Close(); }
+                if (Con.State == ConnectionState.Closed)
+                { Con.Open(); }
+
+                string strSql = "SELECT ID, Season, CreatedBy,";
+                strSql = strSql + " FORMAT(CreatedOn, 'dd-MMM-yyyy') AS CreatedOn FROM SeasonMaster WHERE 1=1";
+                if (objReq.ID != 0 && objReq.ID != null)
+                {
+                    strSql = strSql + " AND ID = @ID ";
+                }
+                if (!String.IsNullOrWhiteSpace(objReq.Season))
+                {
+                    strSql = strSql + " AND Season = @Season ";
+                }
+
+                SqlCommand cmd = new SqlCommand(strSql, Con);
+                cmd.CommandType = CommandType.Text;
+                if (objReq.ID != 0 && objReq.ID != null)
+                {
+                    cmd.Parameters.AddWithValue("@ID", objReq.ID);
+                }
+                if (!String.IsNullOrWhiteSpace(objReq.Season))
+                {
+                    cmd.Parameters.AddWithValue("@Season", objReq.Season);
+                }
+
+                SqlDataAdapter da = new SqlDataAdapter(cmd);
+                DataSet ds = new DataSet();
+                da.Fill(ds);
+                int i = 0;
+                if (ds.Tables[0].Rows.Count > 0)
+                {
+                    while (ds.Tables[0].Rows.Count > i)
+                    {
+                        obj = new clsSeason();
+                        obj.ID = Convert.ToInt16(ds.Tables[0].Rows[i]["ID"]);
+                        obj.Season = Convert.ToString(ds.Tables[0].Rows[i]["Season"]);
+                        obj.CreatedBy = Convert.ToInt32(ds.Tables[0].Rows[i]["CreatedBy"]);
+                        obj.CreatedOn = Convert.ToString(ds.Tables[0].Rows[i]["CreatedOn"]);
+
+                        obj.vErrorCode = 200;
+                        obj.vErrorMsg = "Success";
+                        objResp.Add(obj);
+                        i++;
+                    }
+                }
+                else
+                {
+                    obj.vErrorCode = 404;
+                    obj.vErrorMsg = "No Record found";
+                    objResp.Add(obj);
+                }
+            }
+            catch (Exception exp)
+            {
+                obj.vErrorCode = 500;
+                Logger.WriteLog("Function Name : Fn_Get_All_Season", " " + "Error Msg : " + exp.Message.ToString(), new StackTrace(exp, true));
+                obj.vErrorMsg = exp.Message.ToString();
+                objResp.Add(obj);
+            }
+            finally
+            {
+                Con.Close();
+            }
+            return objResp;
+        }
+
+        #endregion End Season 19-Jan-2026
     }
 }
