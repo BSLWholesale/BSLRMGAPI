@@ -308,9 +308,12 @@ namespace BSLDaman.Models
         public string StyleName { get; set; }
         public string Description { get; set; }
         public int CustomerID { get; set; }
+        public string Customer { get; set; }
         public string GridName { get; set; }
-        public string CategoryID { get; set; }
-        public string SeasonID { get; set; }
+        public int CategoryID { get; set; }
+        public string Category { get; set; }
+        public int SeasonID { get; set; }
+        public string Season { get; set; }
         public string StyleNotes { get; set; }
         public string Merchant { get; set; }
         public string PatternMaster { get; set; }
