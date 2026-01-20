@@ -365,5 +365,68 @@ namespace BSLDaman.DAL
             }
             return objResp;
         }
+
+        #region Start style 19-Jan2026
+
+        public clsStyle Fn_Insert_Style(clsStyle objReq)
+        {
+            var objResp = new clsStyle();
+            try
+            {
+
+                if (Con.State == ConnectionState.Broken)
+                { Con.Close(); }
+                if (Con.State == ConnectionState.Closed)
+                { Con.Open(); }
+
+                SqlCommand cmd = new SqlCommand("USP_PRODUCTION", Con);
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@StyleNo", objReq.StyleCode);
+                cmd.Parameters.AddWithValue("@StyleName", objReq.StyleName);
+                cmd.Parameters.AddWithValue("@Description", objReq.Description);
+                cmd.Parameters.AddWithValue("@CustomerID", objReq.CustomerID);
+                cmd.Parameters.AddWithValue("@GridName", objReq.GridName);
+                cmd.Parameters.AddWithValue("@CategoryID", objReq.CategoryID);
+                cmd.Parameters.AddWithValue("@StyleNotes", objReq.StyleNotes);
+                cmd.Parameters.AddWithValue("@Merchant", objReq.Merchant);
+                cmd.Parameters.AddWithValue("@PatternMaster", objReq.PatternMaster);
+                cmd.Parameters.AddWithValue("@DesignNo", objReq.DesignNo);
+                cmd.Parameters.AddWithValue("@StyleType", objReq.StyleType);
+                cmd.Parameters.AddWithValue("@MultiFitOB", objReq.MultiFitOB);
+                cmd.Parameters.AddWithValue("@IsActive", objReq.IsActive);
+                cmd.Parameters.AddWithValue("@FabricWashtype", objReq.FabricWashtype);
+                cmd.Parameters.AddWithValue("@GarmentWashtype", objReq.GarmentWashtype);
+                cmd.Parameters.AddWithValue("@BundleType", objReq.GarmentWashtype);
+                cmd.Parameters.AddWithValue("@AssemblyType", objReq.AssemblyType);
+                cmd.Parameters.AddWithValue("@AssemblyPCS", objReq.AssemblyPCS);
+                cmd.Parameters.AddWithValue("@CreatedBy", objReq.CreatedBy);
+                cmd.Parameters.AddWithValue("@QueryType", "InsertStyle");
+                int i = 0;
+                i = cmd.ExecuteNonQuery();
+                if (i > 0)
+                {
+                    objResp.vErrorCode = 200;
+                    objResp.vErrorMsg = "Success";
+                }
+                else
+                {
+                    objResp.vErrorCode = 400;
+                    objResp.vErrorMsg = "Inserting Failed";
+                }
+            }
+            catch (Exception exp)
+            {
+                objResp.vErrorCode = 500;
+                Logger.WriteLog("Function Name : Fn_Insert_Style", " " + "Error Msg : " + exp.Message.ToString(), new StackTrace(exp, true));
+                objResp.vErrorMsg = exp.Message.ToString();
+            }
+            finally
+            {
+                Con.Close();
+            }
+            return objResp;
+        }
+
+        #endregion End Style 19-Jan-2026
     }
 }

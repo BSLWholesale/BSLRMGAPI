@@ -188,7 +188,7 @@ namespace BSLDaman.Models
     public class clsSamplingCheckListPoint
     {
         public int SeqNo { get; set; }
-        public string QualityCheckList { get; set; }        
+        public string QualityCheckList { get; set; }
         public int CreatedBy { get; set; }
         public string CreatedOn { get; set; }
         public int ModifiedBy { get; set; }
@@ -269,7 +269,7 @@ namespace BSLDaman.Models
         public int ID { get; set; }
         public string HoliDayDate { get; set; }
         public string Day { get; set; }
-        public string Month { get; set; }   
+        public string Month { get; set; }
         public int CreatedBy { get; set; }
         public string CreatedOn { get; set; }
         public int ModifiedBy { get; set; }
@@ -294,6 +294,35 @@ namespace BSLDaman.Models
     {
         public int ID { get; set; }
         public string Season { get; set; }
+        public int CreatedBy { get; set; }
+        public string CreatedOn { get; set; }
+        public int ModifiedBy { get; set; }
+        public string ModifiedOn { get; set; }
+        public string vErrorMsg { get; set; }
+        public int vErrorCode { get; set; }
+    }
+
+    public class clsStyle
+    {
+        public string StyleCode { get; set; }
+        public string StyleName { get; set; }
+        public string Description { get; set; }
+        public int CustomerID { get; set; }
+        public string GridName { get; set; }
+        public string CategoryID { get; set; }
+        public string SeasonID { get; set; }
+        public string StyleNotes { get; set; }
+        public string Merchant { get; set; }
+        public string PatternMaster { get; set; }
+        public string DesignNo { get; set; }
+        public bool StyleType { get; set; }
+        public bool MultiFitOB { get; set; }
+        public bool IsActive { get; set; }
+        public string FabricWashtype { get; set; }
+        public string GarmentWashtype { get; set; }
+        public string BundleType { get; set; }
+        public string AssemblyType { get; set; }
+        public string AssemblyPCS { get; set; }
         public int CreatedBy { get; set; }
         public string CreatedOn { get; set; }
         public int ModifiedBy { get; set; }

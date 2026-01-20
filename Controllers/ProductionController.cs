@@ -50,5 +50,14 @@ namespace BSLDaman.Controllers
             objResp = _DALProduction.Fn_Update_Production(objReq);
             return objResp;
         }
+
+        [System.Web.Http.HttpPost]
+        [System.Web.Http.Route("api/Production/Fn_Insert_Style")]
+        public clsStyle Fn_Insert_Style(clsStyle objReq)
+        {
+            var objResp = new clsStyle();
+            objResp = _DALProduction.Fn_Insert_Style(objReq);
+            return objResp;
+        }
     }
 }
