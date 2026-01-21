@@ -409,7 +409,7 @@ namespace BSLDaman.DAL
             var objResp = new clsEmployee();
             try
             {
-                if (objReq.nEmpId == null || objReq.nEmpId == 0)
+                if (objReq.nEmpId == null || objReq.nEmpId == 0 && objReq.vEmpMobile == null || objReq.vEmpMobile == "0")
                 {
                     objResp.vErrorMsg = "Please Enter Employee Id";
                 }
@@ -429,6 +429,7 @@ namespace BSLDaman.DAL
                     SqlCommand cmd = new SqlCommand("USP_Employee", Con);
                     cmd.CommandType = CommandType.StoredProcedure;
                     cmd.Parameters.AddWithValue("@EmpId", objReq.nEmpId);
+                    cmd.Parameters.AddWithValue("@EmpMobile", objReq.vEmpMobile);
                     cmd.Parameters.AddWithValue("@EmpPassword", encriptPassword);
                     cmd.Parameters.AddWithValue("@QueryType", "LogIn");
 
@@ -443,7 +444,7 @@ namespace BSLDaman.DAL
                         objResp.nEmpId = Convert.ToInt32(ds.Tables[0].Rows[i]["EmpId"]);
                         objResp.vEmpName = Convert.ToString(ds.Tables[0].Rows[i]["EmpName"]);
                         //objResp.vEmpEmailId = Convert.ToString(ds.Tables[0].Rows[i]["EmpEmailId"]);
-                        //objResp.vEmpMobile = Convert.ToString(ds.Tables[0].Rows[i]["EmpMobile"]);
+                        objResp.vEmpMobile = Convert.ToString(ds.Tables[0].Rows[i]["EmpMobile"]);
                         objResp.vEmpPassword = decryptTextPassword;
                         //objResp.EmpRole = Convert.ToString(ds.Tables[0].Rows[i]["EmpRole"]);
                         objResp.bEmpActiveStatus = Convert.ToBoolean(ds.Tables[0].Rows[i]["EmpActiveStatus"]);
