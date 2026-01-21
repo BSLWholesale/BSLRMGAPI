@@ -66,11 +66,11 @@ namespace BSLDaman.Controllers
         }
 
         [System.Web.Http.HttpPost]
-        [System.Web.Http.Route("api/MasterEntry/Fn_Update_Section")]
-        public clsSection Fn_Update_Section(clsSection objReq)
+        [System.Web.Http.Route("api/MasterEntry/Fn_Update_SectionDetails_By_SectionID")]
+        public clsSection Fn_Update_SectionDetails_By_SectionID(clsSection objReq)
         {
             var objResp = new clsSection();
-            objResp = _DALMasterEntry.Fn_Update_Section(objReq);
+            objResp = _DALMasterEntry.Fn_Update_SectionDetails_By_SectionID(objReq);
             return objResp;
         }
 
