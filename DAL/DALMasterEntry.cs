@@ -322,7 +322,7 @@ namespace BSLDaman.DAL
             return objResp;
         }
 
-        public clsSection Fn_Update_Section(clsSection objReq)
+        public clsSection Fn_Update_SectionDetails_By_SectionID(clsSection objReq)
         {
             var objResp = new clsSection();
 
@@ -358,7 +358,7 @@ namespace BSLDaman.DAL
             catch (Exception exp)
             {
                 objResp.vErrorCode = 500;
-                Logger.WriteLog("Function Name : Fn_Update_Section", " " + "Error Msg : " + exp.Message.ToString(), new StackTrace(exp, true));
+                Logger.WriteLog("Function Name : Fn_Update_SectionDetails_By_SectionID", " " + "Error Msg : " + exp.Message.ToString(), new StackTrace(exp, true));
                 objResp.vErrorMsg = exp.Message.ToString();
             }
             finally
