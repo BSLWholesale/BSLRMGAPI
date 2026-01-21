@@ -135,4 +135,15 @@ namespace BSLDaman.Models
         public string vValueField { get; set; }
         public string vErrorMsg { get; set; }
     }
+
+    public class clsAutoCompliteRequest
+    {
+        public string SearchKeyword { get; set; }
+        public string TableName { get; set; }
+        public string FieldName { get; set; }
+    }
+    public class clsAutoCompliteResponse
+    {
+        public string SearchKeyword { get; set; }
+    }
 }

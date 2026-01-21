@@ -531,5 +531,53 @@ namespace BSLDaman.DAL
         }
 
         #endregion End Style 19-Jan-2026
+
+        public List<clsAutoCompliteResponse> Fn_AutoComplete_Textbox(clsAutoCompliteRequest obj)
+        {
+            var objResp = new List<clsAutoCompliteResponse>();
+            try
+            {
+
+                if (Con.State == ConnectionState.Broken)
+                { Con.Close(); }
+                if (Con.State == ConnectionState.Closed)
+                { Con.Open(); }
+
+                string strSql = "SELECT " + obj.FieldName + " FROM " + obj.TableName + " WHERE 1=1";
+                strSql = strSql + " AND " + obj.FieldName + " LIKE '%" + obj.SearchKeyword + "%' ";
+
+                SqlCommand cmd = new SqlCommand(strSql, Con);
+                SqlDataAdapter da = new SqlDataAdapter(cmd);
+                DataSet ds = new DataSet();
+                da.Fill(ds);
+
+                int i = 0;
+                if (ds.Tables[0].Rows.Count > 0)
+                {
+                    while (ds.Tables[0].Rows.Count > i)
+                    {
+                        var objItem = new clsAutoCompliteResponse();
+                        objItem.SearchKeyword = Convert.ToString(ds.Tables[0].Rows[i][0]);
+                        objResp.Add(objItem);
+                        i++;
+                    }
+                }
+                else
+                {
+
+                }
+                cmd.Dispose();
+            }
+            catch (Exception exp)
+            {
+                Logger.WriteLog("Function Name : Fn_AutoComplete_Textbox", " " + "Error Msg : " + exp.Message.ToString(), new StackTrace(exp, true));
+                exp.Message.ToString();
+            }
+            finally
+            {
+                Con.Close();
+            }
+            return objResp;
+        }
     }
 }

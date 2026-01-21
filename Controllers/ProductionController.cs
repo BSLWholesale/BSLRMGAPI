@@ -68,5 +68,14 @@ namespace BSLDaman.Controllers
             objResp = _DALProduction.Fn_Get_Style(objReq);
             return objResp;
         }
+
+        [System.Web.Http.HttpPost]
+        [System.Web.Http.Route("api/Production/Fn_AutoComplete_Textbox")]
+        public List<clsAutoCompliteResponse> Fn_AutoComplete_Textbox(clsAutoCompliteRequest objReq)
+        {
+            var objResp = new List<clsAutoCompliteResponse>();
+            objResp = _DALProduction.Fn_AutoComplete_Textbox(objReq);
+            return objResp;
+        }
     }
 }
