@@ -657,27 +657,27 @@ namespace BSLDaman.DAL
                 if (Con.State == ConnectionState.Closed)
                 { Con.Open(); }
 
-                string strSql = "SELECT DivisionID, SeqNo, LineCode, LineName, SuperVisor, SectionName,";
+                string strSql = "SELECT LineId, DivisionID, SeqNo, LineCode, LineName, SuperVisor, SectionName,";
                 strSql = strSql + " SuperMarketCode, IsQuality, IsFinishing, CreatedBy, ";
                 strSql = strSql + " FORMAT(CreatedOn, 'dd-MMM-yyyy') AS CreatedOn FROM LineMaster WHERE 1=1";
 
-                if (objReq.LineCode != "")
+                if (objReq.LineCode != "" && objReq.LineCode != null)
                 {
-                    strSql = strSql + " AND LineCode = @LineCode ";
+                    strSql = strSql + " AND LineCode = @LineCode";
                 }
-                if (objReq.LineName != "")
+                if (objReq.LineName != "" && objReq.LineName != null)
                 {
-                    strSql = strSql + " AND LineName LIKE '%@LineName%; ";
+                    strSql = strSql + " AND LineName LIKE '%@LineName%'";
                 }
 
 
                 SqlCommand cmd = new SqlCommand(strSql, Con);
                 cmd.CommandType = CommandType.Text;
-                if (objReq.LineCode != "")
+                if (objReq.LineCode != "" && objReq.LineCode != null)
                 {
                     cmd.Parameters.AddWithValue("@LineCode", objReq.LineCode);
                 }
-                if (objReq.LineName != "")
+                if (objReq.LineName != "" && objReq.LineName != null)
                 {
                     cmd.Parameters.AddWithValue("@LineName", objReq.LineName);
                 }
@@ -696,7 +696,7 @@ namespace BSLDaman.DAL
                         obj.LineCode = Convert.ToString(ds.Tables[0].Rows[i]["LineCode"]);
                         obj.LineName = Convert.ToString(ds.Tables[0].Rows[i]["LineName"]);
                         obj.SuperVisor = Convert.ToString(ds.Tables[0].Rows[i]["SuperVisor"]);
-                        obj.Section = Convert.ToString(ds.Tables[0].Rows[i]["Section"]);
+                        obj.SectionName = Convert.ToString(ds.Tables[0].Rows[i]["SectionName"]);
                         obj.SuperMarketCode = Convert.ToInt32(ds.Tables[0].Rows[i]["SuperMarketCode"]);
                         obj.IsQuality = Convert.ToBoolean(ds.Tables[0].Rows[i]["IsQuality"]);
                         obj.IsFinishing = Convert.ToBoolean(ds.Tables[0].Rows[i]["IsFinishing"]);
