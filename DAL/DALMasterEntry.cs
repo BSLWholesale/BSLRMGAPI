@@ -550,13 +550,11 @@ namespace BSLDaman.DAL
             return objResp;
         }
 
-        public clsLine Fn_Update_Line(clsLine objReq)
+        public clsLine Fn_Update_LineDetails_By_LineID(clsLine objReq)
         {
             var objResp = new clsLine();
-
             try
             {
-
                 if (Con.State == ConnectionState.Broken)
                 { Con.Close(); }
                 if (Con.State == ConnectionState.Closed)
@@ -593,7 +591,7 @@ namespace BSLDaman.DAL
             catch (Exception exp)
             {
                 objResp.vErrorCode = 500;
-                Logger.WriteLog("Function Name : Fn_Update_Line", " " + "Error Msg : " + exp.Message.ToString(), new StackTrace(exp, true));
+                Logger.WriteLog("Function Name : Fn_Update_LineDetails_By_LineID", " " + "Error Msg : " + exp.Message.ToString(), new StackTrace(exp, true));
                 objResp.vErrorMsg = exp.Message.ToString();
             }
             finally
