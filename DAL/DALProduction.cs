@@ -14,9 +14,9 @@ namespace BSLDaman.DAL
     {
         SqlConnection Con = new SqlConnection(ConfigurationManager.ConnectionStrings["BSL"].ConnectionString);
 
-        public clsProductionMastr Fn_Insert_Production(clsProductionMastr objReq)
+        public clsProductionMaster Fn_Insert_Production_Order(clsProductionMaster objReq)
         {
-            var objResp = new clsProductionMastr();
+            var objResp = new clsProductionMaster();
             try
             {
 
@@ -29,17 +29,17 @@ namespace BSLDaman.DAL
                 cmd.CommandType = CommandType.StoredProcedure;
                 cmd.Parameters.AddWithValue("@ProductionOrderNo", objReq.ProductionOrderNo);
                 cmd.Parameters.AddWithValue("@OrderDate", objReq.OrderDate);
-                cmd.Parameters.AddWithValue("@Code", objReq.ProductionDeliveryDate);
+                cmd.Parameters.AddWithValue("@ProductionDeliveryDate", objReq.ProductionDeliveryDate);
                 cmd.Parameters.AddWithValue("@Merchandiser", objReq.Merchandiser);
                 cmd.Parameters.AddWithValue("@SalesOrderNo", objReq.SalesOrderNo);
-                cmd.Parameters.AddWithValue("@Merchandiser", objReq.PONo);
-                cmd.Parameters.AddWithValue("@Merchandiser", objReq.FabIndNo);
-                cmd.Parameters.AddWithValue("@Merchandiser", objReq.OrderQty);
-                cmd.Parameters.AddWithValue("@Merchandiser", objReq.StyleNo);
-                cmd.Parameters.AddWithValue("@Merchandiser", objReq.StyleName);
-                cmd.Parameters.AddWithValue("@Merchandiser", objReq.Buyer);
-                cmd.Parameters.AddWithValue("@Merchandiser", objReq.Brand);
-                cmd.Parameters.AddWithValue("@Merchandiser", objReq.PlantName);
+                cmd.Parameters.AddWithValue("@PONo", objReq.PONo);
+                cmd.Parameters.AddWithValue("FabIndNo", objReq.FabIndNo);
+                cmd.Parameters.AddWithValue("@OrderQty", objReq.OrderQty);
+                cmd.Parameters.AddWithValue("@StyleNo", objReq.StyleNo);
+                cmd.Parameters.AddWithValue("@StyleName", objReq.StyleName);
+                cmd.Parameters.AddWithValue("@Buyer", objReq.Buyer);
+                cmd.Parameters.AddWithValue("@Brand", objReq.Brand);
+                cmd.Parameters.AddWithValue("@PlantName", objReq.PlantName);
                 cmd.Parameters.AddWithValue("@CreatedBy", objReq.CreatedBy);
                 cmd.Parameters.AddWithValue("@QueryType", "InsertMaster");
                 int i = 0;
@@ -53,13 +53,13 @@ namespace BSLDaman.DAL
                     {
                         SqlCommand cm1 = new SqlCommand("USP_PRODUCTION", Con);
                         cm1.CommandType = CommandType.StoredProcedure;
-                        cmd.Parameters.AddWithValue("@ProductionOrderNo", objReq.ProductionOrderNo);
-                        cm1.Parameters.AddWithValue("@SummaryofAchievement", _oList.ShadeNo);
-                        cm1.Parameters.AddWithValue("@MonitorySavings", _oList.QualityNo);
-                        cm1.Parameters.AddWithValue("@NonMonetary", _oList.Color);
-                        cm1.Parameters.AddWithValue("@SummaryofAchievement", _oList.SizeName);
-                        cm1.Parameters.AddWithValue("@MonitorySavings", _oList.Qty);
-                        cm1.Parameters.AddWithValue("@NonMonetary", _oList.CreatedBy);
+                        cm1.Parameters.AddWithValue("@ProductionOrderNo", objReq.ProductionOrderNo);
+                        cm1.Parameters.AddWithValue("@ShadeNo", _oList.ShadeNo);
+                        cm1.Parameters.AddWithValue("@QualityNo", _oList.QualityNo);
+                        cm1.Parameters.AddWithValue("@Color", _oList.Color);
+                        cm1.Parameters.AddWithValue("@SizeName", _oList.SizeName);
+                        cm1.Parameters.AddWithValue("@Qty", _oList.Qty);
+                        cm1.Parameters.AddWithValue("@CreatedBy", _oList.CreatedBy);
                         cm1.Parameters.AddWithValue("@QueryType", "InsertDetail");
                         int j = cm1.ExecuteNonQuery();
                         if (j > 0)
@@ -68,7 +68,7 @@ namespace BSLDaman.DAL
                         }
                         else
                         {
-                            objResp.vErrorMsg = "Achievements list-1 inserting failed ";
+                            objResp.vErrorMsg = "Production detail inserting failed ";
                             return objResp;
                         }
                     }
@@ -76,13 +76,13 @@ namespace BSLDaman.DAL
                 else
                 {
                     objResp.vErrorCode = 400;
-                    objResp.vErrorMsg = "Inserting Failed";
+                    objResp.vErrorMsg = "Production order inserting failed";
                 }
             }
             catch (Exception exp)
             {
                 objResp.vErrorCode = 500;
-                Logger.WriteLog("Function Name : Fn_Insert_Production", " " + "Error Msg : " + exp.Message.ToString(), new StackTrace(exp, true));
+                Logger.WriteLog("Function Name : Fn_Insert_Production_Order", " " + "Error Msg : " + exp.Message.ToString(), new StackTrace(exp, true));
                 objResp.vErrorMsg = exp.Message.ToString();
             }
             finally
@@ -92,10 +92,10 @@ namespace BSLDaman.DAL
             return objResp;
         }
 
-        public List<clsProductionMastr> Fn_Get_Production_Master(clsProductionMastr objReq)
+        public List<clsProductionMaster> Fn_Get_Production_Master(clsProductionMaster objReq)
         {
-            var objResp = new List<clsProductionMastr>();
-            var obj = new clsProductionMastr();
+            var objResp = new List<clsProductionMaster>();
+            var obj = new clsProductionMaster();
             try
             {
                 if (Con.State == ConnectionState.Broken)
@@ -172,7 +172,7 @@ namespace BSLDaman.DAL
                 {
                     while (ds.Tables[0].Rows.Count > i)
                     {
-                        obj = new clsProductionMastr();
+                        obj = new clsProductionMaster();
                         obj.ProductionOrderNo = Convert.ToInt64(ds.Tables[0].Rows[i]["ProductionOrderNo"]);
                         obj.OrderDate = Convert.ToString(ds.Tables[0].Rows[i]["OrderDate"]);
                         obj.ProductionDeliveryDate = Convert.ToString(ds.Tables[0].Rows[i]["ProductionDeliveryDate"]);
@@ -288,9 +288,9 @@ namespace BSLDaman.DAL
             return objResp;
         }
 
-        public clsProductionMastr Fn_Update_Production(clsProductionMastr objReq)
+        public clsProductionMaster Fn_Update_Production(clsProductionMaster objReq)
         {
-            var objResp = new clsProductionMastr();
+            var objResp = new clsProductionMaster();
             try
             {
 

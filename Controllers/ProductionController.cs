@@ -16,19 +16,19 @@ namespace BSLDaman.Controllers
         DALProduction _DALProduction = new DALProduction();
 
         [System.Web.Http.HttpPost]
-        [System.Web.Http.Route("api/Production/Fn_Insert_Production")]
-        public clsProductionMastr Fn_Insert_Production(clsProductionMastr objReq)
+        [System.Web.Http.Route("api/Production/Fn_Insert_Production_Order")]
+        public clsProductionMaster Fn_Insert_Production_Order(clsProductionMaster objReq)
         {
-            var objResp = new clsProductionMastr();
-            objResp = _DALProduction.Fn_Insert_Production(objReq);
+            var objResp = new clsProductionMaster();
+            objResp = _DALProduction.Fn_Insert_Production_Order(objReq);
             return objResp;
         }
 
         [System.Web.Http.HttpGet]
         [System.Web.Http.Route("api/Production/Fn_Get_Production_Master")]
-        public List<clsProductionMastr> Fn_Get_Production_Master(clsProductionMastr objReq)
+        public List<clsProductionMaster> Fn_Get_Production_Master(clsProductionMaster objReq)
         {
-            var objResp = new List<clsProductionMastr>();
+            var objResp = new List<clsProductionMaster>();
             objResp = _DALProduction.Fn_Get_Production_Master(objReq);
             return objResp;
         }
@@ -44,9 +44,9 @@ namespace BSLDaman.Controllers
 
         [System.Web.Http.HttpPut]
         [System.Web.Http.Route("api/Production/Fn_Update_Production")]
-        public clsProductionMastr Fn_Update_Production(clsProductionMastr objReq)
+        public clsProductionMaster Fn_Update_Production(clsProductionMaster objReq)
         {
-            var objResp = new clsProductionMastr();
+            var objResp = new clsProductionMaster();
             objResp = _DALProduction.Fn_Update_Production(objReq);
             return objResp;
         }

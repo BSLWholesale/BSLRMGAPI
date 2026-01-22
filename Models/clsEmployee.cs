@@ -78,7 +78,7 @@ namespace BSLDaman.Models
         public int vErrorCode { get; set; }
         public string vQueryType { get; set; }
     }
-    public class clsProductionMastr
+    public class clsProductionMaster
     {
         public Int64 ProductionOrderNo { get; set; }
         public string OrderDate { get; set; }
