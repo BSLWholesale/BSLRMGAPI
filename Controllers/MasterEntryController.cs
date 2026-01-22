@@ -104,13 +104,13 @@ namespace BSLDaman.Controllers
             objResp = _DALMasterEntry.Fn_Add_New_Line(objReq);
             return objResp;
         }
-
+        
         [System.Web.Http.HttpPost]
-        [System.Web.Http.Route("api/MasterEntry/Fn_Update_Line")]
-        public clsLine Fn_Update_Line(clsLine objReq)
+        [System.Web.Http.Route("api/MasterEntry/Fn_Update_LineDetails_By_LineID")]
+        public clsLine Fn_Update_LineDetails_By_LineID(clsLine objReq)
         {
             var objResp = new clsLine();
-            objResp = _DALMasterEntry.Fn_Update_Line(objReq);
+            objResp = _DALMasterEntry.Fn_Update_LineDetails_By_LineID(objReq);
             return objResp;
         }
 
