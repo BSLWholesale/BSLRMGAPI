@@ -92,7 +92,7 @@ namespace BSLDaman.DAL
             return objResp;
         }
 
-        public List<clsProductionMaster> Fn_Get_Production_Master(clsProductionMaster objReq)
+        public List<clsProductionMaster> Fn_Get_Production_Order(clsProductionMaster objReq)
         {
             var objResp = new List<clsProductionMaster>();
             var obj = new clsProductionMaster();
@@ -103,64 +103,64 @@ namespace BSLDaman.DAL
                 if (Con.State == ConnectionState.Closed)
                 { Con.Open(); }
 
-                string strSql = "SELECT ProductionOrderNo, OrderDate, ProductionDeliveryDate, Merchandiser, SalesOrderNo, PONo,";
+                string strSql = "SELECT ProductionOrderNo, FORMAT(OrderDate, 'dd-MMM-yyy') AS OrderDate, ProductionDeliveryDate, Merchandiser, SalesOrderNo, PONo,";
                 strSql = strSql + " FabIndNo, OrderQty, StyleNo, StyleName, Buyer, Brand, PlantName FROM ProductionMaster WHERE 1=1";
-                if (objReq.ProductionOrderNo != 0)
+                if (objReq.ProductionOrderNo != 0 && objReq.ProductionOrderNo != null)
                 {
                     strSql = strSql + " AND ProductionOrderNo = @ProductionOrderNo";
                 }
-                if (objReq.OrderDate != "")
+                if (!String.IsNullOrWhiteSpace(objReq.OrderDate))
                 {
                     strSql = strSql + " AND OrderDate = @OrderDate";
                 }
-                if (objReq.SalesOrderNo != 0)
+                if (objReq.SalesOrderNo != 0 && objReq.SalesOrderNo != null)
                 {
                     strSql = strSql + " AND SalesOrderNo = @SalesOrderNo";
                 }
-                if (objReq.StyleNo != "")
+                if (!String.IsNullOrWhiteSpace(objReq.StyleNo))
                 {
                     strSql = strSql + " AND StyleNo = @StyleNo";
                 }
-                if (objReq.StyleName != "")
+                if (!String.IsNullOrWhiteSpace(objReq.StyleName))
                 {
                     strSql = strSql + " AND StyleName = @StyleName";
                 }
-                if (objReq.Buyer != "")
+                if (!String.IsNullOrWhiteSpace(objReq.Buyer))
                 {
                     strSql = strSql + " AND Buyer = @Buyer";
                 }
-                if (objReq.Brand != "")
+                if (!String.IsNullOrWhiteSpace(objReq.Brand))
                 {
                     strSql = strSql + " AND Brand = @Brand";
                 }
 
                 SqlCommand cmd = new SqlCommand(strSql, Con);
                 cmd.CommandType = CommandType.Text;
-                if (objReq.ProductionOrderNo != 0)
+                if (objReq.ProductionOrderNo != 0 && objReq.ProductionOrderNo != null)
                 {
                     cmd.Parameters.AddWithValue("@ProductionOrderNo", objReq.ProductionOrderNo);
                 }
-                if (objReq.OrderDate != "")
+                if (!String.IsNullOrWhiteSpace(objReq.OrderDate))
                 {
                     cmd.Parameters.AddWithValue("@OrderDate", objReq.OrderDate);
                 }
-                if (objReq.SalesOrderNo != 0)
+                if (objReq.SalesOrderNo != 0 && objReq.SalesOrderNo != null)
                 {
                     cmd.Parameters.AddWithValue("@SalesOrderNo", objReq.SalesOrderNo);
                 }
-                if (objReq.StyleNo != "")
+                if (!String.IsNullOrWhiteSpace(objReq.StyleNo))
                 {
                     cmd.Parameters.AddWithValue("@StyleNo", objReq.StyleNo);
                 }
-                if (objReq.StyleName != "")
+                if (!String.IsNullOrWhiteSpace(objReq.StyleName))
                 {
                     cmd.Parameters.AddWithValue("@StyleName", objReq.StyleName);
                 }
-                if (objReq.Buyer != "")
+                if (!String.IsNullOrWhiteSpace(objReq.Buyer))
                 {
                     cmd.Parameters.AddWithValue("@Buyer", objReq.Buyer);
                 }
-                if (objReq.Brand != "")
+                if (!String.IsNullOrWhiteSpace(objReq.Brand))
                 {
                     cmd.Parameters.AddWithValue("@Brand", objReq.Brand);
                 }
@@ -209,7 +209,7 @@ namespace BSLDaman.DAL
             catch (Exception exp)
             {
                 objResp[0].vErrorCode = 500;
-                Logger.WriteLog("Function Name : Fn_Get_Production_Master", " " + "Error Msg : " + exp.Message.ToString(), new StackTrace(exp, true));
+                Logger.WriteLog("Function Name : Fn_Get_Production_Order", " " + "Error Msg : " + exp.Message.ToString(), new StackTrace(exp, true));
                 objResp[0].vErrorMsg = exp.Message.ToString();
             }
             finally

@@ -24,16 +24,16 @@ namespace BSLDaman.Controllers
             return objResp;
         }
 
-        [System.Web.Http.HttpGet]
-        [System.Web.Http.Route("api/Production/Fn_Get_Production_Master")]
-        public List<clsProductionMaster> Fn_Get_Production_Master(clsProductionMaster objReq)
+        [System.Web.Http.HttpPost]
+        [System.Web.Http.Route("api/Production/Fn_Get_Production_Order")]
+        public List<clsProductionMaster> Fn_Get_Production_Order(clsProductionMaster objReq)
         {
             var objResp = new List<clsProductionMaster>();
-            objResp = _DALProduction.Fn_Get_Production_Master(objReq);
+            objResp = _DALProduction.Fn_Get_Production_Order(objReq);
             return objResp;
         }
 
-        [System.Web.Http.HttpGet]
+        [System.Web.Http.HttpPost]
         [System.Web.Http.Route("api/Production/Fn_Get_Production_Detail")]
         public List<clsProductionDetail> Fn_Get_Production_Detail(clsProductionDetail objReq)
         {
