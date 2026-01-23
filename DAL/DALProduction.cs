@@ -53,6 +53,7 @@ namespace BSLDaman.DAL
                     {
                         SqlCommand cm1 = new SqlCommand("USP_PRODUCTION", Con);
                         cm1.CommandType = CommandType.StoredProcedure;
+                        cm1.Parameters.AddWithValue("@ID", _oList.ID);
                         cm1.Parameters.AddWithValue("@ProductionOrderNo", objReq.ProductionOrderNo);
                         cm1.Parameters.AddWithValue("@ShadeNo", _oList.ShadeNo);
                         cm1.Parameters.AddWithValue("@QualityNo", _oList.QualityNo);
@@ -113,7 +114,7 @@ namespace BSLDaman.DAL
                 {
                     strSql = strSql + " AND OrderDate = @OrderDate";
                 }
-                if (objReq.SalesOrderNo != 0 && objReq.SalesOrderNo != null)
+                if (!String.IsNullOrWhiteSpace(objReq.SalesOrderNo))
                 {
                     strSql = strSql + " AND SalesOrderNo = @SalesOrderNo";
                 }
@@ -144,7 +145,7 @@ namespace BSLDaman.DAL
                 {
                     cmd.Parameters.AddWithValue("@OrderDate", objReq.OrderDate);
                 }
-                if (objReq.SalesOrderNo != 0 && objReq.SalesOrderNo != null)
+                if (!String.IsNullOrWhiteSpace(objReq.SalesOrderNo))
                 {
                     cmd.Parameters.AddWithValue("@SalesOrderNo", objReq.SalesOrderNo);
                 }
@@ -178,8 +179,8 @@ namespace BSLDaman.DAL
                         obj.ProductionDeliveryDate = Convert.ToString(ds.Tables[0].Rows[i]["ProductionDeliveryDate"]);
 
                         obj.Merchandiser = Convert.ToString(ds.Tables[0].Rows[i]["Merchandiser"]);
-                        obj.SalesOrderNo = Convert.ToInt16(ds.Tables[0].Rows[i]["SalesOrderNo"]);
-                        obj.PONo = Convert.ToInt16(ds.Tables[0].Rows[i]["PONo"]);
+                        obj.SalesOrderNo = Convert.ToString(ds.Tables[0].Rows[i]["SalesOrderNo"]);
+                        obj.PONo = Convert.ToString(ds.Tables[0].Rows[i]["PONo"]);
                         obj.FabIndNo = Convert.ToInt16(ds.Tables[0].Rows[i]["FabIndNo"]);
                         obj.OrderQty = Convert.ToInt16(ds.Tables[0].Rows[i]["OrderQty"]);
                         obj.StyleNo = Convert.ToString(ds.Tables[0].Rows[i]["StyleNo"]);
@@ -253,6 +254,7 @@ namespace BSLDaman.DAL
                     while (ds.Tables[0].Rows.Count > i)
                     {
                         obj = new clsProductionDetail();
+                        obj.ID = Convert.ToInt32(ds.Tables[0].Rows[i]["ID"]);
                         obj.ProductionOrderNo = Convert.ToInt64(ds.Tables[0].Rows[i]["ProductionOrderNo"]);
                         obj.ShadeNo = Convert.ToString(ds.Tables[0].Rows[i]["ShadeNo"]);
                         obj.QualityNo = Convert.ToString(ds.Tables[0].Rows[i]["QualityNo"]);
@@ -543,7 +545,7 @@ namespace BSLDaman.DAL
                 if (Con.State == ConnectionState.Closed)
                 { Con.Open(); }
 
-                string strSql = "SELECT " + obj.FieldName + " FROM " + obj.TableName + " WHERE 1=1";
+                string strSql = "SELECT Distinct " + obj.FieldName + " FROM " + obj.TableName + " WHERE 1=1";
                 strSql = strSql + " AND " + obj.FieldName + " LIKE '%" + obj.SearchKeyword + "%' ";
 
                 SqlCommand cmd = new SqlCommand(strSql, Con);
