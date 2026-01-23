@@ -84,8 +84,8 @@ namespace BSLDaman.Models
         public string OrderDate { get; set; }
         public string ProductionDeliveryDate { get; set; }
         public string Merchandiser { get; set; }
-        public int SalesOrderNo { get; set; }
-        public int PONo { get; set; }
+        public string SalesOrderNo { get; set; }
+        public string PONo { get; set; }
         public int FabIndNo { get; set; }
         public int OrderQty { get; set; }
         public string StyleNo { get; set; }
