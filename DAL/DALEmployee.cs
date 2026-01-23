@@ -443,10 +443,9 @@ namespace BSLDaman.DAL
                         string decryptTextPassword = Generic.DecryptText(Convert.ToString(ds.Tables[0].Rows[i]["EmpPassword"]));
                         objResp.nEmpId = Convert.ToInt32(ds.Tables[0].Rows[i]["EmpId"]);
                         objResp.vEmpName = Convert.ToString(ds.Tables[0].Rows[i]["EmpName"]);
-                        //objResp.vEmpEmailId = Convert.ToString(ds.Tables[0].Rows[i]["EmpEmailId"]);
                         objResp.vEmpMobile = Convert.ToString(ds.Tables[0].Rows[i]["EmpMobile"]);
                         objResp.vEmpPassword = decryptTextPassword;
-                        //objResp.EmpRole = Convert.ToString(ds.Tables[0].Rows[i]["EmpRole"]);
+                        objResp.EmpRole = Convert.ToString(ds.Tables[0].Rows[i]["EmpRole"]);
                         objResp.bEmpActiveStatus = Convert.ToBoolean(ds.Tables[0].Rows[i]["EmpActiveStatus"]);
                         if (objResp.bEmpActiveStatus == true)
                         {
