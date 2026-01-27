@@ -608,5 +608,27 @@ namespace BSLDaman.Controllers
         }
 
         #endregion End Season 19-Jan-2026
+
+        #region Start Worker 27-Jan-2026
+
+        [System.Web.Http.HttpPost]
+        [System.Web.Http.Route("api/MasterEntry/Fn_Insert_New_Worker")]
+        public clsWorker Fn_Insert_New_Worker(clsWorker objReq)
+        {
+            var objResp = new clsWorker();
+            objResp = _DALMasterEntry.Fn_Insert_New_Worker(objReq);
+            return objResp;
+        }
+
+        [System.Web.Http.HttpPost]
+        [System.Web.Http.Route("api/MasterEntry/Fn_Get_Worker")]
+        public List<clsWorker> Fn_Get_Worker(clsWorker objReq)
+        {
+            var objResp = new List<clsWorker>();
+            objResp = _DALMasterEntry.Fn_Get_Worker(objReq);
+            return objResp;
+        }
+
+        #endregion End Worker 27-Jan-2026
     }
 }
