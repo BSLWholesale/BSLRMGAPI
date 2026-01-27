@@ -3346,5 +3346,144 @@ namespace BSLDaman.DAL
         }
 
         #endregion End Season 19-Jan-2026
+
+        #region Start Worker 26-Jan-2026
+
+        public clsWorker Fn_Insert_New_Worker(clsWorker objReq)
+        {
+            var objResp = new clsWorker();
+            try
+            {
+
+                if (Con.State == ConnectionState.Broken)
+                { Con.Close(); }
+                if (Con.State == ConnectionState.Closed)
+                { Con.Open(); }
+
+                SqlCommand cmd = new SqlCommand("USP_WORKER", Con);
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@Code", objReq.Code);
+                cmd.Parameters.AddWithValue("@Name", objReq.Name);
+                cmd.Parameters.AddWithValue("@FatherName", objReq.FatherName);
+                cmd.Parameters.AddWithValue("@Gender", objReq.Gender);
+                cmd.Parameters.AddWithValue("@Grade", objReq.Grade);
+                cmd.Parameters.AddWithValue("@Shift", objReq.Shift);
+                cmd.Parameters.AddWithValue("Pin", objReq.Pin);
+                cmd.Parameters.AddWithValue("@OperatorType", objReq.OperatorType);
+                cmd.Parameters.AddWithValue("@Mobile", objReq.Mobile);
+                cmd.Parameters.AddWithValue("@Contractor", objReq.Contractor);
+                cmd.Parameters.AddWithValue("@PayRoll", objReq.PayRoll);
+                cmd.Parameters.AddWithValue("@IsTrainee", objReq.IsTrainee);
+                cmd.Parameters.AddWithValue("@IsTemporary", objReq.IsTemporary);
+                cmd.Parameters.AddWithValue("@PermanentSection", objReq.PermanentSection);
+                cmd.Parameters.AddWithValue("@DOJ", objReq.DOJ);
+                cmd.Parameters.AddWithValue("@CreatedBy", objReq.CreatedBy);
+                cmd.Parameters.AddWithValue("@QueryType", "InsertWorker");
+                int i = 0;
+                i = cmd.ExecuteNonQuery();
+                if (i > 0)
+                {
+                    objResp.vErrorCode = 200;
+                    objResp.vErrorMsg = "Success";
+                }
+                else
+                {
+                    objResp.vErrorCode = 400;
+                    objResp.vErrorMsg = "Worker inserting failed";
+                }
+            }
+            catch (Exception exp)
+            {
+                objResp.vErrorCode = 500;
+                Logger.WriteLog("Function Name : Fn_Insert_New_Worker", " " + "Error Msg : " + exp.Message.ToString(), new StackTrace(exp, true));
+                objResp.vErrorMsg = exp.Message.ToString();
+            }
+            finally
+            {
+                Con.Close();
+            }
+            return objResp;
+        }
+
+        public List<clsWorker> Fn_Get_Worker(clsWorker objReq)
+        {
+            var objResp = new List<clsWorker>();
+            var obj = new clsWorker();
+            try
+            {
+                if (Con.State == ConnectionState.Broken)
+                { Con.Close(); }
+                if (Con.State == ConnectionState.Closed)
+                { Con.Open(); }
+
+                string strSql = "SELECT EmpId, EmpName, FatherName, EmpGender, EmpGrade, EmpShift, EmpPassword,";
+                strSql = strSql + " OperatorType, EmpMobile, Contractor, PayRoll, IsTrainee, IsTemporary,";
+                strSql = strSql + " PermanentSection, DOJ, CreatedBy, CreatedOn FROM EmployeeMaster WHERE 1=1";
+                
+                if (!String.IsNullOrWhiteSpace(objReq.Code))
+                {
+                    strSql = strSql + " AND Code = @Code";
+                }
+                
+                SqlCommand cmd = new SqlCommand(strSql, Con);
+                cmd.CommandType = CommandType.Text;
+                
+                if (!String.IsNullOrWhiteSpace(objReq.Code))
+                {
+                    cmd.Parameters.AddWithValue("@Code", objReq.Code);
+                }
+               
+                SqlDataAdapter da = new SqlDataAdapter(cmd);
+                DataSet ds = new DataSet();
+                da.Fill(ds);
+                int i = 0;
+                if (ds.Tables[0].Rows.Count > 0)
+                {
+                    while (ds.Tables[0].Rows.Count > i)
+                    {
+                        obj = new clsWorker();
+                        obj.Code = Convert.ToString(ds.Tables[0].Rows[i]["EmpId"]);
+                        obj.Name = Convert.ToString(ds.Tables[0].Rows[i]["EmpName"]);
+                        obj.FatherName = Convert.ToString(ds.Tables[0].Rows[i]["FatherName"]);
+
+                        obj.Gender = Convert.ToString(ds.Tables[0].Rows[i]["EmpGender"]);
+                        obj.Grade = Convert.ToString(ds.Tables[0].Rows[i]["EmpGrade"]);
+                        obj.Shift = Convert.ToString(ds.Tables[0].Rows[i]["EmpShift"]);
+                        obj.Pin = Convert.ToString(ds.Tables[0].Rows[i]["EmpPassword"]);
+                        obj.OperatorType = Convert.ToString(ds.Tables[0].Rows[i]["OperatorType"]);
+                        obj.Mobile = Convert.ToString(ds.Tables[0].Rows[i]["EmpMobile"]);
+                        obj.Contractor = Convert.ToString(ds.Tables[0].Rows[i]["Contractor"]);
+                        obj.PayRoll = Convert.ToString(ds.Tables[0].Rows[i]["PayRoll"]);
+                        obj.IsTrainee = Convert.ToBoolean(ds.Tables[0].Rows[i]["IsTrainee"]);
+                        obj.IsTemporary = Convert.ToBoolean(ds.Tables[0].Rows[i]["IsTemporary"]);
+                        obj.PermanentSection = Convert.ToString(ds.Tables[0].Rows[i]["PermanentSection"]);
+                        obj.DOJ = Convert.ToString(ds.Tables[0].Rows[i]["DOJ"]);
+                        obj.vErrorMsg = "Success";
+                        objResp.Add(obj);
+                        i++;
+                    }
+                }
+                else
+                {
+                    obj.vErrorCode = 404;
+                    obj.vErrorMsg = "No Record found";
+                    objResp.Add(obj);
+                }
+
+            }
+            catch (Exception exp)
+            {
+                objResp[0].vErrorCode = 500;
+                Logger.WriteLog("Function Name : Fn_Get_Worker", " " + "Error Msg : " + exp.Message.ToString(), new StackTrace(exp, true));
+                objResp[0].vErrorMsg = exp.Message.ToString();
+            }
+            finally
+            {
+                Con.Close();
+            }
+            return objResp;
+        }
+
+        #endregion End Worker
     }
 }
