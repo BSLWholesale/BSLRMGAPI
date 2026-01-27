@@ -446,17 +446,13 @@ namespace BSLDaman.DAL
                         objResp.vEmpMobile = Convert.ToString(ds.Tables[0].Rows[i]["EmpMobile"]);
                         objResp.vEmpPassword = decryptTextPassword;
                         objResp.EmpRole = Convert.ToString(ds.Tables[0].Rows[i]["EmpRole"]);
-                        objResp.bEmpActiveStatus = Convert.ToBoolean(ds.Tables[0].Rows[i]["EmpActiveStatus"]);
-                        if (objResp.bEmpActiveStatus == true)
-                        {
-                            objResp.vErrorMsg = "Success";
-                        }
-                        else
-                        {
-                            objResp.vErrorMsg = "Your Credentials has been Invalid.";
-                        }                                    
+
+                        objResp.vErrorMsg = "Success";
                     }
-                    cmd.Dispose();
+                    else
+                    {
+                        objResp.vErrorMsg = "Entered Credentials has been invalid.";
+                    }
                 }
             }
             catch (Exception exp)
