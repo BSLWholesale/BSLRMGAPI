@@ -3352,6 +3352,15 @@ namespace BSLDaman.DAL
         public clsWorker Fn_Insert_New_Worker(clsWorker objReq)
         {
             var objResp = new clsWorker();
+
+            if(objReq.ID == 0 || objReq.ID == null)
+            {
+                Fn_Get_MXID("EmployeeMaster", "ID");
+            }
+            else
+            {
+                mxID = objReq.ID;
+            }
             try
             {
 
@@ -3360,15 +3369,18 @@ namespace BSLDaman.DAL
                 if (Con.State == ConnectionState.Closed)
                 { Con.Open(); }
 
+                string encriptPassword = Generic.EncryptText(objReq.Pin);
+
                 SqlCommand cmd = new SqlCommand("USP_WORKER", Con);
                 cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@ID", mxID);
                 cmd.Parameters.AddWithValue("@Code", objReq.Code);
                 cmd.Parameters.AddWithValue("@Name", objReq.Name);
                 cmd.Parameters.AddWithValue("@FatherName", objReq.FatherName);
                 cmd.Parameters.AddWithValue("@Gender", objReq.Gender);
                 cmd.Parameters.AddWithValue("@Grade", objReq.Grade);
                 cmd.Parameters.AddWithValue("@Shift", objReq.Shift);
-                cmd.Parameters.AddWithValue("Pin", objReq.Pin);
+                cmd.Parameters.AddWithValue("Pin", encriptPassword);
                 cmd.Parameters.AddWithValue("@OperatorType", objReq.OperatorType);
                 cmd.Parameters.AddWithValue("@Mobile", objReq.Mobile);
                 cmd.Parameters.AddWithValue("@Contractor", objReq.Contractor);
@@ -3416,7 +3428,7 @@ namespace BSLDaman.DAL
                 if (Con.State == ConnectionState.Closed)
                 { Con.Open(); }
 
-                string strSql = "SELECT EmpId, EmpName, FatherName, EmpGender, EmpGrade, EmpShift, EmpPassword,";
+                string strSql = "SELECT ID, EmpId, EmpName, FatherName, EmpGender, EmpGrade, EmpShift, EmpPassword,";
                 strSql = strSql + " OperatorType, EmpMobile, Contractor, PayRoll, IsTrainee, IsTemporary,";
                 strSql = strSql + " PermanentSection, DOJ, CreatedBy, CreatedOn FROM EmployeeMaster WHERE 1=1";
                 
@@ -3442,6 +3454,7 @@ namespace BSLDaman.DAL
                     while (ds.Tables[0].Rows.Count > i)
                     {
                         obj = new clsWorker();
+                        obj.ID = Convert.ToInt64(ds.Tables[0].Rows[i]["ID"]);
                         obj.Code = Convert.ToString(ds.Tables[0].Rows[i]["EmpId"]);
                         obj.Name = Convert.ToString(ds.Tables[0].Rows[i]["EmpName"]);
                         obj.FatherName = Convert.ToString(ds.Tables[0].Rows[i]["FatherName"]);
@@ -3454,8 +3467,8 @@ namespace BSLDaman.DAL
                         obj.Mobile = Convert.ToString(ds.Tables[0].Rows[i]["EmpMobile"]);
                         obj.Contractor = Convert.ToString(ds.Tables[0].Rows[i]["Contractor"]);
                         obj.PayRoll = Convert.ToString(ds.Tables[0].Rows[i]["PayRoll"]);
-                        obj.IsTrainee = Convert.ToBoolean(ds.Tables[0].Rows[i]["IsTrainee"]);
-                        obj.IsTemporary = Convert.ToBoolean(ds.Tables[0].Rows[i]["IsTemporary"]);
+                        //obj.IsTrainee = Convert.ToBoolean(ds.Tables[0].Rows[i]["IsTrainee"]);
+                       // obj.IsTemporary = Convert.ToBoolean(ds.Tables[0].Rows[i]["IsTemporary"]);
                         obj.PermanentSection = Convert.ToString(ds.Tables[0].Rows[i]["PermanentSection"]);
                         obj.DOJ = Convert.ToString(ds.Tables[0].Rows[i]["DOJ"]);
                         obj.vErrorMsg = "Success";

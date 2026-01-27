@@ -336,6 +336,7 @@ namespace BSLDaman.Models
 
     public class clsWorker
     {
+        public Int64 ID { get; set; }
         public string Code { get; set; }
         public string Name { get; set; }
         public string FatherName { get; set; }
