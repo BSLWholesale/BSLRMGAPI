@@ -3353,7 +3353,7 @@ namespace BSLDaman.DAL
         {
             var objResp = new clsWorker();
 
-            if(objReq.ID == 0 || objReq.ID == null)
+            if (objReq.ID == 0 || objReq.ID == null)
             {
                 Fn_Get_MXID("EmployeeMaster", "ID");
             }
@@ -3431,20 +3431,20 @@ namespace BSLDaman.DAL
                 string strSql = "SELECT ID, EmpId, EmpName, FatherName, EmpGender, EmpGrade, EmpShift, EmpPassword,";
                 strSql = strSql + " OperatorType, EmpMobile, Contractor, PayRoll, IsTrainee, IsTemporary,";
                 strSql = strSql + " PermanentSection, DOJ, CreatedBy, CreatedOn FROM EmployeeMaster WHERE 1=1";
-                
+
                 if (!String.IsNullOrWhiteSpace(objReq.Code))
                 {
                     strSql = strSql + " AND Code = @Code";
                 }
-                
+
                 SqlCommand cmd = new SqlCommand(strSql, Con);
                 cmd.CommandType = CommandType.Text;
-                
+
                 if (!String.IsNullOrWhiteSpace(objReq.Code))
                 {
                     cmd.Parameters.AddWithValue("@Code", objReq.Code);
                 }
-               
+
                 SqlDataAdapter da = new SqlDataAdapter(cmd);
                 DataSet ds = new DataSet();
                 da.Fill(ds);
@@ -3462,13 +3462,14 @@ namespace BSLDaman.DAL
                         obj.Gender = Convert.ToString(ds.Tables[0].Rows[i]["EmpGender"]);
                         obj.Grade = Convert.ToString(ds.Tables[0].Rows[i]["EmpGrade"]);
                         obj.Shift = Convert.ToString(ds.Tables[0].Rows[i]["EmpShift"]);
-                        obj.Pin = Convert.ToString(ds.Tables[0].Rows[i]["EmpPassword"]);
+                        string strPin = Convert.ToString(ds.Tables[0].Rows[i]["EmpPassword"]);
+                        obj.Pin = Generic.DecryptText(strPin);
                         obj.OperatorType = Convert.ToString(ds.Tables[0].Rows[i]["OperatorType"]);
                         obj.Mobile = Convert.ToString(ds.Tables[0].Rows[i]["EmpMobile"]);
                         obj.Contractor = Convert.ToString(ds.Tables[0].Rows[i]["Contractor"]);
                         obj.PayRoll = Convert.ToString(ds.Tables[0].Rows[i]["PayRoll"]);
                         //obj.IsTrainee = Convert.ToBoolean(ds.Tables[0].Rows[i]["IsTrainee"]);
-                       // obj.IsTemporary = Convert.ToBoolean(ds.Tables[0].Rows[i]["IsTemporary"]);
+                        // obj.IsTemporary = Convert.ToBoolean(ds.Tables[0].Rows[i]["IsTemporary"]);
                         obj.PermanentSection = Convert.ToString(ds.Tables[0].Rows[i]["PermanentSection"]);
                         obj.DOJ = Convert.ToString(ds.Tables[0].Rows[i]["DOJ"]);
                         obj.vErrorMsg = "Success";
