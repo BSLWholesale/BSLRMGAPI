@@ -17,6 +17,7 @@ namespace BSLDaman.Models
         public string CreatedOn { get; set; }
         public int ModifiedBy { get; set; }
         public string ModifiedOn { get; set; }
+        public string DivDeletionStatus { get; set; }
         public string vErrorMsg { get; set; }
         public int vErrorCode { get; set; }
 
@@ -32,6 +33,7 @@ namespace BSLDaman.Models
         public string CreatedOn { get; set; }
         public int ModifiedBy { get; set; }
         public string ModifiedOn { get; set; }
+        public string SectionDeletionStatus { get; set; }
         public string vErrorMsg { get; set; }
         public int vErrorCode { get; set; }
     }
