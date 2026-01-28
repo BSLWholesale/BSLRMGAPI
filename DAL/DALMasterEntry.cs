@@ -153,7 +153,7 @@ namespace BSLDaman.DAL
             return objResp;
         }
 
-        public clsDivision Fn_Delete_Division(clsDivision objReq)
+        public clsDivision Fn_Delete_DivisionDetails_ById(clsDivision objReq)
         {
             var objResp = new clsDivision();
 
@@ -168,7 +168,9 @@ namespace BSLDaman.DAL
                 SqlCommand cmd = new SqlCommand("USP_MASTERENTRY", Con);
                 cmd.CommandType = CommandType.StoredProcedure;
                 cmd.Parameters.AddWithValue("@DivisionID", objReq.ID);
-                cmd.Parameters.AddWithValue("@CreatedBy", objReq.CreatedBy);
+                //cmd.Parameters.AddWithValue("@CreatedBy", objReq.CreatedBy);
+                cmd.Parameters.AddWithValue("@DivisionStatus", objReq.DivDeletionStatus);
+                cmd.Parameters.AddWithValue("@ModifiedBy", objReq.ModifiedBy);
                 cmd.Parameters.AddWithValue("@QueryType", "DeleteDivision");
                 int i = 0;
                 i = cmd.ExecuteNonQuery();
@@ -186,7 +188,7 @@ namespace BSLDaman.DAL
             catch (Exception exp)
             {
                 objResp.vErrorCode = 500;
-                Logger.WriteLog("Function Name : Fn_Delete_Division", " " + "Error Msg : " + exp.Message.ToString(), new StackTrace(exp, true));
+                Logger.WriteLog("Function Name : Fn_Delete_DivisionDetails_ById", " " + "Error Msg : " + exp.Message.ToString(), new StackTrace(exp, true));
                 objResp.vErrorMsg = exp.Message.ToString();
             }
             finally
@@ -207,7 +209,7 @@ namespace BSLDaman.DAL
                 if (Con.State == ConnectionState.Closed)
                 { Con.Open(); }
 
-                string strSql = "SELECT ID, Division, CreatedBy, FORMAT(CreatedOn, 'dd-MMM-yyyy') AS CreatedOn FROM DivisionMaster WHERE 1=1";
+                string strSql = "SELECT ID, Division, CreatedBy, FORMAT(CreatedOn, 'dd-MMM-yyyy') AS CreatedOn FROM DivisionMaster WHERE 1=1 AND DivisionStatus='Active'";
                 if (objReq.ID != 0 && objReq.ID != null)
                 {
                     strSql = strSql + " AND ID = @ID ";
@@ -367,7 +369,7 @@ namespace BSLDaman.DAL
             }
             return objResp;
         }
-        public clsSection Fn_Delete_Section(clsSection objReq)
+        public clsSection Fn_Delete_SectionDetails_ById(clsSection objReq)
         {
             var objResp = new clsSection();
 
@@ -382,8 +384,9 @@ namespace BSLDaman.DAL
                 SqlCommand cmd = new SqlCommand("USP_MASTERENTRY", Con);
                 cmd.CommandType = CommandType.StoredProcedure;
                 cmd.Parameters.AddWithValue("@SectionID", objReq.SectionID);
-                cmd.Parameters.AddWithValue("@DivisionID", objReq.DivisionID);
-                cmd.Parameters.AddWithValue("@CreatedBy", objReq.CreatedBy);
+                //cmd.Parameters.AddWithValue("@DivisionID", objReq.DivisionID);
+                cmd.Parameters.AddWithValue("@SectionStatus", objReq.SectionDeletionStatus);
+                cmd.Parameters.AddWithValue("@ModifiedBy", objReq.ModifiedBy);
                 cmd.Parameters.AddWithValue("@QueryType", "DeleteSection");
                 int i = 0;
                 i = cmd.ExecuteNonQuery();
@@ -401,7 +404,7 @@ namespace BSLDaman.DAL
             catch (Exception exp)
             {
                 objResp.vErrorCode = 500;
-                Logger.WriteLog("Function Name : Fn_Delete_Section", " " + "Error Msg : " + exp.Message.ToString(), new StackTrace(exp, true));
+                Logger.WriteLog("Function Name : Fn_Delete_SectionDetails_ById", " " + "Error Msg : " + exp.Message.ToString(), new StackTrace(exp, true));
                 objResp.vErrorMsg = exp.Message.ToString();
             }
             finally
@@ -424,7 +427,7 @@ namespace BSLDaman.DAL
                 { Con.Open(); }
 
                 string strSql = "SELECT SectionID, DivisionID, SectionName, SectionHead, CreatedBy,";
-                strSql = strSql + " FORMAT(CreatedOn, 'dd-MMM-yyyy') AS CreatedOn FROM SectionMaster WHERE 1=1";
+                strSql = strSql + " FORMAT(CreatedOn, 'dd-MMM-yyyy') AS CreatedOn FROM SectionMaster WHERE 1=1 AND SectionStatus='Active'";
                 if (objReq.SectionID != 0)
                 {
                     strSql = strSql + " AND SectionID = @SectionID ";
