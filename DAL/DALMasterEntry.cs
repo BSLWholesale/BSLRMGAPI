@@ -3436,6 +3436,10 @@ namespace BSLDaman.DAL
                 strSql = strSql + " OperatorType, EmpMobile, Contractor, PayRoll, IsTrainee, IsTemporary,";
                 strSql = strSql + " PermanentSection, DOJ, CreatedBy, CreatedOn FROM EmployeeMaster WHERE 1=1";
 
+                if (objReq.ID != 0 && objReq.ID != null)
+                {
+                    strSql = strSql + " AND ID = @ID";
+                }
                 if (!String.IsNullOrWhiteSpace(objReq.Code))
                 {
                     strSql = strSql + " AND Code = @Code";
@@ -3443,7 +3447,10 @@ namespace BSLDaman.DAL
 
                 SqlCommand cmd = new SqlCommand(strSql, Con);
                 cmd.CommandType = CommandType.Text;
-
+                if (objReq.ID != 0 && objReq.ID != null)
+                {
+                    cmd.Parameters.AddWithValue("@ID", objReq.ID);
+                }
                 if (!String.IsNullOrWhiteSpace(objReq.Code))
                 {
                     cmd.Parameters.AddWithValue("@Code", objReq.Code);
