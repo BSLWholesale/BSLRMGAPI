@@ -186,20 +186,20 @@ namespace BSLDaman.Controllers
         }
 
         [System.Web.Http.HttpPost]
-        [System.Web.Http.Route("api/MasterEntry/Fn_Update_Customer")]
-        public clsCustomer Fn_Update_Customer(clsCustomer objReq)
+        [System.Web.Http.Route("api/MasterEntry/Fn_Update_CustomerDetails_ById")]
+        public clsCustomer Fn_Update_CustomerDetails_ById(clsCustomer objReq)
         {
             var objResp = new clsCustomer();
-            objResp = _DALMasterEntry.Fn_Update_Customer(objReq);
+            objResp = _DALMasterEntry.Fn_Update_CustomerDetails_ById(objReq);
             return objResp;
         }
 
         [System.Web.Http.HttpPost]
-        [System.Web.Http.Route("api/MasterEntry/Fn_Delete_Customer")]
-        public clsCustomer Fn_Delete_Customer(clsCustomer objReq)
+        [System.Web.Http.Route("api/MasterEntry/Fn_Delete_CustomerDetails_ById")]
+        public clsCustomer Fn_Delete_CustomerDetails_ById(clsCustomer objReq)
         {
             var objResp = new clsCustomer();
-            objResp = _DALMasterEntry.Fn_Delete_Customer(objReq);
+            objResp = _DALMasterEntry.Fn_Delete_CustomerDetails_ById(objReq);
             return objResp;
         }
 

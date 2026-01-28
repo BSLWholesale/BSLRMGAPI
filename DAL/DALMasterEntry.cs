@@ -1003,7 +1003,7 @@ namespace BSLDaman.DAL
             return objResp;
         }
 
-        public clsCustomer Fn_Update_Customer(clsCustomer objReq)
+        public clsCustomer Fn_Update_CustomerDetails_ById(clsCustomer objReq)
         {
             var objResp = new clsCustomer();
 
@@ -1040,7 +1040,7 @@ namespace BSLDaman.DAL
             catch (Exception exp)
             {
                 objResp.vErrorCode = 500;
-                Logger.WriteLog("Function Name : Fn_Update_Shift", " " + "Error Msg : " + exp.Message.ToString(), new StackTrace(exp, true));
+                Logger.WriteLog("Function Name : Fn_Update_CustomerDetails_ById", " " + "Error Msg : " + exp.Message.ToString(), new StackTrace(exp, true));
                 objResp.vErrorMsg = exp.Message.ToString();
             }
             finally
@@ -1049,7 +1049,7 @@ namespace BSLDaman.DAL
             }
             return objResp;
         }
-        public clsCustomer Fn_Delete_Customer(clsCustomer objReq)
+        public clsCustomer Fn_Delete_CustomerDetails_ById(clsCustomer objReq)
         {
             var objResp = new clsCustomer();
 
@@ -1082,7 +1082,7 @@ namespace BSLDaman.DAL
             catch (Exception exp)
             {
                 objResp.vErrorCode = 500;
-                Logger.WriteLog("Function Name : Fn_Delete_Customer", " " + "Error Msg : " + exp.Message.ToString(), new StackTrace(exp, true));
+                Logger.WriteLog("Function Name : Fn_Delete_CustomerDetails_ById", " " + "Error Msg : " + exp.Message.ToString(), new StackTrace(exp, true));
                 objResp.vErrorMsg = exp.Message.ToString();
             }
             finally
