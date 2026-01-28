@@ -35,11 +35,11 @@ namespace BSLDaman.Controllers
         }
 
         [System.Web.Http.HttpPost]
-        [System.Web.Http.Route("api/MasterEntry/Fn_Delete_Division")]
-        public clsDivision Fn_Delete_Division(clsDivision objReq)
+        [System.Web.Http.Route("api/MasterEntry/Fn_Delete_DivisionDetails_ById")]
+        public clsDivision Fn_Delete_DivisionDetails_ById(clsDivision objReq)
         {
             var objResp = new clsDivision();
-            objResp = _DALMasterEntry.Fn_Delete_Division(objReq);
+            objResp = _DALMasterEntry.Fn_Delete_DivisionDetails_ById(objReq);
             return objResp;
         }
 
@@ -75,11 +75,11 @@ namespace BSLDaman.Controllers
         }
 
         [System.Web.Http.HttpPost]
-        [System.Web.Http.Route("api/MasterEntry/Fn_Delete_Section")]
-        public clsSection Fn_Delete_Section(clsSection objReq)
+        [System.Web.Http.Route("api/MasterEntry/Fn_Delete_SectionDetails_ById")]
+        public clsSection Fn_Delete_SectionDetails_ById(clsSection objReq)
         {
             var objResp = new clsSection();
-            objResp = _DALMasterEntry.Fn_Delete_Section(objReq);
+            objResp = _DALMasterEntry.Fn_Delete_SectionDetails_ById(objReq);
             return objResp;
         }
 
