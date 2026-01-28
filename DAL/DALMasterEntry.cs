@@ -1064,7 +1064,8 @@ namespace BSLDaman.DAL
                 SqlCommand cmd = new SqlCommand("USP_MASTERENTRY", Con);
                 cmd.CommandType = CommandType.StoredProcedure;
                 cmd.Parameters.AddWithValue("@ID", objReq.ID);
-                cmd.Parameters.AddWithValue("@CreatedBy", objReq.CreatedBy);
+                cmd.Parameters.AddWithValue("@CustomerStatus", objReq.CustDeletionStatus);
+                cmd.Parameters.AddWithValue("@ModifiedBy", objReq.ModifiedBy);
                 cmd.Parameters.AddWithValue("@QueryType", "DeleteCustomer");
                 int i = 0;
                 i = cmd.ExecuteNonQuery();
@@ -1105,7 +1106,7 @@ namespace BSLDaman.DAL
                 { Con.Open(); }
 
                 string strSql = "SELECT ID, vName, CodeNo, vAddress, vContact, CreatedBy,";
-                strSql = strSql + " FORMAT(CreatedOn, 'dd-MMM-yyyy') AS CreatedOn FROM CustomerMaster WHERE 1=1";
+                strSql = strSql + " FORMAT(CreatedOn, 'dd-MMM-yyyy') AS CreatedOn FROM CustomerMaster WHERE 1=1 AND CustomerStatus='Active'";
                 if (objReq.ID != 0 && objReq.ID != null)
                 {
                     strSql = strSql + " AND ID = @ID ";
