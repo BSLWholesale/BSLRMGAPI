@@ -65,7 +65,7 @@ namespace BSLDaman.DAL
             return mxID;
         }
 
-        public clsOrderMaster Fn_Insert_Order_Naster(clsOrderMaster objReq)
+        public clsOrderMaster Fn_Insert_Order_Master(clsOrderMaster objReq)
         {
             var objResp = new clsOrderMaster();
             if (objReq.ID == 0 || objReq.ID == null)
@@ -139,7 +139,7 @@ namespace BSLDaman.DAL
             catch (Exception exp)
             {
                 objResp.vErrorCode = 500;
-                Logger.WriteLog("Function Name : Fn_Insert_Order_Naster", " " + "Error Msg : " + exp.Message.ToString(), new StackTrace(exp, true));
+                Logger.WriteLog("Function Name : Fn_Insert_Order_Master", " " + "Error Msg : " + exp.Message.ToString(), new StackTrace(exp, true));
                 objResp.vErrorMsg = exp.Message.ToString();
             }
             finally
