@@ -146,4 +146,39 @@ namespace BSLDaman.Models
     {
         public string SearchKeyword { get; set; }
     }
+
+    public class clsOrderMaster
+    {
+        public Int64 ID { get; set; }
+        public string OrderNo { get; set; }
+        public int Qty { get; set; }
+        public bool IsFinished { get; set; }
+        public bool IsStkr { get; set; }
+        public int BundleQty { get; set; }
+        public string OrderDate { get; set; }
+        public int CreatedBy { get; set; }
+        public string CreatedOn { get; set; }
+        public int ModifiedBy { get; set; }
+        public string ModifiedOn { get; set; }
+        public string vErrorMsg { get; set; }
+        public int vErrorCode { get; set; }
+        public List<clsOrderDetail> oDetail { get; set; }
+    }
+
+    public class clsOrderDetail
+    {
+        public Int64 DetailID { get; set; }
+        public string OrderNo { get; set; }
+        public string Color { get; set; }
+        public string Size { get; set; }
+        public int Qty { get; set; }
+        public int ExtraQty { get; set; }
+        public int CreatedBy { get; set; }
+        public string CreatedOn { get; set; }
+        public int ModifiedBy { get; set; }
+        public string ModifiedOn { get; set; }
+        public string vErrorMsg { get; set; }
+        public int vErrorCode { get; set; }
+
+    }
 }
