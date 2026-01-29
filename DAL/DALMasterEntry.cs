@@ -603,7 +603,7 @@ namespace BSLDaman.DAL
             }
             return objResp;
         }
-        public clsLine Fn_Delete_Line(clsLine objReq)
+        public clsLine Fn_Delete_LineDetails_ById(clsLine objReq)
         {
             var objResp = new clsLine();
 
@@ -618,7 +618,8 @@ namespace BSLDaman.DAL
                 SqlCommand cmd = new SqlCommand("USP_MASTERENTRY", Con);
                 cmd.CommandType = CommandType.StoredProcedure;
                 cmd.Parameters.AddWithValue("@LineId", objReq.LineId);
-                cmd.Parameters.AddWithValue("@CreatedBy", objReq.CreatedBy);
+                cmd.Parameters.AddWithValue("@LineStatus", objReq.LineDeletionStatus);
+                cmd.Parameters.AddWithValue("@ModifiedBy", objReq.ModifiedBy);
                 cmd.Parameters.AddWithValue("@QueryType", "DeleteLine");
                 int i = 0;
                 i = cmd.ExecuteNonQuery();
@@ -636,7 +637,7 @@ namespace BSLDaman.DAL
             catch (Exception exp)
             {
                 objResp.vErrorCode = 500;
-                Logger.WriteLog("Function Name : Fn_Delete_Line", " " + "Error Msg : " + exp.Message.ToString(), new StackTrace(exp, true));
+                Logger.WriteLog("Function Name : Fn_Delete_LineDetails_ById", " " + "Error Msg : " + exp.Message.ToString(), new StackTrace(exp, true));
                 objResp.vErrorMsg = exp.Message.ToString();
             }
             finally
@@ -660,7 +661,7 @@ namespace BSLDaman.DAL
 
                 string strSql = "SELECT LineId, DivisionID, SeqNo, LineCode, LineName, SuperVisor, SectionName,";
                 strSql = strSql + " SuperMarketCode, IsQuality, IsFinishing, CreatedBy, ";
-                strSql = strSql + " FORMAT(CreatedOn, 'dd-MMM-yyyy') AS CreatedOn FROM LineMaster WHERE 1=1";
+                strSql = strSql + " FORMAT(CreatedOn, 'dd-MMM-yyyy') AS CreatedOn FROM LineMaster WHERE 1=1 AND LineStatus='Active'";
 
                 if (objReq.LineCode != "" && objReq.LineCode != null)
                 {
