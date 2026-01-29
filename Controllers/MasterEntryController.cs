@@ -115,11 +115,11 @@ namespace BSLDaman.Controllers
         }
 
         [System.Web.Http.HttpPost]
-        [System.Web.Http.Route("api/MasterEntry/Fn_Delete_Line")]
-        public clsLine Fn_Delete_Line(clsLine objReq)
+        [System.Web.Http.Route("api/MasterEntry/Fn_Delete_LineDetails_ById")]
+        public clsLine Fn_Delete_LineDetails_ById(clsLine objReq)
         {
             var objResp = new clsLine();
-            objResp = _DALMasterEntry.Fn_Delete_Line(objReq);
+            objResp = _DALMasterEntry.Fn_Delete_LineDetails_ById(objReq);
             return objResp;
         }
 
