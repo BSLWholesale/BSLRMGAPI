@@ -158,10 +158,12 @@
     <Compile Include="Controllers\EmployeeController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\MasterEntryController.cs" />
+    <Compile Include="Controllers\OrderController.cs" />
     <Compile Include="Controllers\ProductionController.cs" />
     <Compile Include="Controllers\ValuesController.cs" />
     <Compile Include="DAL\DALEmployee.cs" />
     <Compile Include="DAL\DALMasterEntry.cs" />
+    <Compile Include="DAL\DALOrder.cs" />
     <Compile Include="DAL\DALProduction.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -226,6 +228,7 @@
     <Folder Include="App_Data\" />
     <Folder Include="Views\Employee\" />
     <Folder Include="Views\MasterEntry\" />
+    <Folder Include="Views\Order\" />
     <Folder Include="Views\Production\" />
   </ItemGroup>
   <ItemGroup>
