@@ -44,8 +44,12 @@ namespace BSLDaman.Models
         public string AssessmentYear { get; set; }
         public string EmpGender { get; set; }
         public string EmpRole { get; set; }
+        public string OperatorType { get; set; }
+        public string DeviceId { get; set; }
         public string QueryType { get; set; }
         public string vErrorMsg { get; set; }
+        public int vErrorCode { get; set; }
+
     }
 
 
