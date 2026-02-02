@@ -56,6 +56,9 @@ namespace BSLDaman.Models
         public string ModifiedOn { get; set; }
         public string Section { get; set; }
         public string LineDeletionStatus { get; set; }
+        public string LineStatus { get; set; }
+        public string ShiftTiming { get; set; }
+        public string AssignOperator { get; set; }
         public string vErrorMsg { get; set; }
         public int vErrorCode { get; set; }
     }
@@ -365,4 +368,20 @@ namespace BSLDaman.Models
         public string vErrorMsg { get; set; }
         public int vErrorCode { get; set; }
     }
+
+
+    public class clsDesignation
+    {
+        public Int64 DesignationID { get; set; }
+        public string DesignationName { get; set; }
+        public int CreatedBy { get; set; }
+        public string CreatedOn { get; set; }
+        public int ModifiedBy { get; set; }
+        public string ModifiedOn { get; set; }
+        public string vErrorMsg { get; set; }
+        public int vErrorCode { get; set; }
+    }
+
+
+
 }
