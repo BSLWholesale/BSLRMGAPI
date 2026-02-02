@@ -1335,14 +1335,18 @@ namespace BSLDaman.DAL
                 if (Con.State == ConnectionState.Closed)
                 { Con.Open(); }
 
-                string strSql = "SELECT ID, SizeName, CreatedBy, FORMAT(CreatedOn, 'dd-MMM-yyyy') AS CreatedOn FROM SizeMaster WHERE 1=1";
+                string strSql = "SELECT ID, SizeName, SeqNo, Grid, CreatedBy, FORMAT(CreatedOn, 'dd-MMM-yyyy') AS CreatedOn FROM SizeMaster WHERE 1=1";
                 if (objReq.ID != 0)
                 {
                     strSql = strSql + " AND ID = @ID";
                 }
-                if (objReq.SizeName != "")
+                if (!String.IsNullOrWhiteSpace(objReq.SizeName))
                 {
-                    strSql = strSql + " AND SizeName LIKE '%@ID%' ";
+                    strSql = strSql + " AND SizeName = @SizeName ";
+                }
+                if (!String.IsNullOrWhiteSpace(objReq.Grid))
+                {
+                    strSql = strSql + " AND Grid = @Grid ";
                 }
 
                 SqlCommand cmd = new SqlCommand(strSql, Con);
@@ -1351,9 +1355,13 @@ namespace BSLDaman.DAL
                 {
                     cmd.Parameters.AddWithValue("@ID", objReq.ID);
                 }
-                if (objReq.SizeName != "")
+                if (!String.IsNullOrWhiteSpace(objReq.SizeName))
                 {
                     cmd.Parameters.AddWithValue("@SizeName", objReq.SizeName);
+                }
+                if (!String.IsNullOrWhiteSpace(objReq.Grid))
+                {
+                    cmd.Parameters.AddWithValue("@Grid", objReq.Grid);
                 }
                 SqlDataAdapter da = new SqlDataAdapter(cmd);
                 DataSet ds = new DataSet();
