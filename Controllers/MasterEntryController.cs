@@ -630,5 +630,19 @@ namespace BSLDaman.Controllers
         }
 
         #endregion End Worker 27-Jan-2026
+
+
+        //startRegion Start Designation 
+        [System.Web.Http.HttpPost]
+        [System.Web.Http.Route("api/MasterEntry/Fn_Insert_New_Designation"]
+        public clsDesignation Fn_Insert_New_Designation(clsDesignation objReq)
+        {
+            var objResp = new clsDesignation();
+            objResp = _DALMasterEntry.Fn_Insert_New_Designation(objReq);
+            return objResp;
+        }
+
+        //endRegion End Designation 
+
     }
 }
