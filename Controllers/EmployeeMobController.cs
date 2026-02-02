@@ -17,11 +17,11 @@ namespace BSLDaman.Controllers
 
 
         [System.Web.Http.HttpPost]
-        [System.Web.Http.Route("api/EmployeeMob/Fn_Add_Employee")]
-        public clsEmployee Fn_Add_Employee(clsEmployee objReq)
+        [System.Web.Http.Route("api/EmployeeMob/Fn_Insert_Employee")]
+        public clsEmployee Fn_Insert_Employee(clsEmployee objReq)
         {
             var objResp = new clsEmployee();
-            objResp = _DALEmployeeMob.Fn_Add_Employee(objReq);
+            objResp = _DALEmployeeMob.Fn_Insert_Employee(objReq);
             return objResp;
         }
 
