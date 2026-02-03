@@ -1342,11 +1342,11 @@ namespace BSLDaman.DAL
                 }
                 if (!String.IsNullOrWhiteSpace(objReq.SizeName))
                 {
-                    strSql = strSql + " AND SizeName = @SizeName ";
+                    strSql = strSql + " AND SizeName LIKE @SizeName ";
                 }
                 if (!String.IsNullOrWhiteSpace(objReq.Grid))
                 {
-                    strSql = strSql + " AND Grid = @Grid ";
+                    strSql = strSql + " AND Grid = @Grid";
                 }
 
                 SqlCommand cmd = new SqlCommand(strSql, Con);
@@ -1357,7 +1357,7 @@ namespace BSLDaman.DAL
                 }
                 if (!String.IsNullOrWhiteSpace(objReq.SizeName))
                 {
-                    cmd.Parameters.AddWithValue("@SizeName", objReq.SizeName);
+                    cmd.Parameters.AddWithValue("@SizeName", "%" + objReq.SizeName + "%");
                 }
                 if (!String.IsNullOrWhiteSpace(objReq.Grid))
                 {

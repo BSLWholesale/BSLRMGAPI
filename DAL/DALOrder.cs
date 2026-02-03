@@ -82,7 +82,7 @@ namespace BSLDaman.DAL
                 if (Con.State == ConnectionState.Closed)
                 { Con.Open(); }
 
-                SqlCommand cmd = new SqlCommand("USP_PRODUCTION", Con);
+                SqlCommand cmd = new SqlCommand("USP_ORDER_MASTER", Con);
                 cmd.CommandType = CommandType.StoredProcedure;
                 cmd.Parameters.AddWithValue("@ID", objReq.ID);
                 cmd.Parameters.AddWithValue("@OrderNo", objReq.OrderNo);
@@ -92,6 +92,8 @@ namespace BSLDaman.DAL
                 cmd.Parameters.AddWithValue("@BundleQty", objReq.BundleQty);
                 cmd.Parameters.AddWithValue("@OrderDate", objReq.OrderDate);
                 cmd.Parameters.AddWithValue("@CreatedBy", objReq.CreatedBy);
+                cmd.Parameters.AddWithValue("@CreatedOn", objReq.CreatedOn);
+                cmd.Parameters.AddWithValue("@StyleCode", objReq.StyleCode);
                 cmd.Parameters.AddWithValue("@QueryType", "InsertOrderMaster");
                 int i = 0;
                 i = cmd.ExecuteNonQuery();
@@ -100,33 +102,36 @@ namespace BSLDaman.DAL
                     objResp.vErrorCode = 200;
                     objResp.vErrorMsg = "Success";
 
-                    foreach (clsOrderDetail _oList in objReq.oDetail)
+                    if (objReq.oDetail != null)
                     {
-                        if (_oList.DetailID == 0 || _oList.DetailID == null)
+                        foreach (clsOrderDetail _oList in objReq.oDetail)
                         {
-                            Fn_Get_MXID("OrderOetail", "DetailID");
-                            _oList.DetailID = mxID;
-                        }
+                            if (_oList.DetailID == 0 || _oList.DetailID == null)
+                            {
+                                Fn_Get_MXID("OrderOetail", "DetailID");
+                                _oList.DetailID = mxID;
+                            }
 
-                        SqlCommand cm1 = new SqlCommand("USP_PRODUCTION", Con);
-                        cm1.CommandType = CommandType.StoredProcedure;
-                        cm1.Parameters.AddWithValue("@DetailID", _oList.DetailID);
-                        cm1.Parameters.AddWithValue("@OrderNo", objReq.ID);
-                        cm1.Parameters.AddWithValue("@Color", _oList.Color);
-                        cm1.Parameters.AddWithValue("@Size", _oList.Size);
-                        cm1.Parameters.AddWithValue("@Qty", _oList.Qty);
-                        cm1.Parameters.AddWithValue("@ExtraQty", _oList.ExtraQty);
-                        cm1.Parameters.AddWithValue("@CreatedBy", _oList.CreatedBy);
-                        cm1.Parameters.AddWithValue("@QueryType", "InsertOrderDetail");
-                        int j = cm1.ExecuteNonQuery();
-                        if (j > 0)
-                        {
-                            objResp.vErrorMsg = "Success";
-                        }
-                        else
-                        {
-                            objResp.vErrorMsg = "Order detail inserting failed ";
-                            return objResp;
+                            SqlCommand cm1 = new SqlCommand("USP_ORDER_MASTER", Con);
+                            cm1.CommandType = CommandType.StoredProcedure;
+                            cm1.Parameters.AddWithValue("@DetailID", _oList.DetailID);
+                            cm1.Parameters.AddWithValue("@OrderNo", objReq.ID);
+                            cm1.Parameters.AddWithValue("@Color", _oList.Color);
+                            cm1.Parameters.AddWithValue("@Size", _oList.Size);
+                            cm1.Parameters.AddWithValue("@Qty", _oList.Qty);
+                            cm1.Parameters.AddWithValue("@ExtraQty", _oList.ExtraQty);
+                            cm1.Parameters.AddWithValue("@CreatedBy", _oList.CreatedBy);
+                            cm1.Parameters.AddWithValue("@QueryType", "InsertOrderDetail");
+                            int j = cm1.ExecuteNonQuery();
+                            if (j > 0)
+                            {
+                                objResp.vErrorMsg = "Success";
+                            }
+                            else
+                            {
+                                objResp.vErrorMsg = "Order detail inserting failed ";
+                                return objResp;
+                            }
                         }
                     }
                 }
@@ -161,10 +166,14 @@ namespace BSLDaman.DAL
                 { Con.Open(); }
 
                 string strSql = "SELECT ID, OrderNo, Qty, IsFinished, IsStkr, BundleQty, FORMAT(OrderDate, 'dd-MMM-yyy') AS OrderDate,";
-                 strSql = strSql + " CreatedBy, FORMAT(CreatedOn, 'dd-MMM-yyy') AS CreatedOn  FROM OrderMaster WHERE 1=1";
+                 strSql = strSql + " CreatedBy, CreatedOn, StyleCode  FROM OrderMaster WHERE 1=1";
                 if (objReq.ID != 0 && objReq.ID != null)
                 {
                     strSql = strSql + " AND ID = @ID";
+                }
+                if (!String.IsNullOrWhiteSpace(objReq.StyleCode))
+                {
+                    strSql = strSql + " AND StyleCode = @StyleCode";
                 }
                 
 
@@ -174,7 +183,11 @@ namespace BSLDaman.DAL
                 {
                     cmd.Parameters.AddWithValue("@ID", objReq.ID);
                 }
-                
+                if (!String.IsNullOrWhiteSpace(objReq.StyleCode))
+                {
+                    cmd.Parameters.AddWithValue("@StyleCode", objReq.StyleCode);
+                }
+
                 SqlDataAdapter da = new SqlDataAdapter(cmd);
                 DataSet ds = new DataSet();
                 da.Fill(ds);
@@ -192,12 +205,12 @@ namespace BSLDaman.DAL
                         obj.IsStkr = Convert.ToBoolean(ds.Tables[0].Rows[i]["IsStkr"]);
                         obj.BundleQty = Convert.ToInt16(ds.Tables[0].Rows[i]["BundleQty"]);
                         obj.OrderDate = Convert.ToString(ds.Tables[0].Rows[i]["OrderDate"]);
-                        obj.CreatedBy = Convert.ToInt16(ds.Tables[0].Rows[i]["CreatedBy"]);
+                        obj.CreatedBy = Convert.ToInt32(ds.Tables[0].Rows[i]["CreatedBy"]);
                         obj.CreatedOn = Convert.ToString(ds.Tables[0].Rows[i]["CreatedOn"]);
 
-                        var objpDetail = new clsOrderDetail();
-                        objpDetail.OrderNo = Convert.ToString(obj.ID);
-                        obj.oDetail = Fn_Get_Order_Detail(objpDetail);
+                        //var objpDetail = new clsOrderDetail();
+                        //objpDetail.OrderNo = Convert.ToString(obj.ID);
+                        //obj.oDetail = Fn_Get_Order_Detail(objpDetail);
 
                         obj.vErrorCode = 200;
                         obj.vErrorMsg = "Success";
@@ -305,6 +318,6 @@ namespace BSLDaman.DAL
                 Con.Close();
             }
             return objResp;
-        }
+        }       
     }
 }

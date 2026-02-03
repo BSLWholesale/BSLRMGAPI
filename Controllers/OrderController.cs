@@ -4,11 +4,12 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
+using System.Web.Http;
 using System.Web.Mvc;
 
 namespace BSLDaman.Controllers
 {
-    public class OrderController : Controller
+    public class OrderController : ApiController
     {
         // GET: Order
 
@@ -39,6 +40,6 @@ namespace BSLDaman.Controllers
             var objResp = new List<clsOrderDetail>();
             objResp = _DALOrder.Fn_Get_Order_Detail(objReq);
             return objResp;
-        }
+        }       
     }
 }

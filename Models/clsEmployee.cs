@@ -160,6 +160,7 @@ namespace BSLDaman.Models
         public bool IsStkr { get; set; }
         public int BundleQty { get; set; }
         public string OrderDate { get; set; }
+        public string StyleCode { get; set; }
         public int CreatedBy { get; set; }
         public string CreatedOn { get; set; }
         public int ModifiedBy { get; set; }
