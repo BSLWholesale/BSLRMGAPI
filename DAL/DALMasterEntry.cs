@@ -216,7 +216,7 @@ namespace BSLDaman.DAL
                 }
                 if (!String.IsNullOrWhiteSpace(objReq.Division))
                 {
-                    strSql = strSql + " AND Division LIKE '%@Division%' ";
+                    strSql = strSql + " AND Division LIKE @Division ";
                 }
 
                 SqlCommand cmd = new SqlCommand(strSql, Con);
@@ -227,7 +227,7 @@ namespace BSLDaman.DAL
                 }
                 if (!String.IsNullOrWhiteSpace(objReq.Division))
                 {
-                    cmd.Parameters.AddWithValue("@Division", objReq.Division);
+                    cmd.Parameters.AddWithValue("@Division", "%" + objReq.Division + "%");
                 }
 
                 //SqlCommand cmd = new SqlCommand("USP_MASTERENTRY", Con);

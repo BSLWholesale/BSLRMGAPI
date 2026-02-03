@@ -108,8 +108,13 @@ namespace BSLDaman.DAL
                         {
                             if (_oList.DetailID == 0 || _oList.DetailID == null)
                             {
-                                Fn_Get_MXID("OrderOetail", "DetailID");
+                                Fn_Get_MXID("OrderDetail", "DetailID");
                                 _oList.DetailID = mxID;
+
+                                if (Con.State == ConnectionState.Broken)
+                                { Con.Close(); }
+                                if (Con.State == ConnectionState.Closed)
+                                { Con.Open(); }
                             }
 
                             SqlCommand cm1 = new SqlCommand("USP_ORDER_MASTER", Con);
@@ -175,7 +180,7 @@ namespace BSLDaman.DAL
                 {
                     strSql = strSql + " AND StyleCode = @StyleCode";
                 }
-                
+                strSql = strSql + " ORDER BY CreatedOn DESC";
 
                 SqlCommand cmd = new SqlCommand(strSql, Con);
                 cmd.CommandType = CommandType.Text;

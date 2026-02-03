@@ -634,7 +634,7 @@ namespace BSLDaman.Controllers
 
         //startRegion Start Designation 
         [System.Web.Http.HttpPost]
-        [System.Web.Http.Route("api/MasterEntry/Fn_Insert_New_Designation"]
+        [System.Web.Http.Route("api/MasterEntry/Fn_Insert_New_Designation")]
         public clsDesignation Fn_Insert_New_Designation(clsDesignation objReq)
         {
             var objResp = new clsDesignation();
