@@ -191,7 +191,7 @@ namespace BSLDaman.Models
     {
         public Int64 ID { get; set; }
         public string ProcessName { get; set; }
-        public string IsProduction { get; set; }
+        public bool IsProduction { get; set; }
         public int CreatedBy { get; set; }
         public string CreatedOn { get; set; }
         public int ModifiedBy { get; set; }

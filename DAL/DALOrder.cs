@@ -390,6 +390,7 @@ namespace BSLDaman.DAL
                 SqlCommand cmd = new SqlCommand("USP_ORDER_MASTER", Con);
                 cmd.CommandType = CommandType.StoredProcedure;
                 cmd.Parameters.AddWithValue("@ID", objReq.ID);
+                cmd.Parameters.AddWithValue("@CreatedBy", objReq.CreatedBy);
                 cmd.Parameters.AddWithValue("@QueryType", "DeleteProcessMaster");
                 int i = 0;
                 i = cmd.ExecuteNonQuery();
@@ -401,7 +402,7 @@ namespace BSLDaman.DAL
                 else
                 {
                     objResp.vErrorCode = 400;
-                    objResp.vErrorMsg = "Inserting Failed";
+                    objResp.vErrorMsg = "Deleting Failed";
                 }
             }
             catch (Exception exp)
@@ -428,10 +429,10 @@ namespace BSLDaman.DAL
                 if (Con.State == ConnectionState.Closed)
                 { Con.Open(); }
 
-                string strSql = "SELECT ID, ProcessName, IsProduction, CreatedBy, FORMAT(CreatedOn, 'dd-MMM-yyy') AS CreatedOn FROM ProcessMaster WHERE 1=1";
+                string strSql = "SELECT ID, ProcessName, IsProduction, CreatedBy, FORMAT(CreatedOn, 'dd-MMM-yyy') AS CreatedOn FROM ProcessMaster WHERE 1=1 AND IsActiveProcess = 0 ";
                 if (!String.IsNullOrWhiteSpace(objReq.ProcessName))
                 {
-                    strSql = strSql + " AND SM.ProcessName = @ProcessName";
+                    strSql = strSql + " AND ProcessName = @ProcessName";
                 }
                 if (objReq.ID != 0 && objReq.ID != null)
                 {
@@ -461,7 +462,7 @@ namespace BSLDaman.DAL
                         obj = new clsProcessMaster();
                         obj.ID = Convert.ToInt16(ds.Tables[0].Rows[i]["ID"]);
                         obj.ProcessName = Convert.ToString(ds.Tables[0].Rows[i]["ProcessName"]);
-                        obj.IsProduction = Convert.ToString(ds.Tables[0].Rows[i]["IsProduction"]);
+                        obj.IsProduction = Convert.ToBoolean(ds.Tables[0].Rows[i]["IsProduction"]);
                         obj.CreatedBy = Convert.ToInt32(ds.Tables[0].Rows[i]["CreatedBy"]);
                         obj.CreatedOn = Convert.ToString(ds.Tables[0].Rows[i]["CreatedOn"]);
 
