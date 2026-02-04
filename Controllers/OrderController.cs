@@ -40,6 +40,37 @@ namespace BSLDaman.Controllers
             var objResp = new List<clsOrderDetail>();
             objResp = _DALOrder.Fn_Get_Order_Detail(objReq);
             return objResp;
-        }       
+        }
+
+        #region Start Process Master 4-Feb-2026
+
+        [System.Web.Http.HttpPost]
+        [System.Web.Http.Route("api/Order/Fn_Insert_New_Process")]
+        public clsProcessMaster Fn_Insert_New_Process(clsProcessMaster objReq)
+        {
+            var objResp = new clsProcessMaster();
+            objResp = _DALOrder.Fn_Insert_New_Process(objReq);
+            return objResp;
+        }
+
+        [System.Web.Http.HttpPost]
+        [System.Web.Http.Route("api/Order/Fn_Delete_Process")]
+        public clsProcessMaster Fn_Delete_Process(clsProcessMaster objReq)
+        {
+            var objResp = new clsProcessMaster();
+            objResp = _DALOrder.Fn_Delete_Process(objReq);
+            return objResp;
+        }
+
+        [System.Web.Http.HttpPost]
+        [System.Web.Http.Route("api/Order/Fn_Get_ProcessMaster")]
+        public List<clsProcessMaster> Fn_Get_ProcessMaster(clsProcessMaster objReq)
+        {
+            var objResp = new List<clsProcessMaster>();
+            objResp = _DALOrder.Fn_Get_ProcessMaster(objReq);
+            return objResp;
+        }
+
+        #region End Process Master 4-Feb-2026
     }
 }

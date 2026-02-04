@@ -323,6 +323,176 @@ namespace BSLDaman.DAL
                 Con.Close();
             }
             return objResp;
-        }       
+        }
+
+        #region Start Process Master 4-Feb-2026
+
+        public clsProcessMaster Fn_Insert_New_Process(clsProcessMaster objReq)
+        {
+            var objResp = new clsProcessMaster();
+            if (objReq.ID == 0 || objReq.ID == null)
+            {
+                Fn_Get_MXID("ProcessMaster", "ID");
+                objReq.ID = mxID;
+            }
+            try
+            {
+
+                if (Con.State == ConnectionState.Broken)
+                { Con.Close(); }
+                if (Con.State == ConnectionState.Closed)
+                { Con.Open(); }
+
+                SqlCommand cmd = new SqlCommand("USP_ORDER_MASTER", Con);
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@ID", objReq.ID);
+                cmd.Parameters.AddWithValue("@ProcessName", objReq.ProcessName);
+                cmd.Parameters.AddWithValue("@IsProduction", objReq.IsProduction);
+                cmd.Parameters.AddWithValue("@CreatedBy", objReq.CreatedBy);
+                cmd.Parameters.AddWithValue("@QueryType", "InsertProcessMaster");
+                int i = 0;
+                i = cmd.ExecuteNonQuery();
+                if (i > 0)
+                {
+                    objResp.vErrorCode = 200;
+                    objResp.vErrorMsg = "Success";
+                }
+                else
+                {
+                    objResp.vErrorCode = 400;
+                    objResp.vErrorMsg = "Inserting Failed";
+                }
+            }
+            catch (Exception exp)
+            {
+                objResp.vErrorCode = 500;
+                Logger.WriteLog("Function Name : Fn_Insert_New_Process", " " + "Error Msg : " + exp.Message.ToString(), new StackTrace(exp, true));
+                objResp.vErrorMsg = exp.Message.ToString();
+            }
+            finally
+            {
+                Con.Close();
+            }
+            return objResp;
+        }
+
+        public clsProcessMaster Fn_Delete_Process(clsProcessMaster objReq)
+        {
+            var objResp = new clsProcessMaster();
+            try
+            {
+
+                if (Con.State == ConnectionState.Broken)
+                { Con.Close(); }
+                if (Con.State == ConnectionState.Closed)
+                { Con.Open(); }
+
+                SqlCommand cmd = new SqlCommand("USP_ORDER_MASTER", Con);
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@ID", objReq.ID);
+                cmd.Parameters.AddWithValue("@QueryType", "DeleteProcessMaster");
+                int i = 0;
+                i = cmd.ExecuteNonQuery();
+                if (i > 0)
+                {
+                    objResp.vErrorCode = 200;
+                    objResp.vErrorMsg = "Success";
+                }
+                else
+                {
+                    objResp.vErrorCode = 400;
+                    objResp.vErrorMsg = "Inserting Failed";
+                }
+            }
+            catch (Exception exp)
+            {
+                objResp.vErrorCode = 500;
+                Logger.WriteLog("Function Name : Fn_Delete_Process", " " + "Error Msg : " + exp.Message.ToString(), new StackTrace(exp, true));
+                objResp.vErrorMsg = exp.Message.ToString();
+            }
+            finally
+            {
+                Con.Close();
+            }
+            return objResp;
+        }
+
+        public List<clsProcessMaster> Fn_Get_ProcessMaster(clsProcessMaster objReq)
+        {
+            var objResp = new List<clsProcessMaster>();
+            var obj = new clsProcessMaster();
+            try
+            {
+                if (Con.State == ConnectionState.Broken)
+                { Con.Close(); }
+                if (Con.State == ConnectionState.Closed)
+                { Con.Open(); }
+
+                string strSql = "SELECT ID, ProcessName, IsProduction, CreatedBy, FORMAT(CreatedOn, 'dd-MMM-yyy') AS CreatedOn FROM ProcessMaster WHERE 1=1";
+                if (!String.IsNullOrWhiteSpace(objReq.ProcessName))
+                {
+                    strSql = strSql + " AND SM.ProcessName = @ProcessName";
+                }
+                if (objReq.ID != 0 && objReq.ID != null)
+                {
+                    strSql = strSql + " AND ID = @ID ";
+                }
+
+
+                SqlCommand cmd = new SqlCommand(strSql, Con);
+                cmd.CommandType = CommandType.Text;
+                if (!String.IsNullOrWhiteSpace(objReq.ProcessName))
+                {
+                    cmd.Parameters.AddWithValue("@ProcessName", objReq.ProcessName);
+                }
+                if (objReq.ID != 0 && objReq.ID != null)
+                {
+                    cmd.Parameters.AddWithValue("@ID", objReq.ID);
+                }
+
+                SqlDataAdapter da = new SqlDataAdapter(cmd);
+                DataSet ds = new DataSet();
+                da.Fill(ds);
+                int i = 0;
+                if (ds.Tables[0].Rows.Count > 0)
+                {
+                    while (ds.Tables[0].Rows.Count > i)
+                    {
+                        obj = new clsProcessMaster();
+                        obj.ID = Convert.ToInt16(ds.Tables[0].Rows[i]["ID"]);
+                        obj.ProcessName = Convert.ToString(ds.Tables[0].Rows[i]["ProcessName"]);
+                        obj.IsProduction = Convert.ToString(ds.Tables[0].Rows[i]["IsProduction"]);
+                        obj.CreatedBy = Convert.ToInt32(ds.Tables[0].Rows[i]["CreatedBy"]);
+                        obj.CreatedOn = Convert.ToString(ds.Tables[0].Rows[i]["CreatedOn"]);
+
+                        obj.vErrorCode = 200;
+                        obj.vErrorMsg = "Success";
+                        objResp.Add(obj);
+                        i++;
+                    }
+                }
+                else
+                {
+                    obj.vErrorCode = 404;
+                    obj.vErrorMsg = "No Record found";
+                    objResp.Add(obj);
+                }
+
+            }
+            catch (Exception exp)
+            {
+                obj.vErrorCode = 500;
+                Logger.WriteLog("Function Name : Fn_Get_ProcessMaster", " " + "Error Msg : " + exp.Message.ToString(), new StackTrace(exp, true));
+                obj.vErrorMsg = exp.Message.ToString();
+                objResp.Add(obj);
+            }
+            finally
+            {
+                Con.Close();
+            }
+            return objResp;
+        }
+
+        #endregion End Process Master 4-Feb-2026
     }
 }
