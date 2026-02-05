@@ -653,7 +653,7 @@ namespace BSLDaman.Controllers
 
 
         [System.Web.Http.HttpPost]
-        [System.Web.Http.Route("api/MasterEntry/Fn_Update_DesignationDetails_By_ID")
+        [System.Web.Http.Route("api/MasterEntry/Fn_Update_DesignationDetails_By_ID")]
         public clsDesignation Fn_Update_DesignationDetails_By_ID(clsDesignation objReq)
         {
             var objResp = new clsDesignation();

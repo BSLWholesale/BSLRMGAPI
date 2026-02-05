@@ -3575,7 +3575,7 @@ namespace BSLDaman.DAL
                 if (Con.State == ConnectionState.Closed)
                 { Con.Open(); }
 
-                string strSql = "SELECT DesignationID, DesignationName, CreatedBy,";
+                string strSql = "SELECT DISTINCT DesignationID, DesignationName, CreatedBy,";
                 strSql = strSql + " FORMAT(CreatedOn, 'dd-MMM-yyyy') AS CreatedOn FROM DesignationMaster WHERE 1=1";
                     
                 if (objReq.DesignationID != 0)
@@ -3606,6 +3606,7 @@ namespace BSLDaman.DAL
                 {
                     while (ds.Tables[0].Rows.Count > i)
                     {
+                        obj = new clsDesignation();
                         obj.DesignationID = Convert.ToInt64(ds.Tables[0].Rows[i]["DesignationID"]);
                         obj.DesignationName = Convert.ToString(ds.Tables[0].Rows[i]["DesignationName"]);
                         obj.CreatedBy = Convert.ToInt32(ds.Tables[0].Rows[i]["CreatedBy"]);
