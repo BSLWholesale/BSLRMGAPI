@@ -642,6 +642,24 @@ namespace BSLDaman.Controllers
             return objResp;
         }
 
+        [System.Web.Http.HttpPost]
+        [System.Web.Http.Route("api/MasterEntry/Fn_Get_All_Designation")]
+        public List<clsDesignation> Fn_Get_All_Designation(clsDesignation objReq)
+        {
+            var objResp = new List<clsDesignation>();
+            objResp = _DALMasterEntry.Fn_Get_All_Designation(objReq);
+            return objResp;
+        }
+
+
+        [System.Web.Http.HttpPost]
+        [System.Web.Http.Route("api/MasterEntry/Fn_Update_DesignationDetails_By_ID")
+        public clsDesignation Fn_Update_DesignationDetails_By_ID(clsDesignation objReq)
+        {
+            var objResp = new clsDesignation();
+            objResp = _DALMasterEntry.Fn_Update_DesignationDetails_By_ID(objReq);
+            return objResp;
+        }
         //endRegion End Designation 
 
     }
