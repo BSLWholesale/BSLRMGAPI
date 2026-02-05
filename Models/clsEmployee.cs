@@ -200,4 +200,47 @@ namespace BSLDaman.Models
         public int vErrorCode { get; set; }
 
     }
+
+    public class clsOPBreackDownMaster
+    {
+        public Int64 ID { get; set; }
+        public string StyleCode { get; set; }
+        public string ProcessName { get; set; }
+        public int CreatedBy { get; set; }
+        public string CreatedOn { get; set; }
+        public int ModifiedBy { get; set; }
+        public string ModifiedOn { get; set; }
+        public string vErrorMsg { get; set; }
+        public int vErrorCode { get; set; }
+        public List<clsOPBreackDownDetail> oList { get; set; }
+    }
+
+    public class clsOPBreackDownDetail
+    {
+        public Int64 DetailID { get; set; }
+        public Int64 MID { get; set; }
+        public int SeqNo { get; set; }
+        public int OpNo { get; set; }
+        public string Descriptions { get; set; }
+        public string Machine { get; set; }
+        public string SubSection { get; set; }
+        public decimal StdMin { get; set; }
+        public decimal Rate { get; set; }
+        public string Product { get; set; }
+        public string Skill { get; set; }
+        public string Grade { get; set; }
+        public string Folder { get; set; }
+        public string Seamlength { get; set; }
+        public bool IsDirect { get; set; }
+        public string ProgressPoint { get; set; }
+        public bool IsDispatch { get; set; }
+        public string DependOPNO { get; set; }
+        public bool IsDS { get; set; }
+        public int CreatedBy { get; set; }
+        public string CreatedOn { get; set; }
+        public int ModifiedBy { get; set; }
+        public string ModifiedOn { get; set; }
+        public string vErrorMsg { get; set; }
+        public int vErrorCode { get; set; }
+    }
 }

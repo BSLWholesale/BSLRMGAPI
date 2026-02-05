@@ -20,10 +20,10 @@ namespace BSLDaman.DAL
         {
             try
             {
-                if (Con.State == ConnectionState.Broken)
-                { Con.Close(); }
-                if (Con.State == ConnectionState.Closed)
-                { Con.Open(); }
+                //if (Con.State == ConnectionState.Broken)
+                //{ Con.Close(); }
+                //if (Con.State == ConnectionState.Closed)
+                //{ Con.Open(); }
 
                 string strSql = "SELECT MAX(" + strFieldName + ") AS ID FROM " + strTBLName + "";
                 SqlCommand cmd = new SqlCommand(strSql, Con);
@@ -58,21 +58,12 @@ namespace BSLDaman.DAL
                 Logger.WriteLog("Function Name : Fn_Get_MXID", " " + "Error Msg : " + exp.Message.ToString(), new StackTrace(exp, true));
                 exp.Message.ToString();
             }
-            finally
-            {
-                Con.Close();
-            }
             return mxID;
         }
 
         public clsOrderMaster Fn_Insert_Order_Master(clsOrderMaster objReq)
         {
-            var objResp = new clsOrderMaster();
-            if (objReq.ID == 0 || objReq.ID == null)
-            {
-                Fn_Get_MXID("OrderMaster", "ID");
-                objReq.ID = mxID;
-            }
+            var objResp = new clsOrderMaster();            
             
             try
             {
@@ -81,6 +72,12 @@ namespace BSLDaman.DAL
                 { Con.Close(); }
                 if (Con.State == ConnectionState.Closed)
                 { Con.Open(); }
+
+                if (objReq.ID == 0 || objReq.ID == null)
+                {
+                    Fn_Get_MXID("OrderMaster", "ID");
+                    objReq.ID = mxID;
+                }
 
                 SqlCommand cmd = new SqlCommand("USP_ORDER_MASTER", Con);
                 cmd.CommandType = CommandType.StoredProcedure;
@@ -109,12 +106,12 @@ namespace BSLDaman.DAL
                             if (_oList.DetailID == 0 || _oList.DetailID == null)
                             {
                                 Fn_Get_MXID("OrderDetail", "DetailID");
-                                _oList.DetailID = mxID;
+                                //_oList.DetailID = mxID;
 
-                                if (Con.State == ConnectionState.Broken)
-                                { Con.Close(); }
-                                if (Con.State == ConnectionState.Closed)
-                                { Con.Open(); }
+                                //if (Con.State == ConnectionState.Broken)
+                                //{ Con.Close(); }
+                                //if (Con.State == ConnectionState.Closed)
+                                //{ Con.Open(); }
                             }
 
                             SqlCommand cm1 = new SqlCommand("USP_ORDER_MASTER", Con);
@@ -343,6 +340,12 @@ namespace BSLDaman.DAL
                 if (Con.State == ConnectionState.Closed)
                 { Con.Open(); }
 
+                if (objReq.ID == 0 || objReq.ID == null)
+                {
+                    Fn_Get_MXID("ProcessMaster", "ID");
+                    objReq.ID = mxID;
+                }
+
                 SqlCommand cmd = new SqlCommand("USP_ORDER_MASTER", Con);
                 cmd.CommandType = CommandType.StoredProcedure;
                 cmd.Parameters.AddWithValue("@ID", objReq.ID);
@@ -495,5 +498,225 @@ namespace BSLDaman.DAL
         }
 
         #endregion End Process Master 4-Feb-2026
+
+        public clsOPBreackDownMaster Fn_Upload_Operation_BreackdownFile(clsOPBreackDownMaster objReq)
+        {
+            var objResp = new clsOPBreackDownMaster();            
+
+            try
+            {
+
+                if (Con.State == ConnectionState.Broken)
+                { Con.Close(); }
+                if (Con.State == ConnectionState.Closed)
+                { Con.Open(); }
+
+                if (objReq.ID == 0 || objReq.ID == null)
+                {
+                    Fn_Get_MXID("OperationBreackDownMaster", "ID");
+                    objReq.ID = mxID;
+                }
+
+                SqlCommand cmd = new SqlCommand("USP_OPEARTION_BREACK_DOWN", Con);
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@ID", objReq.ID);
+                cmd.Parameters.AddWithValue("@StyleCode", objReq.StyleCode);
+                cmd.Parameters.AddWithValue("@ProcessName", objReq.ProcessName);
+                cmd.Parameters.AddWithValue("@CreatedBy", objReq.CreatedBy);
+                cmd.Parameters.AddWithValue("@QueryType", "InsertOperationMaster");
+                int i = 0;
+                i = cmd.ExecuteNonQuery();
+                if (i > 0)
+                {
+                    objResp.vErrorCode = 200;
+                    objResp.vErrorMsg = "Success";
+
+                    if (objReq.oList != null)
+                    {
+                        foreach (clsOPBreackDownDetail _oList in objReq.oList)
+                        {
+                            if (_oList.DetailID == 0 || _oList.DetailID == null)
+                            {
+                                Fn_Get_MXID("OperationBreackDown", "DetailID");
+                                _oList.DetailID = mxID;
+
+                                //if (Con.State == ConnectionState.Broken)
+                                //{ Con.Close(); }
+                                //if (Con.State == ConnectionState.Closed)
+                                //{ Con.Open(); }
+                            }
+
+                            if (_oList.SeqNo == 0 || _oList.OpNo == 0)
+                            {
+                            }
+                            else if (String.IsNullOrWhiteSpace(_oList.Descriptions) || String.IsNullOrWhiteSpace(_oList.Machine)
+                                || String.IsNullOrWhiteSpace(_oList.SubSection)
+                                || String.IsNullOrWhiteSpace(_oList.Product)
+                                || String.IsNullOrWhiteSpace(_oList.Skill)
+                                || String.IsNullOrWhiteSpace(_oList.Grade))
+                            {
+
+                            }
+                            else
+                            {
+                                SqlCommand cm1 = new SqlCommand("USP_OPEARTION_BREACK_DOWN", Con);
+                                cm1.CommandType = CommandType.StoredProcedure;
+                                cm1.Parameters.AddWithValue("@ID", objReq.ID);
+                                cm1.Parameters.AddWithValue("@DetailID", _oList.DetailID);
+                                cm1.Parameters.AddWithValue("@SeqNo", _oList.SeqNo);
+                                cm1.Parameters.AddWithValue("@OpNo", _oList.OpNo);
+                                cm1.Parameters.AddWithValue("@Descriptions", _oList.Descriptions);
+                                cm1.Parameters.AddWithValue("@Machine", _oList.Machine);
+                                cm1.Parameters.AddWithValue("@SubSection", _oList.SubSection);
+                                cm1.Parameters.AddWithValue("@StdMin", _oList.StdMin);
+                                cm1.Parameters.AddWithValue("@Rate", _oList.Rate);
+                                cm1.Parameters.AddWithValue("@Product", _oList.Product);
+                                cm1.Parameters.AddWithValue("@Skill", _oList.Skill);
+                                cm1.Parameters.AddWithValue("@Grade", _oList.Grade);
+                                cm1.Parameters.AddWithValue("@Folder", _oList.Folder);
+                                cm1.Parameters.AddWithValue("@Seamlength", _oList.Seamlength);
+                                cm1.Parameters.AddWithValue("@IsDirect", _oList.IsDirect);
+                                cm1.Parameters.AddWithValue("@ProgressPoint", _oList.ProgressPoint);
+                                cm1.Parameters.AddWithValue("@IsDispatch", _oList.IsDispatch);
+                                cm1.Parameters.AddWithValue("@IsDS", _oList.IsDS);
+                                cm1.Parameters.AddWithValue("@CreatedBy", objReq.CreatedBy);
+                                cm1.Parameters.AddWithValue("@QueryType", "InsertOperationDetail");
+                                int j = cm1.ExecuteNonQuery();
+                                if (j > 0)
+                                {
+                                    objResp.vErrorMsg = "Success";
+                                }
+                                else
+                                {
+                                    objResp.vErrorMsg = "Operation detail inserting failed ";
+                                    return objResp;
+                                }
+                            }
+                        }
+                    }
+                }
+                else
+                {
+                    objResp.vErrorCode = 400;
+                    objResp.vErrorMsg = "Operation mastar inserting failed";
+                }
+            }
+            catch (Exception exp)
+            {
+                objResp.vErrorCode = 500;
+                Logger.WriteLog("Function Name : Fn_Upload_Operation_BreackdownFile", " " + "Error Msg : " + exp.Message.ToString(), new StackTrace(exp, true));
+                objResp.vErrorMsg = exp.Message.ToString();
+            }
+            finally
+            {
+                Con.Close();
+            }
+            return objResp;
+        }
+
+        public List<clsOPBreackDownDetail> Fn_Get_Operation_BreackdownFile(clsOPBreackDownMaster objReq)
+        {
+            var objResp = new List<clsOPBreackDownDetail>();
+            var obj = new clsOPBreackDownDetail();
+            try
+            {
+                if (Con.State == ConnectionState.Broken)
+                { Con.Close(); }
+                if (Con.State == ConnectionState.Closed)
+                { Con.Open(); }
+
+                string strSql = "SELECT OD.MID, OD.DetailID, OD.SeqNo, OD.OpNo, OD.Descriptions, OD.Machine, OD.SubSection,";
+                strSql = strSql + " OD.StdMin, OD.Rate, OD.Product, OD.Skill, OD.Grade, OD.Folder, OD.Seamlength, OD.IsDirect,";
+                strSql = strSql + " OD.ProgressPoint, OD.IsDispatch, OD.DependOPNO, OD.IsDS, OD.CreatedBy, OM.StyleCode, OM.ProcessName,";
+                strSql = strSql + " FORMAT(OD.CreatedOn, 'dd-MMM-yyy') AS CreatedOn FROM OperationBreackDown OD";
+                strSql = strSql + " INNER JOIN OperationBreackDownMaster OM ON OD.MID = OM.ID WHERE 1=1";
+                if (!String.IsNullOrWhiteSpace(objReq.ProcessName))
+                {
+                    strSql = strSql + " AND OM.ProcessName = @ProcessName";
+                }
+                if (!String.IsNullOrWhiteSpace(objReq.StyleCode))
+                {
+                    strSql = strSql + " AND OM.StyleCode = @StyleCode";
+                }
+                if (objReq.ID != 0 && objReq.ID != null)
+                {
+                    strSql = strSql + " AND OM.ID = @ID ";
+                }
+                strSql = strSql + " ORDER BY OD.DetailID ASC ";
+
+                SqlCommand cmd = new SqlCommand(strSql, Con);
+                cmd.CommandType = CommandType.Text;
+                if (!String.IsNullOrWhiteSpace(objReq.ProcessName))
+                {
+                    cmd.Parameters.AddWithValue("@ProcessName", objReq.ProcessName);
+                }
+                if (!String.IsNullOrWhiteSpace(objReq.StyleCode))
+                {
+                    cmd.Parameters.AddWithValue("@StyleCode", objReq.StyleCode);
+                }
+                if (objReq.ID != 0 && objReq.ID != null)
+                {
+                    cmd.Parameters.AddWithValue("@ID", objReq.ID);
+                }
+
+                SqlDataAdapter da = new SqlDataAdapter(cmd);
+                DataSet ds = new DataSet();
+                da.Fill(ds);
+                int i = 0;
+                if (ds.Tables[0].Rows.Count > 0)
+                {
+                    while (ds.Tables[0].Rows.Count > i)
+                    {
+                        obj = new clsOPBreackDownDetail();
+                        obj.MID = Convert.ToInt64(ds.Tables[0].Rows[i]["MID"]);
+                        obj.DetailID = Convert.ToInt64(ds.Tables[0].Rows[i]["DetailID"]);
+                        obj.SeqNo = Convert.ToInt32(ds.Tables[0].Rows[i]["SeqNo"]);
+                        obj.OpNo = Convert.ToInt32(ds.Tables[0].Rows[i]["OpNo"]);
+                        obj.Descriptions = Convert.ToString(ds.Tables[0].Rows[i]["Descriptions"]);
+                        obj.Machine = Convert.ToString(ds.Tables[0].Rows[i]["Machine"]);
+                        obj.SubSection = Convert.ToString(ds.Tables[0].Rows[i]["SubSection"]);
+                        obj.StdMin = Convert.ToDecimal(ds.Tables[0].Rows[i]["StdMin"]);
+                        obj.Rate = Convert.ToDecimal(ds.Tables[0].Rows[i]["Rate"]);
+                        obj.Product = Convert.ToString(ds.Tables[0].Rows[i]["Product"]);
+                        obj.Skill = Convert.ToString(ds.Tables[0].Rows[i]["Skill"]);
+                        obj.Grade = Convert.ToString(ds.Tables[0].Rows[i]["Grade"]);
+                        obj.Folder = Convert.ToString(ds.Tables[0].Rows[i]["Folder"]);
+                        obj.Seamlength = Convert.ToString(ds.Tables[0].Rows[i]["Seamlength"]);
+                        obj.IsDirect = Convert.ToBoolean(ds.Tables[0].Rows[i]["IsDirect"]);
+                        obj.ProgressPoint = Convert.ToString(ds.Tables[0].Rows[i]["ProgressPoint"]);
+                        obj.IsDispatch = Convert.ToBoolean(ds.Tables[0].Rows[i]["IsDispatch"]);
+                        obj.DependOPNO = Convert.ToString(ds.Tables[0].Rows[i]["DependOPNO"]);
+                        obj.IsDS = Convert.ToBoolean(ds.Tables[0].Rows[i]["IsDS"]);
+                        obj.CreatedOn = Convert.ToString(ds.Tables[0].Rows[i]["CreatedOn"]);
+                        obj.CreatedBy = Convert.ToInt32(ds.Tables[0].Rows[i]["CreatedBy"]);
+
+                        obj.vErrorCode = 200;
+                        obj.vErrorMsg = "Success";
+                        objResp.Add(obj);
+                        i++;
+                    }
+                }
+                else
+                {
+                    obj.vErrorCode = 404;
+                    obj.vErrorMsg = "No Record found";
+                    objResp.Add(obj);
+                }
+
+            }
+            catch (Exception exp)
+            {
+                obj.vErrorCode = 500;
+                Logger.WriteLog("Function Name : Fn_Get_Operation_BreackdownFile", " " + "Error Msg : " + exp.Message.ToString(), new StackTrace(exp, true));
+                obj.vErrorMsg = exp.Message.ToString();
+                objResp.Add(obj);
+            }
+            finally
+            {
+                Con.Close();
+            }
+            return objResp;
+        }
+
     }
 }

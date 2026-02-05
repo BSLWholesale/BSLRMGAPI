@@ -72,5 +72,24 @@ namespace BSLDaman.Controllers
         }
 
         #endregion End Process Master 4-Feb-2026
+
+        [System.Web.Http.HttpPost]
+        [System.Web.Http.Route("api/Order/Fn_Upload_Operation_BreackdownFile")]
+        public clsOPBreackDownMaster Fn_Upload_Operation_BreackdownFile(clsOPBreackDownMaster objReq)
+        {
+            var objResp = new clsOPBreackDownMaster();
+            objResp = _DALOrder.Fn_Upload_Operation_BreackdownFile(objReq);
+            return objResp;
+        }
+
+        [System.Web.Http.HttpPost]
+        [System.Web.Http.Route("api/Order/Fn_Get_Operation_BreackdownFile")]
+        public List<clsOPBreackDownDetail> Fn_Get_Operation_BreackdownFile(clsOPBreackDownMaster objReq)
+        {
+            var objResp = new List<clsOPBreackDownDetail>();
+            objResp = _DALOrder.Fn_Get_Operation_BreackdownFile(objReq);
+            return objResp;
+        }
+
     }
 }
