@@ -3531,11 +3531,11 @@ namespace BSLDaman.DAL
                 if (Con.State == ConnectionState.Closed)
                 { Con.Open(); }
 
-                SqlCommand cmd = new SqlCommand("", Con);
+                SqlCommand cmd = new SqlCommand("USP_MASTERENTRY", Con);
                 cmd.CommandType = CommandType.StoredProcedure;
-                cmd.Parameters.AddWithValue("", objReq.DesignationName);
-                cmd.Parameters.AddWithValue("", objReq.CreatedBy);
-                cmd.Parameters.AddWithValue("", "");
+                cmd.Parameters.AddWithValue("@DesignationName", objReq.DesignationName);
+                cmd.Parameters.AddWithValue("@CreatedBy", objReq.CreatedBy);
+                cmd.Parameters.AddWithValue("@QueryType", "InsertDesignation");
 
                 int i = 0;
                 i = cmd.ExecuteNonQuery();
@@ -3562,6 +3562,128 @@ namespace BSLDaman.DAL
             }
             return objResp;
         }
+
+
+        public List<clsDesignation> Fn_Get_All_Designation(clsDesignation objReq)
+        {
+            var objResp = new List<clsDesignation>();
+            var obj = new clsDesignation();
+            try
+            {
+                if (Con.State == ConnectionState.Broken)
+                { Con.Close(); }
+                if (Con.State == ConnectionState.Closed)
+                { Con.Open(); }
+
+                string strSql = "SELECT DesignationID, DesignationName, CreatedBy,";
+                strSql = strSql + " FORMAT(CreatedOn, 'dd-MMM-yyyy') AS CreatedOn FROM DesignationMaster WHERE 1=1";
+                    
+                if (objReq.DesignationID != 0)
+                {
+                    strSql = strSql + " AND DesignationID = @DesignationID";
+                }
+                if (objReq.DesignationName != "" && objReq.DesignationName != null)
+                {
+                    strSql = strSql + " AND DesignationName LIKE '%@DesignationName%'";
+                }
+
+                SqlCommand cmd = new SqlCommand(strSql, Con);
+                cmd.CommandType = CommandType.Text;
+
+                if (objReq.DesignationID != 0)
+                {
+                    cmd.Parameters.AddWithValue("@DesignationID", objReq.DesignationID);
+                }
+                if (objReq.DesignationName != "" && objReq.DesignationName != null)
+                {
+                    cmd.Parameters.AddWithValue("@DesignationName", objReq.DesignationName);
+                }
+                SqlDataAdapter da = new SqlDataAdapter(cmd);
+                DataSet ds = new DataSet();
+                da.Fill(ds);
+                int i = 0;
+                if (ds.Tables[0].Rows.Count > 0)
+                {
+                    while (ds.Tables[0].Rows.Count > i)
+                    {
+                        obj.DesignationID = Convert.ToInt64(ds.Tables[0].Rows[i]["DesignationID"]);
+                        obj.DesignationName = Convert.ToString(ds.Tables[0].Rows[i]["DesignationName"]);
+                        obj.CreatedBy = Convert.ToInt32(ds.Tables[0].Rows[i]["CreatedBy"]);
+                        obj.CreatedOn = Convert.ToString(ds.Tables[0].Rows[i]["CreatedOn"]);
+
+                        obj.vErrorCode = 200;
+                        obj.vErrorMsg = "Success";
+                        objResp.Add(obj);
+                        i++;
+                    }
+                }
+                else
+                {
+                    obj.vErrorCode = 404;
+                    obj.vErrorMsg = "No Record found.";
+                    objResp.Add(obj);
+                }
+            }
+            catch (Exception exp)
+            {
+                obj.vErrorCode = 500;
+                Logger.WriteLog("Function Name : Fn_Get_All_Designation", " " + "Error Msg : " + exp.Message.ToString(), new StackTrace(exp, true));
+                obj.vErrorMsg = exp.Message.ToString();
+                objResp.Add(obj);
+            }
+            finally
+            {
+                Con.Close();
+            }
+            return objResp;
+        }
+
+
+
+        public clsDesignation Fn_Update_DesignationDetails_By_ID(clsDesignation objReq)
+        {
+            var objResp = new clsDesignation();
+            try
+            {
+                if (Con.State == ConnectionState.Broken)
+                { Con.Close(); }
+                if (Con.State == ConnectionState.Closed)
+                { Con.Open(); }
+
+                SqlCommand cmd = new SqlCommand("USP_MASTERENTRY", Con);
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@DesignationID", objReq.DesignationID);
+                cmd.Parameters.AddWithValue("@DesignationName", objReq.DesignationName);
+                cmd.Parameters.AddWithValue("@ModifiedBy", objReq.ModifiedBy);
+                cmd.Parameters.AddWithValue("@QueryType", "UpdateDesignation");
+
+                int i = 0;
+                i = cmd.ExecuteNonQuery();
+                if (i > 0)
+                {
+                    objResp.vErrorCode = 200;
+                    objResp.vErrorMsg = "Success";
+                }
+                else
+                {
+                    objResp.vErrorCode = 400;
+                    objResp.vErrorMsg = "Updating Failed";
+                }
+            }
+            catch (Exception exp)
+            {
+                objResp.vErrorCode = 500;
+                Logger.WriteLog("Function Name : Fn_Update_DesignationDetails_By_ID", " " + "Error Msg : " + exp.Message.ToString(), new StackTrace(exp, true));
+                objResp.vErrorMsg = exp.Message.ToString();
+            }
+            finally
+            {
+                Con.Close();
+            }
+            return objResp;
+        }
+
+
 
 
     }
