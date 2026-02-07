@@ -261,4 +261,70 @@ namespace BSLDaman.Models
         public string vErrorMsg { get; set; }
         public int vErrorCode { get; set; }
     }
+
+    public class clsBundleSize
+    {
+        public Int64 LayID { get; set; }
+        public Int64 SizeSelectionID { get; set; }
+        public string SizeName { get; set; }
+        public int SizeID { get; set; }
+        public int Freq { get; set; }
+        public int CreatedBy { get; set; }
+        public string CreatedOn { get; set; }
+        public int ModifiedBy { get; set; }
+        public string ModifiedOn { get; set; }
+        public string vErrorMsg { get; set; }
+        public int vErrorCode { get; set; }
+    }
+
+    public class clsBundleColor
+    {
+        public Int64 ColorSelectionID { get; set; }
+        public Int64 SizeSelectionID { get; set; }
+        public string ColorName { get; set; }
+        public int CreatedBy { get; set; }
+        public string CreatedOn { get; set; }
+        public int ModifiedBy { get; set; }
+        public string ModifiedOn { get; set; }
+        public string vErrorMsg { get; set; }
+        public int vErrorCode { get; set; }
+    }
+
+    public class clsBundleShade
+    {
+        public Int64 ShadeSelectionID { get; set; }
+        public Int64 ColorSelectionID { get; set; }
+        public string ShadeName { get; set; }
+        public int CreatedBy { get; set; }
+        public int Piles { get; set; }
+        public string CreatedOn { get; set; }
+        public int ModifiedBy { get; set; }
+        public string ModifiedOn { get; set; }
+        public string vErrorMsg { get; set; }
+        public int vErrorCode { get; set; }
+    }
+
+    public class clsBundleCompile
+    {
+        public Int64 ShadeSelectionID { get; set; }
+        public Int64 BundleID { get; set; }
+        public int BundleNo { get; set; }
+        public string SizeName { get; set; }
+        public string ColorName { get; set; }
+        public string ShadeName { get; set; }
+        public int Qty { get; set; }
+        public int PlyFrom { get; set; }
+        public int PlyTo { get; set; }
+        public int LotNo { get; set; }
+        public string SubSection { get; set; }
+        public bool IsDispatch { get; set; }
+        public string StyleCode { get; set; }
+        public string OrderNo { get; set; }
+        public int CreatedBy { get; set; }
+        public string CreatedOn { get; set; }
+        public int ModifiedBy { get; set; }
+        public string ModifiedOn { get; set; }
+        public string vErrorMsg { get; set; }
+        public int vErrorCode { get; set; }
+    }
 }

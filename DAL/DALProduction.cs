@@ -827,5 +827,756 @@ namespace BSLDaman.DAL
         }
 
         #endregion End Layer- Bundle 6-Feb-2026
+
+        #region Start Size- Bundle 7-Feb-2026
+
+        public clsBundleSize Fn_Insert_Bundle_Size(clsBundleSize objReq)
+        {
+            var objResp = new clsBundleSize();
+
+            try
+            {
+
+                if (Con.State == ConnectionState.Broken)
+                { Con.Close(); }
+                if (Con.State == ConnectionState.Closed)
+                { Con.Open(); }
+
+                if (objReq.SizeSelectionID == 0 || objReq.SizeSelectionID == null)
+                {
+                    Fn_Get_MXID("BundleSizeSelection", "SizeSelectionID");
+                    objReq.LayID = mxID;
+                }
+
+                SqlCommand cmd = new SqlCommand("USP_BUNDLE_LAYER", Con);
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@LayID", objReq.LayID);
+                cmd.Parameters.AddWithValue("@SizeSelectionID", objReq.SizeSelectionID);
+                cmd.Parameters.AddWithValue("@SizeName", objReq.SizeName);
+                cmd.Parameters.AddWithValue("@SizeID", objReq.SizeID);
+                cmd.Parameters.AddWithValue("@Freq", objReq.Freq);
+                cmd.Parameters.AddWithValue("@CreatedBy", objReq.CreatedBy);
+                cmd.Parameters.AddWithValue("@QueryType", "InsertBundleSize");
+                int i = 0;
+                i = cmd.ExecuteNonQuery();
+                if (i > 0)
+                {
+                    objResp.vErrorCode = 200;
+                    objResp.vErrorMsg = "Success";
+                }
+                else
+                {
+                    objResp.vErrorCode = 400;
+                    objResp.vErrorMsg = "Size inserting Failed";
+                }
+            }
+            catch (Exception exp)
+            {
+                objResp.vErrorCode = 500;
+                Logger.WriteLog("Function Name : Fn_Insert_Bundle_Size", " " + "Error Msg : " + exp.Message.ToString(), new StackTrace(exp, true));
+                objResp.vErrorMsg = exp.Message.ToString();
+            }
+            finally
+            {
+                Con.Close();
+            }
+            return objResp;
+        }
+
+        public clsBundleSize Fn_Delete_Bundle_Size(clsBundleSize objReq)
+        {
+            var objResp = new clsBundleSize();
+            try
+            {
+
+                if (Con.State == ConnectionState.Broken)
+                { Con.Close(); }
+                if (Con.State == ConnectionState.Closed)
+                { Con.Open(); }
+
+                SqlCommand cmd = new SqlCommand("USP_BUNDLE_LAYER", Con);
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@SizeSelectionID", objReq.SizeSelectionID);
+                cmd.Parameters.AddWithValue("@CreatedBy", objReq.CreatedBy);
+                cmd.Parameters.AddWithValue("@QueryType", "DeleteBundleSize");
+                int i = 0;
+                i = cmd.ExecuteNonQuery();
+                if (i > 0)
+                {
+                    objResp.vErrorCode = 200;
+                    objResp.vErrorMsg = "Success";
+                }
+                else
+                {
+                    objResp.vErrorCode = 400;
+                    objResp.vErrorMsg = "Deleting Failed";
+                }
+            }
+            catch (Exception exp)
+            {
+                objResp.vErrorCode = 500;
+                Logger.WriteLog("Function Name : Fn_Delete_Bundle_Size", " " + "Error Msg : " + exp.Message.ToString(), new StackTrace(exp, true));
+                objResp.vErrorMsg = exp.Message.ToString();
+            }
+            finally
+            {
+                Con.Close();
+            }
+            return objResp;
+        }
+
+        public List<clsBundleSize> Fn_Get_Bundle_Size(clsBundleSize objReq)
+        {
+            var objResp = new List<clsBundleSize>();
+            var obj = new clsBundleSize();
+            try
+            {
+                if (Con.State == ConnectionState.Broken)
+                { Con.Close(); }
+                if (Con.State == ConnectionState.Closed)
+                { Con.Open(); }
+
+                string strSql = "SELECT SizeSelectionID, LayID, SizeName, Freq, SizeID,";
+                strSql = strSql + " CreatedBy, FORMAT(CreatedOn, 'dd-MMM-yyy') AS CreatedOn FROM BundleSizeSelection WHERE 1=1";
+                if (!String.IsNullOrWhiteSpace(objReq.SizeName))
+                {
+                    strSql = strSql + " AND SizeName = @SizeName";
+                }
+                if (objReq.LayID != 0 && objReq.LayID != null)
+                {
+                    strSql = strSql + " AND LayID = @LayID ";
+                }
+                if (objReq.SizeSelectionID != 0 && objReq.SizeSelectionID != null)
+                {
+                    strSql = strSql + " AND LayID = @LayID ";
+                }
+                strSql = strSql + " ORDER BY SizeSelectionID DESC ";
+
+                SqlCommand cmd = new SqlCommand(strSql, Con);
+                cmd.CommandType = CommandType.Text;
+                if (!String.IsNullOrWhiteSpace(objReq.SizeName))
+                {
+                    cmd.Parameters.AddWithValue("@SizeName", objReq.SizeName);
+                }
+                if (objReq.LayID != 0 && objReq.LayID != null)
+                {
+                    cmd.Parameters.AddWithValue("@LayID", objReq.LayID);
+                }
+                if (objReq.SizeSelectionID != 0 && objReq.SizeSelectionID != null)
+                {
+                    cmd.Parameters.AddWithValue("@SizeSelectionID", objReq.SizeSelectionID);
+                }
+                SqlDataAdapter da = new SqlDataAdapter(cmd);
+                DataSet ds = new DataSet();
+                da.Fill(ds);
+                int i = 0;
+                if (ds.Tables[0].Rows.Count > 0)
+                {
+                    while (ds.Tables[0].Rows.Count > i)
+                    {
+                        obj = new clsBundleSize();
+                        obj.LayID = Convert.ToInt64(ds.Tables[0].Rows[i]["LayID"]);
+                        obj.SizeSelectionID = Convert.ToInt64(ds.Tables[0].Rows[i]["SizeSelectionID"]);
+                        obj.SizeID = Convert.ToInt32(ds.Tables[0].Rows[i]["SizeID"]);
+                        obj.SizeName = Convert.ToString(ds.Tables[0].Rows[i]["SizeName"]);
+                        obj.Freq = Convert.ToInt32(ds.Tables[0].Rows[i]["Freq"]);
+                        obj.CreatedBy = Convert.ToInt32(ds.Tables[0].Rows[i]["CreatedBy"]);
+                        obj.CreatedOn = Convert.ToString(ds.Tables[0].Rows[i]["CreatedOn"]);
+                        obj.vErrorCode = 200;
+                        obj.vErrorMsg = "Success";
+                        objResp.Add(obj);
+                        i++;
+                    }
+                }
+                else
+                {
+                    obj.vErrorCode = 404;
+                    obj.vErrorMsg = "No Record found";
+                    objResp.Add(obj);
+                }
+
+            }
+            catch (Exception exp)
+            {
+                obj.vErrorCode = 500;
+                Logger.WriteLog("Function Name : Fn_Get_Bundle_Size", " " + "Error Msg : " + exp.Message.ToString(), new StackTrace(exp, true));
+                obj.vErrorMsg = exp.Message.ToString();
+                objResp.Add(obj);
+            }
+            finally
+            {
+                Con.Close();
+            }
+            return objResp;
+        }
+
+        #endregion End Size- Bundle 7-Feb-2026
+
+        #region Start Color- Bundle 7-Feb-2026
+
+        public clsBundleColor Fn_Insert_Bundle_Color(clsBundleColor objReq)
+        {
+            var objResp = new clsBundleColor();
+
+            try
+            {
+
+                if (Con.State == ConnectionState.Broken)
+                { Con.Close(); }
+                if (Con.State == ConnectionState.Closed)
+                { Con.Open(); }
+
+                if (objReq.ColorSelectionID == 0 || objReq.ColorSelectionID == null)
+                {
+                    Fn_Get_MXID("BundleLayerMaster", "ColorSelectionID");
+                    objReq.ColorSelectionID = mxID;
+                }
+
+                SqlCommand cmd = new SqlCommand("USP_BUNDLE_LAYER", Con);
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@ColorSelectionID", objReq.ColorSelectionID);
+                cmd.Parameters.AddWithValue("@SizeSelectionID", objReq.SizeSelectionID);
+                cmd.Parameters.AddWithValue("@ColorName", objReq.ColorName);
+                cmd.Parameters.AddWithValue("@CreatedBy", objReq.CreatedBy);
+                cmd.Parameters.AddWithValue("@QueryType", "InsertBundleColor");
+                int i = 0;
+                i = cmd.ExecuteNonQuery();
+                if (i > 0)
+                {
+                    objResp.vErrorCode = 200;
+                    objResp.vErrorMsg = "Success";
+                }
+                else
+                {
+                    objResp.vErrorCode = 400;
+                    objResp.vErrorMsg = "Size inserting Failed";
+                }
+            }
+            catch (Exception exp)
+            {
+                objResp.vErrorCode = 500;
+                Logger.WriteLog("Function Name : Fn_Insert_Bundle_Color", " " + "Error Msg : " + exp.Message.ToString(), new StackTrace(exp, true));
+                objResp.vErrorMsg = exp.Message.ToString();
+            }
+            finally
+            {
+                Con.Close();
+            }
+            return objResp;
+        }
+
+        public clsBundleColor Fn_Delete_Bundle_Color(clsBundleColor objReq)
+        {
+            var objResp = new clsBundleColor();
+            try
+            {
+
+                if (Con.State == ConnectionState.Broken)
+                { Con.Close(); }
+                if (Con.State == ConnectionState.Closed)
+                { Con.Open(); }
+
+                SqlCommand cmd = new SqlCommand("USP_BUNDLE_LAYER", Con);
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@ColorSelectionID", objReq.ColorSelectionID);
+                cmd.Parameters.AddWithValue("@CreatedBy", objReq.CreatedBy);
+                cmd.Parameters.AddWithValue("@QueryType", "DeleteBundleColor");
+                int i = 0;
+                i = cmd.ExecuteNonQuery();
+                if (i > 0)
+                {
+                    objResp.vErrorCode = 200;
+                    objResp.vErrorMsg = "Success";
+                }
+                else
+                {
+                    objResp.vErrorCode = 400;
+                    objResp.vErrorMsg = "Deleting Failed";
+                }
+            }
+            catch (Exception exp)
+            {
+                objResp.vErrorCode = 500;
+                Logger.WriteLog("Function Name : Fn_Delete_Bundle_Color", " " + "Error Msg : " + exp.Message.ToString(), new StackTrace(exp, true));
+                objResp.vErrorMsg = exp.Message.ToString();
+            }
+            finally
+            {
+                Con.Close();
+            }
+            return objResp;
+        }
+
+        public List<clsBundleColor> Fn_Get_Bundle_Color(clsBundleColor objReq)
+        {
+            var objResp = new List<clsBundleColor>();
+            var obj = new clsBundleColor();
+            try
+            {
+                if (Con.State == ConnectionState.Broken)
+                { Con.Close(); }
+                if (Con.State == ConnectionState.Closed)
+                { Con.Open(); }
+
+                string strSql = "SELECT ColorSelectionID, SizeSelectionID, ColorName,";
+                strSql = strSql + " CreatedBy, FORMAT(CreatedOn, 'dd-MMM-yyy') AS CreatedOn FROM BundleSizeSelection WHERE 1=1";
+                if (!String.IsNullOrWhiteSpace(objReq.ColorName))
+                {
+                    strSql = strSql + " AND ColorName = @ColorName";
+                }
+                if (objReq.ColorSelectionID != 0 && objReq.ColorSelectionID != null)
+                {
+                    strSql = strSql + " AND ColorSelectionID = @ColorSelectionID ";
+                }
+                if (objReq.SizeSelectionID != 0 && objReq.SizeSelectionID != null)
+                {
+                    strSql = strSql + " AND LayID = @LayID ";
+                }
+                strSql = strSql + " ORDER BY ColorSelectionID DESC ";
+
+                SqlCommand cmd = new SqlCommand(strSql, Con);
+                cmd.CommandType = CommandType.Text;
+                if (!String.IsNullOrWhiteSpace(objReq.ColorName))
+                {
+                    cmd.Parameters.AddWithValue("@ColorName", objReq.ColorName);
+                }
+                if (objReq.ColorSelectionID != 0 && objReq.ColorSelectionID != null)
+                {
+                    cmd.Parameters.AddWithValue("@ColorSelectionID", objReq.ColorSelectionID);
+                }
+                if (objReq.SizeSelectionID != 0 && objReq.SizeSelectionID != null)
+                {
+                    cmd.Parameters.AddWithValue("@SizeSelectionID", objReq.SizeSelectionID);
+                }
+                SqlDataAdapter da = new SqlDataAdapter(cmd);
+                DataSet ds = new DataSet();
+                da.Fill(ds);
+                int i = 0;
+                if (ds.Tables[0].Rows.Count > 0)
+                {
+                    while (ds.Tables[0].Rows.Count > i)
+                    {
+                        obj = new clsBundleColor();
+                        obj.ColorSelectionID = Convert.ToInt64(ds.Tables[0].Rows[i]["ColorSelectionID"]);
+                        obj.SizeSelectionID = Convert.ToInt64(ds.Tables[0].Rows[i]["SizeSelectionID"]);
+                        obj.ColorName = Convert.ToString(ds.Tables[0].Rows[i]["ColorName"]);
+                        obj.CreatedBy = Convert.ToInt32(ds.Tables[0].Rows[i]["CreatedBy"]);
+                        obj.CreatedOn = Convert.ToString(ds.Tables[0].Rows[i]["CreatedOn"]);
+                        obj.vErrorCode = 200;
+                        obj.vErrorMsg = "Success";
+                        objResp.Add(obj);
+                        i++;
+                    }
+                }
+                else
+                {
+                    obj.vErrorCode = 404;
+                    obj.vErrorMsg = "No Record found";
+                    objResp.Add(obj);
+                }
+
+            }
+            catch (Exception exp)
+            {
+                obj.vErrorCode = 500;
+                Logger.WriteLog("Function Name : Fn_Get_Bundle_Color", " " + "Error Msg : " + exp.Message.ToString(), new StackTrace(exp, true));
+                obj.vErrorMsg = exp.Message.ToString();
+                objResp.Add(obj);
+            }
+            finally
+            {
+                Con.Close();
+            }
+            return objResp;
+        }
+
+        #endregion End Color- Bundle 7-Feb-2026
+
+        #region Start Shade- Bundle 7-Feb-2026
+
+        public clsBundleShade Fn_Insert_Bundle_Shade(clsBundleShade objReq)
+        {
+            var objResp = new clsBundleShade();
+
+            try
+            {
+
+                if (Con.State == ConnectionState.Broken)
+                { Con.Close(); }
+                if (Con.State == ConnectionState.Closed)
+                { Con.Open(); }
+
+                if (objReq.ColorSelectionID == 0 || objReq.ColorSelectionID == null)
+                {
+                    Fn_Get_MXID("BundleShadeSelection", "ShadeSelectionID");
+                    objReq.ColorSelectionID = mxID;
+                }
+
+                SqlCommand cmd = new SqlCommand("USP_BUNDLE_LAYER", Con);
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@ColorSelectionID", objReq.ColorSelectionID);
+                cmd.Parameters.AddWithValue("@ShadeSelectionID", objReq.ShadeSelectionID);
+                cmd.Parameters.AddWithValue("@ShadeName", objReq.ShadeName);
+                cmd.Parameters.AddWithValue("@Piles", objReq.Piles);
+                cmd.Parameters.AddWithValue("@CreatedBy", objReq.CreatedBy);
+                cmd.Parameters.AddWithValue("@QueryType", "InsertBundleShade");
+                int i = 0;
+                i = cmd.ExecuteNonQuery();
+                if (i > 0)
+                {
+                    objResp.vErrorCode = 200;
+                    objResp.vErrorMsg = "Success";
+                }
+                else
+                {
+                    objResp.vErrorCode = 400;
+                    objResp.vErrorMsg = "Shade inserting Failed";
+                }
+            }
+            catch (Exception exp)
+            {
+                objResp.vErrorCode = 500;
+                Logger.WriteLog("Function Name : Fn_Insert_Bundle_Shade", " " + "Error Msg : " + exp.Message.ToString(), new StackTrace(exp, true));
+                objResp.vErrorMsg = exp.Message.ToString();
+            }
+            finally
+            {
+                Con.Close();
+            }
+            return objResp;
+        }
+
+        public clsBundleShade Fn_Delete_Bundle_Shade(clsBundleShade objReq)
+        {
+            var objResp = new clsBundleShade();
+            try
+            {
+
+                if (Con.State == ConnectionState.Broken)
+                { Con.Close(); }
+                if (Con.State == ConnectionState.Closed)
+                { Con.Open(); }
+
+                SqlCommand cmd = new SqlCommand("USP_BUNDLE_LAYER", Con);
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@ShadeSelectionID", objReq.ShadeSelectionID);
+                cmd.Parameters.AddWithValue("@CreatedBy", objReq.CreatedBy);
+                cmd.Parameters.AddWithValue("@QueryType", "DeleteBundleShade");
+                int i = 0;
+                i = cmd.ExecuteNonQuery();
+                if (i > 0)
+                {
+                    objResp.vErrorCode = 200;
+                    objResp.vErrorMsg = "Success";
+                }
+                else
+                {
+                    objResp.vErrorCode = 400;
+                    objResp.vErrorMsg = "Deleting Failed";
+                }
+            }
+            catch (Exception exp)
+            {
+                objResp.vErrorCode = 500;
+                Logger.WriteLog("Function Name : Fn_Delete_Bundle_Shade", " " + "Error Msg : " + exp.Message.ToString(), new StackTrace(exp, true));
+                objResp.vErrorMsg = exp.Message.ToString();
+            }
+            finally
+            {
+                Con.Close();
+            }
+            return objResp;
+        }
+
+        public List<clsBundleShade> Fn_Get_Bundle_Shade(clsBundleShade objReq)
+        {
+            var objResp = new List<clsBundleShade>();
+            var obj = new clsBundleShade();
+            try
+            {
+                if (Con.State == ConnectionState.Broken)
+                { Con.Close(); }
+                if (Con.State == ConnectionState.Closed)
+                { Con.Open(); }
+
+                string strSql = "SELECT ColorSelectionID, ShadeSelectionID, ShadeName, Piles,";
+                strSql = strSql + " CreatedBy, FORMAT(CreatedOn, 'dd-MMM-yyy') AS CreatedOn FROM BundleSizeSelection WHERE 1=1";
+                if (!String.IsNullOrWhiteSpace(objReq.ShadeName))
+                {
+                    strSql = strSql + " AND ShadeName = @ShadeName";
+                }
+                if (objReq.ColorSelectionID != 0 && objReq.ColorSelectionID != null)
+                {
+                    strSql = strSql + " AND ColorSelectionID = @ColorSelectionID ";
+                }
+                if (objReq.ShadeSelectionID != 0 && objReq.ShadeSelectionID != null)
+                {
+                    strSql = strSql + " AND ShadeSelectionID = @ShadeSelectionID ";
+                }
+                strSql = strSql + " ORDER BY ShadeSelectionID DESC ";
+
+                SqlCommand cmd = new SqlCommand(strSql, Con);
+                cmd.CommandType = CommandType.Text;
+                if (!String.IsNullOrWhiteSpace(objReq.ShadeName))
+                {
+                    cmd.Parameters.AddWithValue("@ShadeName", objReq.ShadeName);
+                }
+                if (objReq.ColorSelectionID != 0 && objReq.ColorSelectionID != null)
+                {
+                    cmd.Parameters.AddWithValue("@ColorSelectionID", objReq.ColorSelectionID);
+                }
+                if (objReq.ShadeSelectionID != 0 && objReq.ShadeSelectionID != null)
+                {
+                    cmd.Parameters.AddWithValue("@ShadeSelectionID", objReq.ShadeSelectionID);
+                }
+                SqlDataAdapter da = new SqlDataAdapter(cmd);
+                DataSet ds = new DataSet();
+                da.Fill(ds);
+                int i = 0;
+                if (ds.Tables[0].Rows.Count > 0)
+                {
+                    while (ds.Tables[0].Rows.Count > i)
+                    {
+                        obj = new clsBundleShade();
+                        obj.ColorSelectionID = Convert.ToInt64(ds.Tables[0].Rows[i]["ColorSelectionID"]);
+                        obj.ShadeSelectionID = Convert.ToInt64(ds.Tables[0].Rows[i]["ShadeSelectionID"]);
+                        obj.ShadeName = Convert.ToString(ds.Tables[0].Rows[i]["ShadeName"]);
+                        obj.CreatedBy = Convert.ToInt32(ds.Tables[0].Rows[i]["CreatedBy"]);
+                        obj.Piles = Convert.ToInt32(ds.Tables[0].Rows[i]["Piles"]);
+                        obj.CreatedOn = Convert.ToString(ds.Tables[0].Rows[i]["CreatedOn"]);
+                        obj.vErrorCode = 200;
+                        obj.vErrorMsg = "Success";
+                        objResp.Add(obj);
+                        i++;
+                    }
+                }
+                else
+                {
+                    obj.vErrorCode = 404;
+                    obj.vErrorMsg = "No Record found";
+                    objResp.Add(obj);
+                }
+
+            }
+            catch (Exception exp)
+            {
+                obj.vErrorCode = 500;
+                Logger.WriteLog("Function Name : Fn_Get_Bundle_Shade", " " + "Error Msg : " + exp.Message.ToString(), new StackTrace(exp, true));
+                obj.vErrorMsg = exp.Message.ToString();
+                objResp.Add(obj);
+            }
+            finally
+            {
+                Con.Close();
+            }
+            return objResp;
+        }
+
+        #endregion End Shade- Bundle 7-Feb-2026
+
+        #region Start Compile- Bundle 7-Feb-2026
+
+        public clsBundleCompile Fn_Insert_Bundle_Compile(clsBundleCompile objReq)
+        {
+            var objResp = new clsBundleCompile();
+
+            try
+            {
+
+                if (Con.State == ConnectionState.Broken)
+                { Con.Close(); }
+                if (Con.State == ConnectionState.Closed)
+                { Con.Open(); }
+
+                if (objReq.BundleID == 0 || objReq.BundleID == null)
+                {
+                    Fn_Get_MXID("BundleCompile", "BundleID");
+                    objReq.BundleID = mxID;
+                }
+
+                SqlCommand cmd = new SqlCommand("USP_BUNDLE_LAYER", Con);
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@BundleID", objReq.BundleID);
+                cmd.Parameters.AddWithValue("@ShadeSelectionID", objReq.ShadeSelectionID);
+                cmd.Parameters.AddWithValue("@BundleNo", objReq.BundleNo);
+                cmd.Parameters.AddWithValue("@SizeName", objReq.SizeName);
+                cmd.Parameters.AddWithValue("@ColorName", objReq.ColorName);
+                cmd.Parameters.AddWithValue("@ShadeName", objReq.ShadeName);
+                cmd.Parameters.AddWithValue("@Qty", objReq.Qty);
+                cmd.Parameters.AddWithValue("@PlyFrom", objReq.PlyFrom);
+                cmd.Parameters.AddWithValue("@PlyTo", objReq.PlyTo);
+                cmd.Parameters.AddWithValue("@LotNo", objReq.LotNo);
+                cmd.Parameters.AddWithValue("@SubSection", objReq.SubSection);
+                cmd.Parameters.AddWithValue("@Dispatch", objReq.IsDispatch);
+                cmd.Parameters.AddWithValue("@StyleCode", objReq.StyleCode);
+                cmd.Parameters.AddWithValue("@OrderNo", objReq.OrderNo);
+                cmd.Parameters.AddWithValue("@CreatedBy", objReq.CreatedBy);
+                cmd.Parameters.AddWithValue("@QueryType", "InsertBundleCompile");
+                int i = 0;
+                i = cmd.ExecuteNonQuery();
+                if (i > 0)
+                {
+                    objResp.vErrorCode = 200;
+                    objResp.vErrorMsg = "Success";
+                }
+                else
+                {
+                    objResp.vErrorCode = 400;
+                    objResp.vErrorMsg = "Shade inserting Failed";
+                }
+            }
+            catch (Exception exp)
+            {
+                objResp.vErrorCode = 500;
+                Logger.WriteLog("Function Name : Fn_Insert_Bundle_Compile", " " + "Error Msg : " + exp.Message.ToString(), new StackTrace(exp, true));
+                objResp.vErrorMsg = exp.Message.ToString();
+            }
+            finally
+            {
+                Con.Close();
+            }
+            return objResp;
+        }
+
+        public clsBundleCompile Fn_Delete_Bundle_Compile(clsBundleCompile objReq)
+        {
+            var objResp = new clsBundleCompile();
+            try
+            {
+
+                if (Con.State == ConnectionState.Broken)
+                { Con.Close(); }
+                if (Con.State == ConnectionState.Closed)
+                { Con.Open(); }
+
+                SqlCommand cmd = new SqlCommand("USP_BUNDLE_LAYER", Con);
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@BundleID", objReq.BundleID);
+                cmd.Parameters.AddWithValue("@CreatedBy", objReq.CreatedBy);
+                cmd.Parameters.AddWithValue("@QueryType", "DeleteBundleCompile");
+                int i = 0;
+                i = cmd.ExecuteNonQuery();
+                if (i > 0)
+                {
+                    objResp.vErrorCode = 200;
+                    objResp.vErrorMsg = "Success";
+                }
+                else
+                {
+                    objResp.vErrorCode = 400;
+                    objResp.vErrorMsg = "Deleting Failed";
+                }
+            }
+            catch (Exception exp)
+            {
+                objResp.vErrorCode = 500;
+                Logger.WriteLog("Function Name : Fn_Delete_Bundle_Compile", " " + "Error Msg : " + exp.Message.ToString(), new StackTrace(exp, true));
+                objResp.vErrorMsg = exp.Message.ToString();
+            }
+            finally
+            {
+                Con.Close();
+            }
+            return objResp;
+        }
+
+        public List<clsBundleCompile> Fn_Get_Bundle_Compile(clsBundleCompile objReq)
+        {
+            var objResp = new List<clsBundleCompile>();
+            var obj = new clsBundleCompile();
+            try
+            {
+                if (Con.State == ConnectionState.Broken)
+                { Con.Close(); }
+                if (Con.State == ConnectionState.Closed)
+                { Con.Open(); }
+
+                string strSql = "SELECT BundleID, ShadeSelectionID, BundleNo, SizeName, ColorName, ShadeName,";
+                strSql = strSql + " Qty, PlyFrom, PlyTo, LotNo, SubSection, Dispatch, StyleCode, OrderNo,";
+                strSql = strSql + " CreatedBy, FORMAT(CreatedOn, 'dd-MMM-yyy') AS CreatedOn FROM BundleSizeSelection WHERE 1=1";
+                if (!String.IsNullOrWhiteSpace(objReq.StyleCode))
+                {
+                    strSql = strSql + " AND StyleCode = @StyleCode";
+                }
+                if (!String.IsNullOrWhiteSpace(objReq.OrderNo))
+                {
+                    strSql = strSql + " AND OrderNo = @OrderNo";
+                }
+                if (objReq.BundleID != 0 && objReq.BundleID != null)
+                {
+                    strSql = strSql + " AND BundleID = @BundleID ";
+                }
+                
+                strSql = strSql + " ORDER BY BundleID DESC ";
+
+                SqlCommand cmd = new SqlCommand(strSql, Con);
+                cmd.CommandType = CommandType.Text;
+                if (!String.IsNullOrWhiteSpace(objReq.StyleCode))
+                {
+                    cmd.Parameters.AddWithValue("@StyleCode", objReq.StyleCode);
+                }
+                if (!String.IsNullOrWhiteSpace(objReq.OrderNo))
+                {
+                    cmd.Parameters.AddWithValue("@OrderNo", objReq.OrderNo);
+                }
+                if (objReq.BundleID != 0 && objReq.BundleID != null)
+                {
+                    cmd.Parameters.AddWithValue("@BundleID", objReq.BundleID);
+                }
+                
+                SqlDataAdapter da = new SqlDataAdapter(cmd);
+                DataSet ds = new DataSet();
+                da.Fill(ds);
+                int i = 0;
+                if (ds.Tables[0].Rows.Count > 0)
+                {
+                    while (ds.Tables[0].Rows.Count > i)
+                    {
+                        obj = new clsBundleCompile();
+                        obj.BundleID = Convert.ToInt64(ds.Tables[0].Rows[i]["BundleID"]);
+                        obj.ShadeSelectionID = Convert.ToInt64(ds.Tables[0].Rows[i]["ShadeSelectionID"]);
+                        obj.BundleNo = Convert.ToInt32(ds.Tables[0].Rows[i]["BundleNo"]);
+                        obj.SizeName = Convert.ToString(ds.Tables[0].Rows[i]["SizeName"]);
+                        obj.ColorName = Convert.ToString(ds.Tables[0].Rows[i]["ColorName"]);
+                        obj.ShadeName = Convert.ToString(ds.Tables[0].Rows[i]["ShadeName"]);
+                        obj.Qty = Convert.ToInt32(ds.Tables[0].Rows[i]["Qty"]);
+                        obj.PlyFrom = Convert.ToInt32(ds.Tables[0].Rows[i]["PlyFrom"]);
+                        obj.PlyTo = Convert.ToInt32(ds.Tables[0].Rows[i]["PlyTo"]);
+                        obj.LotNo = Convert.ToInt32(ds.Tables[0].Rows[i]["LotNo"]);
+                        obj.SubSection = Convert.ToString(ds.Tables[0].Rows[i]["SubSection"]);
+                        obj.IsDispatch = Convert.ToBoolean(ds.Tables[0].Rows[i]["Dispatch"]);
+                        obj.StyleCode = Convert.ToString(ds.Tables[0].Rows[i]["StyleCode"]);
+                        obj.OrderNo = Convert.ToString(ds.Tables[0].Rows[i]["OrderNo"]);
+                        obj.CreatedBy = Convert.ToInt32(ds.Tables[0].Rows[i]["CreatedBy"]);
+                        obj.CreatedOn = Convert.ToString(ds.Tables[0].Rows[i]["CreatedOn"]);
+                        obj.vErrorCode = 200;
+                        obj.vErrorMsg = "Success";
+                        objResp.Add(obj);
+                        i++;
+                    }
+                }
+                else
+                {
+                    obj.vErrorCode = 404;
+                    obj.vErrorMsg = "No Record found";
+                    objResp.Add(obj);
+                }
+
+            }
+            catch (Exception exp)
+            {
+                obj.vErrorCode = 500;
+                Logger.WriteLog("Function Name : Fn_Get_Bundle_Compile", " " + "Error Msg : " + exp.Message.ToString(), new StackTrace(exp, true));
+                obj.vErrorMsg = exp.Message.ToString();
+                objResp.Add(obj);
+            }
+            finally
+            {
+                Con.Close();
+            }
+            return objResp;
+        }
+
+        #endregion End Compile- Bundle 7-Feb-2026
     }
 }
