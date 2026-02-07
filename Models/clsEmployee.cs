@@ -243,4 +243,22 @@ namespace BSLDaman.Models
         public string vErrorMsg { get; set; }
         public int vErrorCode { get; set; }
     }
+
+    public class clsBundleLayerMaster
+    {
+        public Int64 LayID { get; set; }
+        public int Qty { get; set; }
+        public double BundleLen { get; set; }
+        public string CompileDate { get; set; }
+        public string PrintDate { get; set; }
+        public string StyleCode { get; set; }
+        public string Marker { get; set; }
+        public string OrderNo { get; set; }
+        public int CreatedBy { get; set; }
+        public string CreatedOn { get; set; }
+        public int ModifiedBy { get; set; }
+        public string ModifiedOn { get; set; }
+        public string vErrorMsg { get; set; }
+        public int vErrorCode { get; set; }
+    }
 }

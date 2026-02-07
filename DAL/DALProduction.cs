@@ -14,6 +14,53 @@ namespace BSLDaman.DAL
     {
         SqlConnection Con = new SqlConnection(ConfigurationManager.ConnectionStrings["BSL"].ConnectionString);
 
+        Int64 mxID = 0;
+
+        public Int64 Fn_Get_MXID(string strTBLName, string strFieldName)
+        {
+            try
+            {
+                //if (Con.State == ConnectionState.Broken)
+                //{ Con.Close(); }
+                //if (Con.State == ConnectionState.Closed)
+                //{ Con.Open(); }
+
+                string strSql = "SELECT MAX(" + strFieldName + ") AS ID FROM " + strTBLName + "";
+                SqlCommand cmd = new SqlCommand(strSql, Con);
+                cmd.CommandType = CommandType.Text;
+                SqlDataAdapter da = new SqlDataAdapter(cmd);
+                DataSet ds = new DataSet();
+                da.Fill(ds);
+                int i = 0;
+                if (ds.Tables[0].Rows.Count > 0)
+                {
+                    while (ds.Tables[0].Rows.Count > i)
+                    {
+                        string strMXID = Convert.ToString(ds.Tables[0].Rows[i]["ID"]);
+                        if (strMXID == "")
+                        {
+                            mxID = 1;
+                        }
+                        else
+                        {
+                            mxID = Convert.ToInt64(ds.Tables[0].Rows[i]["ID"]) + 1;
+                        }
+                        i++;
+                    }
+                }
+                else
+                {
+                    mxID = 1;
+                }
+            }
+            catch (Exception exp)
+            {
+                Logger.WriteLog("Function Name : Fn_Get_MXID", " " + "Error Msg : " + exp.Message.ToString(), new StackTrace(exp, true));
+                exp.Message.ToString();
+            }
+            return mxID;
+        }
+
         public clsProductionMaster Fn_Insert_Production_Order(clsProductionMaster objReq)
         {
             var objResp = new clsProductionMaster();
@@ -581,5 +628,204 @@ namespace BSLDaman.DAL
             }
             return objResp;
         }
+
+        #region Start Layer- Bundle 6-Feb-2026
+
+        public clsBundleLayerMaster Fn_Insert_Bundle_Layer(clsBundleLayerMaster objReq)
+        {
+            var objResp = new clsBundleLayerMaster();
+
+            try
+            {
+
+                if (Con.State == ConnectionState.Broken)
+                { Con.Close(); }
+                if (Con.State == ConnectionState.Closed)
+                { Con.Open(); }
+
+                if (objReq.LayID == 0 || objReq.LayID == null)
+                {
+                    Fn_Get_MXID("BundleLayerMaster", "LayID");
+                    objReq.LayID = mxID;
+                }
+
+                SqlCommand cmd = new SqlCommand("USP_BUNDLE_LAYER", Con);
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@LayID", objReq.LayID);
+                cmd.Parameters.AddWithValue("@Qty", objReq.Qty);
+                cmd.Parameters.AddWithValue("@BundleLen", objReq.BundleLen);
+                cmd.Parameters.AddWithValue("@CompileDate", objReq.CompileDate);
+                cmd.Parameters.AddWithValue("@PrintDate", objReq.PrintDate);
+                cmd.Parameters.AddWithValue("@StyleCode", objReq.StyleCode);
+                cmd.Parameters.AddWithValue("@OrderNo", objReq.OrderNo);
+                cmd.Parameters.AddWithValue("@Marker", objReq.Marker);
+                cmd.Parameters.AddWithValue("@CreatedBy", objReq.CreatedBy);
+                cmd.Parameters.AddWithValue("@QueryType", "InsertBundleLayer");
+                int i = 0;
+                i = cmd.ExecuteNonQuery();
+                if (i > 0)
+                {
+                    objResp.vErrorCode = 200;
+                    objResp.vErrorMsg = "Success";
+                }
+                else
+                {
+                    objResp.vErrorCode = 400;
+                    objResp.vErrorMsg = "Layer inserting Failed";
+                }
+            }
+            catch (Exception exp)
+            {
+                objResp.vErrorCode = 500;
+                Logger.WriteLog("Function Name : Fn_Insert_Bundle_Layer", " " + "Error Msg : " + exp.Message.ToString(), new StackTrace(exp, true));
+                objResp.vErrorMsg = exp.Message.ToString();
+            }
+            finally
+            {
+                Con.Close();
+            }
+            return objResp;
+        }
+
+        public clsBundleLayerMaster Fn_Delete_Bundle_Layer(clsBundleLayerMaster objReq)
+        {
+            var objResp = new clsBundleLayerMaster();
+            try
+            {
+
+                if (Con.State == ConnectionState.Broken)
+                { Con.Close(); }
+                if (Con.State == ConnectionState.Closed)
+                { Con.Open(); }
+
+                SqlCommand cmd = new SqlCommand("USP_BUNDLE_LAYER", Con);
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@LayID", objReq.LayID);
+                cmd.Parameters.AddWithValue("@CreatedBy", objReq.CreatedBy);
+                cmd.Parameters.AddWithValue("@QueryType", "DeleteBundleLayer");
+                int i = 0;
+                i = cmd.ExecuteNonQuery();
+                if (i > 0)
+                {
+                    objResp.vErrorCode = 200;
+                    objResp.vErrorMsg = "Success";
+                }
+                else
+                {
+                    objResp.vErrorCode = 400;
+                    objResp.vErrorMsg = "Deleting Failed";
+                }
+            }
+            catch (Exception exp)
+            {
+                objResp.vErrorCode = 500;
+                Logger.WriteLog("Function Name : Fn_Delete_Bundle_Layer", " " + "Error Msg : " + exp.Message.ToString(), new StackTrace(exp, true));
+                objResp.vErrorMsg = exp.Message.ToString();
+            }
+            finally
+            {
+                Con.Close();
+            }
+            return objResp;
+        }
+
+        public List<clsBundleLayerMaster> Fn_Get_Bundle_Layer(clsBundleLayerMaster objReq)
+        {
+            var objResp = new List<clsBundleLayerMaster>();
+            var obj = new clsBundleLayerMaster();
+            try
+            {
+                if (Con.State == ConnectionState.Broken)
+                { Con.Close(); }
+                if (Con.State == ConnectionState.Closed)
+                { Con.Open(); }
+
+                string strSql = "SELECT LayID, Qty, BundleLen, CompileDate, PrintDate, StyleCode, OrderNo, Marker,";
+                strSql = strSql + " CreatedBy, FORMAT(CreatedOn, 'dd-MMM-yyy') AS CreatedOn FROM BundleLayerMaster WHERE 1=1";
+                if (!String.IsNullOrWhiteSpace(objReq.StyleCode))
+                {
+                    strSql = strSql + " AND StyleCode = @StyleCode";
+                }
+                if (!String.IsNullOrWhiteSpace(objReq.OrderNo))
+                {
+                    strSql = strSql + " AND OrderNo = @OrderNo";
+                }
+                if (!String.IsNullOrWhiteSpace(objReq.Marker))
+                {
+                    strSql = strSql + " AND Marker = @Marker";
+                }
+                if (objReq.LayID != 0 && objReq.LayID != null)
+                {
+                    strSql = strSql + " AND LayID = @LayID ";
+                }
+                strSql = strSql + " ORDER BY LayID DESC ";
+
+                SqlCommand cmd = new SqlCommand(strSql, Con);
+                cmd.CommandType = CommandType.Text;
+                if (!String.IsNullOrWhiteSpace(objReq.StyleCode))
+                {
+                    cmd.Parameters.AddWithValue("@StyleCode", objReq.StyleCode);
+                }
+                if (!String.IsNullOrWhiteSpace(objReq.OrderNo))
+                {
+                    cmd.Parameters.AddWithValue("@OrderNo", objReq.OrderNo);
+                }
+                if (!String.IsNullOrWhiteSpace(objReq.Marker))
+                {
+                    cmd.Parameters.AddWithValue("@Marker", objReq.Marker);
+                }
+                if (objReq.LayID != 0 && objReq.LayID != null)
+                {
+                    cmd.Parameters.AddWithValue("@LayID", objReq.LayID);
+                }
+
+                SqlDataAdapter da = new SqlDataAdapter(cmd);
+                DataSet ds = new DataSet();
+                da.Fill(ds);
+                int i = 0;
+                if (ds.Tables[0].Rows.Count > 0)
+                {
+                    while (ds.Tables[0].Rows.Count > i)
+                    {
+                        obj = new clsBundleLayerMaster();
+                        obj.LayID = Convert.ToInt64(ds.Tables[0].Rows[i]["LayID"]);
+                        obj.Qty = Convert.ToInt16(ds.Tables[0].Rows[i]["Qty"]);
+                        obj.BundleLen = Convert.ToDouble(ds.Tables[0].Rows[i]["BundleLen"]);
+                        obj.CompileDate = Convert.ToString(ds.Tables[0].Rows[i]["CompileDate"]);
+                        obj.PrintDate = Convert.ToString(ds.Tables[0].Rows[i]["PrintDate"]);
+                        obj.StyleCode = Convert.ToString(ds.Tables[0].Rows[i]["StyleCode"]);
+                        obj.OrderNo = Convert.ToString(ds.Tables[0].Rows[i]["OrderNo"]);
+                        obj.CreatedBy = Convert.ToInt32(ds.Tables[0].Rows[i]["CreatedBy"]);
+                        obj.CreatedOn = Convert.ToString(ds.Tables[0].Rows[i]["CreatedOn"]);
+                        obj.Marker = Convert.ToString(ds.Tables[0].Rows[i]["Marker"]);
+                        obj.vErrorCode = 200;
+                        obj.vErrorMsg = "Success";
+                        objResp.Add(obj);
+                        i++;
+                    }
+                }
+                else
+                {
+                    obj.vErrorCode = 404;
+                    obj.vErrorMsg = "No Record found";
+                    objResp.Add(obj);
+                }
+
+            }
+            catch (Exception exp)
+            {
+                obj.vErrorCode = 500;
+                Logger.WriteLog("Function Name : Fn_Get_Bundle_Layer", " " + "Error Msg : " + exp.Message.ToString(), new StackTrace(exp, true));
+                obj.vErrorMsg = exp.Message.ToString();
+                objResp.Add(obj);
+            }
+            finally
+            {
+                Con.Close();
+            }
+            return objResp;
+        }
+
+        #endregion End Layer- Bundle 6-Feb-2026
     }
 }

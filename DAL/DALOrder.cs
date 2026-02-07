@@ -63,8 +63,8 @@ namespace BSLDaman.DAL
 
         public clsOrderMaster Fn_Insert_Order_Master(clsOrderMaster objReq)
         {
-            var objResp = new clsOrderMaster();            
-            
+            var objResp = new clsOrderMaster();
+
             try
             {
 
@@ -168,7 +168,7 @@ namespace BSLDaman.DAL
                 { Con.Open(); }
 
                 string strSql = "SELECT ID, OrderNo, Qty, IsFinished, IsStkr, BundleQty, FORMAT(OrderDate, 'dd-MMM-yyy') AS OrderDate,";
-                 strSql = strSql + " CreatedBy, CreatedOn, StyleCode  FROM OrderMaster WHERE 1=1";
+                strSql = strSql + " CreatedBy, CreatedOn, StyleCode  FROM OrderMaster WHERE 1=1";
                 if (objReq.ID != 0 && objReq.ID != null)
                 {
                     strSql = strSql + " AND ID = @ID";
@@ -327,11 +327,11 @@ namespace BSLDaman.DAL
         public clsProcessMaster Fn_Insert_New_Process(clsProcessMaster objReq)
         {
             var objResp = new clsProcessMaster();
-            if (objReq.ID == 0 || objReq.ID == null)
-            {
-                Fn_Get_MXID("ProcessMaster", "ID");
-                objReq.ID = mxID;
-            }
+            //if (objReq.ID == 0 || objReq.ID == null)
+            //{
+            //    Fn_Get_MXID("ProcessMaster", "ID");
+            //    objReq.ID = mxID;
+            //}
             try
             {
 
@@ -501,7 +501,7 @@ namespace BSLDaman.DAL
 
         public clsOPBreackDownMaster Fn_Upload_Operation_BreackdownFile(clsOPBreackDownMaster objReq)
         {
-            var objResp = new clsOPBreackDownMaster();            
+            var objResp = new clsOPBreackDownMaster();
 
             try
             {
@@ -718,5 +718,6 @@ namespace BSLDaman.DAL
             return objResp;
         }
 
+       
     }
 }
