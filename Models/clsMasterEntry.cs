@@ -383,5 +383,18 @@ namespace BSLDaman.Models
     }
 
 
+    public class clsColor
+    {
+        public Int64 ColorID { get; set; }
+        public string ColorName { get; set; }
+        public int CreatedBy { get; set; }
+        public string CreatedOn { get; set; }
+        public int ModifiedBy { get; set; }
+        public string ModifiedOn { get; set; }
+        public string vErrorMsg { get; set; }
+        public int vErrorCode { get; set; }
+    }
+
+
 
 }
