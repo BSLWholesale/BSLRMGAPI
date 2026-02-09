@@ -280,7 +280,7 @@ namespace BSLDaman.Models
     public class clsBundleColor
     {
         public Int64 ColorSelectionID { get; set; }
-        public Int64 SizeSelectionID { get; set; }
+        public Int64 LayID { get; set; }
         public string ColorName { get; set; }
         public int CreatedBy { get; set; }
         public string CreatedOn { get; set; }

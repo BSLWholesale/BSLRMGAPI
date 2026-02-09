@@ -109,5 +109,147 @@ namespace BSLDaman.Controllers
 
 
         #endregion End Layer- Bundle 6-Feb-2026
+
+        #region Start Size- Bundle 7-Feb-2026
+
+        [System.Web.Http.HttpPost]
+        [System.Web.Http.Route("api/Production/Fn_Insert_Bundle_Size")]
+        public clsBundleSize Fn_Insert_Bundle_Size(clsBundleSize objReq)
+        {
+            var objResp = new clsBundleSize();
+            objResp = _DALProduction.Fn_Insert_Bundle_Size(objReq);
+            return objResp;
+        }
+
+        [System.Web.Http.HttpPost]
+        [System.Web.Http.Route("api/Production/Fn_Delete_Bundle_Size")]
+        public clsBundleSize Fn_Delete_Bundle_Size(clsBundleSize objReq)
+        {
+            var objResp = new clsBundleSize();
+            objResp = _DALProduction.Fn_Delete_Bundle_Size(objReq);
+            return objResp;
+        }
+
+        [System.Web.Http.HttpPost]
+        [System.Web.Http.Route("api/Production/Fn_Get_Bundle_Size")]
+        public List<clsBundleSize> Fn_Get_Bundle_Size(clsBundleSize objReq)
+        {
+            var objResp = new List<clsBundleSize>();
+            objResp = _DALProduction.Fn_Get_Bundle_Size(objReq);
+            return objResp;
+        }
+
+        #endregion End Size- Bundle 8-Feb-2026
+
+        #region Start Color- Bundle 8-Feb-2026
+
+        [System.Web.Http.HttpPost]
+        [System.Web.Http.Route("api/Production/Fn_Insert_Bundle_Color")]
+        public clsBundleColor Fn_Insert_Bundle_Color(clsBundleColor objReq)
+        {
+            var objResp = new clsBundleColor();
+            objResp = _DALProduction.Fn_Insert_Bundle_Color(objReq);
+            return objResp;
+        }
+
+        [System.Web.Http.HttpPost]
+        [System.Web.Http.Route("api/Production/Fn_Delete_Bundle_Color")]
+        public clsBundleColor Fn_Delete_Bundle_Color(clsBundleColor objReq)
+        {
+            var objResp = new clsBundleColor();
+            objResp = _DALProduction.Fn_Delete_Bundle_Color(objReq);
+            return objResp;
+        }
+
+        [System.Web.Http.HttpPost]
+        [System.Web.Http.Route("api/Production/Fn_Get_Bundle_Color")]
+        public List<clsBundleColor> Fn_Get_Bundle_Color(clsBundleColor objReq)
+        {
+            var objResp = new List<clsBundleColor>();
+            objResp = _DALProduction.Fn_Get_Bundle_Color(objReq);
+            return objResp;
+        }
+
+        #endregion End Color- Bundle 8-Feb-2026
+
+        #region Start Shade- Bundle 8-Feb-2026
+
+        [System.Web.Http.HttpPost]
+        [System.Web.Http.Route("api/Production/Fn_Insert_Bundle_Shade")]
+        public clsBundleShade Fn_Insert_Bundle_Shade(clsBundleShade objReq)
+        {
+            var objResp = new clsBundleShade();
+            objResp = _DALProduction.Fn_Insert_Bundle_Shade(objReq);
+            return objResp;
+        }
+
+        [System.Web.Http.HttpPost]
+        [System.Web.Http.Route("api/Production/Fn_Delete_Bundle_Shade")]
+        public clsBundleShade Fn_Delete_Bundle_Shade(clsBundleShade objReq)
+        {
+            var objResp = new clsBundleShade();
+            objResp = _DALProduction.Fn_Delete_Bundle_Shade(objReq);
+            return objResp;
+        }
+
+        [System.Web.Http.HttpPost]
+        [System.Web.Http.Route("api/Production/Fn_Get_Bundle_Shade")]
+        public List<clsBundleShade> Fn_Get_Bundle_Shade(clsBundleShade objReq)
+        {
+            var objResp = new List<clsBundleShade>();
+            objResp = _DALProduction.Fn_Get_Bundle_Shade(objReq);
+            return objResp;
+        }
+
+        #endregion End Shade- Bundle 8-Feb-2026
+
+        #region Start Compile- Bundle 8-Feb-2026
+
+        [System.Web.Http.HttpPost]
+        [System.Web.Http.Route("api/Production/Fn_Insert_Bundle_Compile")]
+        public clsBundleCompile Fn_Insert_Bundle_Compile(clsBundleCompile objReq)
+        {
+            var objResp = new clsBundleCompile();
+            objResp = _DALProduction.Fn_Insert_Bundle_Compile(objReq);
+            return objResp;
+        }
+
+        [System.Web.Http.HttpPost]
+        [System.Web.Http.Route("api/Production/Fn_Delete_Bundle_Compile")]
+        public clsBundleCompile Fn_Delete_Bundle_Compile(clsBundleCompile objReq)
+        {
+            var objResp = new clsBundleCompile();
+            objResp = _DALProduction.Fn_Delete_Bundle_Compile(objReq);
+            return objResp;
+        }
+
+        [System.Web.Http.HttpPost]
+        [System.Web.Http.Route("api/Production/Fn_Get_Bundle_Compile")]
+        public List<clsBundleCompile> Fn_Get_Bundle_Compile(clsBundleCompile objReq)
+        {
+            var objResp = new List<clsBundleCompile>();
+            objResp = _DALProduction.Fn_Get_Bundle_Compile(objReq);
+            return objResp;
+        }
+
+        #endregion End Compile- Bundle 8-Feb-2026
+
+        [System.Web.Http.HttpPost]
+        [System.Web.Http.Route("api/Production/Fn_Get_Order_SizeName")]
+        public List<clsSizeMaster> Fn_Get_Order_SizeName(clsSizeMaster objReq)
+        {
+            var objResp = new List<clsSizeMaster>();
+            objResp = _DALProduction.Fn_Get_Order_SizeName(objReq);
+            return objResp;
+        }
+
+        [System.Web.Http.HttpPost]
+        [System.Web.Http.Route("api/Production/Fn_Get_Order_Color")]
+        public List<clsBundleColor> Fn_Get_Order_Color(clsBundleColor objReq)
+        {
+            var objResp = new List<clsBundleColor>();
+            objResp = _DALProduction.Fn_Get_Order_Color(objReq);
+            return objResp;
+        }
     }
 }
