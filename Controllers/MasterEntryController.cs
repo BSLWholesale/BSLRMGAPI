@@ -660,7 +660,39 @@ namespace BSLDaman.Controllers
             objResp = _DALMasterEntry.Fn_Update_DesignationDetails_By_ID(objReq);
             return objResp;
         }
-        //endRegion End Designation 
+        //endRegion End Designation
+        
+
+        [System.Web.Http.HttpPost]
+        [System.Web.Http.Route("api/MasterEntry/Fn_Insert_New_Color")]
+        public clsColor Fn_Insert_New_Color(clsColor objReq)
+        {
+            var objResp = new clsColor();
+            objResp = _DALMasterEntry.Fn_Insert_New_Color(objReq);
+            return objResp;
+        }
+
+
+        [System.Web.Http.HttpPost]
+        [System.Web.Http.Route("api/MasterEntry/Fn_Get_All_Color")]
+        public List<clsColor> Fn_Get_All_Color(clsColor objReq)
+        {
+            var objResp = new List<clsColor>();
+            objResp = _DALMasterEntry.Fn_Get_All_Color(objReq);
+            return objResp;
+        }
+
+
+        [System.Web.Http.HttpPost]
+        [System.Web.Http.Route("api/MasterEntry/Fn_Update_ColorDetails_By_ID")]
+        public clsColor Fn_Update_ColorDetails_By_ID(clsColor objReq)
+        {
+            var objResp = new clsColor();
+            objResp = _DALMasterEntry.Fn_Update_ColorDetails_By_ID(objReq);
+            return objResp;
+        }
+
+
 
     }
 }
