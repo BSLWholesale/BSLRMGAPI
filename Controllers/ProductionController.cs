@@ -77,5 +77,37 @@ namespace BSLDaman.Controllers
             objResp = _DALProduction.Fn_AutoComplete_Textbox(objReq);
             return objResp;
         }
+
+        #region Start Layer- Bundle 6-Feb-2026
+
+        [System.Web.Http.HttpPost]
+        [System.Web.Http.Route("api/Production/Fn_Insert_Bundle_Layer")]
+        public clsBundleLayerMaster Fn_Insert_Bundle_Layer(clsBundleLayerMaster objReq)
+        {
+            var objResp = new clsBundleLayerMaster();
+            objResp = _DALProduction.Fn_Insert_Bundle_Layer(objReq);
+            return objResp;
+        }
+
+        [System.Web.Http.HttpPost]
+        [System.Web.Http.Route("api/Production/Fn_Delete_Bundle_Layer")]
+        public clsBundleLayerMaster Fn_Delete_Bundle_Layer(clsBundleLayerMaster objReq)
+        {
+            var objResp = new clsBundleLayerMaster();
+            objResp = _DALProduction.Fn_Delete_Bundle_Layer(objReq);
+            return objResp;
+        }
+
+        [System.Web.Http.HttpPost]
+        [System.Web.Http.Route("api/Production/Fn_Get_Bundle_Layer")]
+        public List<clsBundleLayerMaster> Fn_Get_Bundle_Layer(clsBundleLayerMaster objReq)
+        {
+            var objResp = new List<clsBundleLayerMaster>();
+            objResp = _DALProduction.Fn_Get_Bundle_Layer(objReq);
+            return objResp;
+        }
+
+
+        #endregion End Layer- Bundle 6-Feb-2026
     }
 }

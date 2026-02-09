@@ -481,20 +481,21 @@ namespace BSLDaman.DAL
                 if (String.IsNullOrWhiteSpace(objReq.vValueField))
                 {
                     strSql = "select Distinct " + objReq.vFieldName + " from " + objReq.vTBLName + " where 1=1";
+                    if (!String.IsNullOrWhiteSpace(objReq.vCriteria))
+                    {
+                        strSql = strSql + objReq.vCriteria;
+                    }
                     strSql = strSql + " order by " + objReq.vFieldName + "";
                 }
                 else
                 {
                     strSql = "select Distinct " + objReq.vValueField + ", " + objReq.vFieldName + " from " + objReq.vTBLName + " where 1=1";
+                    if (!String.IsNullOrWhiteSpace(objReq.vCriteria))
+                    {
+                        strSql = strSql + objReq.vCriteria;
+                    }
                     strSql = strSql + " order by " + objReq.vValueField + "";
                 }
-
-
-                if (!String.IsNullOrWhiteSpace(objReq.vCriteria))
-                {
-                    strSql = strSql + objReq.vCriteria;
-                }
-                
 
                 SqlDataAdapter da = new SqlDataAdapter(strSql, Con);
                 DataSet ds = new DataSet();
