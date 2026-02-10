@@ -26,16 +26,24 @@ namespace BSLDaman.Controllers
         }
 
 
-        //[System.Web.Http.HttpPost]
-        //[System.Web.Http.Route("api/MasterEntryMob/Fn_Get_ActiveLine")]
-        //public List<clsLine> Fn_Get_ActiveLine(clsLine objReq)
-        //{
-        //    var objResp = new List<clsLine>();
-        //    objResp = _DALMasterEntryMob.Fn_Get_ActiveLine(objReq);
-        //    return objResp;
-        //}
+        [System.Web.Http.HttpPost]
+        [System.Web.Http.Route("api/MasterEntryMob/Fn_Get_ActiveBundle")]
+        public List<clsBundleCompile> Fn_Get_ActiveBundle(clsBundleCompile objReq)
+        {
+            var objResp = new List<clsBundleCompile>();
+            objResp = _DALMasterEntryMob.Fn_Get_ActiveBundle(objReq);
+            return objResp;
+        }
 
 
+        [System.Web.Http.HttpPost]
+        [System.Web.Http.Route("api/MasterEntryMob/Fn_Update_BundleID_By_EmpID")]
+        public clsBundleCompile Fn_Update_BundleID_By_EmpID(clsBundleCompile objReq)
+        {
+            var objResp = new clsBundleCompile();
+            objResp = _DALMasterEntryMob.Fn_Update_BundleID_By_EmpID(objReq);
+            return objResp;
+        }
 
 
     }
