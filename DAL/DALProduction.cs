@@ -845,7 +845,7 @@ namespace BSLDaman.DAL
                 if (objReq.SizeSelectionID == 0 || objReq.SizeSelectionID == null)
                 {
                     Fn_Get_MXID("BundleSizeSelection", "SizeSelectionID");
-                    objReq.LayID = mxID;
+                    objReq.SizeSelectionID = mxID;
                 }
 
                 SqlCommand cmd = new SqlCommand("USP_BUNDLE_LAYER", Con);
@@ -1028,14 +1028,14 @@ namespace BSLDaman.DAL
 
                 if (objReq.ColorSelectionID == 0 || objReq.ColorSelectionID == null)
                 {
-                    Fn_Get_MXID("BundleLayerMaster", "ColorSelectionID");
+                    Fn_Get_MXID("BundleColorSelection", "ColorSelectionID");
                     objReq.ColorSelectionID = mxID;
                 }
 
                 SqlCommand cmd = new SqlCommand("USP_BUNDLE_LAYER", Con);
                 cmd.CommandType = CommandType.StoredProcedure;
                 cmd.Parameters.AddWithValue("@ColorSelectionID", objReq.ColorSelectionID);
-                cmd.Parameters.AddWithValue("@SizeSelectionID", objReq.SizeSelectionID);
+                cmd.Parameters.AddWithValue("@LayID", objReq.LayID);
                 cmd.Parameters.AddWithValue("@ColorName", objReq.ColorName);
                 cmd.Parameters.AddWithValue("@CreatedBy", objReq.CreatedBy);
                 cmd.Parameters.AddWithValue("@QueryType", "InsertBundleColor");
@@ -1118,8 +1118,8 @@ namespace BSLDaman.DAL
                 if (Con.State == ConnectionState.Closed)
                 { Con.Open(); }
 
-                string strSql = "SELECT ColorSelectionID, SizeSelectionID, ColorName,";
-                strSql = strSql + " CreatedBy, FORMAT(CreatedOn, 'dd-MMM-yyy') AS CreatedOn FROM BundleSizeSelection WHERE 1=1";
+                string strSql = "SELECT ColorSelectionID, LayID, ColorName,";
+                strSql = strSql + " CreatedBy, FORMAT(CreatedOn, 'dd-MMM-yyy') AS CreatedOn FROM BundleColorSelection WHERE 1=1";
                 if (!String.IsNullOrWhiteSpace(objReq.ColorName))
                 {
                     strSql = strSql + " AND ColorName = @ColorName";
@@ -1128,7 +1128,7 @@ namespace BSLDaman.DAL
                 {
                     strSql = strSql + " AND ColorSelectionID = @ColorSelectionID ";
                 }
-                if (objReq.SizeSelectionID != 0 && objReq.SizeSelectionID != null)
+                if (objReq.LayID != 0 && objReq.LayID != null)
                 {
                     strSql = strSql + " AND LayID = @LayID ";
                 }
@@ -1144,9 +1144,9 @@ namespace BSLDaman.DAL
                 {
                     cmd.Parameters.AddWithValue("@ColorSelectionID", objReq.ColorSelectionID);
                 }
-                if (objReq.SizeSelectionID != 0 && objReq.SizeSelectionID != null)
+                if (objReq.LayID != 0 && objReq.LayID != null)
                 {
-                    cmd.Parameters.AddWithValue("@SizeSelectionID", objReq.SizeSelectionID);
+                    cmd.Parameters.AddWithValue("@LayID", objReq.LayID);
                 }
                 SqlDataAdapter da = new SqlDataAdapter(cmd);
                 DataSet ds = new DataSet();
@@ -1158,7 +1158,7 @@ namespace BSLDaman.DAL
                     {
                         obj = new clsBundleColor();
                         obj.ColorSelectionID = Convert.ToInt64(ds.Tables[0].Rows[i]["ColorSelectionID"]);
-                        obj.SizeSelectionID = Convert.ToInt64(ds.Tables[0].Rows[i]["SizeSelectionID"]);
+                        obj.LayID = Convert.ToInt64(ds.Tables[0].Rows[i]["LayID"]);
                         obj.ColorName = Convert.ToString(ds.Tables[0].Rows[i]["ColorName"]);
                         obj.CreatedBy = Convert.ToInt32(ds.Tables[0].Rows[i]["CreatedBy"]);
                         obj.CreatedOn = Convert.ToString(ds.Tables[0].Rows[i]["CreatedOn"]);
@@ -1206,10 +1206,10 @@ namespace BSLDaman.DAL
                 if (Con.State == ConnectionState.Closed)
                 { Con.Open(); }
 
-                if (objReq.ColorSelectionID == 0 || objReq.ColorSelectionID == null)
+                if (objReq.ShadeSelectionID == 0 || objReq.ShadeSelectionID == null)
                 {
                     Fn_Get_MXID("BundleShadeSelection", "ShadeSelectionID");
-                    objReq.ColorSelectionID = mxID;
+                    objReq.ShadeSelectionID = mxID;
                 }
 
                 SqlCommand cmd = new SqlCommand("USP_BUNDLE_LAYER", Con);
@@ -1300,7 +1300,7 @@ namespace BSLDaman.DAL
                 { Con.Open(); }
 
                 string strSql = "SELECT ColorSelectionID, ShadeSelectionID, ShadeName, Piles,";
-                strSql = strSql + " CreatedBy, FORMAT(CreatedOn, 'dd-MMM-yyy') AS CreatedOn FROM BundleSizeSelection WHERE 1=1";
+                strSql = strSql + " CreatedBy, FORMAT(CreatedOn, 'dd-MMM-yyy') AS CreatedOn FROM BundleShadeSelection WHERE 1=1";
                 if (!String.IsNullOrWhiteSpace(objReq.ShadeName))
                 {
                     strSql = strSql + " AND ShadeName = @ShadeName";
@@ -1578,5 +1578,139 @@ namespace BSLDaman.DAL
         }
 
         #endregion End Compile- Bundle 7-Feb-2026
+
+        public List<clsSizeMaster> Fn_Get_Order_SizeName(clsSizeMaster objReq)
+        {
+            var objResp = new List<clsSizeMaster>();
+            var obj = new clsSizeMaster();
+            string strSql = "";
+            try
+            {
+
+                if (Con.State == ConnectionState.Broken)
+                { Con.Close(); }
+                if (Con.State == ConnectionState.Closed)
+                { Con.Open(); }
+
+                strSql = "SELECT Distinct DetailID, SizeID, Size, CreatedBy, FORMAT(CreatedOn, 'dd-MMM-yyyy') AS CreatedOn FROM OrderDetail WHERE 1=1";
+                if (objReq.ID != 0)
+                {
+                    strSql = strSql + " AND OrderNo = @OrderNo";
+                }
+                
+                SqlCommand cmd = new SqlCommand(strSql, Con);
+                cmd.CommandType = CommandType.Text;
+                if (objReq.ID != 0)
+                {
+                    cmd.Parameters.AddWithValue("@OrderNo", objReq.ID);
+                }
+                
+                SqlDataAdapter da = new SqlDataAdapter(cmd);
+                DataSet ds = new DataSet();
+                da.Fill(ds);
+                int i = 0;
+                if (ds.Tables[0].Rows.Count > 0)
+                {
+                    while (ds.Tables[0].Rows.Count > i)
+                    {
+                        obj = new clsSizeMaster();
+
+                        obj.ID = Convert.ToInt16(ds.Tables[0].Rows[i]["DetailID"]);
+                        obj.SizeName = Convert.ToString(ds.Tables[0].Rows[i]["Size"]);
+                        obj.CreatedBy = Convert.ToInt16(ds.Tables[0].Rows[i]["CreatedBy"]);
+                        obj.CreatedOn = Convert.ToString(ds.Tables[0].Rows[i]["CreatedOn"]);
+
+                        obj.vErrorCode = 200;
+                        obj.vErrorMsg = "Success";
+                        objResp.Add(obj);
+                        i++;
+                    }
+                }
+                else
+                {
+                    obj.vErrorCode = 404;
+                    obj.vErrorMsg = "No Record found";
+                    objResp.Add(obj);
+                }
+            }
+            catch (Exception exp)
+            {
+                obj.vErrorCode = 500;
+                Logger.WriteLog("Function Name : Fn_Get_Order_SizeName", " " + "Error Msg : " + exp.Message.ToString(), new StackTrace(exp, true));
+                obj.vErrorMsg = exp.Message.ToString();
+                objResp.Add(obj);
+            }
+            finally
+            {
+                Con.Close();
+            }
+            return objResp;
+        }
+
+        public List<clsBundleColor> Fn_Get_Order_Color(clsBundleColor objReq)
+        {
+            var objResp = new List<clsBundleColor>();
+            var obj = new clsBundleColor();
+            try
+            {
+                if (Con.State == ConnectionState.Broken)
+                { Con.Close(); }
+                if (Con.State == ConnectionState.Closed)
+                { Con.Open(); }
+
+                string strSql = "SELECT Distinct Color FROM OrderDetail WHere 1=1";
+                
+                if (objReq.ColorSelectionID != 0 && objReq.ColorSelectionID != null)
+                {
+                    strSql = strSql + " AND OrderNo = @OrderNo ";
+                }
+                strSql = strSql + " ORDER BY Color DESC ";
+
+                SqlCommand cmd = new SqlCommand(strSql, Con);
+                cmd.CommandType = CommandType.Text;
+               
+                if (objReq.ColorSelectionID != 0 && objReq.ColorSelectionID != null)
+                {
+                    cmd.Parameters.AddWithValue("@OrderNo", objReq.ColorSelectionID);
+                }
+                
+                SqlDataAdapter da = new SqlDataAdapter(cmd);
+                DataSet ds = new DataSet();
+                da.Fill(ds);
+                int i = 0;
+                if (ds.Tables[0].Rows.Count > 0)
+                {
+                    while (ds.Tables[0].Rows.Count > i)
+                    {
+                        obj = new clsBundleColor();
+                        //obj.ColorSelectionID = Convert.ToInt64(ds.Tables[0].Rows[i]["DetailID"]);
+                        obj.ColorName = Convert.ToString(ds.Tables[0].Rows[i]["Color"]);
+                        obj.vErrorCode = 200;
+                        obj.vErrorMsg = "Success";
+                        objResp.Add(obj);
+                        i++;
+                    }
+                }
+                else
+                {
+                    obj.vErrorCode = 404;
+                    obj.vErrorMsg = "No Record found";
+                    objResp.Add(obj);
+                }
+
+            }
+            catch (Exception exp)
+            {
+                obj.vErrorCode = 500;
+                Logger.WriteLog("Function Name : Fn_Get_Order_Color", " " + "Error Msg : " + exp.Message.ToString(), new StackTrace(exp, true));
+                obj.vErrorMsg = exp.Message.ToString();
+                objResp.Add(obj);
+            }
+            finally
+            {
+                Con.Close();
+            }
+            return objResp;
+        }
     }
 }
