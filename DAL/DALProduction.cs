@@ -1397,7 +1397,7 @@ namespace BSLDaman.DAL
                 SqlCommand cmd = new SqlCommand("USP_BUNDLE_LAYER", Con);
                 cmd.CommandType = CommandType.StoredProcedure;
                 cmd.Parameters.AddWithValue("@BundleID", objReq.BundleID);
-                cmd.Parameters.AddWithValue("@ShadeSelectionID", objReq.ShadeSelectionID);
+                cmd.Parameters.AddWithValue("@LayID", objReq.LayID);
                 cmd.Parameters.AddWithValue("@BundleNo", objReq.BundleNo);
                 cmd.Parameters.AddWithValue("@SizeName", objReq.SizeName);
                 cmd.Parameters.AddWithValue("@ColorName", objReq.ColorName);
@@ -1491,9 +1491,9 @@ namespace BSLDaman.DAL
                 if (Con.State == ConnectionState.Closed)
                 { Con.Open(); }
 
-                string strSql = "SELECT BundleID, ShadeSelectionID, BundleNo, SizeName, ColorName, ShadeName,";
+                string strSql = "SELECT BundleID, LayID, BundleNo, SizeName, ColorName, ShadeName,";
                 strSql = strSql + " Qty, PlyFrom, PlyTo, LotNo, SubSection, Dispatch, StyleCode, OrderNo,";
-                strSql = strSql + " CreatedBy, FORMAT(CreatedOn, 'dd-MMM-yyy') AS CreatedOn FROM BundleSizeSelection WHERE 1=1";
+                strSql = strSql + " CreatedBy, FORMAT(CreatedOn, 'dd-MMM-yyy') AS CreatedOn FROM BundleCompile WHERE 1=1";
                 if (!String.IsNullOrWhiteSpace(objReq.StyleCode))
                 {
                     strSql = strSql + " AND StyleCode = @StyleCode";
@@ -1506,7 +1506,11 @@ namespace BSLDaman.DAL
                 {
                     strSql = strSql + " AND BundleID = @BundleID ";
                 }
-                
+                if (objReq.LayID != 0 && objReq.LayID != null)
+                {
+                    strSql = strSql + " AND LayID = @LayID ";
+                }
+
                 strSql = strSql + " ORDER BY BundleID DESC ";
 
                 SqlCommand cmd = new SqlCommand(strSql, Con);
@@ -1523,7 +1527,11 @@ namespace BSLDaman.DAL
                 {
                     cmd.Parameters.AddWithValue("@BundleID", objReq.BundleID);
                 }
-                
+                if (objReq.LayID != 0 && objReq.LayID != null)
+                {
+                    cmd.Parameters.AddWithValue("@LayID", objReq.LayID);
+                }
+
                 SqlDataAdapter da = new SqlDataAdapter(cmd);
                 DataSet ds = new DataSet();
                 da.Fill(ds);
@@ -1534,7 +1542,7 @@ namespace BSLDaman.DAL
                     {
                         obj = new clsBundleCompile();
                         obj.BundleID = Convert.ToInt64(ds.Tables[0].Rows[i]["BundleID"]);
-                        obj.ShadeSelectionID = Convert.ToInt64(ds.Tables[0].Rows[i]["ShadeSelectionID"]);
+                        obj.LayID = Convert.ToInt64(ds.Tables[0].Rows[i]["LayID"]);
                         obj.BundleNo = Convert.ToInt32(ds.Tables[0].Rows[i]["BundleNo"]);
                         obj.SizeName = Convert.ToString(ds.Tables[0].Rows[i]["SizeName"]);
                         obj.ColorName = Convert.ToString(ds.Tables[0].Rows[i]["ColorName"]);

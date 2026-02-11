@@ -306,7 +306,7 @@ namespace BSLDaman.Models
 
     public class clsBundleCompile
     {
-        public Int64 ShadeSelectionID { get; set; }
+        public Int64 LayID { get; set; }
         public Int64 BundleID { get; set; }
         public int BundleNo { get; set; }
         public string SizeName { get; set; }
@@ -316,6 +316,7 @@ namespace BSLDaman.Models
         public int PlyFrom { get; set; }
         public int PlyTo { get; set; }
         public int LotNo { get; set; }
+        public int BunleQty { get; set; }
         public string SubSection { get; set; }
         public bool IsDispatch { get; set; }
         public string StyleCode { get; set; }
@@ -329,6 +330,9 @@ namespace BSLDaman.Models
         public string AppEndTime { get; set; }
         public string vErrorMsg { get; set; }
         public int vErrorCode { get; set; }
+        public List<clsBundleSize> SizeList { get; set; }
+        public List<clsBundleColor> ColorList { get; set; }
+        public List<clsBundleShade> ShadeList { get; set; }
     }
 
 }
