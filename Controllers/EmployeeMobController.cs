@@ -9,7 +9,7 @@ using System.Web.Mvc;
 
 namespace BSLDaman.Controllers
 {
-    public class EmployeeMobController : Controller
+    public class EmployeeMobController : ApiController
     {
         // GET: EmployeeMob
 
