@@ -118,7 +118,6 @@ namespace BSLDaman.DAL
                         obj.BundleID = Convert.ToInt64(ds.Tables[0].Rows[i]["BundleID"]);
                         obj.BundleNo = Convert.ToInt32(ds.Tables[0].Rows[i]["BundleNo"]);
                         obj.SizeName = Convert.ToString(ds.Tables[0].Rows[i]["SizeName"]);
-                        obj.ShadeSelectionID = Convert.ToInt32(ds.Tables[0].Rows[i]["ShadeSelectionID"]);
                         obj.ColorName = Convert.ToString(ds.Tables[0].Rows[i]["ColorName"]);
                         obj.ShadeName = Convert.ToString(ds.Tables[0].Rows[i]["ShadeName"]);
                         obj.Qty = Convert.ToInt32(ds.Tables[0].Rows[i]["Qty"]);
