@@ -10,7 +10,7 @@ using System.Web.Mvc;
 
 namespace BSLDaman.Controllers
 {
-    public class MasterEntryMobController : Controller
+    public class MasterEntryMobController : ApiController
     {
         // GET: MasterEntryMob
 
