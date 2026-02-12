@@ -15,81 +15,6 @@ namespace BSLDaman.DAL
 
         SqlConnection Con = new SqlConnection(ConfigurationManager.ConnectionStrings["BSL"].ConnectionString);
 
-
-        public clsLine Fn_Add_New_Line(clsLine objReq)
-        {
-            var objResp = new clsLine();
-            try
-            {
-                if (String.IsNullOrWhiteSpace(objReq.LineName))
-                {
-                    objResp.vErrorMsg = "Please Enter the Line Name";
-                    objResp.vErrorCode = 300;
-                }
-                else if (objReq.DivisionID == 0 || objReq.DivisionID == null)
-                {
-                    objResp.vErrorMsg = "Please Select the Division";
-                    objResp.vErrorCode = 300;
-                }
-                else if (String.IsNullOrWhiteSpace(objReq.ShiftTiming))
-                {
-                    objResp.vErrorMsg = "Please Select the Shift Timing";
-                    objResp.vErrorCode = 300;
-                }
-                else if (String.IsNullOrWhiteSpace(objReq.LineStatus))
-                {
-                    objResp.vErrorMsg = "Please Select the Status";
-                    objResp.vErrorCode = 300;
-                }
-                else if (String.IsNullOrWhiteSpace(objReq.AssignOperator))
-                {
-                    objResp.vErrorMsg = "Please Select the Assigned Operator";
-                    objResp.vErrorCode = 300;
-                }
-                else
-                {
-                    if (Con.State == ConnectionState.Broken)
-                    { Con.Close(); }
-                    if (Con.State == ConnectionState.Closed)
-                    { Con.Open(); }
-
-                    SqlCommand cmd = new SqlCommand("", Con);
-                    cmd.CommandType = CommandType.StoredProcedure;
-                    cmd.Parameters.AddWithValue("", objReq.LineName);
-                    cmd.Parameters.AddWithValue("", objReq.DivisionID);
-                    cmd.Parameters.AddWithValue("", objReq.ShiftTiming);
-                    cmd.Parameters.AddWithValue("", objReq.LineStatus);
-                    cmd.Parameters.AddWithValue("", objReq.AssignOperator);
-                    cmd.Parameters.AddWithValue("", objReq.CreatedBy);
-
-                    int i = 0;
-                    i = cmd.ExecuteNonQuery();
-                    if (i > 0)
-                    {
-                        objResp.vErrorCode = 200;
-                        objResp.vErrorMsg = "Success";
-                    }
-                    else
-                    {
-                        objResp.vErrorCode = 400;
-                        objResp.vErrorMsg = "Inserting Line Failed";
-                    }
-                }
-            }
-            catch (Exception exp)
-            {
-                objResp.vErrorCode = 500;
-                Logger.WriteLog("Function Name : Fn_Add_New_Line", " " + "Error Msg : " + exp.Message.ToString(), new StackTrace(exp, true));
-                objResp.vErrorMsg = exp.Message.ToString();
-            }
-            finally
-            {
-                Con.Close();
-            }
-            return objResp;
-        }
-
-
         public List<clsBundleCompile> Fn_Get_ActiveBundle(clsBundleCompile objReq)
         {
             var objResp = new List<clsBundleCompile>();
@@ -201,7 +126,6 @@ namespace BSLDaman.DAL
         }
 
 
-
         public clsBundleCompile Fn_Update_BundleID_By_EmpID(clsBundleCompile objReq)
         {
             var objResp = new clsBundleCompile();
@@ -214,30 +138,32 @@ namespace BSLDaman.DAL
 
                 SqlCommand cmd = new SqlCommand("USP_MobileBundleApp", Con);
                 cmd.CommandType = CommandType.StoredProcedure;
+
+                cmd.Parameters.AddWithValue("@BundleID", objReq.BundleID);
                 cmd.Parameters.AddWithValue("@AppEmpID", objReq.AppEmpID);
                 cmd.Parameters.AddWithValue("@AppStartTime", objReq.AppStartTime);
-                cmd.Parameters.AddWithValue("@AppEndTime", objReq.AppEndTime);
                 cmd.Parameters.AddWithValue("@ModifiedBy", objReq.ModifiedBy);
                 cmd.Parameters.AddWithValue("@QueryType", "UpdateBundleDetails");
 
-                int i = 0;
-                i = cmd.ExecuteNonQuery();
-                if (i > 0)
+                using (SqlDataReader dr = cmd.ExecuteReader())
                 {
-                    objResp.vErrorCode = 200;
-                    objResp.vErrorMsg = "Success";
-                }
-                else
-                {
-                    objResp.vErrorCode = 400;
-                    objResp.vErrorMsg = "Updating Failed.";
+                    if (dr.Read())
+                    {
+                        objResp.vErrorCode = Convert.ToInt32(dr["StatusCode"]);
+                        objResp.vErrorMsg = dr["Message"].ToString();
+                    }
+                    else
+                    {
+                        objResp.vErrorCode = 400;
+                        objResp.vErrorMsg = "Updating Failed.";
+                    }
                 }
             }
             catch (Exception exp)
             {
                 objResp.vErrorCode = 500;
-                Logger.WriteLog("Function Name : Fn_Update_BundleID_By_EmpID", " " + "Error Msg : " + exp.Message.ToString(), new StackTrace(exp, true));
                 objResp.vErrorMsg = exp.Message.ToString();
+                Logger.WriteLog("Function Name : Fn_Update_BundleID_By_EmpID", "Error Msg : " + exp.Message.ToString(), new StackTrace(exp, true));
             }
             finally
             {
@@ -245,6 +171,7 @@ namespace BSLDaman.DAL
             }
             return objResp;
         }
+
 
 
     }
