@@ -27,7 +27,7 @@ namespace BSLDaman.DAL
                 { Con.Open(); }
 
                 string strSql = "SELECT BundleID, LayID, BundleNo, SizeName, ColorName, ShadeName, ";
-                strSql = strSql + " Qty, PlyTo, PlyFrom, LotNo, SubSection, Dispatch, StyleCode, OrderNo, ";
+                strSql = strSql + " Qty, PlyTo, PlyFrom, LotNo, SubSection, Dispatch, StyleCode, OrderNo ";
                 strSql = strSql + " FROM BundleCompile WHERE 1=1";
 
                 //SqlCommand cmd = new SqlCommand("USP_MobileBundleApp", Con);
