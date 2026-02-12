@@ -317,6 +317,7 @@ namespace BSLDaman.Models
         public int PlyTo { get; set; }
         public int LotNo { get; set; }
         public int BunleQty { get; set; }
+        public int CompileQty { get; set; }
         public string SubSection { get; set; }
         public bool IsDispatch { get; set; }
         public string StyleCode { get; set; }
@@ -330,9 +331,15 @@ namespace BSLDaman.Models
         public string AppEndTime { get; set; }
         public string vErrorMsg { get; set; }
         public int vErrorCode { get; set; }
-        public List<clsBundleSize> SizeList { get; set; }
-        public List<clsBundleColor> ColorList { get; set; }
-        public List<clsBundleShade> ShadeList { get; set; }
     }
-
+    public class clsMAXID
+    {
+        public Int64 nMAXID { get; set; }
+        public string vMAXID { get; set; }
+        public string TBLName { get; set; }
+        public string IDField { get; set; }
+        public string DateField { get; set; }
+        public string strPreFix { get; set; }
+        public string vErrorMsg { get; set; }
+    }
 }

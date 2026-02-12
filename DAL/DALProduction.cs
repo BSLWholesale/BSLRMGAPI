@@ -504,7 +504,7 @@ namespace BSLDaman.DAL
                 {
                     strSql = strSql + " AND SM.StyleName LIKE '%@StyleName%'";
                 }
-                
+
 
                 SqlCommand cmd = new SqlCommand(strSql, Con);
                 cmd.CommandType = CommandType.Text;
@@ -1379,64 +1379,115 @@ namespace BSLDaman.DAL
         public clsBundleCompile Fn_Insert_Bundle_Compile(clsBundleCompile objReq)
         {
             var objResp = new clsBundleCompile();
+            var subSectionList = Fn_Get_Subsection_List(objReq);
 
             try
             {
-
                 if (Con.State == ConnectionState.Broken)
-                { Con.Close(); }
+                    Con.Close();
+
                 if (Con.State == ConnectionState.Closed)
-                { Con.Open(); }
+                    Con.Open();
 
-                if (objReq.BundleID == 0 || objReq.BundleID == null)
-                {
-                    Fn_Get_MXID("BundleCompile", "BundleID");
-                    objReq.BundleID = mxID;
-                }
+                // Split Size once
+                var sizeArray = objReq.SizeName?.TrimEnd(',').Split(',');
 
-                SqlCommand cmd = new SqlCommand("USP_BUNDLE_LAYER", Con);
-                cmd.CommandType = CommandType.StoredProcedure;
-                cmd.Parameters.AddWithValue("@BundleID", objReq.BundleID);
-                cmd.Parameters.AddWithValue("@LayID", objReq.LayID);
-                cmd.Parameters.AddWithValue("@BundleNo", objReq.BundleNo);
-                cmd.Parameters.AddWithValue("@SizeName", objReq.SizeName);
-                cmd.Parameters.AddWithValue("@ColorName", objReq.ColorName);
-                cmd.Parameters.AddWithValue("@ShadeName", objReq.ShadeName);
-                cmd.Parameters.AddWithValue("@Qty", objReq.Qty);
-                cmd.Parameters.AddWithValue("@PlyFrom", objReq.PlyFrom);
-                cmd.Parameters.AddWithValue("@PlyTo", objReq.PlyTo);
-                cmd.Parameters.AddWithValue("@LotNo", objReq.LotNo);
-                cmd.Parameters.AddWithValue("@SubSection", objReq.SubSection);
-                cmd.Parameters.AddWithValue("@Dispatch", objReq.IsDispatch);
-                cmd.Parameters.AddWithValue("@StyleCode", objReq.StyleCode);
-                cmd.Parameters.AddWithValue("@OrderNo", objReq.OrderNo);
-                cmd.Parameters.AddWithValue("@CreatedBy", objReq.CreatedBy);
-                cmd.Parameters.AddWithValue("@QueryType", "InsertBundleCompile");
-                int i = 0;
-                i = cmd.ExecuteNonQuery();
-                if (i > 0)
+                // Split Color once
+                var colorArray = objReq.ColorName?.TrimEnd(',').Split(',');
+
+                objReq.ShadeName = objReq.ShadeName?.TrimEnd(',');
+
+                string gSize = "";
+                foreach (var subSection in subSectionList)
                 {
-                    objResp.vErrorCode = 200;
-                    objResp.vErrorMsg = "Success";
-                }
-                else
-                {
-                    objResp.vErrorCode = 400;
-                    objResp.vErrorMsg = "Shade inserting Failed";
+                    foreach (var size in sizeArray)
+                    {
+                        foreach (var color in colorArray)
+                        {
+                            var objMxId = Fn_Get_Max_ID_With_DATE(new clsMAXID
+                            {
+                                TBLName = "BundleCompile",
+                                IDField = "BundleID",
+                                DateField = "CreatedOn",
+                                strPreFix = ""
+                            });
+
+                            objReq.BundleID = objMxId.nMAXID;
+
+                            using (SqlCommand cmd = new SqlCommand("USP_BUNDLE_LAYER", Con))
+                            {
+
+                                if (size != gSize)
+                                {
+                                    Fn_Get_MXID("BundleCompile", "LotNo");
+                                    objReq.LotNo = Convert.ToInt32(mxID);
+                                    gSize = size;
+                                }
+
+                                objReq.PlyFrom = 1;
+                                objReq.PlyTo = 12;
+                                if (subSection.SubSection != "POST ASSEMBLY")
+                                {
+                                    objReq.Qty = objReq.BunleQty;
+                                }
+                                else
+                                {
+                                    objReq.Qty = 1;
+                                }
+                                if (Con.State == ConnectionState.Broken)
+                                { Con.Close(); }
+                                if (Con.State == ConnectionState.Closed)
+                                { Con.Open(); }
+                                cmd.CommandType = CommandType.StoredProcedure;
+
+                                cmd.Parameters.AddWithValue("@BundleID", objReq.BundleID);
+                                cmd.Parameters.AddWithValue("@LayID", objReq.LayID);
+                                cmd.Parameters.AddWithValue("@BundleNo", objReq.BundleNo);
+                                cmd.Parameters.AddWithValue("@SizeName", size);
+                                cmd.Parameters.AddWithValue("@ColorName", color);
+                                cmd.Parameters.AddWithValue("@ShadeName", objReq.ShadeName);
+                                cmd.Parameters.AddWithValue("@Qty", objReq.Qty);
+                                cmd.Parameters.AddWithValue("@PlyFrom", objReq.PlyFrom);
+                                cmd.Parameters.AddWithValue("@PlyTo", objReq.PlyTo);
+                                cmd.Parameters.AddWithValue("@LotNo", objReq.LotNo);
+                                cmd.Parameters.AddWithValue("@SubSection", subSection.SubSection);
+                                cmd.Parameters.AddWithValue("@IsDispatch", objReq.IsDispatch);
+                                cmd.Parameters.AddWithValue("@StyleCode", objReq.StyleCode);
+                                cmd.Parameters.AddWithValue("@OrderNo", objReq.OrderNo);
+                                cmd.Parameters.AddWithValue("@CreatedBy", objReq.CreatedBy);
+                                cmd.Parameters.AddWithValue("@QueryType", "InsertBundleCompile");
+
+                                int result = cmd.ExecuteNonQuery();
+
+                                if (result > 0)
+                                {
+                                    objResp.vErrorCode = 200;
+                                    objResp.vErrorMsg = "Success";
+                                }
+                                else
+                                {
+                                    objResp.vErrorCode = 400;
+                                    objResp.vErrorMsg = "Insert Failed";
+                                }
+                            }
+                        }
+                    }
                 }
             }
             catch (Exception exp)
             {
                 objResp.vErrorCode = 500;
-                Logger.WriteLog("Function Name : Fn_Insert_Bundle_Compile", " " + "Error Msg : " + exp.Message.ToString(), new StackTrace(exp, true));
-                objResp.vErrorMsg = exp.Message.ToString();
+                objResp.vErrorMsg = exp.Message;
+                Logger.WriteLog("Fn_Insert_Bundle_Compile", "Error Msg: " + exp.Message, new StackTrace(exp, true));
             }
             finally
             {
                 Con.Close();
             }
+
             return objResp;
         }
+
 
         public clsBundleCompile Fn_Delete_Bundle_Compile(clsBundleCompile objReq)
         {
@@ -1511,7 +1562,7 @@ namespace BSLDaman.DAL
                     strSql = strSql + " AND LayID = @LayID ";
                 }
 
-                strSql = strSql + " ORDER BY BundleID DESC ";
+                strSql = strSql + " ORDER BY BundleNo, SizeName, LotNo, PlyFrom, PlyTo DESC ";
 
                 SqlCommand cmd = new SqlCommand(strSql, Con);
                 cmd.CommandType = CommandType.Text;
@@ -1605,14 +1656,14 @@ namespace BSLDaman.DAL
                 {
                     strSql = strSql + " AND OrderNo = @OrderNo";
                 }
-                
+
                 SqlCommand cmd = new SqlCommand(strSql, Con);
                 cmd.CommandType = CommandType.Text;
                 if (objReq.ID != 0)
                 {
                     cmd.Parameters.AddWithValue("@OrderNo", objReq.ID);
                 }
-                
+
                 SqlDataAdapter da = new SqlDataAdapter(cmd);
                 DataSet ds = new DataSet();
                 da.Fill(ds);
@@ -1667,7 +1718,7 @@ namespace BSLDaman.DAL
                 { Con.Open(); }
 
                 string strSql = "SELECT Distinct Color FROM OrderDetail WHere 1=1";
-                
+
                 if (objReq.ColorSelectionID != 0 && objReq.ColorSelectionID != null)
                 {
                     strSql = strSql + " AND OrderNo = @OrderNo ";
@@ -1676,12 +1727,12 @@ namespace BSLDaman.DAL
 
                 SqlCommand cmd = new SqlCommand(strSql, Con);
                 cmd.CommandType = CommandType.Text;
-               
+
                 if (objReq.ColorSelectionID != 0 && objReq.ColorSelectionID != null)
                 {
                     cmd.Parameters.AddWithValue("@OrderNo", objReq.ColorSelectionID);
                 }
-                
+
                 SqlDataAdapter da = new SqlDataAdapter(cmd);
                 DataSet ds = new DataSet();
                 da.Fill(ds);
@@ -1717,6 +1768,124 @@ namespace BSLDaman.DAL
             finally
             {
                 Con.Close();
+            }
+            return objResp;
+        }
+
+        public List<clsBundleCompile> Fn_Get_Subsection_List(clsBundleCompile objReq)
+        {
+            var objResp = new List<clsBundleCompile>();
+            var obj = new clsBundleCompile();
+            try
+            {
+                if (Con.State == ConnectionState.Broken)
+                { Con.Close(); }
+                if (Con.State == ConnectionState.Closed)
+                { Con.Open(); }
+
+                string strSql = "SELECT Distinct D.Machine From OperationBreackDown D INNER JOIN OperationBreackDownMaster M ";
+                strSql = strSql + " ON D.MID = M.ID WHERE 1=1 ";
+                if (!String.IsNullOrWhiteSpace(objReq.StyleCode))
+                {
+                    strSql = strSql + " AND M.StyleCode = @StyleCode";
+                }
+
+                strSql = strSql + " ORDER BY D.Machine ";
+
+                SqlCommand cmd = new SqlCommand(strSql, Con);
+                cmd.CommandType = CommandType.Text;
+                if (!String.IsNullOrWhiteSpace(objReq.StyleCode))
+                {
+                    cmd.Parameters.AddWithValue("@StyleCode", objReq.StyleCode);
+                }
+
+
+                SqlDataAdapter da = new SqlDataAdapter(cmd);
+                DataSet ds = new DataSet();
+                da.Fill(ds);
+                int i = 0;
+                if (ds.Tables[0].Rows.Count > 0)
+                {
+                    while (ds.Tables[0].Rows.Count > i)
+                    {
+                        obj = new clsBundleCompile();
+                        obj.SubSection = Convert.ToString(ds.Tables[0].Rows[i]["Machine"]);
+                        obj.vErrorCode = 200;
+                        obj.vErrorMsg = "Success";
+                        objResp.Add(obj);
+                        i++;
+                    }
+                }
+                else
+                {
+                    obj.vErrorCode = 404;
+                    obj.vErrorMsg = "No Record found";
+                    objResp.Add(obj);
+                }
+
+            }
+            catch (Exception exp)
+            {
+                obj.vErrorCode = 500;
+                Logger.WriteLog("Function Name : Fn_Get_Bundle_Compile", " " + "Error Msg : " + exp.Message.ToString(), new StackTrace(exp, true));
+                obj.vErrorMsg = exp.Message.ToString();
+                objResp.Add(obj);
+            }
+            finally
+            {
+                Con.Close();
+            }
+            return objResp;
+        }
+
+        public clsMAXID Fn_Get_Max_ID_With_DATE(clsMAXID objReq)
+        {
+            var objResp = new clsMAXID();
+            try
+            {
+                //if (Con.State == ConnectionState.Broken)
+                //{ Con.Close(); }
+                //if (Con.State == ConnectionState.Closed)
+                //{ Con.Open(); }
+                string strSql = "";
+
+                if (String.IsNullOrWhiteSpace(objReq.strPreFix))
+                {
+                    strSql = "SELECT CONCAT(FORMAT(GETDATE(),'ddMMyyyy'),SUBSTRING(FORMAT(ISNULL(MAX(" + objReq.IDField + ") + 1, 1),'00000000000000'),9,6)) FROM " + objReq.TBLName + " WHERE CONVERT(DATE," + objReq.DateField + ")= CONVERT(DATE, GETDATE())";
+                }
+                else
+                {
+                    strSql = "Select Concat(format(getdate(),'ddMMyyyy'), FORMAT(ISNULL(max(cast(substring(" + objReq.IDField + ",13,6) as int))+1,1),'000000')) from " + objReq.TBLName + " where Convert(date," + objReq.DateField + ")=Convert(date,getdate())";
+                }
+
+                SqlCommand cmd = new SqlCommand(strSql, Con);
+                SqlDataReader dr = cmd.ExecuteReader();
+                if (dr.HasRows)
+                {
+                    dr.Read();
+                    objResp.vMAXID = objReq.strPreFix + dr[0].ToString();
+                    objResp.nMAXID = Convert.ToInt64(dr[0].ToString());
+                    objResp.vErrorMsg = "Success";
+                }
+                else
+                {
+                    string dt = DateTime.Now.ToString("ddMMyyyy");
+                    objResp.vMAXID = objReq.strPreFix + dt + "000001";
+                    objResp.nMAXID = Convert.ToInt64(dt + "000001");
+                    objResp.vErrorMsg = "Success";
+                }
+                dr.Close();
+                cmd.Dispose();
+                Con.Close();
+            }
+            catch (Exception exp)
+            {
+                Logger.WriteLog("Function Name : Fn_Get_Max_ID", " " + "Error Msg : " + exp.Message.ToString(), new StackTrace(exp, true));
+                objResp.vErrorMsg = exp.Message.ToString();
+            }
+            finally
+            {
+                //Con.Close();
             }
             return objResp;
         }
