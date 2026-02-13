@@ -37,5 +37,16 @@ namespace BSLDaman.Controllers
         }
 
 
+        [System.Web.Http.HttpGet]
+        [System.Web.Http.Route("api/MOBProduction/Fn_Get_OperationNumber")]
+        public List<clsOPBreackDownDetail> Fn_Get_OperationNumber(clsOPBreackDownDetail objReq)
+        {
+            var objResp = new List<clsOPBreackDownDetail>();
+            objResp = _MOBDALProduction.Fn_Get_OperationNumber(objReq);
+            return objResp;
+        }
+
+
+
     }
 }
