@@ -9,7 +9,7 @@ using System.Web.Mvc;
 
 namespace BSLDaman.Controllers
 {
-    public class MOBEmployeeController : Controller
+    public class MOBEmployeeController : ApiController
     {
         // GET: MOBEmployee
 
