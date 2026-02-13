@@ -18,7 +18,7 @@ namespace BSLDaman.Controllers
 
 
         [System.Web.Http.HttpGet]
-        [System.Web.Http.Route("api/MasterEntryMob/Fn_Get_ActiveBundle")]
+        [System.Web.Http.Route("api/MOBProduction/Fn_Get_ActiveBundle")]
         public List<clsBundleCompile> Fn_Get_ActiveBundle(clsBundleCompile objReq)
         {
             var objResp = new List<clsBundleCompile>();
@@ -28,7 +28,7 @@ namespace BSLDaman.Controllers
 
 
         [System.Web.Http.HttpPut]
-        [System.Web.Http.Route("api/MasterEntryMob/Fn_Update_BundleID_By_EmpID")]
+        [System.Web.Http.Route("api/MOBProduction/Fn_Update_BundleID_By_EmpID")]
         public clsBundleCompile Fn_Update_BundleID_By_EmpID(clsBundleCompile objReq)
         {
             var objResp = new clsBundleCompile();

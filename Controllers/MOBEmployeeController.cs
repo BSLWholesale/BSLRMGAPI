@@ -17,7 +17,7 @@ namespace BSLDaman.Controllers
 
 
         [System.Web.Http.HttpPost]
-        [System.Web.Http.Route("api/EmployeeMob/Fn_Insert_Employee")]
+        [System.Web.Http.Route("api/MOBEmployee/Fn_Insert_Employee")]
         public clsEmployee Fn_Insert_Employee(clsEmployee objReq)
         {
             var objResp = new clsEmployee();
@@ -27,7 +27,7 @@ namespace BSLDaman.Controllers
 
 
         [System.Web.Http.HttpPost]
-        [System.Web.Http.Route("api/EmployeeMob/Fn_Login_Employee")]
+        [System.Web.Http.Route("api/MOBEmployee/Fn_Login_Employee")]
         public clsEmployee Fn_Login_Employee(clsEmployee objReq)
         {
             var objResp = new clsEmployee();
@@ -37,7 +37,7 @@ namespace BSLDaman.Controllers
 
 
         [System.Web.Http.HttpPost]
-        [System.Web.Http.Route("api/EmployeeMob/Fn_Fetch_EmployeeDetail_ById")]
+        [System.Web.Http.Route("api/MOBEmployee/Fn_Fetch_EmployeeDetail_ById")]
         public clsEmployee Fn_Fetch_EmployeeDetail_ById(clsEmployee objReq)
         {
             var objResp = new clsEmployee();
