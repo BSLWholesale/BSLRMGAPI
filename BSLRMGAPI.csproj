@@ -160,6 +160,8 @@
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\MasterEntryController.cs" />
     <Compile Include="Controllers\MasterEntryMobController.cs" />
+    <Compile Include="Controllers\MOBEmployeeController.cs" />
+    <Compile Include="Controllers\MOBProductionController.cs" />
     <Compile Include="Controllers\OrderController.cs" />
     <Compile Include="Controllers\ProductionController.cs" />
     <Compile Include="Controllers\ValuesController.cs" />
@@ -169,6 +171,8 @@
     <Compile Include="DAL\DALMasterEntryMob.cs" />
     <Compile Include="DAL\DALOrder.cs" />
     <Compile Include="DAL\DALProduction.cs" />
+    <Compile Include="DAL\MOBDALEmployee.cs" />
+    <Compile Include="DAL\MOBDALProduction.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -234,6 +238,8 @@
     <Folder Include="Views\Employee\" />
     <Folder Include="Views\MasterEntryMob\" />
     <Folder Include="Views\MasterEntry\" />
+    <Folder Include="Views\MOBEmployee\" />
+    <Folder Include="Views\MOBProduction\" />
     <Folder Include="Views\Order\" />
     <Folder Include="Views\Production\" />
   </ItemGroup>
