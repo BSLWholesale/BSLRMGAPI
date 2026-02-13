@@ -170,6 +170,85 @@ namespace BSLDaman.DAL
         }
 
 
+        public List<clsOPBreackDownDetail> Fn_Get_OperationNumber(clsOPBreackDownDetail objReq)
+        {
+            var objResp = new List<clsOPBreackDownDetail>();
+            var obj = new clsOPBreackDownDetail();
+            try
+            {
+                if (Con.State == ConnectionState.Broken)
+                { Con.Close(); }
+                if (Con.State == ConnectionState.Closed)
+                { Con.Open(); }
+
+                string strSql = "SELECT OpNo, Descriptions, Machine, SubSection, StdMin, Rate, Product,";
+                strSql = strSql + " Skill, Grade, Folder, Seamlength, IsDirect, ProgressPoint, MID";
+                strSql = strSql + " FROM OperationBreackDown WHERE 1=1";
+
+                if (objReq.OpNo != 0 && objReq.OpNo != null)
+                {
+                    strSql = strSql + " AND OpNo = @OpNo";
+                }
+
+                SqlCommand cmd = new SqlCommand(strSql, Con);
+                cmd.CommandType = CommandType.Text;
+
+                if (objReq.OpNo != 0 && objReq.OpNo != null)
+                {
+                    cmd.Parameters.AddWithValue("@OpNo", objReq.OpNo);
+                }
+
+                SqlDataAdapter da = new SqlDataAdapter(cmd);
+                DataSet ds = new DataSet();
+                da.Fill(ds);
+                int i = 0;
+
+                if (ds.Tables[0].Rows.Count > 0)
+                {
+                    while (ds.Tables[0].Rows.Count > i)
+                    {
+                        obj = new clsOPBreackDownDetail();
+                        obj.OpNo = Convert.ToInt32(ds.Tables[0].Rows[i]["OpNo"]);
+                        obj.Descriptions = Convert.ToString(ds.Tables[0].Rows[i]["Descriptions"]);
+                        obj.Machine = Convert.ToString(ds.Tables[0].Rows[i]["Machine"]);
+                        obj.SubSection = Convert.ToString(ds.Tables[0].Rows[i]["SubSection"]);
+                        obj.StdMin = Convert.ToDecimal(ds.Tables[0].Rows[i]["StdMin"]);
+                        obj.Rate = Convert.ToDecimal(ds.Tables[0].Rows[i]["Rate"]);
+                        obj.Product = Convert.ToString(ds.Tables[0].Rows[i]["Product"]);
+                        obj.Skill = Convert.ToString(ds.Tables[0].Rows[i]["Skill"]);
+                        obj.Grade = Convert.ToString(ds.Tables[0].Rows[i]["Grade"]);
+                        obj.Folder = Convert.ToString(ds.Tables[0].Rows[i]["Folder"]);
+                        obj.Seamlength = Convert.ToString(ds.Tables[0].Rows[i]["Seamlength"]);
+                        obj.IsDirect = Convert.ToBoolean(ds.Tables[0].Rows[i]["IsDirect"]);
+                        obj.ProgressPoint = Convert.ToString(ds.Tables[0].Rows[i]["ProgressPoint"]);
+                        obj.MID = Convert.ToInt64(ds.Tables[0].Rows[i]["MID"]);
+
+                        obj.vErrorCode = 200;
+                        obj.vErrorMsg = "Success";
+                        objResp.Add(obj);
+                    }
+                }
+                else
+                {
+                    obj.vErrorCode = 404;
+                    obj.vErrorMsg = "No Records are found.";
+                    objResp.Add(obj);
+                }
+            }
+            catch (Exception exp)
+            {
+                obj.vErrorCode = 500;
+                Logger.WriteLog("Function Name : Fn_Get_OperationNumber", " " + "Error Msg : " + exp.Message.ToString(), new StackTrace(exp, true));
+                obj.vErrorMsg = exp.Message.ToString();
+                objResp.Add(obj);
+            }
+            finally
+            {
+                Con.Close();
+            }
+            return objResp;
+        }
+
 
 
     }
