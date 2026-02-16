@@ -47,6 +47,16 @@ namespace BSLDaman.Controllers
         }
 
 
+        [System.Web.Http.HttpPost]
+        [System.Web.Http.Route("api/MOBProduction/Fn_AssignedTask_Employee")]
+        public clsOPBreackDownMaster Fn_AssignedTask_Employee(clsOPBreackDownMaster objReq)
+        {
+            var objResp = new clsOPBreackDownMaster();
+            objResp = _MOBDALProduction.Fn_AssignedTask_Employee(objReq);
+            return objResp;
+        }
+
+
 
     }
 }
