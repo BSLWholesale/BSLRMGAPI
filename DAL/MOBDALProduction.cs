@@ -182,7 +182,7 @@ namespace BSLDaman.DAL
                 { Con.Open(); }
 
                 string strSql = "SELECT OpNo, Descriptions, Machine, SubSection, StdMin, Rate, Product,";
-                strSql = strSql + " Skill, Grade, Folder, Seamlength, IsDirect, ProgressPoint, MID";
+                strSql = strSql + " Rate, Product, Skill, Grade, Folder, Seamlength, IsDirect, MID";
                 strSql = strSql + " FROM OperationBreackDown WHERE 1=1";
 
                 if (objReq.OpNo != 0 && objReq.OpNo != null)
@@ -220,12 +220,13 @@ namespace BSLDaman.DAL
                         obj.Folder = Convert.ToString(ds.Tables[0].Rows[i]["Folder"]);
                         obj.Seamlength = Convert.ToString(ds.Tables[0].Rows[i]["Seamlength"]);
                         obj.IsDirect = Convert.ToBoolean(ds.Tables[0].Rows[i]["IsDirect"]);
-                        obj.ProgressPoint = Convert.ToString(ds.Tables[0].Rows[i]["ProgressPoint"]);
+                        //obj.ProgressPoint = Convert.ToString(ds.Tables[0].Rows[i]["ProgressPoint"]);
                         obj.MID = Convert.ToInt64(ds.Tables[0].Rows[i]["MID"]);
 
                         obj.vErrorCode = 200;
                         obj.vErrorMsg = "Success";
                         objResp.Add(obj);
+                        i++;
                     }
                 }
                 else
@@ -241,6 +242,50 @@ namespace BSLDaman.DAL
                 Logger.WriteLog("Function Name : Fn_Get_OperationNumber", " " + "Error Msg : " + exp.Message.ToString(), new StackTrace(exp, true));
                 obj.vErrorMsg = exp.Message.ToString();
                 objResp.Add(obj);
+            }
+            finally
+            {
+                Con.Close();
+            }
+            return objResp;
+        }
+
+
+        public clsOPBreackDownMaster Fn_AssignedTask_Employee(clsOPBreackDownMaster objReq)
+        {
+            var objResp = new clsOPBreackDownMaster();
+            try
+            {
+                if (Con.State == ConnectionState.Broken)
+                { Con.Close(); }
+                if (Con.State == ConnectionState.Closed)
+                { Con.Open(); }
+
+                SqlCommand cmd = new SqlCommand("", Con);
+                cmd.CommandType = CommandType.StoredProcedure;
+
+                cmd.Parameters.AddWithValue("", objReq.nEmpId);
+                cmd.Parameters.AddWithValue("", objReq.ModifiedBy);
+                cmd.Parameters.AddWithValue("", "");
+                
+                int i = 0;
+                i = cmd.ExecuteNonQuery();
+                if (i > 0)
+                {
+                    objResp.vErrorCode = 200;
+                    objResp.vErrorMsg = "Success";
+                }
+                else
+                {
+                    objResp.vErrorCode = 400;
+                    objResp.vErrorMsg = "Assigned Task Failed.";
+                }
+            }
+            catch (Exception exp)
+            {
+                objResp.vErrorCode = 500;
+                Logger.WriteLog("Function Name : Fn_AssignedTask_Employee", " " + "Error Msg : " + exp.Message.ToString(), new StackTrace(exp, true));
+                objResp.vErrorMsg = exp.Message.ToString();
             }
             finally
             {
