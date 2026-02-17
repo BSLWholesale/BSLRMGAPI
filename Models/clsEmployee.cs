@@ -70,6 +70,7 @@ namespace BSLDaman.Models
         public string vQueryType { get; set; }
     }
 
+
     public class clsColorMaster
     {
         public int Id { get; set; }
@@ -82,6 +83,8 @@ namespace BSLDaman.Models
         public int vErrorCode { get; set; }
         public string vQueryType { get; set; }
     }
+
+
     public class clsProductionMaster
     {
         public Int64 ProductionOrderNo { get; set; }
@@ -125,6 +128,7 @@ namespace BSLDaman.Models
         public string vQueryType { get; set; }
     }
 
+
     public class clsRequestDropdown
     {
         public string vFieldName { get; set; }
@@ -133,6 +137,8 @@ namespace BSLDaman.Models
         public string vCriteria { get; set; }
         public string vErrorMsg { get; set; }
     }
+
+
     public class clsResponseDropdown
     {
         public string vFieldName { get; set; }
@@ -140,16 +146,20 @@ namespace BSLDaman.Models
         public string vErrorMsg { get; set; }
     }
 
+
     public class clsAutoCompliteRequest
     {
         public string SearchKeyword { get; set; }
         public string TableName { get; set; }
         public string FieldName { get; set; }
     }
+
+
     public class clsAutoCompliteResponse
     {
         public string SearchKeyword { get; set; }
     }
+
 
     public class clsOrderMaster
     {
@@ -170,6 +180,7 @@ namespace BSLDaman.Models
         public List<clsOrderDetail> oDetail { get; set; }
     }
 
+
     public class clsOrderDetail
     {
         public Int64 DetailID { get; set; }
@@ -186,6 +197,7 @@ namespace BSLDaman.Models
         public int vErrorCode { get; set; }
 
     }
+
 
     public class clsProcessMaster
     {
@@ -216,6 +228,7 @@ namespace BSLDaman.Models
         public Int64 nEmpId { get; set; }
     }
 
+
     public class clsOPBreackDownDetail
     {
         public Int64 DetailID { get; set; }
@@ -245,6 +258,7 @@ namespace BSLDaman.Models
         public int vErrorCode { get; set; }
     }
 
+
     public class clsBundleLayerMaster
     {
         public Int64 LayID { get; set; }
@@ -263,6 +277,7 @@ namespace BSLDaman.Models
         public int vErrorCode { get; set; }
     }
 
+
     public class clsBundleSize
     {
         public Int64 LayID { get; set; }
@@ -278,6 +293,7 @@ namespace BSLDaman.Models
         public int vErrorCode { get; set; }
     }
 
+
     public class clsBundleColor
     {
         public Int64 ColorSelectionID { get; set; }
@@ -290,6 +306,7 @@ namespace BSLDaman.Models
         public string vErrorMsg { get; set; }
         public int vErrorCode { get; set; }
     }
+
 
     public class clsBundleShade
     {
@@ -304,6 +321,7 @@ namespace BSLDaman.Models
         public string vErrorMsg { get; set; }
         public int vErrorCode { get; set; }
     }
+
 
     public class clsBundleCompile
     {
@@ -333,6 +351,8 @@ namespace BSLDaman.Models
         public string vErrorMsg { get; set; }
         public int vErrorCode { get; set; }
     }
+
+
     public class clsMAXID
     {
         public Int64 nMAXID { get; set; }
@@ -343,4 +363,19 @@ namespace BSLDaman.Models
         public string strPreFix { get; set; }
         public string vErrorMsg { get; set; }
     }
+
+
+    public class clsMachineLogMaster
+    {
+        public int MachineLogId { get; set; }
+        public string MachineLogName { get; set; }
+        public int CreatedBy { get; set; }
+        public string CreatedOn { get; set; }
+        public int ModifiedBy { get; set; }
+        public string ModifiedOn { get; set; }
+        public string vErrorMsg { get; set; }
+        public int vErrorCode { get; set; }
+    }
+
+
 }
