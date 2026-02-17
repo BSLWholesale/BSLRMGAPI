@@ -373,6 +373,124 @@ namespace BSLDaman.DAL
             return objResp;
         }
 
+        
+        public clsMachineLogLostTimeTransactions Fn_Insert_MachineLogTransaction(clsMachineLogLostTimeTransactions objReq)
+        {
+            var objResp = new clsMachineLogLostTimeTransactions();
+            try
+            {
+                if (objReq.EmpId == null || objReq.EmpId == 0)
+                {
+                    objResp.vErrorMsg = "Please Pass Employee Id";
+                    objResp.vErrorCode = 300;
+                }
+                else if (objReq.MachineId == null || objReq.MachineId == 0)
+                {
+                    objResp.vErrorMsg = "Please Pass Machine Id.";
+                    objResp.vErrorCode = 300;
+                }
+                else if (String.IsNullOrWhiteSpace(objReq.MachineLogDescription))
+                {
+                    objResp.vErrorMsg = "Please Enter the Machine Log Description";
+                    objResp.vErrorCode = 300;
+                }
+                else if (String.IsNullOrWhiteSpace(objReq.MachineStatus))
+                {
+                    objResp.vErrorMsg = "Please Pass the Machine Status";
+                    objResp.vErrorCode = 300;
+                }
+                else
+                {
+                    if (Con.State == ConnectionState.Broken)
+                    { Con.Close(); }
+                    if (Con.State == ConnectionState.Closed)
+                    { Con.Open(); }
+
+                    SqlCommand cmd = new SqlCommand("USP_MobileMachineLogTransactions", Con);
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("@LineId", objReq.LineId);
+                    cmd.Parameters.AddWithValue("@MachineId", objReq.MachineId);
+                    cmd.Parameters.AddWithValue("@MachineLogDescription", objReq.MachineLogDescription);
+                    cmd.Parameters.AddWithValue("@EmpId", objReq.EmpId);
+                    cmd.Parameters.AddWithValue("@MachineStatus", objReq.MachineStatus);
+                    cmd.Parameters.AddWithValue("@CreatedBy", objReq.CreatedBy);
+                    cmd.Parameters.AddWithValue("@QueryType", "InsertMachineLog");
+
+                    int i = 0;
+                    i = cmd.ExecuteNonQuery();
+                    if (i > 0)
+                    {
+                        objResp.vErrorMsg = "Success";
+                        objResp.vErrorCode = 200;
+                    }
+                    else
+                    {
+                        objResp.vErrorMsg = "Machine Log Issue insertion failed.";
+                        objResp.vErrorCode = 300;
+                    }
+                }
+            }
+            catch (Exception exp)
+            {
+                Logger.WriteLog("Function Name : Fn_Insert_MachineLogTransaction", " " + "Error Msg : " + exp.Message.ToString(), new StackTrace(exp, true));
+                objResp.vErrorMsg = exp.Message.ToString();
+                objResp.vErrorCode = 500;
+            }
+            finally
+            {
+                Con.Close();
+            }
+            return objResp;
+        }
+
+
+        public clsMachineLogLostTimeTransactions Fn_Update_MachineLogTransaction(clsMachineLogLostTimeTransactions objReq)
+        {
+            var objResp = new clsMachineLogLostTimeTransactions();
+            try
+            {
+                if (Con.State == ConnectionState.Broken)
+                { Con.Close(); }
+                if (Con.State == ConnectionState.Closed)
+                { Con.Open(); }
+
+                SqlCommand cmd = new SqlCommand("USP_MobileMachineLogTransactions", Con);
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@LineId", objReq.LineId);
+                cmd.Parameters.AddWithValue("@MachineId", objReq.MachineId);
+                cmd.Parameters.AddWithValue("@EmpId", objReq.EmpId);
+                cmd.Parameters.AddWithValue("@RepairedDate", objReq.RepairDate);
+                cmd.Parameters.AddWithValue("@RepairRemark", objReq.RepairRemark);
+                cmd.Parameters.AddWithValue("@MachineStatus", objReq.MachineStatus);
+                cmd.Parameters.AddWithValue("@ModifiedBy", objReq.ModifiedBy);
+                cmd.Parameters.AddWithValue("@QueryType", "UpdateMachineLog");
+
+                int i = 0;
+                i = cmd.ExecuteNonQuery();
+                if (i > 0)
+                {
+                    objResp.vErrorCode = 200;
+                    objResp.vErrorMsg = "Success";
+                }
+                else
+                {
+                    objResp.vErrorCode = 400;
+                    objResp.vErrorMsg = "Updating the Machine Log Transactions failed.";
+                }
+            }
+            catch (Exception exp)
+            {
+                objResp.vErrorCode = 500;
+                Logger.WriteLog("Function Name : Fn_Update_MachineLogTransaction", " " + "Error Msg : " + exp.Message.ToString(), new StackTrace(exp, true));
+                objResp.vErrorMsg = exp.Message.ToString();
+            }
+            finally
+            {
+                Con.Close();
+            }
+            return objResp;
+        }
+
 
     }
 }
