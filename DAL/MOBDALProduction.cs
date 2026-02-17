@@ -296,5 +296,83 @@ namespace BSLDaman.DAL
 
 
 
+        public List<clsMachineLogMaster> Fn_Get_MachineLogMaster(clsMachineLogMaster objReq)
+        {
+            var objResp = new List<clsMachineLogMaster>();
+            var obj = new clsMachineLogMaster();
+            try
+            {
+                if (Con.State == ConnectionState.Broken)
+                { Con.Close(); }
+                if (Con.State == ConnectionState.Closed)
+                { Con.Open(); }
+
+                string strSql = "SELECT MachineLogId, MachineLogName, CreatedBy, FORMAT(CreatedOn, 'dd-MMM-yyyy') AS CreatedOn";
+                strSql = strSql + " FROM MachineLogMaster WHERE 1=1";
+
+                if (objReq.MachineLogId != 0 && objReq.MachineLogId != null)
+                {
+                    strSql = strSql + " AND MachineLogId = @MachineLogId";
+                }
+                if (!String.IsNullOrWhiteSpace(objReq.MachineLogName))
+                {
+                    strSql = strSql + " AND MachineLogName LIKE '%@MachineLogName%'";
+                }
+
+                SqlCommand cmd = new SqlCommand(strSql, Con);
+                cmd.CommandType = CommandType.Text;
+
+                if (objReq.MachineLogId != 0 && objReq.MachineLogId != null)
+                {
+                    cmd.Parameters.AddWithValue("@MachineLogId", objReq.MachineLogId);
+                }
+                if (!String.IsNullOrWhiteSpace(objReq.MachineLogName))
+                {
+                    cmd.Parameters.AddWithValue("@MachineLogName", objReq.MachineLogName);
+                }
+
+                SqlDataAdapter da = new SqlDataAdapter(cmd);
+                DataSet ds = new DataSet();
+                da.Fill(ds);
+
+                int i = 0;
+                if (ds.Tables[0].Rows.Count > 0)
+                {
+                    while (ds.Tables[0].Rows.Count > i)
+                    {
+                        obj = new clsMachineLogMaster();
+                        obj.MachineLogId = Convert.ToInt32(ds.Tables[0].Rows[i]["MachineLogId"]);
+                        obj.MachineLogName = Convert.ToString(ds.Tables[0].Rows[i]["MachineLogName"]);
+                        obj.CreatedBy = Convert.ToInt32(ds.Tables[0].Rows[i]["CreatedBy"]);
+                        obj.CreatedOn = Convert.ToString(ds.Tables[0].Rows[i]["CreatedOn"]);
+
+                        obj.vErrorCode = 200;
+                        obj.vErrorMsg = "Success";
+                        objResp.Add(obj);
+                        i++;
+                    }
+                }
+                else
+                {
+                    obj.vErrorCode = 404;
+                    obj.vErrorMsg = "No Records found.";
+                    objResp.Add(obj);
+                }
+            }        
+            catch (Exception exp)
+            {
+                obj.vErrorCode = 500;
+                Logger.WriteLog("Function Name : Fn_Get_MachineLogMaster", " " + "Error Msg : " + exp.Message.ToString(), new StackTrace(exp, true));
+                obj.vErrorMsg = exp.Message.ToString();
+                objResp.Add(obj);
+            }
+            finally
+            {
+                Con.Close();
+            }
+            return objResp;
+        }
+
+
     }
 }
