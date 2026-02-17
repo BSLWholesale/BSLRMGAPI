@@ -57,6 +57,15 @@ namespace BSLDaman.Controllers
         }
 
 
+        [System.Web.Http.HttpGet]
+        [System.Web.Http.Route("api/MOBProduction/Fn_Get_MachineLogMaster")]
+        public List<clsMachineLogMaster> Fn_Get_MachineLogMaster(clsMachineLogMaster objReq)
+        {
+            var objResp = new List<clsMachineLogMaster>();
+            objResp = _MOBDALProduction.Fn_Get_MachineLogMaster(objReq);
+            return objResp;
+        }
+
 
     }
 }
