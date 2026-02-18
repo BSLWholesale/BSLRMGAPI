@@ -87,5 +87,25 @@ namespace BSLDaman.Controllers
         }
 
 
+        [System.Web.Http.HttpGet]
+        [System.Web.Http.Route("api/MOBProduction/Fn_Get_All_MachineLogTransactions")]
+        public List<clsMachineLogLostTimeTransactions> Fn_Get_All_MachineLogTransactions(clsMachineLogLostTimeTransactions objReq)
+        {
+            var objResp = new List<clsMachineLogLostTimeTransactions>();
+            objResp = _MOBDALProduction.Fn_Get_All_MachineLogTransactions(objReq);
+            return objResp;
+        }
+
+
+        [System.Web.Http.HttpGet]
+        [System.Web.Http.Route("api/MOBProduction/Fn_Get_MachineLogLostTime")]
+        public clsMachineLogLostTimeTransactions Fn_Get_MachineLogLostTime(clsMachineLogLostTimeTransactions objReq)
+        {
+            var objResp = new clsMachineLogLostTimeTransactions();
+            objResp = _MOBDALProduction.Fn_Get_MachineLogLostTime(objReq);
+            return objResp;
+        }
+
+
     }
 }
