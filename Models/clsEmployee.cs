@@ -380,6 +380,7 @@ namespace BSLDaman.Models
 
     public class clsMachineLogLostTimeTransactions
     {
+        public Int64 ID { get; set; }
         public Int64 LineId { get; set; }
         public Int64 MachineId { get; set; }
         public string MachineLogDescription { get; set; }
@@ -391,6 +392,7 @@ namespace BSLDaman.Models
         public string CreatedOn { get; set; }
         public int ModifiedBy { get; set; }
         public string ModifiedOn { get; set; }
+        public string TimeDifference { get; set; }
         public string vErrorMsg { get; set; }
         public int vErrorCode { get; set; }
 
