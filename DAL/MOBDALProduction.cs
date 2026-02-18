@@ -605,6 +605,8 @@ namespace BSLDaman.DAL
                         difference.Days,
                         difference.Hours,
                         difference.Minutes);
+
+                    objResp.TimeSpentDifference = formattedDifference; 
                     
                     objResp.vErrorCode = 200;
                     objResp.vErrorMsg = "Success";                    
