@@ -413,6 +413,8 @@ namespace BSLDaman.DAL
                     cmd.Parameters.AddWithValue("@MachineLogDescription", objReq.MachineLogDescription);
                     cmd.Parameters.AddWithValue("@EmpId", objReq.EmpId);
                     cmd.Parameters.AddWithValue("@MachineStatus", objReq.MachineStatus);
+                    cmd.Parameters.AddWithValue("@Needle", objReq.Needle);
+                    cmd.Parameters.AddWithValue("@Oiling", objReq.Oiling);
                     cmd.Parameters.AddWithValue("@CreatedBy", objReq.CreatedBy);
                     cmd.Parameters.AddWithValue("@QueryType", "InsertMachineLog");
 
@@ -504,7 +506,7 @@ namespace BSLDaman.DAL
                 { Con.Open(); }
 
                 string strSql = "SELECT ID, LineId, MachineId, MachineLogDescription, EmpId,";
-                strSql = strSql + " MachineStatus, CreatedBy, FORMAT(CreatedOn, 'dd-MMM-yyyy') AS CreatedOn";
+                strSql = strSql + " MachineStatus, Needle, Oiling, CreatedBy, FORMAT(CreatedOn, 'dd-MMM-yyyy') AS CreatedOn";
                 strSql = strSql + " FROM MachineLogLostTimeTransactions WHERE 1=1";
 
                 if (objReq.ID != 0 && objReq.ID != null)
@@ -536,6 +538,8 @@ namespace BSLDaman.DAL
                         obj.MachineLogDescription = Convert.ToString(ds.Tables[0].Rows[i]["MachineLogDescription"]);
                         obj.EmpId = Convert.ToInt32(ds.Tables[0].Rows[i]["EmpId"]);
                         obj.MachineStatus = Convert.ToString(ds.Tables[0].Rows[i]["MachineStatus"]);
+                        obj.Needle = Convert.ToBoolean(ds.Tables[0].Rows[i]["Needle"]);
+                        obj.Oiling = Convert.ToBoolean(ds.Tables[0].Rows[i]["Oiling"]);
                         obj.CreatedBy = Convert.ToInt32(ds.Tables[0].Rows[i]["CreatedBy"]);
                         obj.CreatedOn = Convert.ToString(ds.Tables[0].Rows[i]["CreatedOn"]);
 
@@ -595,21 +599,25 @@ namespace BSLDaman.DAL
                     objResp.ID = Convert.ToInt64(ds.Tables[0].Rows[i]["ID"]);
                     objResp.LineId = Convert.ToInt64(ds.Tables[0].Rows[i]["LineId"]);
                     objResp.MachineId = Convert.ToInt64(ds.Tables[0].Rows[i]["MachineId"]);
+                    objResp.MachineLogDescription = Convert.ToString(ds.Tables[0].Rows[i]["MachineLogDescription"]);
                     objResp.EmpId = Convert.ToInt32(ds.Tables[0].Rows[i]["EmpId"]);
+                    objResp.Needle = Convert.ToBoolean(ds.Tables[0].Rows[i]["Needle"]);
+                    objResp.Oiling = Convert.ToBoolean(ds.Tables[0].Rows[i]["Oiling"]);
                     objResp.CreatedOn = Convert.ToString(ds.Tables[0].Rows[i]["CreatedOn"]);
                     objResp.RepairDate = Convert.ToString(ds.Tables[0].Rows[i]["RepairDate"]);
+                    objResp.RepairRemark = Convert.ToString(ds.Tables[0].Rows[i]["RepairRemark"]);
 
                     TimeSpan difference = Convert.ToDateTime(objResp.RepairDate) - Convert.ToDateTime(objResp.CreatedOn);
 
-                    string formattedDifference = string.Format("{0}Days, {1} Hours, {2} Minutes", 
+                    string formattedDifference = string.Format("{0} Days, {1} Hours, {2} Minutes",
                         difference.Days,
                         difference.Hours,
                         difference.Minutes);
 
-                    objResp.TimeSpentDifference = formattedDifference; 
-                    
+                    objResp.TimeSpentDifference = formattedDifference;
+
                     objResp.vErrorCode = 200;
-                    objResp.vErrorMsg = "Success";                    
+                    objResp.vErrorMsg = "Success";
                 }
                 else
                 {
@@ -619,7 +627,7 @@ namespace BSLDaman.DAL
             }
             catch (Exception exp)
             {
-                Logger.WriteLog("Function Name : Fn_Get_MachineLogLostTime", " " + "Error Msg : " + exp.Message.ToString(), new StackTrace(exp, true));
+                Logger.WriteLog("Function Name : Fn_Get_MachineLogLostTime", " " + exp.Message.ToString(), new StackTrace(exp, true));
                 objResp.vErrorMsg = exp.Message.ToString();
             }
             finally
