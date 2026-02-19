@@ -386,6 +386,8 @@ namespace BSLDaman.Models
         public string MachineLogDescription { get; set; }
         public int EmpId { get; set; }
         public string MachineStatus { get; set; }
+        public bool Needle { get; set; }
+        public bool Oiling { get; set; }
         public string RepairDate { get; set; }
         public string RepairRemark { get; set; }
         public int CreatedBy { get; set; }
