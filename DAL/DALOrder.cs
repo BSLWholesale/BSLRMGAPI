@@ -101,18 +101,11 @@ namespace BSLDaman.DAL
 
                     if (objReq.oDetail != null)
                     {
+                        long DetailID = 0;
                         foreach (clsOrderDetail _oList in objReq.oDetail)
                         {
-                            if (_oList.DetailID == 0 || _oList.DetailID == null)
-                            {
-                                Fn_Get_MXID("OrderDetail", "DetailID");
-                                //_oList.DetailID = mxID;
-
-                                //if (Con.State == ConnectionState.Broken)
-                                //{ Con.Close(); }
-                                //if (Con.State == ConnectionState.Closed)
-                                //{ Con.Open(); }
-                            }
+                            DetailID = Fn_Get_MXID("OrderDetail", "DetailID");
+                            _oList.DetailID = DetailID;
 
                             SqlCommand cm1 = new SqlCommand("USP_ORDER_MASTER", Con);
                             cm1.CommandType = CommandType.StoredProcedure;
@@ -122,7 +115,8 @@ namespace BSLDaman.DAL
                             cm1.Parameters.AddWithValue("@Size", _oList.Size);
                             cm1.Parameters.AddWithValue("@Qty", _oList.Qty);
                             cm1.Parameters.AddWithValue("@ExtraQty", _oList.ExtraQty);
-                            cm1.Parameters.AddWithValue("@CreatedBy", _oList.CreatedBy);
+                            cm1.Parameters.AddWithValue("@CreatedBy", objReq.CreatedBy);
+                            cmd.Parameters.AddWithValue("@StyleCode", objReq.StyleCode);
                             cm1.Parameters.AddWithValue("@QueryType", "InsertOrderDetail");
                             int j = cm1.ExecuteNonQuery();
                             if (j > 0)
@@ -506,99 +500,117 @@ namespace BSLDaman.DAL
             try
             {
 
-                if (Con.State == ConnectionState.Broken)
-                { Con.Close(); }
-                if (Con.State == ConnectionState.Closed)
-                { Con.Open(); }
-
-                if (objReq.ID == 0 || objReq.ID == null)
+                if(String.IsNullOrWhiteSpace(objReq.StyleCode))
                 {
-                    Fn_Get_MXID("OperationBreackDownMaster", "ID");
-                    objReq.ID = mxID;
+                    objResp.vErrorCode = 400;
+                    objResp.vErrorMsg = "StyleCode is empty";
                 }
-
-                SqlCommand cmd = new SqlCommand("USP_OPEARTION_BREACK_DOWN", Con);
-                cmd.CommandType = CommandType.StoredProcedure;
-                cmd.Parameters.AddWithValue("@ID", objReq.ID);
-                cmd.Parameters.AddWithValue("@StyleCode", objReq.StyleCode);
-                cmd.Parameters.AddWithValue("@ProcessName", objReq.ProcessName);
-                cmd.Parameters.AddWithValue("@CreatedBy", objReq.CreatedBy);
-                cmd.Parameters.AddWithValue("@QueryType", "InsertOperationMaster");
-                int i = 0;
-                i = cmd.ExecuteNonQuery();
-                if (i > 0)
+                else if (String.IsNullOrWhiteSpace(objReq.ProcessName))
                 {
-                    objResp.vErrorCode = 200;
-                    objResp.vErrorMsg = "Success";
+                    objResp.vErrorCode = 400;
+                    objResp.vErrorMsg = "ProcessName is empty";
+                }
+                if (!String.IsNullOrWhiteSpace(objReq.vErrorMsg))
+                {
+                    objResp.vErrorCode = objReq.vErrorCode;
+                    objResp.vErrorMsg = objReq.vErrorMsg;
+                }
+                else
+                {
+                    if (Con.State == ConnectionState.Broken)
+                    { Con.Close(); }
+                    if (Con.State == ConnectionState.Closed)
+                    { Con.Open(); }
 
-                    if (objReq.oList != null)
+                    if (objReq.ID == 0 || objReq.ID == null)
                     {
-                        foreach (clsOPBreackDownDetail _oList in objReq.oList)
+                        Fn_Get_MXID("OperationBreackDownMaster", "ID");
+                        objReq.ID = mxID;
+                    }
+
+                    SqlCommand cmd = new SqlCommand("USP_OPEARTION_BREACK_DOWN", Con);
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("@ID", objReq.ID);
+                    cmd.Parameters.AddWithValue("@StyleCode", objReq.StyleCode);
+                    cmd.Parameters.AddWithValue("@ProcessName", objReq.ProcessName);
+                    cmd.Parameters.AddWithValue("@CreatedBy", objReq.CreatedBy);
+                    cmd.Parameters.AddWithValue("@QueryType", "InsertOperationMaster");
+                    int i = 0;
+                    i = cmd.ExecuteNonQuery();
+                    if (i > 0)
+                    {
+                        objResp.vErrorCode = 200;
+                        objResp.vErrorMsg = "Success";
+
+                        if (objReq.oList != null)
                         {
-                            if (_oList.DetailID == 0 || _oList.DetailID == null)
+                            foreach (clsOPBreackDownDetail _oList in objReq.oList)
                             {
-                                Fn_Get_MXID("OperationBreackDown", "DetailID");
-                                _oList.DetailID = mxID;
-
-                                //if (Con.State == ConnectionState.Broken)
-                                //{ Con.Close(); }
-                                //if (Con.State == ConnectionState.Closed)
-                                //{ Con.Open(); }
-                            }
-
-                            if (_oList.SeqNo == 0 || _oList.OpNo == 0)
-                            {
-                            }
-                            else if (String.IsNullOrWhiteSpace(_oList.Descriptions) || String.IsNullOrWhiteSpace(_oList.Machine)
-                                || String.IsNullOrWhiteSpace(_oList.SubSection)
-                                || String.IsNullOrWhiteSpace(_oList.Product)
-                                || String.IsNullOrWhiteSpace(_oList.Skill)
-                                || String.IsNullOrWhiteSpace(_oList.Grade))
-                            {
-
-                            }
-                            else
-                            {
-                                SqlCommand cm1 = new SqlCommand("USP_OPEARTION_BREACK_DOWN", Con);
-                                cm1.CommandType = CommandType.StoredProcedure;
-                                cm1.Parameters.AddWithValue("@ID", objReq.ID);
-                                cm1.Parameters.AddWithValue("@DetailID", _oList.DetailID);
-                                cm1.Parameters.AddWithValue("@SeqNo", _oList.SeqNo);
-                                cm1.Parameters.AddWithValue("@OpNo", _oList.OpNo);
-                                cm1.Parameters.AddWithValue("@Descriptions", _oList.Descriptions);
-                                cm1.Parameters.AddWithValue("@Machine", _oList.Machine);
-                                cm1.Parameters.AddWithValue("@SubSection", _oList.SubSection);
-                                cm1.Parameters.AddWithValue("@StdMin", _oList.StdMin);
-                                cm1.Parameters.AddWithValue("@Rate", _oList.Rate);
-                                cm1.Parameters.AddWithValue("@Product", _oList.Product);
-                                cm1.Parameters.AddWithValue("@Skill", _oList.Skill);
-                                cm1.Parameters.AddWithValue("@Grade", _oList.Grade);
-                                cm1.Parameters.AddWithValue("@Folder", _oList.Folder);
-                                cm1.Parameters.AddWithValue("@Seamlength", _oList.Seamlength);
-                                cm1.Parameters.AddWithValue("@IsDirect", _oList.IsDirect);
-                                cm1.Parameters.AddWithValue("@ProgressPoint", _oList.ProgressPoint);
-                                cm1.Parameters.AddWithValue("@IsDispatch", _oList.IsDispatch);
-                                cm1.Parameters.AddWithValue("@IsDS", _oList.IsDS);
-                                cm1.Parameters.AddWithValue("@CreatedBy", objReq.CreatedBy);
-                                cm1.Parameters.AddWithValue("@QueryType", "InsertOperationDetail");
-                                int j = cm1.ExecuteNonQuery();
-                                if (j > 0)
+                                if (_oList.DetailID == 0 || _oList.DetailID == null)
                                 {
-                                    objResp.vErrorMsg = "Success";
+                                    Fn_Get_MXID("OperationBreackDown", "DetailID");
+                                    _oList.DetailID = mxID;
+
+                                    //if (Con.State == ConnectionState.Broken)
+                                    //{ Con.Close(); }
+                                    //if (Con.State == ConnectionState.Closed)
+                                    //{ Con.Open(); }
+                                }
+
+                                if (_oList.SeqNo == 0 || _oList.OpNo == 0)
+                                {
+                                }
+                                else if (String.IsNullOrWhiteSpace(_oList.Descriptions) || String.IsNullOrWhiteSpace(_oList.Machine)
+                                    || String.IsNullOrWhiteSpace(_oList.SubSection)
+                                    || String.IsNullOrWhiteSpace(_oList.Product))
+                                {
+
                                 }
                                 else
                                 {
-                                    objResp.vErrorMsg = "Operation detail inserting failed ";
-                                    return objResp;
+                                    SqlCommand cm1 = new SqlCommand("USP_OPEARTION_BREACK_DOWN", Con);
+                                    cm1.CommandType = CommandType.StoredProcedure;
+                                    cm1.Parameters.AddWithValue("@ID", objReq.ID);
+                                    cm1.Parameters.AddWithValue("@DetailID", _oList.DetailID);
+                                    cm1.Parameters.AddWithValue("@SeqNo", _oList.SeqNo);
+                                    cm1.Parameters.AddWithValue("@OpNo", _oList.OpNo);
+                                    cm1.Parameters.AddWithValue("@Descriptions", _oList.Descriptions);
+                                    cm1.Parameters.AddWithValue("@Machine", _oList.Machine);
+                                    cm1.Parameters.AddWithValue("@SubSection", _oList.SubSection);
+                                    cm1.Parameters.AddWithValue("@StdMin", _oList.StdMin);
+                                    cm1.Parameters.AddWithValue("@Rate", _oList.Rate);
+                                    cm1.Parameters.AddWithValue("@Product", _oList.Product);
+                                    cm1.Parameters.AddWithValue("@Skill", _oList.Skill);
+                                    cm1.Parameters.AddWithValue("@Grade", _oList.Grade);
+                                    cm1.Parameters.AddWithValue("@Folder", _oList.Folder);
+                                    cm1.Parameters.AddWithValue("@Seamlength", _oList.Seamlength);
+                                    cm1.Parameters.AddWithValue("@IsDirect", _oList.IsDirect);
+                                    cm1.Parameters.AddWithValue("@ProgressPoint", _oList.ProgressPoint);
+                                    cm1.Parameters.AddWithValue("@IsDispatch", _oList.IsDispatch);
+                                    cm1.Parameters.AddWithValue("@IsDS", _oList.IsDS);
+                                    cm1.Parameters.AddWithValue("@CreatedBy", objReq.CreatedBy);
+                                    cm1.Parameters.AddWithValue("@QueryType", "InsertOperationDetail");
+                                    int j = cm1.ExecuteNonQuery();
+                                    if (j > 0)
+                                    {
+                                        objResp.vErrorCode = 200;
+                                        objResp.vErrorMsg = "Success";
+                                    }
+                                    else
+                                    {
+                                        objResp.vErrorCode = 400;
+                                        objResp.vErrorMsg = "Operation detail inserting failed ";
+                                        return objResp;
+                                    }
                                 }
                             }
                         }
                     }
-                }
-                else
-                {
-                    objResp.vErrorCode = 400;
-                    objResp.vErrorMsg = "Operation mastar inserting failed";
+                    else
+                    {
+                        objResp.vErrorCode = 400;
+                        objResp.vErrorMsg = "Operation mastar inserting failed";
+                    }
                 }
             }
             catch (Exception exp)

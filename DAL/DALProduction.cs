@@ -649,7 +649,8 @@ namespace BSLDaman.DAL
 
                 if (objReq.LayID == 0 || objReq.LayID == null)
                 {
-                    Fn_Get_MXID("BundleLayerMaster", "LayID", "");
+                    string strCriteria = " AND OrderNo = '" + objReq.OrderNo + "'";
+                    Fn_Get_MXID("BundleLayerMaster", "LayID", strCriteria);
                     objReq.LayID = mxID;
                 }
 
@@ -1464,10 +1465,10 @@ namespace BSLDaman.DAL
                                 }
                                 else
                                 {
-                                    plyFrom = Fn_Get_MXID("BundleCompile", "PlyFrom", strCriteria);
+                                   // plyFrom = Fn_Get_MXID("BundleCompile", "PlyFrom", strCriteria);
                                     objReq.Qty = 1;
-                                    objReq.PlyFrom = Convert.ToInt32(plyFrom);
-                                    objReq.PlyTo = Convert.ToInt32(plyFrom);
+                                    objReq.PlyFrom = Convert.ToInt32(plyFrom) + 1;
+                                    objReq.PlyTo = Convert.ToInt32(plyFrom) + 1;
                                 }
                                 totalQTY = totalQTY + objReq.Qty;
 
@@ -1707,7 +1708,7 @@ namespace BSLDaman.DAL
                 if (Con.State == ConnectionState.Closed)
                 { Con.Open(); }
 
-                strSql = "SELECT Distinct DetailID, SizeID, Size, CreatedBy, FORMAT(CreatedOn, 'dd-MMM-yyyy') AS CreatedOn FROM OrderDetail WHERE 1=1";
+                strSql = "SELECT Distinct SizeID, Size, CreatedBy, FORMAT(CreatedOn, 'dd-MMM-yyyy') AS CreatedOn FROM OrderDetail WHERE 1=1";
                 if (objReq.ID != 0)
                 {
                     strSql = strSql + " AND OrderNo = @OrderNo";
@@ -1730,8 +1731,9 @@ namespace BSLDaman.DAL
                     {
                         obj = new clsSizeMaster();
 
-                        obj.ID = Convert.ToInt16(ds.Tables[0].Rows[i]["DetailID"]);
+                        //obj.ID = Convert.ToInt16(ds.Tables[0].Rows[i]["DetailID"]);
                         obj.SizeName = Convert.ToString(ds.Tables[0].Rows[i]["Size"]);
+                        obj.ID = Convert.ToInt16(ds.Tables[0].Rows[i]["SizeID"]);
                         obj.CreatedBy = Convert.ToInt16(ds.Tables[0].Rows[i]["CreatedBy"]);
                         obj.CreatedOn = Convert.ToString(ds.Tables[0].Rows[i]["CreatedOn"]);
 
@@ -1839,7 +1841,7 @@ namespace BSLDaman.DAL
                 if (Con.State == ConnectionState.Closed)
                 { Con.Open(); }
 
-                string strSql = "SELECT Distinct D.Machine From OperationBreackDown D INNER JOIN OperationBreackDownMaster M ";
+                string strSql = "SELECT Distinct D.SubSection From OperationBreackDown D INNER JOIN OperationBreackDownMaster M ";
                 strSql = strSql + " ON D.MID = M.ID WHERE 1=1 ";
                 if (!String.IsNullOrWhiteSpace(objReq.StyleCode))
                 {
