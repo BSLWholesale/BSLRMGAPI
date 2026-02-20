@@ -47,6 +47,7 @@ namespace BSLDaman.Models
         public string OperatorType { get; set; }
         public string DeviceId { get; set; }
         public string QueryType { get; set; }
+        public string TokenId { get; set; }
         public string vErrorMsg { get; set; }
         public int vErrorCode { get; set; }
 
