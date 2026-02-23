@@ -1401,13 +1401,15 @@ namespace BSLDaman.DAL
                     Con.Open();
 
                 // Split Size once
-              //  var sizeArray = objReq.SizeName?.TrimEnd(',').Split(',');
+
                 var sizeArray = objReq.SizeName?
                     .TrimEnd(',')
                     .Split(',')
                     .OrderBy(x => x)
                     .ToArray();
 
+                int NumOfSize = sizeArray.Length;
+                int Plies = objReq.CompileQty / NumOfSize;
                 // Split Color once
                 var colorArray = objReq.ColorName?.TrimEnd(',').Split(',');
 
@@ -1415,14 +1417,20 @@ namespace BSLDaman.DAL
 
                 string prevSize = ""; int prevQTY = 0;
                 long plyFrom = 0;
-                float TotalBundle = objReq.CompileQty / objReq.BunleQty;
-                TotalBundle = TotalBundle + mxBundleNo;
-                int bundleStart = 0;
-                bundleStart = bundleStart + Convert.ToInt32(mxBundleNo);
-                while (bundleStart < TotalBundle)
+                long plyTo = 0;
+                bool checkPostAssembly = false;
+
+                foreach (var size in sizeArray)
                 {
-                    foreach (var size in sizeArray)
+                    
+                    float TotalBundle = Plies / objReq.BunleQty;
+                    TotalBundle = TotalBundle + mxBundleNo;
+                    int bundleStart = 0;
+                    bundleStart = bundleStart + Convert.ToInt32(mxBundleNo);
+
+                    while (bundleStart <= TotalBundle)
                     {
+
                         foreach (var color in colorArray)
                         {
                             foreach (var subSection in subSectionList)
@@ -1450,29 +1458,38 @@ namespace BSLDaman.DAL
                                     objReq.Qty = objReq.BunleQty;
                                     if (prevQTY != objReq.Qty)
                                     {
-                                        plyFrom = Fn_Get_MXID("BundleCompile", "PlyFrom", strCriteria);
-                                        prevQTY = objReq.Qty;
                                        
-                                        objReq.PlyFrom = Convert.ToInt32(plyFrom);
-                                        objReq.PlyTo = Convert.ToInt32(plyFrom) + Convert.ToInt32(objReq.BunleQty);
+                                        prevQTY = objReq.Qty;
+                                        if (checkPostAssembly == true)
+                                        {
+                                            plyFrom = Fn_Get_MXID("BundleCompile", "PlyTo", strCriteria);
+                                            plyTo = Fn_Get_MXID("BundleCompile", "PlyTo", strCriteria);
+                                            objReq.PlyFrom = Convert.ToInt32(plyFrom);
+                                            objReq.PlyTo = Convert.ToInt32(objReq.Qty) + Convert.ToInt32(plyTo);
+                                            checkPostAssembly = false;
+                                        }
+                                        else
+                                        {
+                                            plyFrom = Fn_Get_MXID("BundleCompile", "PlyFrom", strCriteria);
+                                            plyTo = Fn_Get_MXID("BundleCompile", "PlyTo", strCriteria);
+                                            objReq.PlyFrom = Convert.ToInt32(plyFrom);
+                                            objReq.PlyTo = Convert.ToInt32(objReq.Qty) + Convert.ToInt32(plyTo) - 1;
+
+                                        }
                                     }
-                                    else
-                                    {
-                                        objReq.PlyFrom = Convert.ToInt32(plyFrom);
-                                        objReq.PlyTo = Convert.ToInt32(plyFrom) + Convert.ToInt32(objReq.BunleQty);
-                                    }
-                                    
                                 }
                                 else
                                 {
-                                   // plyFrom = Fn_Get_MXID("BundleCompile", "PlyFrom", strCriteria);
+                                    plyTo = Fn_Get_MXID("BundleCompile", "PlyTo", strCriteria);
+                                    plyFrom = plyTo;
                                     objReq.Qty = 1;
-                                    objReq.PlyFrom = Convert.ToInt32(plyFrom) + 1;
-                                    objReq.PlyTo = Convert.ToInt32(plyFrom) + 1;
+                                    objReq.PlyFrom = Convert.ToInt32(plyFrom);
+                                    objReq.PlyTo = Convert.ToInt32(plyTo);
+
+                                    prevQTY = objReq.Qty;
+                                    checkPostAssembly = true;
                                 }
                                 totalQTY = totalQTY + objReq.Qty;
-
-
 
                                 objReq.BundleNo = Convert.ToInt32(bundleStart);
 
@@ -1518,8 +1535,9 @@ namespace BSLDaman.DAL
                                 }
                             }
                         }
+                        bundleStart++;
                     }
-                    bundleStart++;
+
                 }
 
                 if (objResp.vErrorMsg == "Success")
@@ -1619,7 +1637,7 @@ namespace BSLDaman.DAL
                     strSql = strSql + " AND LayID = @LayID ";
                 }
 
-                strSql = strSql + " ORDER BY BundleNo, SizeName, LotNo ASC ";
+                strSql = strSql + " ORDER BY BundleNo, SizeName ASC ";
 
                 SqlCommand cmd = new SqlCommand(strSql, Con);
                 cmd.CommandType = CommandType.Text;
