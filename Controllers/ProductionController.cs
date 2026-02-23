@@ -251,5 +251,18 @@ namespace BSLDaman.Controllers
             objResp = _DALProduction.Fn_Get_Order_Color(objReq);
             return objResp;
         }
+
+        #region Start Sectionwise compile data for QR 23-FEB-2026
+
+        [System.Web.Http.HttpPost]
+        [System.Web.Http.Route("api/Production/Fn_Get_SectionWis_Compile_QR_Data")]
+        public List<clsBundleCompile> Fn_Get_SectionWis_Compile_QR_Data(clsBundleCompile objReq)
+        {
+            var objResp = new List<clsBundleCompile>();
+            objResp = _DALProduction.Fn_Get_SectionWis_Compile_QR_Data(objReq);
+            return objResp;
+        }
+
+        #endregion End Sectionwise compile data for QR 23-FEB-2026
     }
 }
