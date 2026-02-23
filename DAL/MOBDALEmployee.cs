@@ -59,11 +59,16 @@ namespace BSLDaman.DAL
                         objResp.vEmpName = Convert.ToString(ds.Tables[0].Rows[i]["EmpName"]);
                         objResp.EmpRole = Convert.ToString(ds.Tables[0].Rows[i]["EmpRole"]);
                         objResp.DeviceId = Convert.ToString(ds.Tables[0].Rows[i]["DeviceId"]);
+                        objResp.TokenId = Convert.ToString(ds.Tables[0].Rows[i]["TokenId"]);
                         objResp.vEmpPassword = decryptPassword;
 
-                        if (objReq.TokenId == null || objReq.TokenId == "")
+                        if (objResp.TokenId == null || objResp.TokenId == "")
                         {
-                            objResp.TokenId = Fn_Generate_EmployeeTokenId(Convert.ToInt64(objReq.nEmpId), objReq.TokenId);
+                            objResp.TokenId = Fn_Generate_EmployeeTokenId(Convert.ToInt64(objReq.nEmpId), objResp.TokenId);
+                        }
+                        else
+                        {
+                            objResp.TokenId = Convert.ToString(ds.Tables[0].Rows[i]["TokenId"]);
                         }
 
                         objResp.vErrorMsg = "Success";
