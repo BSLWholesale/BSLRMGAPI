@@ -206,5 +206,55 @@ namespace BSLDaman.DAL
         }
 
 
+        public clsEmployee Fn_LogOut_EmployeeSession(clsEmployee objReq)
+        {
+            var objResp = new clsEmployee();
+            try
+            {
+                if (objReq.nEmpId == null || objReq.nEmpId == 0)
+                {
+                    objResp.vErrorMsg = "Please Pass the Employee ID";
+                    objResp.vErrorCode = 300;
+                }
+                else
+                {
+                    if (Con.State == ConnectionState.Broken)
+                    { Con.Close(); }
+                    if (Con.State == ConnectionState.Closed)
+                    { Con.Open(); }
+
+                    SqlCommand cmd = new SqlCommand("USP_EmployeeMob", Con);
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("@EmpId", objReq.nEmpId);
+                    cmd.Parameters.AddWithValue("@QueryType", "LogoutTokenIdUpdate");
+
+                    int i = 0;
+                    i = cmd.ExecuteNonQuery();
+                    if (i > 0)
+                    {
+                        objResp.vErrorCode = 200;
+                        objResp.vErrorMsg = "Success";
+                    }
+                    else
+                    {
+                        objResp.vErrorCode = 400;
+                        objResp.vErrorMsg = "Logout Failed.";
+                    }
+                }
+            }
+            catch (Exception exp)
+            {
+                objResp.vErrorCode = 500;
+                Logger.WriteLog("Function Name : Fn_LogOut_EmployeeSession", " " + "Error Msg : " + exp.Message.ToString(), new StackTrace(exp, true));
+                objResp.vErrorMsg = exp.Message.ToString();
+            }
+            finally
+            {
+                Con.Close();
+            }
+            return objResp;
+        }
+
+
     }
 }
