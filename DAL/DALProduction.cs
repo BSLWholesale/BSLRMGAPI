@@ -1848,7 +1848,7 @@ namespace BSLDaman.DAL
                     strSql = strSql + " AND M.StyleCode = @StyleCode";
                 }
 
-                strSql = strSql + " ORDER BY D.Machine ";
+                strSql = strSql + " ORDER BY D.SubSection ";
 
                 SqlCommand cmd = new SqlCommand(strSql, Con);
                 cmd.CommandType = CommandType.Text;
@@ -1867,7 +1867,7 @@ namespace BSLDaman.DAL
                     while (ds.Tables[0].Rows.Count > i)
                     {
                         obj = new clsBundleCompile();
-                        obj.SubSection = Convert.ToString(ds.Tables[0].Rows[i]["Machine"]);
+                        obj.SubSection = Convert.ToString(ds.Tables[0].Rows[i]["SubSection"]);
                         obj.vErrorCode = 200;
                         obj.vErrorMsg = "Success";
                         objResp.Add(obj);
@@ -1990,5 +1990,97 @@ namespace BSLDaman.DAL
             }
             return objResp;
         }
+
+        #region Start Sectionwise compile data for QR 23-FEB-2026
+
+        public List<clsBundleCompile> Fn_Get_SectionWis_Compile_QR_Data(clsBundleCompile objReq)
+        {
+            var objResp = new List<clsBundleCompile>();
+            var obj = new clsBundleCompile();
+            try
+            {
+                if (Con.State == ConnectionState.Broken)
+                { Con.Close(); }
+                if (Con.State == ConnectionState.Closed)
+                { Con.Open(); }
+
+                string strSql = "SELECT LayID, BundleNo, SubSection, StyleCode, OrderNo,";
+                strSql = strSql + " CreatedBy, FORMAT(CreatedOn, 'dd-MMM-yyy') AS CreatedOn FROM BundleCompile WHERE 1=1";
+                if (!String.IsNullOrWhiteSpace(objReq.StyleCode))
+                {
+                    strSql = strSql + " AND StyleCode = @StyleCode";
+                }
+                if (!String.IsNullOrWhiteSpace(objReq.OrderNo))
+                {
+                    strSql = strSql + " AND OrderNo = @OrderNo";
+                }
+                if (objReq.LayID != 0 && objReq.LayID != null)
+                {
+                    strSql = strSql + " AND LayID = @LayID ";
+                }
+
+                strSql = strSql + " ORDER BY LayID, BundleNo, SubSection ASC ";
+
+                SqlCommand cmd = new SqlCommand(strSql, Con);
+                cmd.CommandType = CommandType.Text;
+                if (!String.IsNullOrWhiteSpace(objReq.StyleCode))
+                {
+                    cmd.Parameters.AddWithValue("@StyleCode", objReq.StyleCode);
+                }
+                if (!String.IsNullOrWhiteSpace(objReq.OrderNo))
+                {
+                    cmd.Parameters.AddWithValue("@OrderNo", objReq.OrderNo);
+                }
+                if (objReq.LayID != 0 && objReq.LayID != null)
+                {
+                    cmd.Parameters.AddWithValue("@LayID", objReq.LayID);
+                }
+
+                SqlDataAdapter da = new SqlDataAdapter(cmd);
+                DataSet ds = new DataSet();
+                da.Fill(ds);
+                int i = 0;
+                if (ds.Tables[0].Rows.Count > 0)
+                {
+                    while (ds.Tables[0].Rows.Count > i)
+                    {
+                        obj = new clsBundleCompile();
+                        obj.LayID = Convert.ToInt64(ds.Tables[0].Rows[i]["LayID"]);
+                        obj.BundleNo = Convert.ToInt32(ds.Tables[0].Rows[i]["BundleNo"]);
+                        //obj.LotNo = Convert.ToInt32(ds.Tables[0].Rows[i]["LotNo"]);
+                        obj.SubSection = Convert.ToString(ds.Tables[0].Rows[i]["SubSection"]);
+                        obj.StyleCode = Convert.ToString(ds.Tables[0].Rows[i]["StyleCode"]);
+                        obj.OrderNo = Convert.ToString(ds.Tables[0].Rows[i]["OrderNo"]);
+                        obj.CreatedBy = Convert.ToInt32(ds.Tables[0].Rows[i]["CreatedBy"]);
+                        obj.CreatedOn = Convert.ToString(ds.Tables[0].Rows[i]["CreatedOn"]);
+                        obj.vErrorCode = 200;
+                        obj.vErrorMsg = "Success";
+                        objResp.Add(obj);
+                        i++;
+                    }
+                }
+                else
+                {
+                    obj.vErrorCode = 404;
+                    obj.vErrorMsg = "No Record found";
+                    objResp.Add(obj);
+                }
+
+            }
+            catch (Exception exp)
+            {
+                obj.vErrorCode = 500;
+                Logger.WriteLog("Function Name : Fn_Get_SectionWis_Compile_QR_Data", " " + "Error Msg : " + exp.Message.ToString(), new StackTrace(exp, true));
+                obj.vErrorMsg = exp.Message.ToString();
+                objResp.Add(obj);
+            }
+            finally
+            {
+                Con.Close();
+            }
+            return objResp;
+        }
+
+        #endregion End Sectionwise compile data for QR 23-FEB-2026
     }
 }
