@@ -36,6 +36,15 @@ namespace BSLDaman.Controllers
         }
 
 
+        [System.Web.Http.HttpPost]
+        [System.Web.Http.Route("api/MOBEmployee/Fn_LogOut_EmployeeSession")]
+        public clsEmployee Fn_LogOut_EmployeeSession(clsEmployee objReq)
+        {
+            var objResp = new clsEmployee();
+            objResp = _MOBDALEmployee.Fn_LogOut_EmployeeSession(objReq);
+            return objResp;
+        }
+
 
     }
 }
