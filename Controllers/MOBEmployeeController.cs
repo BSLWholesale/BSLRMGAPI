@@ -36,17 +36,6 @@ namespace BSLDaman.Controllers
         }
 
 
-        //[System.Web.Http.HttpPost]
-        //[System.Web.Http.Route("api/MOBEmployee/Fn_Generate_EmployeeTokenId")]
-        //public clsEmployee Fn_Generate_EmployeeTokenId(clsEmployee objReq)
-        //{
-        //    var objResp = new clsEmployee();
-        //    objResp = _MOBDALEmployee.Fn_Generate_EmployeeTokenId(objReq);
-        //    return objResp;
-        //}
-
-
-
 
     }
 }
