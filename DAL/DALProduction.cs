@@ -1654,6 +1654,7 @@ namespace BSLDaman.DAL
                     var obj = new clsBundleLayerMaster();
                     obj.LayID = objReq.LayID;
                     obj.Qty = objReq.CompileQty;
+                    obj.OrderNo = objReq.OrderNo;
                     obj.CreatedBy = objReq.CreatedBy;
                     Fn_Update_Layer_Qty(obj);
                 }
@@ -2096,6 +2097,7 @@ namespace BSLDaman.DAL
                 cmd.CommandType = CommandType.StoredProcedure;
                 cmd.Parameters.AddWithValue("@LayID", objReq.LayID);
                 cmd.Parameters.AddWithValue("@Qty", objReq.Qty);
+                cmd.Parameters.AddWithValue("@OrderNo", objReq.OrderNo);
                 cmd.Parameters.AddWithValue("@CreatedBy", objReq.CreatedBy);
                 cmd.Parameters.AddWithValue("@QueryType", "UpdateLayerQty");
                 int i = 0;
