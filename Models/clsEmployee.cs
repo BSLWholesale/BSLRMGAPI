@@ -346,9 +346,11 @@ namespace BSLDaman.Models
         public string CreatedOn { get; set; }
         public int ModifiedBy { get; set; }
         public string ModifiedOn { get; set; }
+        public int SupervisorEmpID { get; set; }
         public int AppEmpID { get; set; }
         public string AppStartTime { get; set; }
         public string AppEndTime { get; set; }
+        public string BundleIDStatus { get; set; }
         public string vErrorMsg { get; set; }
         public int vErrorCode { get; set; }
     }
