@@ -644,29 +644,47 @@ namespace BSLDaman.DAL
             var objResp = new clsBundleCompile();
             try
             {
-                if (Con.State == ConnectionState.Broken)
-                { Con.Close(); }
-                if (Con.State == ConnectionState.Closed)
-                { Con.Open(); }
-
-                SqlCommand cmd = new SqlCommand("USP_MobileBundleApp", Con);
-                cmd.CommandType = CommandType.StoredProcedure;
-                cmd.Parameters.AddWithValue("@BundleID", objReq.BundleID);
-                cmd.Parameters.AddWithValue("@SupervisorEmpId", objReq.SupervisorEmpID);
-                cmd.Parameters.AddWithValue("@AppEmpID", objReq.AppEmpID);
-                cmd.Parameters.AddWithValue("@QueryType", "UpdateAssignedBundleID");
-
-                using (SqlDataReader dr = cmd.ExecuteReader())
+                if (objReq.SupervisorEmpID == null || objReq.SupervisorEmpID == 0)
                 {
-                    if (dr.Read())
+                    objResp.vErrorMsg = "Please Pass the Supervisor Employee ID";
+                    objResp.vErrorCode = 300;
+                }
+                else if (objReq.BundleID == null || objReq.BundleID == 0)
+                {
+                    objResp.vErrorMsg = "Please Pass the Valid Bundle ID";
+                    objResp.vErrorCode = 300;
+                }
+                else if (objReq.AppEmpID == null || objReq.AppEmpID == 0)
+                {
+                    objResp.vErrorMsg = "Please Pass the Valid App Employee ID";
+                    objResp.vErrorCode = 300;
+                }
+                else
+                {
+                    if (Con.State == ConnectionState.Broken)
+                    { Con.Close(); }
+                    if (Con.State == ConnectionState.Closed)
+                    { Con.Open(); }
+
+                    SqlCommand cmd = new SqlCommand("USP_MobileBundleApp", Con);
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("@BundleID", objReq.BundleID);
+                    cmd.Parameters.AddWithValue("@SupervisorEmpId", objReq.SupervisorEmpID);
+                    cmd.Parameters.AddWithValue("@AppEmpID", objReq.AppEmpID);
+                    cmd.Parameters.AddWithValue("@QueryType", "UpdateAssignedBundleID");
+
+                    using (SqlDataReader dr = cmd.ExecuteReader())
                     {
-                        objResp.vErrorCode = Convert.ToInt32(dr["StatusCode"]);
-                        objResp.vErrorMsg = dr["Message"].ToString();
-                    }
-                    else
-                    {
-                        objResp.vErrorCode = 400;
-                        objResp.vErrorMsg = "Assigned Bundle ID allocation failed.";
+                        if (dr.Read())
+                        {
+                            objResp.vErrorCode = Convert.ToInt32(dr["StatusCode"]);
+                            objResp.vErrorMsg = dr["Message"].ToString();
+                        }
+                        else
+                        {
+                            objResp.vErrorCode = 400;
+                            objResp.vErrorMsg = "Assigned Bundle ID allocation failed.";
+                        }
                     }
                 }
             }
