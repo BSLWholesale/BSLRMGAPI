@@ -639,5 +639,95 @@ namespace BSLDaman.DAL
 
 
 
+        public clsBundleCompile Fn_Update_SupervisorAssignedBundleIDEmp(clsBundleCompile objReq)
+        {
+            var objResp = new clsBundleCompile();
+            try
+            {
+                if (Con.State == ConnectionState.Broken)
+                { Con.Close(); }
+                if (Con.State == ConnectionState.Closed)
+                { Con.Open(); }
+
+                SqlCommand cmd = new SqlCommand("USP_MobileBundleApp", Con);
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@BundleID", objReq.BundleID);
+                cmd.Parameters.AddWithValue("@SupervisorEmpId", objReq.SupervisorEmpID);
+                cmd.Parameters.AddWithValue("@AppEmpID", objReq.AppEmpID);
+                cmd.Parameters.AddWithValue("@QueryType", "UpdateAssignedBundleID");
+
+                using (SqlDataReader dr = cmd.ExecuteReader())
+                {
+                    if (dr.Read())
+                    {
+                        objResp.vErrorCode = Convert.ToInt32(dr["StatusCode"]);
+                        objResp.vErrorMsg = dr["Message"].ToString();
+                    }
+                    else
+                    {
+                        objResp.vErrorCode = 400;
+                        objResp.vErrorMsg = "Assigned Bundle ID allocation failed.";
+                    }
+                }
+            }
+            catch (Exception exp)
+            {
+                objResp.vErrorCode = 500;
+                Logger.WriteLog("Function Name : Fn_Update_SupervisorAssignedBundleIDEmp", " " + "Error Msg : " + exp.Message.ToString(), new StackTrace(exp, true));
+                objResp.vErrorMsg = exp.Message.ToString();
+            }
+            finally
+            {
+                Con.Close();
+            }
+            return objResp;
+        }
+
+
+        public clsBundleCompile Fn_Update_AppEmpBundleIDStatus(clsBundleCompile objReq)
+        {
+            var objResp = new clsBundleCompile();
+            try
+            {
+                if (Con.State == ConnectionState.Broken)
+                { Con.Close(); }
+                if (Con.State == ConnectionState.Closed)
+                { Con.Open(); }
+
+                SqlCommand cmd = new SqlCommand("USP_MobileBundleApp", Con);
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@AppEmpID", objReq.AppEmpID);
+                cmd.Parameters.AddWithValue("@AppStartTime", objReq.AppStartTime);
+                cmd.Parameters.AddWithValue("@BundleID", objReq.BundleID);
+                cmd.Parameters.AddWithValue("@BundleIDStatus", objReq.BundleIDStatus);
+                cmd.Parameters.AddWithValue("@QueryType", "UpdateAppEmpBundleIDStatus");
+
+                int i = 0;
+                i = cmd.ExecuteNonQuery();
+                if (i > 0)
+                {
+                    objResp.vErrorCode = 200;
+                    objResp.vErrorMsg = "Success";
+                }
+                else
+                {
+                    objResp.vErrorCode = 400;
+                    objResp.vErrorMsg = "App Employee Bundle ID Status updation failed.";
+                }
+            }
+            catch (Exception exp)
+            {
+                objResp.vErrorCode = 500;
+                Logger.WriteLog("Function Name : Fn_Update_AppEmpBundleIDStatus", " " + "Error Msg : " + exp.Message.ToString(), new StackTrace(exp, true));
+                objResp.vErrorMsg = exp.Message.ToString();
+            }
+            finally
+            {
+                Con.Close();
+            }
+            return objResp;
+        }
+
+
     }
 }
