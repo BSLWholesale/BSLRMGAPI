@@ -18,9 +18,9 @@ namespace BSLDaman.Controllers
 
         [System.Web.Http.HttpPost]
         [System.Web.Http.Route("api/MOBEmployee/Fn_Login_Employee")]
-        public clsEmployee Fn_Login_Employee(clsEmployee objReq)
+        public clsMOBEmployee Fn_Login_Employee(clsMOBEmployee objReq)
         {
-            var objResp = new clsEmployee();
+            var objResp = new clsMOBEmployee();
             objResp = _MOBDALEmployee.Fn_Login_Employee(objReq);
             return objResp;
         }
@@ -28,9 +28,9 @@ namespace BSLDaman.Controllers
 
         [System.Web.Http.HttpPost]
         [System.Web.Http.Route("api/MOBEmployee/Fn_Fetch_EmployeeDetail_ById")]
-        public clsEmployee Fn_Fetch_EmployeeDetail_ById(clsEmployee objReq)
+        public clsMOBEmployee Fn_Fetch_EmployeeDetail_ById(clsMOBEmployee objReq)
         {
-            var objResp = new clsEmployee();
+            var objResp = new clsMOBEmployee();
             objResp = _MOBDALEmployee.Fn_Fetch_EmployeeDetail_ById(objReq);
             return objResp;
         }
@@ -38,9 +38,9 @@ namespace BSLDaman.Controllers
 
         [System.Web.Http.HttpPost]
         [System.Web.Http.Route("api/MOBEmployee/Fn_LogOut_EmployeeSession")]
-        public clsEmployee Fn_LogOut_EmployeeSession(clsEmployee objReq)
+        public clsMOBEmployee Fn_LogOut_EmployeeSession(clsMOBEmployee objReq)
         {
-            var objResp = new clsEmployee();
+            var objResp = new clsMOBEmployee();
             objResp = _MOBDALEmployee.Fn_LogOut_EmployeeSession(objReq);
             return objResp;
         }
