@@ -107,7 +107,7 @@ namespace BSLDaman.Controllers
         }
 
 
-        [System.Web.Http.HttpPost]
+        [System.Web.Http.HttpPut]
         [System.Web.Http.Route("api/MOBProduction/Fn_Update_SupervisorAssignedBundleIDEmp")]
         public clsBundleCompile Fn_Update_SupervisorAssignedBundleIDEmp(clsBundleCompile objReq)
         {
@@ -117,7 +117,7 @@ namespace BSLDaman.Controllers
         }
 
 
-        [System.Web.Http.HttpPost]
+        [System.Web.Http.HttpPut]
         [System.Web.Http.Route("api/MOBProduction/Fn_Update_AppEmpBundleIDStatus")]
         public clsBundleCompile Fn_Update_AppEmpBundleIDStatus(clsBundleCompile objReq)
         {
