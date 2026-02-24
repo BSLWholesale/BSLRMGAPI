@@ -107,5 +107,27 @@ namespace BSLDaman.Controllers
         }
 
 
+        [System.Web.Http.HttpPost]
+        [System.Web.Http.Route("api/MOBProduction/Fn_Update_SupervisorAssignedBundleIDEmp")]
+        public clsBundleCompile Fn_Update_SupervisorAssignedBundleIDEmp(clsBundleCompile objReq)
+        {
+            var objResp = new clsBundleCompile();
+            objResp = _MOBDALProduction.Fn_Update_SupervisorAssignedBundleIDEmp(objReq);
+            return objResp;
+        }
+
+
+        [System.Web.Http.HttpPost]
+        [System.Web.Http.Route("api/MOBProduction/Fn_Update_AppEmpBundleIDStatus")]
+        public clsBundleCompile Fn_Update_AppEmpBundleIDStatus(clsBundleCompile objReq)
+        {
+            var objResp = new clsBundleCompile();
+            objResp = _MOBDALProduction.Fn_Update_AppEmpBundleIDStatus(objReq);
+            return objResp;
+        }
+
+
+
+
     }
 }
