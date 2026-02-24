@@ -407,5 +407,27 @@ namespace BSLDaman.Models
     }
 
 
+    public class clsMOBEmployee
+    {
+        public Nullable<Int64> nEmpId { get; set; }
+        public string vEmpName { get; set; }
+        public string EmpGender { get; set; }
+        public string vEmpGrade { get; set; }
+        public string vEmpPassword { get; set; }
+        public string OperatorType { get; set; }
+        public string vEmpMobile { get; set; }
+        public string Contractor { get; set; }
+        public string EmpRole { get; set; }
+        public string EmpLocation { get; set; }
+        public string L1ManagerCode { get; set; }
+        public string L1ManagerName { get; set; }
+        public bool IsActive { get; set; }
+        public string DeviceId { get; set; }
+        public string TokenId { get; set; }
+        public string vErrorMsg { get; set; }
+        public int vErrorCode { get; set; }
+
+    }
+
 
 }
