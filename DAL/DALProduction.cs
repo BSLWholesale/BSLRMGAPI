@@ -1389,16 +1389,18 @@ namespace BSLDaman.DAL
         {
             var objResp = new clsBundleCompile();
             var subSectionList = Fn_Get_Subsection_List(objReq);
-            string strCriteria = " AND OrderNo = '" + objReq.OrderNo + "'";
-            long mxBundleNo = Fn_Get_MXID("BundleCompile", "BundleNo", strCriteria);
-            int totalQTY = 0;
+            string strCriteria = "";
+            
             try
             {
                 if (Con.State == ConnectionState.Broken)
+                {
                     Con.Close();
-
+                }
                 if (Con.State == ConnectionState.Closed)
+                {
                     Con.Open();
+                }
 
                 // Split Size once
 
@@ -1407,131 +1409,207 @@ namespace BSLDaman.DAL
                     .Split(',')
                     .OrderBy(x => x)
                     .ToArray();
-
-                int NumOfSize = sizeArray.Length;
-                int Plies = objReq.CompileQty / NumOfSize;
+               
                 // Split Color once
                 var colorArray = objReq.ColorName?.TrimEnd(',').Split(',');
 
                 objReq.ShadeName = objReq.ShadeName?.TrimEnd(',');
 
-                string prevSize = ""; int prevQTY = 0;
+                string prevSize = "";
                 long plyFrom = 0;
                 long plyTo = 0;
-                bool checkPostAssembly = false;
+                int prevBunleQty = objReq.BunleQty;
 
                 foreach (var size in sizeArray)
                 {
-                    
+                    bool checkPostAssembly = false;
+                    strCriteria = "";
+                    strCriteria = " AND OrderNo = '" + objReq.OrderNo + "'";
+                    strCriteria = strCriteria + " AND SizeName=" + size;
+
+                    if (size != prevSize)
+                    {
+                        long mxLotNo = Fn_Get_MXID("BundleCompile", "LotNo", strCriteria);
+                        objReq.LotNo = Convert.ToInt32(mxLotNo);
+                        prevSize = size;
+                        objReq.BunleQty = prevBunleQty;
+                    }
+
+                    long mxBundleNo = Fn_Get_MXID("BundleCompile", "BundleNo", strCriteria);
+
+                    int NumOfSize = sizeArray.Length;
+                    int Plies = objReq.CompileQty / NumOfSize;
+                    int lastQty = Plies % objReq.BunleQty;
                     float TotalBundle = Plies / objReq.BunleQty;
                     TotalBundle = TotalBundle + mxBundleNo;
                     int bundleStart = 0;
                     bundleStart = bundleStart + Convert.ToInt32(mxBundleNo);
 
+                    
+
                     while (bundleStart <= TotalBundle)
                     {
+                        if (bundleStart == TotalBundle)
+                        {
+                            objReq.Qty = lastQty;
+                            objReq.BunleQty = lastQty;
+                        }
+                        else
+                        {
+                            objReq.Qty = objReq.BunleQty;
+                        }
+                       
 
                         foreach (var color in colorArray)
                         {
                             foreach (var subSection in subSectionList)
                             {
-                                var objMxId = Fn_Get_Max_ID_With_DATE(new clsMAXID
-                                {
-                                    TBLName = "BundleCompile",
-                                    IDField = "BundleID",
-                                    DateField = "CreatedOn",
-                                    strPreFix = ""
-                                });
+                                strCriteria = "";
+                                strCriteria = " AND OrderNo = '" + objReq.OrderNo + "'";
+                                strCriteria = strCriteria + " AND SizeName=" + size;
+                                strCriteria = strCriteria + " AND SubSection ='POST ASSEMBLY'";
+                                plyFrom = Fn_Get_MXID("BundleCompile", "FromTo", strCriteria);
+                                plyTo = Fn_Get_MXID("BundleCompile", "PlyTo", strCriteria);
 
-                                objReq.BundleID = objMxId.nMAXID;
-
-                                if (size != prevSize)
-                                {
-                                    long mxLotNo = Fn_Get_MXID("BundleCompile", "LotNo", strCriteria);
-                                    objReq.LotNo = Convert.ToInt32(mxLotNo);
-                                    prevSize = size;
-                                }
-
+                                objReq.BundleNo = Convert.ToInt32(bundleStart);
 
                                 if (subSection.SubSection != "POST ASSEMBLY")
                                 {
-                                    objReq.Qty = objReq.BunleQty;
-                                    if (prevQTY != objReq.Qty)
+
+                                    if(checkPostAssembly == true)
                                     {
-                                       
-                                        prevQTY = objReq.Qty;
-                                        if (checkPostAssembly == true)
+                                        objReq.PlyFrom = Convert.ToInt32(plyFrom);
+                                        objReq.PlyTo = Convert.ToInt32(objReq.Qty) + Convert.ToInt32(plyTo) -1;
+                                        objReq.PlyFrom = Convert.ToInt32(plyTo); 
+                                        //checkPostAssembly = false;
+                                    }
+                                    else
+                                    {
+                                        objReq.PlyFrom = Convert.ToInt32(plyFrom);
+                                        objReq.PlyTo = Convert.ToInt32(objReq.Qty) + Convert.ToInt32(plyTo) - 1;
+                                        //checkPostAssembly = false;
+                                    }
+
+                                    var objMxId = Fn_Get_Max_ID_With_DATE(new clsMAXID
+                                    {
+                                        TBLName = "BundleCompile",
+                                        IDField = "BundleID",
+                                        DateField = "CreatedOn",
+                                        strPreFix = ""
+                                    });
+
+                                    objReq.BundleID = objMxId.nMAXID;
+                                    using (SqlCommand cmd = new SqlCommand("USP_BUNDLE_LAYER", Con))
+                                    {
+
+                                        if (Con.State == ConnectionState.Broken)
+                                        { Con.Close(); }
+                                        if (Con.State == ConnectionState.Closed)
+                                        { Con.Open(); }
+                                        cmd.CommandType = CommandType.StoredProcedure;
+
+                                        cmd.Parameters.AddWithValue("@BundleID", objReq.BundleID);
+                                        cmd.Parameters.AddWithValue("@LayID", objReq.LayID);
+                                        cmd.Parameters.AddWithValue("@BundleNo", objReq.BundleNo);
+                                        cmd.Parameters.AddWithValue("@SizeName", size);
+                                        cmd.Parameters.AddWithValue("@ColorName", color);
+                                        cmd.Parameters.AddWithValue("@ShadeName", objReq.ShadeName);
+                                        cmd.Parameters.AddWithValue("@Qty", objReq.Qty);
+                                        cmd.Parameters.AddWithValue("@PlyFrom", objReq.PlyFrom);
+                                        cmd.Parameters.AddWithValue("@PlyTo", objReq.PlyTo);
+                                        cmd.Parameters.AddWithValue("@LotNo", objReq.LotNo);
+                                        cmd.Parameters.AddWithValue("@SubSection", subSection.SubSection);
+                                        cmd.Parameters.AddWithValue("@IsDispatch", objReq.IsDispatch);
+                                        cmd.Parameters.AddWithValue("@StyleCode", objReq.StyleCode);
+                                        cmd.Parameters.AddWithValue("@OrderNo", objReq.OrderNo);
+                                        cmd.Parameters.AddWithValue("@CreatedBy", objReq.CreatedBy);
+                                        cmd.Parameters.AddWithValue("@QueryType", "InsertBundleCompile");
+
+                                        int result = cmd.ExecuteNonQuery();
+
+                                        if (result > 0)
                                         {
-                                            plyFrom = Fn_Get_MXID("BundleCompile", "PlyTo", strCriteria);
-                                            plyTo = Fn_Get_MXID("BundleCompile", "PlyTo", strCriteria);
-                                            objReq.PlyFrom = Convert.ToInt32(plyFrom);
-                                            objReq.PlyTo = Convert.ToInt32(objReq.Qty) + Convert.ToInt32(plyTo);
-                                            checkPostAssembly = false;
+                                            objResp.vErrorCode = 200;
+                                            objResp.vErrorMsg = "Success";
                                         }
                                         else
                                         {
-                                            plyFrom = Fn_Get_MXID("BundleCompile", "PlyFrom", strCriteria);
-                                            plyTo = Fn_Get_MXID("BundleCompile", "PlyTo", strCriteria);
-                                            objReq.PlyFrom = Convert.ToInt32(plyFrom);
-                                            objReq.PlyTo = Convert.ToInt32(objReq.Qty) + Convert.ToInt32(plyTo) - 1;
-
+                                            objResp.vErrorCode = 400;
+                                            objResp.vErrorMsg = "Insert Failed";
                                         }
+
                                     }
                                 }
                                 else
                                 {
-                                    plyTo = Fn_Get_MXID("BundleCompile", "PlyTo", strCriteria);
-                                    plyFrom = plyTo;
-                                    objReq.Qty = 1;
-                                    objReq.PlyFrom = Convert.ToInt32(plyFrom);
-                                    objReq.PlyTo = Convert.ToInt32(plyTo);
-
-                                    prevQTY = objReq.Qty;
                                     checkPostAssembly = true;
-                                }
-                                totalQTY = totalQTY + objReq.Qty;
-
-                                objReq.BundleNo = Convert.ToInt32(bundleStart);
-
-                                using (SqlCommand cmd = new SqlCommand("USP_BUNDLE_LAYER", Con))
-                                {
-
-                                    if (Con.State == ConnectionState.Broken)
-                                    { Con.Close(); }
-                                    if (Con.State == ConnectionState.Closed)
-                                    { Con.Open(); }
-                                    cmd.CommandType = CommandType.StoredProcedure;
-
-                                    cmd.Parameters.AddWithValue("@BundleID", objReq.BundleID);
-                                    cmd.Parameters.AddWithValue("@LayID", objReq.LayID);
-                                    cmd.Parameters.AddWithValue("@BundleNo", objReq.BundleNo);
-                                    cmd.Parameters.AddWithValue("@SizeName", size);
-                                    cmd.Parameters.AddWithValue("@ColorName", color);
-                                    cmd.Parameters.AddWithValue("@ShadeName", objReq.ShadeName);
-                                    cmd.Parameters.AddWithValue("@Qty", objReq.Qty);
-                                    cmd.Parameters.AddWithValue("@PlyFrom", objReq.PlyFrom);
-                                    cmd.Parameters.AddWithValue("@PlyTo", objReq.PlyTo);
-                                    cmd.Parameters.AddWithValue("@LotNo", objReq.LotNo);
-                                    cmd.Parameters.AddWithValue("@SubSection", subSection.SubSection);
-                                    cmd.Parameters.AddWithValue("@IsDispatch", objReq.IsDispatch);
-                                    cmd.Parameters.AddWithValue("@StyleCode", objReq.StyleCode);
-                                    cmd.Parameters.AddWithValue("@OrderNo", objReq.OrderNo);
-                                    cmd.Parameters.AddWithValue("@CreatedBy", objReq.CreatedBy);
-                                    cmd.Parameters.AddWithValue("@QueryType", "InsertBundleCompile");
-
-                                    int result = cmd.ExecuteNonQuery();
-
-                                    if (result > 0)
+                                    int pCount = 1;
+                                    strCriteria = "";
+                                    strCriteria = " AND OrderNo = '" + objReq.OrderNo + "'";
+                                    strCriteria = strCriteria + " AND SizeName=" + size;
+                                    strCriteria = strCriteria + " AND SubSection ='POST ASSEMBLY'";
+                                    plyTo = Fn_Get_MXID("BundleCompile", "PlyTo", strCriteria);
+                                    while (pCount <= objReq.BunleQty)
                                     {
-                                        objResp.vErrorCode = 200;
-                                        objResp.vErrorMsg = "Success";
-                                    }
-                                    else
-                                    {
-                                        objResp.vErrorCode = 400;
-                                        objResp.vErrorMsg = "Insert Failed";
-                                    }
+                                        
+                                        plyFrom = plyTo;
+                                        objReq.Qty = 1;
+                                        objReq.PlyFrom = Convert.ToInt32(plyFrom);
+                                        objReq.PlyTo = Convert.ToInt32(plyTo);
 
+                                        var objMxId = Fn_Get_Max_ID_With_DATE(new clsMAXID
+                                        {
+                                            TBLName = "BundleCompile",
+                                            IDField = "BundleID",
+                                            DateField = "CreatedOn",
+                                            strPreFix = ""
+                                        });
+
+                                        objReq.BundleID = objMxId.nMAXID;
+
+                                        using (SqlCommand cmd = new SqlCommand("USP_BUNDLE_LAYER", Con))
+                                        {
+
+                                            if (Con.State == ConnectionState.Broken)
+                                            { Con.Close(); }
+                                            if (Con.State == ConnectionState.Closed)
+                                            { Con.Open(); }
+                                            cmd.CommandType = CommandType.StoredProcedure;
+
+                                            cmd.Parameters.AddWithValue("@BundleID", objReq.BundleID);
+                                            cmd.Parameters.AddWithValue("@LayID", objReq.LayID);
+                                            cmd.Parameters.AddWithValue("@BundleNo", objReq.BundleNo);
+                                            cmd.Parameters.AddWithValue("@SizeName", size);
+                                            cmd.Parameters.AddWithValue("@ColorName", color);
+                                            cmd.Parameters.AddWithValue("@ShadeName", objReq.ShadeName);
+                                            cmd.Parameters.AddWithValue("@Qty", objReq.Qty);
+                                            cmd.Parameters.AddWithValue("@PlyFrom", objReq.PlyFrom);
+                                            cmd.Parameters.AddWithValue("@PlyTo", objReq.PlyTo);
+                                            cmd.Parameters.AddWithValue("@LotNo", objReq.LotNo);
+                                            cmd.Parameters.AddWithValue("@SubSection", subSection.SubSection);
+                                            cmd.Parameters.AddWithValue("@IsDispatch", objReq.IsDispatch);
+                                            cmd.Parameters.AddWithValue("@StyleCode", objReq.StyleCode);
+                                            cmd.Parameters.AddWithValue("@OrderNo", objReq.OrderNo);
+                                            cmd.Parameters.AddWithValue("@CreatedBy", objReq.CreatedBy);
+                                            cmd.Parameters.AddWithValue("@QueryType", "InsertBundleCompile");
+
+                                            int result = cmd.ExecuteNonQuery();
+
+                                            if (result > 0)
+                                            {
+                                                objResp.vErrorCode = 200;
+                                                objResp.vErrorMsg = "Success";
+                                            }
+                                            else
+                                            {
+                                                objResp.vErrorCode = 400;
+                                                objResp.vErrorMsg = "Insert Failed";
+                                            }
+
+                                        }
+                                        pCount++;
+                                        plyTo = plyTo + 1;
+                                    }
                                 }
                             }
                         }
@@ -1637,7 +1715,7 @@ namespace BSLDaman.DAL
                     strSql = strSql + " AND LayID = @LayID ";
                 }
 
-                strSql = strSql + " ORDER BY BundleNo, SizeName ASC ";
+                strSql = strSql + " ORDER BY BundleID ASC ";
 
                 SqlCommand cmd = new SqlCommand(strSql, Con);
                 cmd.CommandType = CommandType.Text;
@@ -1859,14 +1937,14 @@ namespace BSLDaman.DAL
                 if (Con.State == ConnectionState.Closed)
                 { Con.Open(); }
 
-                string strSql = "SELECT Distinct D.SubSection From OperationBreackDown D INNER JOIN OperationBreackDownMaster M ";
+                string strSql = "SELECT D.SubSection From OperationBreackDown D INNER JOIN OperationBreackDownMaster M ";
                 strSql = strSql + " ON D.MID = M.ID WHERE 1=1 ";
                 if (!String.IsNullOrWhiteSpace(objReq.StyleCode))
                 {
                     strSql = strSql + " AND M.StyleCode = @StyleCode";
                 }
 
-                strSql = strSql + " ORDER BY D.SubSection ";
+                strSql = strSql + " ORDER BY D.CreatedOn ASC ";
 
                 SqlCommand cmd = new SqlCommand(strSql, Con);
                 cmd.CommandType = CommandType.Text;
@@ -1882,13 +1960,19 @@ namespace BSLDaman.DAL
                 int i = 0;
                 if (ds.Tables[0].Rows.Count > 0)
                 {
+                    string strSubSection = "";
                     while (ds.Tables[0].Rows.Count > i)
                     {
+
                         obj = new clsBundleCompile();
                         obj.SubSection = Convert.ToString(ds.Tables[0].Rows[i]["SubSection"]);
-                        obj.vErrorCode = 200;
-                        obj.vErrorMsg = "Success";
-                        objResp.Add(obj);
+                        if (strSubSection != obj.SubSection)
+                        {
+                            obj.vErrorCode = 200;
+                            obj.vErrorMsg = "Success";
+                            objResp.Add(obj);
+                            strSubSection = obj.SubSection;
+                        }
                         i++;
                     }
                 }
