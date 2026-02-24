@@ -706,6 +706,7 @@ namespace BSLDaman.DAL
                 SqlCommand cmd = new SqlCommand("USP_BUNDLE_LAYER", Con);
                 cmd.CommandType = CommandType.StoredProcedure;
                 cmd.Parameters.AddWithValue("@LayID", objReq.LayID);
+                cmd.Parameters.AddWithValue("@OrderNo", objReq.OrderNo);
                 cmd.Parameters.AddWithValue("@CreatedBy", objReq.CreatedBy);
                 cmd.Parameters.AddWithValue("@QueryType", "DeleteBundleLayer");
                 int i = 0;
@@ -864,6 +865,7 @@ namespace BSLDaman.DAL
                 cmd.Parameters.AddWithValue("@SizeName", objReq.SizeName);
                 cmd.Parameters.AddWithValue("@SizeID", objReq.SizeID);
                 cmd.Parameters.AddWithValue("@Freq", objReq.Freq);
+                cmd.Parameters.AddWithValue("@OrderNo", objReq.OrderNo);
                 cmd.Parameters.AddWithValue("@CreatedBy", objReq.CreatedBy);
                 cmd.Parameters.AddWithValue("@QueryType", "InsertBundleSize");
                 int i = 0;
@@ -906,6 +908,7 @@ namespace BSLDaman.DAL
                 SqlCommand cmd = new SqlCommand("USP_BUNDLE_LAYER", Con);
                 cmd.CommandType = CommandType.StoredProcedure;
                 cmd.Parameters.AddWithValue("@SizeSelectionID", objReq.SizeSelectionID);
+                cmd.Parameters.AddWithValue("@OrderNo", objReq.OrderNo);
                 cmd.Parameters.AddWithValue("@CreatedBy", objReq.CreatedBy);
                 cmd.Parameters.AddWithValue("@QueryType", "DeleteBundleSize");
                 int i = 0;
@@ -959,6 +962,10 @@ namespace BSLDaman.DAL
                 {
                     strSql = strSql + " AND LayID = @LayID ";
                 }
+                if (!String.IsNullOrWhiteSpace(objReq.OrderNo))
+                {
+                    strSql = strSql + " AND OrderNo = @OrderNo";
+                }
                 strSql = strSql + " ORDER BY SizeSelectionID DESC ";
 
                 SqlCommand cmd = new SqlCommand(strSql, Con);
@@ -974,6 +981,10 @@ namespace BSLDaman.DAL
                 if (objReq.SizeSelectionID != 0 && objReq.SizeSelectionID != null)
                 {
                     cmd.Parameters.AddWithValue("@SizeSelectionID", objReq.SizeSelectionID);
+                }
+                if (!String.IsNullOrWhiteSpace(objReq.OrderNo))
+                {
+                    cmd.Parameters.AddWithValue("@OrderNo", objReq.OrderNo);
                 }
                 SqlDataAdapter da = new SqlDataAdapter(cmd);
                 DataSet ds = new DataSet();
@@ -1046,6 +1057,7 @@ namespace BSLDaman.DAL
                 cmd.Parameters.AddWithValue("@ColorSelectionID", objReq.ColorSelectionID);
                 cmd.Parameters.AddWithValue("@LayID", objReq.LayID);
                 cmd.Parameters.AddWithValue("@ColorName", objReq.ColorName);
+                cmd.Parameters.AddWithValue("@OrderNo", objReq.OrderNo);
                 cmd.Parameters.AddWithValue("@CreatedBy", objReq.CreatedBy);
                 cmd.Parameters.AddWithValue("@QueryType", "InsertBundleColor");
                 int i = 0;
@@ -1088,6 +1100,7 @@ namespace BSLDaman.DAL
                 SqlCommand cmd = new SqlCommand("USP_BUNDLE_LAYER", Con);
                 cmd.CommandType = CommandType.StoredProcedure;
                 cmd.Parameters.AddWithValue("@ColorSelectionID", objReq.ColorSelectionID);
+                cmd.Parameters.AddWithValue("@OrderNo", objReq.OrderNo);
                 cmd.Parameters.AddWithValue("@CreatedBy", objReq.CreatedBy);
                 cmd.Parameters.AddWithValue("@QueryType", "DeleteBundleColor");
                 int i = 0;
@@ -1141,6 +1154,10 @@ namespace BSLDaman.DAL
                 {
                     strSql = strSql + " AND LayID = @LayID ";
                 }
+                if (!String.IsNullOrWhiteSpace(objReq.OrderNo))
+                {
+                    strSql = strSql + " AND OrderNo = @OrderNo ";
+                }
                 strSql = strSql + " ORDER BY ColorSelectionID DESC ";
 
                 SqlCommand cmd = new SqlCommand(strSql, Con);
@@ -1156,6 +1173,10 @@ namespace BSLDaman.DAL
                 if (objReq.LayID != 0 && objReq.LayID != null)
                 {
                     cmd.Parameters.AddWithValue("@LayID", objReq.LayID);
+                }
+                if (!String.IsNullOrWhiteSpace(objReq.OrderNo))
+                {
+                    cmd.Parameters.AddWithValue("@OrderNo", objReq.OrderNo);
                 }
                 SqlDataAdapter da = new SqlDataAdapter(cmd);
                 DataSet ds = new DataSet();
@@ -1226,7 +1247,8 @@ namespace BSLDaman.DAL
                 cmd.Parameters.AddWithValue("@ColorSelectionID", objReq.ColorSelectionID);
                 cmd.Parameters.AddWithValue("@ShadeSelectionID", objReq.ShadeSelectionID);
                 cmd.Parameters.AddWithValue("@ShadeName", objReq.ShadeName);
-                cmd.Parameters.AddWithValue("@Piles", objReq.Piles);
+                cmd.Parameters.AddWithValue("@Plies", objReq.Plies);
+                cmd.Parameters.AddWithValue("@OrderNo", objReq.OrderNo);
                 cmd.Parameters.AddWithValue("@CreatedBy", objReq.CreatedBy);
                 cmd.Parameters.AddWithValue("@QueryType", "InsertBundleShade");
                 int i = 0;
@@ -1269,6 +1291,7 @@ namespace BSLDaman.DAL
                 SqlCommand cmd = new SqlCommand("USP_BUNDLE_LAYER", Con);
                 cmd.CommandType = CommandType.StoredProcedure;
                 cmd.Parameters.AddWithValue("@ShadeSelectionID", objReq.ShadeSelectionID);
+                cmd.Parameters.AddWithValue("@OrderNo", objReq.OrderNo);
                 cmd.Parameters.AddWithValue("@CreatedBy", objReq.CreatedBy);
                 cmd.Parameters.AddWithValue("@QueryType", "DeleteBundleShade");
                 int i = 0;
@@ -1308,7 +1331,7 @@ namespace BSLDaman.DAL
                 if (Con.State == ConnectionState.Closed)
                 { Con.Open(); }
 
-                string strSql = "SELECT ColorSelectionID, ShadeSelectionID, ShadeName, Piles,";
+                string strSql = "SELECT ColorSelectionID, ShadeSelectionID, ShadeName, Plies,";
                 strSql = strSql + " CreatedBy, FORMAT(CreatedOn, 'dd-MMM-yyy') AS CreatedOn FROM BundleShadeSelection WHERE 1=1";
                 if (!String.IsNullOrWhiteSpace(objReq.ShadeName))
                 {
@@ -1321,6 +1344,10 @@ namespace BSLDaman.DAL
                 if (objReq.ShadeSelectionID != 0 && objReq.ShadeSelectionID != null)
                 {
                     strSql = strSql + " AND ShadeSelectionID = @ShadeSelectionID ";
+                }
+                if (!String.IsNullOrWhiteSpace(objReq.OrderNo))
+                {
+                    strSql = strSql + " AND OrderNo = @OrderNo ";
                 }
                 strSql = strSql + " ORDER BY ShadeSelectionID DESC ";
 
@@ -1338,6 +1365,10 @@ namespace BSLDaman.DAL
                 {
                     cmd.Parameters.AddWithValue("@ShadeSelectionID", objReq.ShadeSelectionID);
                 }
+                if (!String.IsNullOrWhiteSpace(objReq.OrderNo))
+                {
+                    cmd.Parameters.AddWithValue("@OrderNo", objReq.OrderNo);
+                }
                 SqlDataAdapter da = new SqlDataAdapter(cmd);
                 DataSet ds = new DataSet();
                 da.Fill(ds);
@@ -1351,7 +1382,7 @@ namespace BSLDaman.DAL
                         obj.ShadeSelectionID = Convert.ToInt64(ds.Tables[0].Rows[i]["ShadeSelectionID"]);
                         obj.ShadeName = Convert.ToString(ds.Tables[0].Rows[i]["ShadeName"]);
                         obj.CreatedBy = Convert.ToInt32(ds.Tables[0].Rows[i]["CreatedBy"]);
-                        obj.Piles = Convert.ToInt32(ds.Tables[0].Rows[i]["Piles"]);
+                        obj.Plies = Convert.ToInt32(ds.Tables[0].Rows[i]["Plies"]);
                         obj.CreatedOn = Convert.ToString(ds.Tables[0].Rows[i]["CreatedOn"]);
                         obj.vErrorCode = 200;
                         obj.vErrorMsg = "Success";
