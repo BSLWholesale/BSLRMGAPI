@@ -730,6 +730,78 @@ namespace BSLDaman.DAL
             return objResp;
         }
 
-       
+        public clsOPBreackDownMaster Fn_Check_Exist_style_In_Master(clsOPBreackDownMaster objReq)
+        {
+            var objResp = new clsOPBreackDownMaster();
+            try
+            {
+                if (Con.State == ConnectionState.Broken)
+                { Con.Close(); }
+                if (Con.State == ConnectionState.Closed)
+                { Con.Open(); }
+
+                string strSql = " Select ID, StyleCode, ProcessName, CreatedBy,";
+                strSql = strSql + " FORMAT(CreatedOn, 'dd-MMM-yyy') AS CreatedOn from OperationBreackDownMaster WHERE 1=1";
+                if (!String.IsNullOrWhiteSpace(objReq.ProcessName))
+                {
+                    strSql = strSql + " AND ProcessName = @ProcessName";
+                }
+                if (!String.IsNullOrWhiteSpace(objReq.StyleCode))
+                {
+                    strSql = strSql + " AND StyleCode = @StyleCode";
+                }
+                if (objReq.ID != 0 && objReq.ID != null)
+                {
+                    strSql = strSql + " AND ID = @ID ";
+                }
+
+                SqlCommand cmd = new SqlCommand(strSql, Con);
+                cmd.CommandType = CommandType.Text;
+                if (!String.IsNullOrWhiteSpace(objReq.ProcessName))
+                {
+                    cmd.Parameters.AddWithValue("@ProcessName", objReq.ProcessName);
+                }
+                if (!String.IsNullOrWhiteSpace(objReq.StyleCode))
+                {
+                    cmd.Parameters.AddWithValue("@StyleCode", objReq.StyleCode);
+                }
+                if (objReq.ID != 0 && objReq.ID != null)
+                {
+                    cmd.Parameters.AddWithValue("@ID", objReq.ID);
+                }
+
+                SqlDataAdapter da = new SqlDataAdapter(cmd);
+                DataSet ds = new DataSet();
+                da.Fill(ds);
+                int i = 0;
+                if (ds.Tables[0].Rows.Count > 0)
+                {
+                    objResp.ID = Convert.ToInt64(ds.Tables[0].Rows[0]["ID"]);
+                    objResp.StyleCode = Convert.ToString(ds.Tables[0].Rows[0]["StyleCode"]);
+                    objResp.ProcessName = Convert.ToString(ds.Tables[0].Rows[i]["ProcessName"]);
+                    objResp.CreatedBy = Convert.ToInt32(ds.Tables[0].Rows[0]["CreatedBy"]);
+                    objResp.CreatedOn = Convert.ToString(ds.Tables[0].Rows[0]["CreatedOn"]);
+                    objResp.vErrorMsg = "Success";
+                    objResp.vErrorCode = 200;
+                }
+                else
+                {
+                    objResp.vErrorCode = 404;
+                    objResp.vErrorMsg = "No Record found";
+                }
+
+            }
+            catch (Exception exp)
+            {
+                objResp.vErrorCode = 500;
+                Logger.WriteLog("Function Name : Fn_Check_Exist_style_In_Master", " " + "Error Msg : " + exp.Message.ToString(), new StackTrace(exp, true));
+                objResp.vErrorMsg = exp.Message.ToString();
+            }
+            finally
+            {
+                Con.Close();
+            }
+            return objResp;
+        }
     }
 }

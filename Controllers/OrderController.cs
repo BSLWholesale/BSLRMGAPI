@@ -90,6 +90,18 @@ namespace BSLDaman.Controllers
             objResp = _DALOrder.Fn_Get_Operation_BreackdownFile(objReq);
             return objResp;
         }
-      
+
+        #region Start 24-FEB-2026 Check_Exist_style_In_Master
+
+        [System.Web.Http.HttpPost]
+        [System.Web.Http.Route("api/Order/Fn_Check_Exist_style_In_Master")]
+        public clsOPBreackDownMaster Fn_Check_Exist_style_In_Master(clsOPBreackDownMaster objReq)
+        {
+            var objResp = new clsOPBreackDownMaster();
+            objResp = _DALOrder.Fn_Check_Exist_style_In_Master(objReq);
+            return objResp;
+        }
+
+        #endregion End 24-FEB-2026 Check_Exist_style_In_Master
     }
 }
