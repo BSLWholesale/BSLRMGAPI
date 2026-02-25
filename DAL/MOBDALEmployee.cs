@@ -17,9 +17,9 @@ namespace BSLDaman.DAL
 
         SqlConnection Con = new SqlConnection(ConfigurationManager.ConnectionStrings["BSL"].ConnectionString);
 
-        public clsEmployee Fn_Login_Employee(clsEmployee objReq)
+        public clsMOBEmployee Fn_Login_Employee(clsMOBEmployee objReq)
         {
-            var objResp = new clsEmployee();
+            var objResp = new clsMOBEmployee();
             try
             {
                 if (objReq.nEmpId == null || objReq.nEmpId == 0)
@@ -96,9 +96,9 @@ namespace BSLDaman.DAL
         }
 
 
-        public clsEmployee Fn_Fetch_EmployeeDetail_ById(clsEmployee objReq)
+        public clsMOBEmployee Fn_Fetch_EmployeeDetail_ById(clsMOBEmployee objReq)
         {
-            var objResp = new clsEmployee();
+            var objResp = new clsMOBEmployee();
             try
             {
                 if (Con.State == ConnectionState.Broken)
@@ -125,6 +125,7 @@ namespace BSLDaman.DAL
                     objResp.OperatorType = Convert.ToString(ds.Tables[0].Rows[0]["OperatorType"]);
                     objResp.EmpGender = Convert.ToString(ds.Tables[0].Rows[0]["EmpGender"]);
                     objResp.DeviceId = Convert.ToString(ds.Tables[0].Rows[0]["DeviceId"]);
+                    objResp.TokenId = Convert.ToString(ds.Tables[0].Rows[0]["TokenId"]);
 
                     objResp.vErrorMsg = "Success";
                     objResp.vErrorCode = 200;
@@ -151,7 +152,7 @@ namespace BSLDaman.DAL
 
         public string Fn_Generate_EmployeeTokenId(Int64 EmpId, string TokenId)
         {
-            var objResp = new clsEmployee();
+            var objResp = new clsMOBEmployee();
             try
             {
                 if (Con.State == ConnectionState.Broken)
@@ -206,9 +207,9 @@ namespace BSLDaman.DAL
         }
 
 
-        public clsEmployee Fn_LogOut_EmployeeSession(clsEmployee objReq)
+        public clsMOBEmployee Fn_LogOut_EmployeeSession(clsMOBEmployee objReq)
         {
-            var objResp = new clsEmployee();
+            var objResp = new clsMOBEmployee();
             try
             {
                 if (objReq.nEmpId == null || objReq.nEmpId == 0)
@@ -254,6 +255,7 @@ namespace BSLDaman.DAL
             }
             return objResp;
         }
+
 
 
     }
