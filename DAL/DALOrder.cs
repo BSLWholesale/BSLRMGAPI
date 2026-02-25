@@ -281,11 +281,9 @@ namespace BSLDaman.DAL
                         obj.OrderNo = Convert.ToString(ds.Tables[0].Rows[i]["OrderNo"]);
                         obj.Color = Convert.ToString(ds.Tables[0].Rows[i]["Color"]);
                         obj.Size = Convert.ToString(ds.Tables[0].Rows[i]["Size"]);
-
-                        obj.Color = Convert.ToString(ds.Tables[0].Rows[i]["Color"]);
                         obj.Qty = Convert.ToInt32(ds.Tables[0].Rows[i]["Qty"]);
                         obj.ExtraQty = Convert.ToInt32(ds.Tables[0].Rows[i]["ExtraQty"]);
-                        obj.CreatedBy = Convert.ToInt16(ds.Tables[0].Rows[i]["CreatedBy"]);
+                        obj.CreatedBy = Convert.ToInt32(ds.Tables[0].Rows[i]["CreatedBy"]);
                         obj.CreatedOn = Convert.ToString(ds.Tables[0].Rows[i]["CreatedOn"]);
 
 
@@ -305,9 +303,10 @@ namespace BSLDaman.DAL
             }
             catch (Exception exp)
             {
-                objResp[0].vErrorCode = 500;
+                obj.vErrorCode = 500;
                 Logger.WriteLog("Function Name : Fn_Get_Order_Detail", " " + "Error Msg : " + exp.Message.ToString(), new StackTrace(exp, true));
-                objResp[0].vErrorMsg = exp.Message.ToString();
+                obj.vErrorMsg = exp.Message.ToString();
+                objResp.Add(obj);
             }
             finally
             {
