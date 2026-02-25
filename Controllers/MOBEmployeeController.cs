@@ -31,7 +31,22 @@ namespace BSLDaman.Controllers
         public clsMOBEmployee Fn_Fetch_EmployeeDetail_ById(clsMOBEmployee objReq)
         {
             var objResp = new clsMOBEmployee();
-            objResp = _MOBDALEmployee.Fn_Fetch_EmployeeDetail_ById(objReq);
+
+            IEnumerable<string> headervalues;
+            string tokenid = "";
+
+            if (Request.Headers.TryGetValues("TokenId", out headervalues))
+            {
+                tokenid = headervalues.FirstOrDefault();
+            }
+            else
+            {
+                objResp.vErrorMsg = "Token ID is missing in header";
+                objResp.vErrorCode = 401;
+                return objResp;
+            }
+
+            objResp = _MOBDALEmployee.Fn_Fetch_EmployeeDetail_ById(objReq, tokenid);
             return objResp;
         }
 
