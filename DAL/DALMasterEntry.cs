@@ -3474,7 +3474,10 @@ namespace BSLDaman.DAL
                     while (ds.Tables[0].Rows.Count > i)
                     {
                         obj = new clsWorker();
-                        obj.ID = Convert.ToInt64(ds.Tables[0].Rows[i]["ID"]);
+                        string strID = Convert.ToString(ds.Tables[0].Rows[i]["ID"]);
+                       if(strID != "") {
+                            obj.ID = Convert.ToInt64(ds.Tables[0].Rows[i]["ID"]);
+                        }
                         obj.Code = Convert.ToString(ds.Tables[0].Rows[i]["EmpId"]);
                         obj.Name = Convert.ToString(ds.Tables[0].Rows[i]["EmpName"]);
                         obj.FatherName = Convert.ToString(ds.Tables[0].Rows[i]["FatherName"]);
@@ -3507,9 +3510,10 @@ namespace BSLDaman.DAL
             }
             catch (Exception exp)
             {
-                objResp[0].vErrorCode = 500;
+                obj.vErrorCode = 500;
                 Logger.WriteLog("Function Name : Fn_Get_Worker", " " + "Error Msg : " + exp.Message.ToString(), new StackTrace(exp, true));
-                objResp[0].vErrorMsg = exp.Message.ToString();
+                obj.vErrorMsg = exp.Message.ToString();
+                objResp.Add(obj);
             }
             finally
             {
