@@ -61,5 +61,28 @@ namespace BSLDaman.Controllers
         }
 
 
+        [System.Web.Http.HttpPost]
+        [System.Web.Http.Route("api/MOBEmployee/Fn_Check_EmployeeTokenID")]
+        public clsMOBEmployee Fn_Check_EmployeeTokenID(clsMOBEmployee objReq)
+        {
+            var objResp = new clsMOBEmployee();
+            IEnumerable<string> headervalues;
+            string tokenid = "";
+            if (Request.Headers.TryGetValues("TokenId", out headervalues))
+            {
+                tokenid = headervalues.FirstOrDefault();
+            }
+            else
+            {
+                objResp.vErrorMsg = "Token ID is missing in header.";
+                objResp.vErrorCode = 401;
+                return objResp;
+            }
+
+            objResp = _MOBDALEmployee.Fn_Check_EmployeeTokenID(objReq, tokenid);
+            return objResp;
+        }
+
+
     }
 }
