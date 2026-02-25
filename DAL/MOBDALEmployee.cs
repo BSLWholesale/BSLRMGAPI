@@ -140,7 +140,7 @@ namespace BSLDaman.DAL
                     objResp.OperatorType = Convert.ToString(ds.Tables[0].Rows[0]["OperatorType"]);
                     objResp.EmpGender = Convert.ToString(ds.Tables[0].Rows[0]["EmpGender"]);
                     objResp.DeviceId = Convert.ToString(ds.Tables[0].Rows[0]["DeviceId"]);
-                    objResp.TokenId = Convert.ToString(ds.Tables[0].Rows[0]["TokenId"]);
+                    //objResp.TokenId = Convert.ToString(ds.Tables[0].Rows[0]["TokenId"]);
 
                     objResp.vErrorMsg = "Success";
                     objResp.vErrorCode = 200;
@@ -272,7 +272,7 @@ namespace BSLDaman.DAL
         }
 
 
-        public string Fn_Check_EmployeeTokenID(Int64 EmpId, string TokenID)
+        public clsMOBEmployee Fn_Check_EmployeeTokenID(clsMOBEmployee objReq, string tokenid)
         {
             var objResp = new clsMOBEmployee();
             try
@@ -282,32 +282,28 @@ namespace BSLDaman.DAL
                 if (Con.State == ConnectionState.Closed)
                 { Con.Open(); }
 
-                SqlCommand cmd = new SqlCommand("USP_EmployeeMob", Con);
-                cmd.CommandType = CommandType.StoredProcedure;
-                cmd.Parameters.AddWithValue("@EmpId", EmpId);
-                cmd.Parameters.AddWithValue("@TokenId", TokenID);
-                cmd.Parameters.AddWithValue("@QueryType", "CheckTokenID");
-
-                SqlDataAdapter da = new SqlDataAdapter(cmd);
-                DataSet ds = new DataSet();
-                da.Fill(ds);
-
-                int i = 0;
-                if (objResp.TokenId != null || objResp.TokenId != "")
+                using (SqlCommand cmd = new SqlCommand("USP_EmployeeMob", Con))
                 {
-                    if (ds.Tables[0].Rows.Count > 0)
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("@EmpId", objReq.nEmpId);
+                    cmd.Parameters.AddWithValue("@TokenId", tokenid);
+                    cmd.Parameters.AddWithValue("@QueryType", "ValidateTokenID");
+
+                    object result = cmd.ExecuteScalar();
+
+                    if (result != null && result != DBNull.Value)
                     {
-                        objResp.nEmpId = Convert.ToInt64(ds.Tables[0].Rows[i]["EmpId"]);
-                        objResp.TokenId = Convert.ToString(ds.Tables[0].Rows[i]["TokenId"]);
+                        objResp.nEmpId = objReq.nEmpId;
+                        objResp.TokenId = tokenid;
                         objResp.vErrorMsg = "Success";
                         objResp.vErrorCode = 200;
                     }
+                    else
+                    {
+                        objResp.vErrorMsg = "Invalid Token ID or Expired Token ID";
+                        objResp.vErrorCode = 401;
+                    }
                 }
-                else
-                {
-                    objResp.vErrorMsg = "Token ID is not found. Please re-login the again";
-                    objResp.vErrorCode = 400;
-                }                               
             }
             catch (Exception exp)
             {
@@ -319,7 +315,7 @@ namespace BSLDaman.DAL
             {
                 Con.Close();
             }
-            return TokenID;
+            return objResp;
         }
 
 
