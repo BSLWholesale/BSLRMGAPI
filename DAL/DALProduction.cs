@@ -1861,8 +1861,8 @@ namespace BSLDaman.DAL
 
                         //obj.ID = Convert.ToInt16(ds.Tables[0].Rows[i]["DetailID"]);
                         obj.SizeName = Convert.ToString(ds.Tables[0].Rows[i]["Size"]);
-                        obj.ID = Convert.ToInt16(ds.Tables[0].Rows[i]["SizeID"]);
-                        obj.CreatedBy = Convert.ToInt16(ds.Tables[0].Rows[i]["CreatedBy"]);
+                        obj.ID = Convert.ToInt32(ds.Tables[0].Rows[i]["SizeID"]);
+                        obj.CreatedBy = Convert.ToInt32(ds.Tables[0].Rows[i]["CreatedBy"]);
                         obj.CreatedOn = Convert.ToString(ds.Tables[0].Rows[i]["CreatedOn"]);
 
                         obj.vErrorCode = 200;
