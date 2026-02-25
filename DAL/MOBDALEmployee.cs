@@ -96,7 +96,7 @@ namespace BSLDaman.DAL
         }
 
 
-        public clsMOBEmployee Fn_Fetch_EmployeeDetail_ById(clsMOBEmployee objReq)
+        public clsMOBEmployee Fn_Fetch_EmployeeDetail_ById(clsMOBEmployee objReq, string tokenid)
         {
             var objResp = new clsMOBEmployee();
             try
@@ -105,6 +105,21 @@ namespace BSLDaman.DAL
                 { Con.Close(); }
                 if (Con.State == ConnectionState.Closed)
                 { Con.Open(); }
+
+                SqlCommand cmdToken = new SqlCommand("USP_EmployeeMob", Con);
+                cmdToken.CommandType = CommandType.StoredProcedure;
+                cmdToken.Parameters.AddWithValue("@EmpId", objReq.nEmpId);
+                cmdToken.Parameters.AddWithValue("@TokenId", tokenid);
+                cmdToken.Parameters.AddWithValue("@QueryType", "ValidateTokenID");
+
+                object result = cmdToken.ExecuteScalar();
+
+                if (result == null)
+                {
+                    objResp.vErrorMsg = "Invalid Token ID or Expired Token ID.";
+                    objResp.vErrorCode = 401;
+                    return objResp;
+                }
 
                 SqlCommand cmd = new SqlCommand("USP_EmployeeMob", Con);
                 cmd.CommandType = CommandType.StoredProcedure;
@@ -254,6 +269,57 @@ namespace BSLDaman.DAL
                 Con.Close();
             }
             return objResp;
+        }
+
+
+        public string Fn_Check_EmployeeTokenID(Int64 EmpId, string TokenID)
+        {
+            var objResp = new clsMOBEmployee();
+            try
+            {
+                if (Con.State == ConnectionState.Broken)
+                { Con.Close(); }
+                if (Con.State == ConnectionState.Closed)
+                { Con.Open(); }
+
+                SqlCommand cmd = new SqlCommand("USP_EmployeeMob", Con);
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@EmpId", EmpId);
+                cmd.Parameters.AddWithValue("@TokenId", TokenID);
+                cmd.Parameters.AddWithValue("@QueryType", "CheckTokenID");
+
+                SqlDataAdapter da = new SqlDataAdapter(cmd);
+                DataSet ds = new DataSet();
+                da.Fill(ds);
+
+                int i = 0;
+                if (objResp.TokenId != null || objResp.TokenId != "")
+                {
+                    if (ds.Tables[0].Rows.Count > 0)
+                    {
+                        objResp.nEmpId = Convert.ToInt64(ds.Tables[0].Rows[i]["EmpId"]);
+                        objResp.TokenId = Convert.ToString(ds.Tables[0].Rows[i]["TokenId"]);
+                        objResp.vErrorMsg = "Success";
+                        objResp.vErrorCode = 200;
+                    }
+                }
+                else
+                {
+                    objResp.vErrorMsg = "Token ID is not found. Please re-login the again";
+                    objResp.vErrorCode = 400;
+                }                               
+            }
+            catch (Exception exp)
+            {
+                Logger.WriteLog("Function Name : Fn_Check_EmployeeTokenID", " " + "Error Msg : " + exp.Message.ToString(), new StackTrace(exp, true));
+                objResp.vErrorMsg = exp.Message.ToString();
+                objResp.vErrorCode = 500;
+            }
+            finally
+            {
+                Con.Close();
+            }
+            return TokenID;
         }
 
 
