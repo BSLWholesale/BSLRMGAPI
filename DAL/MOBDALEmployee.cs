@@ -23,17 +23,6 @@ namespace BSLDaman.DAL
             var objEmp = new clsMOBEmployee();
             try
             {
-                if (Con.State == ConnectionState.Broken)
-                { Con.Close(); }
-                if (Con.State == ConnectionState.Closed)
-                { Con.Open(); }
-
-                MOBDALEmployee _MOBDALEmployee = new MOBDALEmployee();
-
-                objEmp.nEmpId = objReq.nEmpId;
-                objEmp.vEmpPassword = objReq.vEmpPassword;
-                objEmp = _MOBDALEmployee.Fn_Check_EmployeeID_Exists(Convert.ToInt64(objEmp.nEmpId), objEmp.vEmpPassword);
-
                 if (objReq.nEmpId == null || objReq.nEmpId == 0)
                 {
                     objResp.vErrorMsg = "Please Enter an Employee ID";
@@ -46,10 +35,10 @@ namespace BSLDaman.DAL
                 }
                 else
                 {
-                    //if (Con.State == ConnectionState.Broken)
-                    //{ Con.Close(); }
-                    //if (Con.State == ConnectionState.Closed)
-                    //{ Con.Open(); }
+                    if (Con.State == ConnectionState.Broken)
+                    { Con.Close(); }
+                    if (Con.State == ConnectionState.Closed)
+                    { Con.Open(); }
 
                     string encryptPassword = Generic.EncryptText(objReq.vEmpPassword);
 
@@ -83,9 +72,19 @@ namespace BSLDaman.DAL
                             objResp.TokenId = Convert.ToString(ds.Tables[0].Rows[i]["TokenId"]);
                         }
 
-                        objResp.vErrorMsg = "Success";
-                        objResp.vErrorCode = 200;
-
+                        objResp.IsActive = Convert.ToBoolean(ds.Tables[0].Rows[i]["IsActive"]);
+                        if (objResp.IsActive == true)
+                        {
+                            objResp.vErrorMsg = "Success";
+                            objResp.vErrorCode = 200;
+                        }
+                        else
+                        {
+                            objResp.vErrorMsg = "Employee ID is Inactive.";
+                            objResp.vErrorCode = 300;
+                        }
+                        //objResp.vErrorMsg = "Success";
+                        //objResp.vErrorCode = 200;
                     }
                     else
                     {
