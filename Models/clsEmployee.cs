@@ -421,9 +421,11 @@ namespace BSLDaman.Models
         public string EmpLocation { get; set; }
         public string L1ManagerCode { get; set; }
         public string L1ManagerName { get; set; }
-        public bool IsActive { get; set; }
+        public string EmpShift { get; set; }
+        public Int64 ID { get; set; }
         public string DeviceId { get; set; }
         public string TokenId { get; set; }
+        public bool IsActive { get; set; }
         public string vErrorMsg { get; set; }
         public int vErrorCode { get; set; }
 
