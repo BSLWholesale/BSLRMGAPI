@@ -20,8 +20,20 @@ namespace BSLDaman.DAL
         public clsMOBEmployee Fn_Login_Employee(clsMOBEmployee objReq)
         {
             var objResp = new clsMOBEmployee();
+            var objEmp = new clsMOBEmployee();
             try
             {
+                if (Con.State == ConnectionState.Broken)
+                { Con.Close(); }
+                if (Con.State == ConnectionState.Closed)
+                { Con.Open(); }
+
+                MOBDALEmployee _MOBDALEmployee = new MOBDALEmployee();
+
+                objEmp.nEmpId = objReq.nEmpId;
+                objEmp.vEmpPassword = objReq.vEmpPassword;
+                objEmp = _MOBDALEmployee.Fn_Check_EmployeeID_Exists(Convert.ToInt64(objEmp.nEmpId), objEmp.vEmpPassword);
+
                 if (objReq.nEmpId == null || objReq.nEmpId == 0)
                 {
                     objResp.vErrorMsg = "Please Enter an Employee ID";
@@ -34,10 +46,10 @@ namespace BSLDaman.DAL
                 }
                 else
                 {
-                    if (Con.State == ConnectionState.Broken)
-                    { Con.Close(); }
-                    if (Con.State == ConnectionState.Closed)
-                    { Con.Open(); }
+                    //if (Con.State == ConnectionState.Broken)
+                    //{ Con.Close(); }
+                    //if (Con.State == ConnectionState.Closed)
+                    //{ Con.Open(); }
 
                     string encryptPassword = Generic.EncryptText(objReq.vEmpPassword);
 
@@ -200,7 +212,7 @@ namespace BSLDaman.DAL
                 if (i > 0)
                 {
                     objResp.vErrorMsg = "Success";
-                    objResp.vErrorCode = 200;                     
+                    objResp.vErrorCode = 200;
                 }
                 else
                 {
@@ -316,6 +328,114 @@ namespace BSLDaman.DAL
                 Con.Close();
             }
             return objResp;
+        }
+
+
+        public clsMOBEmployee Fn_Check_EmployeeID_Exists(Int64 EmpID, string Password)
+        {
+            var objResp = new clsMOBEmployee();
+            try
+            {
+                if (Con.State == ConnectionState.Broken)
+                { Con.Close(); }
+                if (Con.State == ConnectionState.Closed)
+                { Con.Open(); }
+
+                string EncryptPassword = Generic.EncryptText(Password);
+
+                SqlCommand cmd = new SqlCommand("USP_EmployeeMob", Con);
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@EmpId", EmpID);
+                cmd.Parameters.AddWithValue("@EmpPassword", EncryptPassword);
+                cmd.Parameters.AddWithValue("@QueryType", "CheckEmployeeIDExists");
+
+                object result = cmd.ExecuteScalar();
+
+                if (result != null && result != DBNull.Value)
+                {
+                    objResp.nEmpId = EmpID;
+                    objResp.vEmpPassword = EncryptPassword;
+                    objResp.vErrorMsg = "Success";
+                    objResp.vErrorCode = 200;
+                }
+                else
+                {
+                    objResp.vErrorMsg = "Invalid Employee ID and Employee Password";
+                    objResp.vErrorCode = 401;
+                }
+
+            }
+            catch (Exception exp)
+            {
+                Logger.WriteLog("Function Name : Fn_Check_EmployeeID_Exists", " " + "Error Msg : " + exp.Message.ToString(), new StackTrace(exp, true));
+                objResp.vErrorMsg = exp.Message.ToString();
+                objResp.vErrorCode = 500;
+            }
+            finally
+            {
+                Con.Close();
+            }
+            return objResp;
+        }
+        
+
+        public List<clsMOBEmployee> Fn_Get_All_EmployeeList(clsMOBEmployee objReq)
+        {
+            var objRespList = new List<clsMOBEmployee>();
+            var objResp = new clsMOBEmployee();
+            try
+            {
+                if (Con.State == ConnectionState.Broken)
+                { Con.Close(); }
+                if (Con.State == ConnectionState.Closed)
+                { Con.Open(); }
+
+                SqlCommand cmd = new SqlCommand("USP_EmployeeMob", Con);
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@QueryType", "SelectAll");
+
+                SqlDataAdapter da = new SqlDataAdapter(cmd);
+                DataSet ds = new DataSet();
+                da.Fill(ds);
+
+                int i = 0;
+                if (ds.Tables[0].Rows.Count > 0)
+                {
+                    while (ds.Tables[0].Rows.Count > i)
+                    {
+                        objResp = new clsMOBEmployee();
+
+                        objResp.nEmpId = Convert.ToInt64(ds.Tables[0].Rows[i]["EmpId"]);
+                        objResp.vEmpName = Convert.ToString(ds.Tables[0].Rows[i]["EmpName"]);
+                        objResp.EmpRole = Convert.ToString(ds.Tables[0].Rows[i]["EmpRole"]);
+                        objResp.EmpLocation = Convert.ToString(ds.Tables[0].Rows[i]["EmpLocation"]);
+                        objResp.IsActive = Convert.ToBoolean(ds.Tables[0].Rows[i]["IsActive"]);
+
+                        objResp.vErrorMsg = "Success";
+                        objResp.vErrorCode = 200;
+                        objRespList.Add(objResp);
+                        i++;
+                    }
+                }
+                else
+                {
+                    objResp.vErrorMsg = "No Employee Records found.";
+                    objRespList.Add(objResp);
+                    objResp.vErrorCode = 300;
+                }               
+            }
+            catch (Exception exp)
+            {
+                Logger.WriteLog("Function Name : Fn_Get_All_EmployeeList", " " + "Error Msg : " + exp.Message.ToString(), new StackTrace(exp, true));
+                objResp.vErrorMsg = exp.Message.ToString();
+                objRespList.Add(objResp);
+                objResp.vErrorCode = 500;
+            }
+            finally
+            {
+                Con.Close();
+            }
+            return objRespList;
         }
 
 
