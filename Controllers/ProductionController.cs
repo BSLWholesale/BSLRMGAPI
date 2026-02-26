@@ -264,5 +264,18 @@ namespace BSLDaman.Controllers
         }
 
         #endregion End Sectionwise compile data for QR 23-FEB-2026
+
+        #region Start Update Fn_Update_AppEmpId 26-FEB-2026
+
+        [System.Web.Http.HttpPost]
+        [System.Web.Http.Route("api/Production/Fn_Update_AppEmpId")]
+        public clsBundleCompile Fn_Update_AppEmpId(clsBundleCompile objReq)
+        {
+            var objResp = new clsBundleCompile();
+            objResp = _DALProduction.Fn_Update_AppEmpId(objReq);
+            return objResp;
+        }
+
+        #endregion End Update Fn_Update_AppEmpId 26-FEB-2026
     }
 }
