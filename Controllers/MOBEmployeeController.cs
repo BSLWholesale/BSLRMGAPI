@@ -84,5 +84,16 @@ namespace BSLDaman.Controllers
         }
 
 
+
+        [System.Web.Http.HttpPost]
+        [System.Web.Http.Route("api/MOBEmployee/Fn_Get_All_EmployeeList")]
+        public List<clsMOBEmployee> Fn_Get_All_EmployeeList(clsMOBEmployee objReq)
+        {
+            var objResp = new List<clsMOBEmployee>();
+            objResp = _MOBDALEmployee.Fn_Get_All_EmployeeList(objReq);
+            return objResp;
+        }
+
+
     }
 }
