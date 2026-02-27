@@ -2237,7 +2237,7 @@ namespace BSLDaman.DAL
                 cmd.Parameters.AddWithValue("@BundleID", objReq.BundleID);
                 cmd.Parameters.AddWithValue("@AppEmpID", objReq.AppEmpID);
                 cmd.Parameters.AddWithValue("@AppStartTime", objReq.AppStartTime);
-                cmd.Parameters.AddWithValue("@Plies", objReq.AppEndTime);
+                cmd.Parameters.AddWithValue("@AppEndTime", objReq.AppEndTime);
                 cmd.Parameters.AddWithValue("@CreatedBy", objReq.CreatedBy);
                 cmd.Parameters.AddWithValue("@QueryType", "Update_AppEmpId");
                 int i = 0;
