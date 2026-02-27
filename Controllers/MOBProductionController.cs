@@ -47,16 +47,6 @@ namespace BSLDaman.Controllers
         }
 
 
-        [System.Web.Http.HttpPost]
-        [System.Web.Http.Route("api/MOBProduction/Fn_AssignedTask_Employee")]
-        public clsOPBreackDownMaster Fn_AssignedTask_Employee(clsOPBreackDownMaster objReq)
-        {
-            var objResp = new clsOPBreackDownMaster();
-            objResp = _MOBDALProduction.Fn_AssignedTask_Employee(objReq);
-            return objResp;
-        }
-
-
         [System.Web.Http.HttpGet]
         [System.Web.Http.Route("api/MOBProduction/Fn_Get_MachineLogMaster")]
         public List<clsMachineLogMaster> Fn_Get_MachineLogMaster(clsMachineLogMaster objReq)
@@ -118,15 +108,13 @@ namespace BSLDaman.Controllers
 
 
         [System.Web.Http.HttpPut]
-        [System.Web.Http.Route("api/MOBProduction/Fn_Update_AppEmpBundleIDStatus")]
-        public clsBundleCompile Fn_Update_AppEmpBundleIDStatus(clsBundleCompile objReq)
+        [System.Web.Http.Route("api/MOBProduction/Fn_Update_AppEmpStartBundleIDStatus")]
+        public clsBundleCompile Fn_Update_AppEmpStartBundleIDStatus(clsBundleCompile objReq)
         {
             var objResp = new clsBundleCompile();
-            objResp = _MOBDALProduction.Fn_Update_AppEmpBundleIDStatus(objReq);
+            objResp = _MOBDALProduction.Fn_Update_AppEmpStartBundleIDStatus(objReq);
             return objResp;
         }
-
-
 
 
     }

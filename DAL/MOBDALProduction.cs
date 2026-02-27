@@ -251,51 +251,6 @@ namespace BSLDaman.DAL
         }
 
 
-        public clsOPBreackDownMaster Fn_AssignedTask_Employee(clsOPBreackDownMaster objReq)
-        {
-            var objResp = new clsOPBreackDownMaster();
-            try
-            {
-                if (Con.State == ConnectionState.Broken)
-                { Con.Close(); }
-                if (Con.State == ConnectionState.Closed)
-                { Con.Open(); }
-
-                SqlCommand cmd = new SqlCommand("", Con);
-                cmd.CommandType = CommandType.StoredProcedure;
-
-                cmd.Parameters.AddWithValue("", objReq.nEmpId);
-                cmd.Parameters.AddWithValue("", objReq.ModifiedBy);
-                cmd.Parameters.AddWithValue("", "");
-                
-                int i = 0;
-                i = cmd.ExecuteNonQuery();
-                if (i > 0)
-                {
-                    objResp.vErrorCode = 200;
-                    objResp.vErrorMsg = "Success";
-                }
-                else
-                {
-                    objResp.vErrorCode = 400;
-                    objResp.vErrorMsg = "Assigned Task Failed.";
-                }
-            }
-            catch (Exception exp)
-            {
-                objResp.vErrorCode = 500;
-                Logger.WriteLog("Function Name : Fn_AssignedTask_Employee", " " + "Error Msg : " + exp.Message.ToString(), new StackTrace(exp, true));
-                objResp.vErrorMsg = exp.Message.ToString();
-            }
-            finally
-            {
-                Con.Close();
-            }
-            return objResp;
-        }
-
-
-
         public List<clsMachineLogMaster> Fn_Get_MachineLogMaster(clsMachineLogMaster objReq)
         {
             var objResp = new List<clsMachineLogMaster>();
@@ -702,7 +657,7 @@ namespace BSLDaman.DAL
         }
         
 
-        public clsBundleCompile Fn_Update_AppEmpBundleIDStatus(clsBundleCompile objReq)
+        public clsBundleCompile Fn_Update_AppEmpStartBundleIDStatus(clsBundleCompile objReq)
         {
             var objResp = new clsBundleCompile();
             try
@@ -728,7 +683,7 @@ namespace BSLDaman.DAL
                     cmd.CommandType = CommandType.StoredProcedure;
                     cmd.Parameters.AddWithValue("@AppEmpID", objReq.AppEmpID);
                     cmd.Parameters.AddWithValue("@BundleID", objReq.BundleID);
-                    cmd.Parameters.AddWithValue("@QueryType", "UpdateAppEmpBundleIDStatus");
+                    cmd.Parameters.AddWithValue("@QueryType", "UpdateAppEmpStartBundleIDStatus");
 
                     int i = 0;
                     i = cmd.ExecuteNonQuery();
@@ -740,14 +695,14 @@ namespace BSLDaman.DAL
                     else
                     {
                         objResp.vErrorCode = 400;
-                        objResp.vErrorMsg = "App Employee Bundle ID Status updation failed.";
+                        objResp.vErrorMsg = "App Employee Bundle ID In Process Status updation failed.";
                     }
                 }                
             }
             catch (Exception exp)
             {
                 objResp.vErrorCode = 500;
-                Logger.WriteLog("Function Name : Fn_Update_AppEmpBundleIDStatus", " " + "Error Msg : " + exp.Message.ToString(), new StackTrace(exp, true));
+                Logger.WriteLog("Function Name : Fn_Update_AppEmpStartBundleIDStatus", " " + "Error Msg : " + exp.Message.ToString(), new StackTrace(exp, true));
                 objResp.vErrorMsg = exp.Message.ToString();
             }
             finally
@@ -756,7 +711,6 @@ namespace BSLDaman.DAL
             }
             return objResp;
         }
-
 
 
     }
