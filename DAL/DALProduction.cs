@@ -1456,7 +1456,6 @@ namespace BSLDaman.DAL
                     bool checkPostAssembly = false;
                     strCriteria = "";
                     strCriteria = " AND OrderNo = '" + objReq.OrderNo + "'";
-                    strCriteria = strCriteria + " AND SizeName=" + size;
 
                     if (size != prevSize)
                     {
@@ -1475,8 +1474,6 @@ namespace BSLDaman.DAL
                     TotalBundle = TotalBundle + mxBundleNo;
                     int bundleStart = 0;
                     bundleStart = bundleStart + Convert.ToInt32(mxBundleNo);
-
-                    
 
                     while (bundleStart <= TotalBundle)
                     {
@@ -1497,9 +1494,8 @@ namespace BSLDaman.DAL
                             {
                                 strCriteria = "";
                                 strCriteria = " AND OrderNo = '" + objReq.OrderNo + "'";
-                                strCriteria = strCriteria + " AND SizeName=" + size;
                                 strCriteria = strCriteria + " AND SubSection ='POST ASSEMBLY'";
-                                plyFrom = Fn_Get_MXID("BundleCompile", "FromTo", strCriteria);
+                                plyFrom = Fn_Get_MXID("BundleCompile", "PlyFrom", strCriteria);
                                 plyTo = Fn_Get_MXID("BundleCompile", "PlyTo", strCriteria);
 
                                 objReq.BundleNo = Convert.ToInt32(bundleStart);
@@ -1577,7 +1573,6 @@ namespace BSLDaman.DAL
                                     int pCount = 1;
                                     strCriteria = "";
                                     strCriteria = " AND OrderNo = '" + objReq.OrderNo + "'";
-                                    strCriteria = strCriteria + " AND SizeName=" + size;
                                     strCriteria = strCriteria + " AND SubSection ='POST ASSEMBLY'";
                                     plyTo = Fn_Get_MXID("BundleCompile", "PlyTo", strCriteria);
                                     while (pCount <= objReq.BunleQty)

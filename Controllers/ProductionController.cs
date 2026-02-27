@@ -277,5 +277,14 @@ namespace BSLDaman.Controllers
         }
 
         #endregion End Update Fn_Update_AppEmpId 26-FEB-2026
+
+        [System.Web.Http.HttpPost]
+        [System.Web.Http.Route("api/Production/Fn_Get_Subsection_List")]
+        public List<clsBundleCompile> Fn_Get_Subsection_List(clsBundleCompile objReq)
+        {
+            var objResp = new List<clsBundleCompile>();
+            objResp = _DALProduction.Fn_Get_Subsection_List(objReq);
+            return objResp;
+        }
     }
 }
