@@ -349,8 +349,9 @@ namespace BSLDaman.Models
         public string CreatedOn { get; set; }
         public int ModifiedBy { get; set; }
         public string ModifiedOn { get; set; }
-        public int SupervisorEmpID { get; set; }
-        public int AppEmpID { get; set; }
+        public Int32 SupervisorID { get; set; }
+        public string SupervisorAssignedDate { get; set; }
+        public Int32 AppEmpID { get; set; }
         public string AppStartTime { get; set; }
         public string AppEndTime { get; set; }
         public string BundleIDStatus { get; set; }
