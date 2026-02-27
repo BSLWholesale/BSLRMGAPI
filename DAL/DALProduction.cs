@@ -2217,5 +2217,55 @@ namespace BSLDaman.DAL
         }
 
         #endregion End Sectionwise compile data for QR 23-FEB-2026
+
+        #region Start Update Fn_Update_AppEmpId 26-FEB-2026
+
+        public clsBundleCompile Fn_Update_AppEmpId(clsBundleCompile objReq)
+        {
+            var objResp = new clsBundleCompile();
+
+            try
+            {
+
+                if (Con.State == ConnectionState.Broken)
+                { Con.Close(); }
+                if (Con.State == ConnectionState.Closed)
+                { Con.Open(); }
+
+                SqlCommand cmd = new SqlCommand("USP_BUNDLE_LAYER", Con);
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@BundleID", objReq.BundleID);
+                cmd.Parameters.AddWithValue("@AppEmpID", objReq.AppEmpID);
+                cmd.Parameters.AddWithValue("@AppStartTime", objReq.AppStartTime);
+                cmd.Parameters.AddWithValue("@AppEndTime", objReq.AppEndTime);
+                cmd.Parameters.AddWithValue("@CreatedBy", objReq.CreatedBy);
+                cmd.Parameters.AddWithValue("@QueryType", "Update_AppEmpId");
+                int i = 0;
+                i = cmd.ExecuteNonQuery();
+                if (i > 0)
+                {
+                    objResp.vErrorCode = 200;
+                    objResp.vErrorMsg = "Success";
+                }
+                else
+                {
+                    objResp.vErrorCode = 400;
+                    objResp.vErrorMsg = "AppEmpId updating Failed";
+                }
+            }
+            catch (Exception exp)
+            {
+                objResp.vErrorCode = 500;
+                Logger.WriteLog("Function Name : Fn_Update_AppEmpId", " " + "Error Msg : " + exp.Message.ToString(), new StackTrace(exp, true));
+                objResp.vErrorMsg = exp.Message.ToString();
+            }
+            finally
+            {
+                Con.Close();
+            }
+            return objResp;
+        }
+
+        #endregion End Update BundleID by AppEmpId 26-FEB-2026
     }
 }
