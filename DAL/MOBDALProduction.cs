@@ -644,9 +644,9 @@ namespace BSLDaman.DAL
             var objResp = new clsBundleCompile();
             try
             {
-                if (objReq.SupervisorEmpID == null || objReq.SupervisorEmpID == 0)
+                if (objReq.SupervisorID == null || objReq.SupervisorID == 0)
                 {
-                    objResp.vErrorMsg = "Please Pass the Supervisor Employee ID";
+                    objResp.vErrorMsg = "Please Pass the Valid Supervisor Employee ID";
                     objResp.vErrorCode = 300;
                 }
                 else if (objReq.BundleID == null || objReq.BundleID == 0)
@@ -656,7 +656,7 @@ namespace BSLDaman.DAL
                 }
                 else if (objReq.AppEmpID == null || objReq.AppEmpID == 0)
                 {
-                    objResp.vErrorMsg = "Please Pass the Valid App Employee ID";
+                    objResp.vErrorMsg = "Please Pass the Valid App Employee/Worker ID";
                     objResp.vErrorCode = 300;
                 }
                 else
@@ -669,7 +669,7 @@ namespace BSLDaman.DAL
                     SqlCommand cmd = new SqlCommand("USP_MobileBundleApp", Con);
                     cmd.CommandType = CommandType.StoredProcedure;
                     cmd.Parameters.AddWithValue("@BundleID", objReq.BundleID);
-                    cmd.Parameters.AddWithValue("@SupervisorEmpId", objReq.SupervisorEmpID);
+                    cmd.Parameters.AddWithValue("@SupervisorID", objReq.SupervisorID);
                     cmd.Parameters.AddWithValue("@AppEmpID", objReq.AppEmpID);
                     cmd.Parameters.AddWithValue("@QueryType", "UpdateAssignedBundleID");
 
@@ -700,38 +700,49 @@ namespace BSLDaman.DAL
             }
             return objResp;
         }
-
+        
 
         public clsBundleCompile Fn_Update_AppEmpBundleIDStatus(clsBundleCompile objReq)
         {
             var objResp = new clsBundleCompile();
             try
             {
-                if (Con.State == ConnectionState.Broken)
-                { Con.Close(); }
-                if (Con.State == ConnectionState.Closed)
-                { Con.Open(); }
-
-                SqlCommand cmd = new SqlCommand("USP_MobileBundleApp", Con);
-                cmd.CommandType = CommandType.StoredProcedure;
-                cmd.Parameters.AddWithValue("@AppEmpID", objReq.AppEmpID);
-                cmd.Parameters.AddWithValue("@AppStartTime", objReq.AppStartTime);
-                cmd.Parameters.AddWithValue("@BundleID", objReq.BundleID);
-                cmd.Parameters.AddWithValue("@BundleIDStatus", objReq.BundleIDStatus);
-                cmd.Parameters.AddWithValue("@QueryType", "UpdateAppEmpBundleIDStatus");
-
-                int i = 0;
-                i = cmd.ExecuteNonQuery();
-                if (i > 0)
+                if (objReq.AppEmpID == null || objReq.AppEmpID == 0)
                 {
-                    objResp.vErrorCode = 200;
-                    objResp.vErrorMsg = "Success";
+                    objResp.vErrorMsg = "Please Pass the Valid App Employee ID";
+                    objResp.vErrorCode = 300;
+                }
+                else if (objReq.BundleID == null || objReq.BundleID == 0)
+                {
+                    objResp.vErrorMsg = "Please Pass the Valid Bundle ID";
+                    objResp.vErrorCode = 300;
                 }
                 else
                 {
-                    objResp.vErrorCode = 400;
-                    objResp.vErrorMsg = "App Employee Bundle ID Status updation failed.";
-                }
+                    if (Con.State == ConnectionState.Broken)
+                    { Con.Close(); }
+                    if (Con.State == ConnectionState.Closed)
+                    { Con.Open(); }
+
+                    SqlCommand cmd = new SqlCommand("USP_MobileBundleApp", Con);
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("@AppEmpID", objReq.AppEmpID);
+                    cmd.Parameters.AddWithValue("@BundleID", objReq.BundleID);
+                    cmd.Parameters.AddWithValue("@QueryType", "UpdateAppEmpBundleIDStatus");
+
+                    int i = 0;
+                    i = cmd.ExecuteNonQuery();
+                    if (i > 0)
+                    {
+                        objResp.vErrorCode = 200;
+                        objResp.vErrorMsg = "Success";
+                    }
+                    else
+                    {
+                        objResp.vErrorCode = 400;
+                        objResp.vErrorMsg = "App Employee Bundle ID Status updation failed.";
+                    }
+                }                
             }
             catch (Exception exp)
             {
@@ -745,6 +756,7 @@ namespace BSLDaman.DAL
             }
             return objResp;
         }
+
 
 
     }
