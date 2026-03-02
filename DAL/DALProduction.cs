@@ -1456,7 +1456,6 @@ namespace BSLDaman.DAL
                     bool checkPostAssembly = false;
                     strCriteria = "";
                     strCriteria = " AND OrderNo = '" + objReq.OrderNo + "'";
-                    strCriteria = strCriteria + " AND SizeName=" + size;
 
                     if (size != prevSize)
                     {
@@ -1475,8 +1474,6 @@ namespace BSLDaman.DAL
                     TotalBundle = TotalBundle + mxBundleNo;
                     int bundleStart = 0;
                     bundleStart = bundleStart + Convert.ToInt32(mxBundleNo);
-
-                    
 
                     while (bundleStart <= TotalBundle)
                     {
@@ -1497,9 +1494,8 @@ namespace BSLDaman.DAL
                             {
                                 strCriteria = "";
                                 strCriteria = " AND OrderNo = '" + objReq.OrderNo + "'";
-                                strCriteria = strCriteria + " AND SizeName=" + size;
                                 strCriteria = strCriteria + " AND SubSection ='POST ASSEMBLY'";
-                                plyFrom = Fn_Get_MXID("BundleCompile", "FromTo", strCriteria);
+                                plyFrom = Fn_Get_MXID("BundleCompile", "PlyFrom", strCriteria);
                                 plyTo = Fn_Get_MXID("BundleCompile", "PlyTo", strCriteria);
 
                                 objReq.BundleNo = Convert.ToInt32(bundleStart);
@@ -1577,7 +1573,6 @@ namespace BSLDaman.DAL
                                     int pCount = 1;
                                     strCriteria = "";
                                     strCriteria = " AND OrderNo = '" + objReq.OrderNo + "'";
-                                    strCriteria = strCriteria + " AND SizeName=" + size;
                                     strCriteria = strCriteria + " AND SubSection ='POST ASSEMBLY'";
                                     plyTo = Fn_Get_MXID("BundleCompile", "PlyTo", strCriteria);
                                     while (pCount <= objReq.BunleQty)
@@ -2134,12 +2129,14 @@ namespace BSLDaman.DAL
             var obj = new clsBundleCompile();
             try
             {
+                string[] arrSubSection = objReq.SubSection.Split(',');
+
                 if (Con.State == ConnectionState.Broken)
                 { Con.Close(); }
                 if (Con.State == ConnectionState.Closed)
                 { Con.Open(); }
 
-                string strSql = "SELECT LayID, BundleNo, SubSection, StyleCode, OrderNo,";
+                string strSql = "SELECT BundleNo, SubSection, StyleCode, OrderNo, LotNo, PlyFrom, PlyTo, SizeName, LayID,";
                 strSql = strSql + " CreatedBy, FORMAT(CreatedOn, 'dd-MMM-yyy') AS CreatedOn FROM BundleCompile WHERE 1=1";
                 if (!String.IsNullOrWhiteSpace(objReq.StyleCode))
                 {
@@ -2152,6 +2149,11 @@ namespace BSLDaman.DAL
                 if (objReq.LayID != 0 && objReq.LayID != null)
                 {
                     strSql = strSql + " AND LayID = @LayID ";
+                }
+                if (!String.IsNullOrWhiteSpace(objReq.SubSection))
+                {
+                   // strSql = strSql + " AND SubSection IN (@SubSection) ";
+                    strSql = strSql + " AND SubSection IN (" + objReq.SubSection + ") ";
                 }
 
                 strSql = strSql + " ORDER BY LayID, BundleNo, SubSection ASC ";
@@ -2170,6 +2172,10 @@ namespace BSLDaman.DAL
                 {
                     cmd.Parameters.AddWithValue("@LayID", objReq.LayID);
                 }
+                //if (!String.IsNullOrWhiteSpace(objReq.SubSection))
+                //{
+                //    cmd.Parameters.AddWithValue("@SubSection",  objReq.SubSection);
+                //}
 
                 SqlDataAdapter da = new SqlDataAdapter(cmd);
                 DataSet ds = new DataSet();
@@ -2180,12 +2186,16 @@ namespace BSLDaman.DAL
                     while (ds.Tables[0].Rows.Count > i)
                     {
                         obj = new clsBundleCompile();
-                        obj.LayID = Convert.ToInt64(ds.Tables[0].Rows[i]["LayID"]);
                         obj.BundleNo = Convert.ToInt32(ds.Tables[0].Rows[i]["BundleNo"]);
-                        //obj.LotNo = Convert.ToInt32(ds.Tables[0].Rows[i]["LotNo"]);
                         obj.SubSection = Convert.ToString(ds.Tables[0].Rows[i]["SubSection"]);
                         obj.StyleCode = Convert.ToString(ds.Tables[0].Rows[i]["StyleCode"]);
                         obj.OrderNo = Convert.ToString(ds.Tables[0].Rows[i]["OrderNo"]);
+                        obj.LotNo = Convert.ToInt32(ds.Tables[0].Rows[i]["LotNo"]);
+                        obj.PlyFrom = Convert.ToInt32(ds.Tables[0].Rows[i]["PlyFrom"]);
+                        obj.PlyTo = Convert.ToInt32(ds.Tables[0].Rows[i]["PlyTo"]);
+                        obj.SizeName = Convert.ToString(ds.Tables[0].Rows[i]["SizeName"]);
+                        obj.LayID = Convert.ToInt32(ds.Tables[0].Rows[i]["LayID"]);
+                        
                         obj.CreatedBy = Convert.ToInt32(ds.Tables[0].Rows[i]["CreatedBy"]);
                         obj.CreatedOn = Convert.ToString(ds.Tables[0].Rows[i]["CreatedOn"]);
                         obj.vErrorCode = 200;
