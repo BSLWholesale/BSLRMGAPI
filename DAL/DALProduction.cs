@@ -2014,7 +2014,7 @@ namespace BSLDaman.DAL
             catch (Exception exp)
             {
                 obj.vErrorCode = 500;
-                Logger.WriteLog("Function Name : Fn_Get_Bundle_Compile", " " + "Error Msg : " + exp.Message.ToString(), new StackTrace(exp, true));
+                Logger.WriteLog("Function Name : Fn_Get_Subsection_List", " " + "Error Msg : " + exp.Message.ToString(), new StackTrace(exp, true));
                 obj.vErrorMsg = exp.Message.ToString();
                 objResp.Add(obj);
             }
