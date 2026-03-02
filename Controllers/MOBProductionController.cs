@@ -117,5 +117,16 @@ namespace BSLDaman.Controllers
         }
 
 
+
+        [System.Web.Http.HttpPut]
+        [System.Web.Http.Route("api/MOBProduction/Fn_Update_AppEmpEndBundleIDStatus")]
+        public clsBundleCompile Fn_Update_AppEmpEndBundleIDStatus(clsBundleCompile objReq)
+        {
+            var objResp = new clsBundleCompile();
+            objResp = _MOBDALProduction.Fn_Update_AppEmpEndBundleIDStatus(objReq);
+            return objResp;
+        }
+
+
     }
 }
