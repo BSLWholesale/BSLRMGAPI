@@ -695,7 +695,7 @@ namespace BSLDaman.DAL
                     else
                     {
                         objResp.vErrorCode = 400;
-                        objResp.vErrorMsg = "App Employee Bundle ID In Process Status updation failed.";
+                        objResp.vErrorMsg = "App Employee Bundle ID Status updation failed.";
                     }
                 }                
             }
