@@ -685,17 +685,18 @@ namespace BSLDaman.DAL
                     cmd.Parameters.AddWithValue("@BundleID", objReq.BundleID);
                     cmd.Parameters.AddWithValue("@QueryType", "UpdateAppEmpStartBundleIDStatus");
 
-                    int i = 0;
-                    i = cmd.ExecuteNonQuery();
-                    if (i > 0)
+                    using (SqlDataReader dr = cmd.ExecuteReader())
                     {
-                        objResp.vErrorCode = 200;
-                        objResp.vErrorMsg = "Success";
-                    }
-                    else
-                    {
-                        objResp.vErrorCode = 400;
-                        objResp.vErrorMsg = "App Employee Bundle ID Status updation failed.";
+                        if (dr.Read())
+                        {
+                            objResp.vErrorCode = Convert.ToInt32(dr["ErrorCode"]);
+                            objResp.vErrorMsg = dr["ErrorMessage"].ToString();
+                        }
+                        else
+                        {
+                            objResp.vErrorCode = 400;
+                            objResp.vErrorMsg = "Supervisor needs to assigned the Bundle ID to Worker/Employee.";
+                        }
                     }
                 }                
             }
