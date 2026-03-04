@@ -1550,6 +1550,7 @@ namespace BSLDaman.DAL
                                         cmd.Parameters.AddWithValue("@StyleCode", objReq.StyleCode);
                                         cmd.Parameters.AddWithValue("@OrderNo", objReq.OrderNo);
                                         cmd.Parameters.AddWithValue("@CreatedBy", objReq.CreatedBy);
+                                        cmd.Parameters.AddWithValue("@BundleQty", objReq.BunleQty);
                                         cmd.Parameters.AddWithValue("@QueryType", "InsertBundleCompile");
 
                                         int result = cmd.ExecuteNonQuery();
@@ -1617,6 +1618,7 @@ namespace BSLDaman.DAL
                                             cmd.Parameters.AddWithValue("@StyleCode", objReq.StyleCode);
                                             cmd.Parameters.AddWithValue("@OrderNo", objReq.OrderNo);
                                             cmd.Parameters.AddWithValue("@CreatedBy", objReq.CreatedBy);
+                                            cmd.Parameters.AddWithValue("@BundleQty", objReq.BunleQty);
                                             cmd.Parameters.AddWithValue("@QueryType", "InsertBundleCompile");
 
                                             int result = cmd.ExecuteNonQuery();
@@ -1723,7 +1725,7 @@ namespace BSLDaman.DAL
                 { Con.Open(); }
 
                 string strSql = "SELECT BundleID, LayID, BundleNo, SizeName, ColorName, ShadeName,";
-                strSql = strSql + " Qty, PlyFrom, PlyTo, LotNo, SubSection, Dispatch, StyleCode, OrderNo,";
+                strSql = strSql + " Qty, PlyFrom, PlyTo, LotNo, SubSection, Dispatch, StyleCode, OrderNo, BundleQty,";
                 strSql = strSql + " CreatedBy, FORMAT(CreatedOn, 'dd-MMM-yyy') AS CreatedOn FROM BundleCompile WHERE 1=1";
                 if (!String.IsNullOrWhiteSpace(objReq.StyleCode))
                 {
@@ -1788,6 +1790,11 @@ namespace BSLDaman.DAL
                         obj.OrderNo = Convert.ToString(ds.Tables[0].Rows[i]["OrderNo"]);
                         obj.CreatedBy = Convert.ToInt32(ds.Tables[0].Rows[i]["CreatedBy"]);
                         obj.CreatedOn = Convert.ToString(ds.Tables[0].Rows[i]["CreatedOn"]);
+                        string strBundleQty = Convert.ToString(ds.Tables[0].Rows[i]["BundleQty"]);
+                        if (strBundleQty != "")
+                        {
+                            obj.BunleQty = Convert.ToInt32(ds.Tables[0].Rows[i]["BundleQty"]);
+                        }
                         obj.vErrorCode = 200;
                         obj.vErrorMsg = "Success";
                         objResp.Add(obj);
