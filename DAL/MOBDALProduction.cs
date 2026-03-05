@@ -770,6 +770,134 @@ namespace BSLDaman.DAL
         }
 
 
+        public List<clsLine> Fn_Get_ActiveLineDetails(clsLine objReq)
+        {
+            var objResp = new List<clsLine>();
+            var obj = new clsLine();
+            try
+            {
+                if (Con.State == ConnectionState.Broken)
+                { Con.Close(); }
+                if (Con.State == ConnectionState.Closed)
+                { Con.Open(); }
+
+                string strSql = "SELECT LineId, SeqNo, LineCode, LineName, SuperVisor, SectionName, SuperMarketCode,";
+                strSql = strSql + " DivisionID, LineStatus FROM LineMaster WHERE 1=1 AND LineStatus = 'Active'";
+
+                if (objReq.LineId != 0 && objReq.LineId != null)
+                {
+                    strSql = strSql + " AND LineId = @LineId";
+                }
+
+                SqlCommand cmd = new SqlCommand(strSql, Con);
+                cmd.CommandType = CommandType.Text;
+
+                if (objReq.LineId != 0 && objReq.LineId != null)
+                {
+                    cmd.Parameters.AddWithValue("@LineId", objReq.LineId);
+                }
+
+                SqlDataAdapter da = new SqlDataAdapter(cmd);
+                DataSet ds = new DataSet();
+                da.Fill(ds);
+                int i = 0;
+
+                if (ds.Tables[0].Rows.Count > 0)
+                {
+                    while (ds.Tables[0].Rows.Count > i)
+                    {
+                        obj = new clsLine();
+                        obj.LineId = Convert.ToInt64(ds.Tables[0].Rows[i]["LineId"]);
+                        obj.SeqNo = Convert.ToInt32(ds.Tables[0].Rows[i]["SeqNo"]);
+                        obj.LineCode = Convert.ToString(ds.Tables[0].Rows[i]["LineCode"]);
+                        obj.LineName = Convert.ToString(ds.Tables[0].Rows[i]["LineName"]);
+                        obj.SuperVisor = Convert.ToString(ds.Tables[0].Rows[i]["SuperVisor"]);
+                        obj.SectionName = Convert.ToString(ds.Tables[0].Rows[i]["SectionName"]);
+                        obj.SuperMarketCode = Convert.ToInt32(ds.Tables[0].Rows[i]["SuperMarketCode"]);
+                        obj.DivisionID = Convert.ToInt64(ds.Tables[0].Rows[i]["DivisionID"]);
+                        obj.LineStatus = Convert.ToString(ds.Tables[0].Rows[i]["LineStatus"]);
+
+                        obj.vErrorCode = 200;
+                        obj.vErrorMsg = "Success";
+                        objResp.Add(obj);
+                        i++;
+                    }
+                }
+                else
+                {
+                    obj.vErrorCode = 404;
+                    obj.vErrorMsg = "No Line Records are found.";
+                    objResp.Add(obj);
+                }
+            }
+            catch (Exception exp)
+            {
+                obj.vErrorCode = 500;
+                Logger.WriteLog("Function Name : Fn_Get_ActiveLineDetails", " " + "Error Msg : " + exp.Message.ToString(), new StackTrace(exp, true));
+                obj.vErrorMsg = exp.Message.ToString();
+                objResp.Add(obj);
+            }
+            finally
+            {
+                Con.Close();
+            }
+            return objResp;
+        }
+
+
+        //public List<clsLine> Fn_Get_ActiveLineCount(clsLine objReq)
+        //{
+        //    var objResp = new List<clsLine>();
+        //    try
+        //    {
+        //        if (Con.State == ConnectionState.Broken)
+        //        { Con.Close(); }
+        //        if (Con.State == ConnectionState.Closed)
+        //        { Con.Open(); }
+
+        //        SqlCommand cmd = new SqlCommand("USP_MobileLinesApp", Con);
+        //        cmd.CommandType = CommandType.StoredProcedure;
+        //        cmd.Parameters.AddWithValue("@QueryType", "GetLineCounts");
+        //        SqlDataAdapter da = new SqlDataAdapter(cmd);
+        //        DataSet ds = new DataSet();
+        //        da.Fill(ds);
+
+        //        int i = 0;
+        //        if (ds.Tables[0].Rows.Count > 0)
+        //        {
+        //            while (ds.Tables[0].Rows.Count > i)
+        //            {
+        //                var objItem = new clsLine();
+        //                objItem.LineCount = Convert.ToInt64(ds.Tables[0].Rows[i]["LineCount"]);
+        //                objItem.LineStatus = Convert.ToString(ds.Tables[0].Rows[i]["LineStatus"]);
+        //                objItem.vErrorMsg = "Success";
+        //                objItem.vErrorCode = 200;
+        //                objResp.Add(objItem);
+        //                i++;
+        //            }
+        //        }
+        //        else
+        //        {
+        //            var objItem = new clsLine();
+        //            objItem.vErrorMsg = "No Line Counts Found";
+        //            objResp.Add(objItem);
+        //        }
+        //    }
+        //    catch (Exception exp)
+        //    {
+        //        var objItem = new clsLine();
+        //        objItem.vErrorCode = 500;
+        //        Logger.WriteLog("Function Name : Fn_Get_ActiveLineCount", " " + "Error Msg : " + exp.Message.ToString(), new StackTrace(exp, true));
+        //        objItem.vErrorMsg = exp.Message.ToString();
+        //        objResp.Add(objItem);
+        //    }
+        //    finally
+        //    {
+        //        Con.Close();
+        //    }
+        //    return objResp;
+        //}
+
 
     }
 }
