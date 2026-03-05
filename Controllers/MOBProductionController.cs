@@ -128,5 +128,25 @@ namespace BSLDaman.Controllers
         }
 
 
+        [System.Web.Http.HttpGet]
+        [System.Web.Http.Route("api/MOBProduction/Fn_Get_ActiveLineDetails")]
+        public List<clsLine> Fn_Get_ActiveLineDetails(clsLine objReq)
+        {
+            var objResp = new List<clsLine>();
+            objResp = _MOBDALProduction.Fn_Get_ActiveLineDetails(objReq);
+            return objResp;
+        }
+
+
+        //[System.Web.Http.HttpGet]
+        //[System.Web.Http.Route("api/MOBProduction/Fn_Get_ActiveLineCount")]
+        //public List<clsLine> Fn_Get_ActiveLineCount(clsLine objReq)
+        //{
+        //    var objResp = new List<clsLine>();
+        //    objResp = _MOBDALProduction.Fn_Get_ActiveLineCount(objReq);
+        //    return objResp;
+        //}
+
+
     }
 }
