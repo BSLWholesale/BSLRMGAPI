@@ -59,6 +59,7 @@ namespace BSLDaman.Models
         public string LineStatus { get; set; }
         public string ShiftTiming { get; set; }
         public string AssignOperator { get; set; }
+        public Int64 LineCount { get; set; }
         public string vErrorMsg { get; set; }
         public int vErrorCode { get; set; }
     }
