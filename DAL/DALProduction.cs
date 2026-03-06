@@ -1471,16 +1471,28 @@ namespace BSLDaman.DAL
                     int Plies = objReq.CompileQty / NumOfSize;
                     int lastQty = Plies % objReq.BunleQty;
                     float TotalBundle = Plies / objReq.BunleQty;
-                    TotalBundle = TotalBundle + mxBundleNo;
+                    int secondLastBundle = 0;
+                    TotalBundle = TotalBundle + mxBundleNo;                   
                     int bundleStart = 0;
                     bundleStart = bundleStart + Convert.ToInt32(mxBundleNo);
 
                     while (bundleStart <= TotalBundle)
                     {
+                        secondLastBundle = Convert.ToInt32(TotalBundle) - 1;
                         if (bundleStart == TotalBundle)
-                        {
+                        {                           
                             objReq.Qty = lastQty;
                             objReq.BunleQty = lastQty;
+                        }
+                        if (bundleStart == secondLastBundle && lastQty <= 5)
+                        {
+                            float remainingQty = objReq.BunleQty + lastQty;
+
+                            int secondlastQty = (int)(remainingQty / 2);
+                            int lastQtyNew = (int)remainingQty - secondlastQty;
+                            objReq.Qty = secondlastQty;
+                            lastQty = lastQtyNew;
+
                         }
                         else
                         {
