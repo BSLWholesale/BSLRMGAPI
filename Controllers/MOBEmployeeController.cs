@@ -95,5 +95,24 @@ namespace BSLDaman.Controllers
         }
 
 
+        [System.Web.Http.HttpGet]
+        [System.Web.Http.Route("api/MOBEmployee/Fn_Get_All_OperatorDetails")]
+        public List<clsMOBEmployee> Fn_Get_All_OperatorDetails(clsMOBEmployee objReq)
+        {
+            var objResp = new List<clsMOBEmployee>();
+            objResp = _MOBDALEmployee.Fn_Get_All_OperatorDetails(objReq);
+            return objResp;
+        }
+
+
+        [System.Web.Http.HttpGet]
+        [System.Web.Http.Route("api/MOBEmployee/Fn_Get_OperatorCount")]
+        public List<clsMOBEmployee> Fn_Get_OperatorCount(clsMOBEmployee objReq)
+        {
+            var objResp = new List<clsMOBEmployee>();
+            objResp = _MOBDALEmployee.Fn_Get_OperatorCount(objReq);
+            return objResp;
+        }
+
     }
 }
