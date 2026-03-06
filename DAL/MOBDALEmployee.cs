@@ -406,6 +406,9 @@ namespace BSLDaman.DAL
 
                         objResp.nEmpId = Convert.ToInt64(ds.Tables[0].Rows[i]["EmpId"]);
                         objResp.vEmpName = Convert.ToString(ds.Tables[0].Rows[i]["EmpName"]);
+                        objResp.EmpGender = Convert.ToString(ds.Tables[0].Rows[i]["EmpGender"]);
+                        objResp.vEmpMobile = Convert.ToString(ds.Tables[0].Rows[i]["EmpMobile"]);
+                        objResp.vEmpGrade = Convert.ToString(ds.Tables[0].Rows[i]["EmpGrade"]);
                         objResp.EmpRole = Convert.ToString(ds.Tables[0].Rows[i]["EmpRole"]);
                         objResp.EmpLocation = Convert.ToString(ds.Tables[0].Rows[i]["EmpLocation"]);
                         objResp.IsActive = Convert.ToBoolean(ds.Tables[0].Rows[i]["IsActive"]);
@@ -466,6 +469,9 @@ namespace BSLDaman.DAL
                         objResp = new clsMOBEmployee();
                         objResp.nEmpId = Convert.ToInt64(ds.Tables[0].Rows[i]["EmpId"]);
                         objResp.vEmpName = Convert.ToString(ds.Tables[0].Rows[i]["EmpName"]);
+                        objResp.EmpGender = Convert.ToString(ds.Tables[0].Rows[i]["EmpGender"]);
+                        objResp.vEmpMobile = Convert.ToString(ds.Tables[0].Rows[i]["EmpMobile"]);
+                        objResp.vEmpGrade = Convert.ToString(ds.Tables[0].Rows[i]["EmpGrade"]);
                         objResp.EmpRole = Convert.ToString(ds.Tables[0].Rows[i]["EmpRole"]);
                         objResp.EmpLocation = Convert.ToString(ds.Tables[0].Rows[i]["EmpLocation"]);
                         objResp.IsActive = Convert.ToBoolean(ds.Tables[0].Rows[i]["IsActive"]);
