@@ -427,6 +427,8 @@ namespace BSLDaman.Models
         public string DeviceId { get; set; }
         public string TokenId { get; set; }
         public bool IsActive { get; set; }
+        public Int64 EmpOperatorCount { get; set; }
+        public string EmpOperatorStatus { get; set; }
         public string vErrorMsg { get; set; }
         public int vErrorCode { get; set; }
 
