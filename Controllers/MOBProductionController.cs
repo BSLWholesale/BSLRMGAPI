@@ -130,10 +130,20 @@ namespace BSLDaman.Controllers
 
         [System.Web.Http.HttpGet]
         [System.Web.Http.Route("api/MOBProduction/Fn_Get_ActiveLineDetails")]
-        public List<clsLine> Fn_Get_ActiveLineDetails(clsLine objReq)
+        public List<clsLine> Fn_Get_ActiveLineDetails(Int64? LineId = null)
         {
-            var objResp = new List<clsLine>();
-            objResp = _MOBDALProduction.Fn_Get_ActiveLineDetails(objReq);
+            clsLine objReq = new clsLine();
+
+            if (LineId.HasValue)
+            {
+                objReq.LineId = LineId.Value;
+            }
+            else
+            {
+                objReq.LineId = 0;
+            }
+
+            var objResp = _MOBDALProduction.Fn_Get_ActiveLineDetails(objReq);
             return objResp;
         }
 
