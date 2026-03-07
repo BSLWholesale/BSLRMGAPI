@@ -784,7 +784,7 @@ namespace BSLDaman.DAL
                 string strSql = "SELECT LineId, SeqNo, LineCode, LineName, SuperVisor, SectionName, SuperMarketCode,";
                 strSql = strSql + " DivisionID, LineStatus FROM LineMaster WHERE 1=1 AND LineStatus = 'Active'";
 
-                if (objReq.LineId != 0 && objReq.LineId != null)
+                if (objReq.LineId > 0)
                 {
                     strSql = strSql + " AND LineId = @LineId";
                 }
@@ -792,7 +792,7 @@ namespace BSLDaman.DAL
                 SqlCommand cmd = new SqlCommand(strSql, Con);
                 cmd.CommandType = CommandType.Text;
 
-                if (objReq.LineId != 0 && objReq.LineId != null)
+                if (objReq.LineId > 0)
                 {
                     cmd.Parameters.AddWithValue("@LineId", objReq.LineId);
                 }
