@@ -31,6 +31,10 @@ namespace BSLDaman.DAL
                 strSql = strSql + " Qty, PlyTo, PlyFrom, LotNo, SubSection, Dispatch, StyleCode, OrderNo ";
                 strSql = strSql + " FROM BundleCompile WHERE 1=1";
 
+                if (objReq.BundleID > 0)
+                {
+                    strSql = strSql + " AND BundleID = @BundleID";
+                }
                 if (!String.IsNullOrWhiteSpace(objReq.StyleCode))
                 {
                     strSql = strSql + " AND StyleCode = @StyleCode";
@@ -38,10 +42,6 @@ namespace BSLDaman.DAL
                 if (!String.IsNullOrWhiteSpace(objReq.OrderNo))
                 {
                     strSql = strSql + " AND OrderNo = @OrderNo";
-                }
-                if (objReq.BundleID != 0 && objReq.BundleID != null)
-                {
-                    strSql = strSql + " AND BundleID = @BundleID";
                 }
                 if (objReq.LayID != 0 && objReq.LayID != null)
                 {
@@ -53,6 +53,10 @@ namespace BSLDaman.DAL
                 SqlCommand cmd = new SqlCommand(strSql, Con);
                 cmd.CommandType = CommandType.Text;
 
+                if (objReq.BundleID > 0)
+                {
+                    cmd.Parameters.AddWithValue("@BundleID", objReq.BundleID);
+                }
                 if (!String.IsNullOrWhiteSpace(objReq.StyleCode))
                 {
                     cmd.Parameters.AddWithValue("@StyleCode", objReq.StyleCode);
@@ -60,10 +64,6 @@ namespace BSLDaman.DAL
                 if (!String.IsNullOrWhiteSpace(objReq.OrderNo))
                 {
                     cmd.Parameters.AddWithValue("@OrderNo", objReq.OrderNo);
-                }
-                if (objReq.BundleID != 0 && objReq.BundleID != null)
-                {
-                    cmd.Parameters.AddWithValue("@BundleID", objReq.BundleID);
                 }
                 if (objReq.LayID != 0 && objReq.LayID != null)
                 {
@@ -185,7 +185,7 @@ namespace BSLDaman.DAL
                 strSql = strSql + " Rate, Product, Skill, Grade, Folder, Seamlength, IsDirect, MID";
                 strSql = strSql + " FROM OperationBreackDown WHERE 1=1";
 
-                if (objReq.OpNo != 0 && objReq.OpNo != null)
+                if (objReq.OpNo > 0)
                 {
                     strSql = strSql + " AND OpNo = @OpNo";
                 }
@@ -193,7 +193,7 @@ namespace BSLDaman.DAL
                 SqlCommand cmd = new SqlCommand(strSql, Con);
                 cmd.CommandType = CommandType.Text;
 
-                if (objReq.OpNo != 0 && objReq.OpNo != null)
+                if (objReq.OpNo > 0)
                 {
                     cmd.Parameters.AddWithValue("@OpNo", objReq.OpNo);
                 }
@@ -265,7 +265,7 @@ namespace BSLDaman.DAL
                 string strSql = "SELECT MachineLogId, MachineLogName, CreatedBy, FORMAT(CreatedOn, 'dd-MMM-yyyy') AS CreatedOn";
                 strSql = strSql + " FROM MachineLogMaster WHERE 1=1";
 
-                if (objReq.MachineLogId != 0 && objReq.MachineLogId != null)
+                if (objReq.MachineLogId > 0)
                 {
                     strSql = strSql + " AND MachineLogId = @MachineLogId";
                 }
@@ -277,7 +277,7 @@ namespace BSLDaman.DAL
                 SqlCommand cmd = new SqlCommand(strSql, Con);
                 cmd.CommandType = CommandType.Text;
 
-                if (objReq.MachineLogId != 0 && objReq.MachineLogId != null)
+                if (objReq.MachineLogId > 0)
                 {
                     cmd.Parameters.AddWithValue("@MachineLogId", objReq.MachineLogId);
                 }
@@ -464,7 +464,7 @@ namespace BSLDaman.DAL
                 strSql = strSql + " MachineStatus, Needle, Oiling, CreatedBy, FORMAT(CreatedOn, 'dd-MMM-yyyy') AS CreatedOn";
                 strSql = strSql + " FROM MachineLogLostTimeTransactions WHERE 1=1";
 
-                if (objReq.ID != 0 && objReq.ID != null)
+                if (objReq.ID > 0)
                 {
                     strSql = strSql + " AND ID = @ID";
                 }
@@ -472,7 +472,7 @@ namespace BSLDaman.DAL
                 SqlCommand cmd = new SqlCommand(strSql, Con);
                 cmd.CommandType = CommandType.Text;
 
-                if (objReq.ID != 0 && objReq.ID != null)
+                if (objReq.ID > 0)
                 {
                     cmd.Parameters.AddWithValue("@ID", objReq.ID);
                 }
@@ -845,58 +845,58 @@ namespace BSLDaman.DAL
         }
 
 
-        //public List<clsLine> Fn_Get_ActiveLineCount(clsLine objReq)
-        //{
-        //    var objResp = new List<clsLine>();
-        //    try
-        //    {
-        //        if (Con.State == ConnectionState.Broken)
-        //        { Con.Close(); }
-        //        if (Con.State == ConnectionState.Closed)
-        //        { Con.Open(); }
+        public List<clsLine> Fn_Get_ActiveLineCount(clsLine objReq)
+        {
+            var objResp = new List<clsLine>();
+            try
+            {
+                if (Con.State == ConnectionState.Broken)
+                { Con.Close(); }
+                if (Con.State == ConnectionState.Closed)
+                { Con.Open(); }
 
-        //        SqlCommand cmd = new SqlCommand("USP_MobileLinesApp", Con);
-        //        cmd.CommandType = CommandType.StoredProcedure;
-        //        cmd.Parameters.AddWithValue("@QueryType", "GetLineCounts");
-        //        SqlDataAdapter da = new SqlDataAdapter(cmd);
-        //        DataSet ds = new DataSet();
-        //        da.Fill(ds);
+                SqlCommand cmd = new SqlCommand("USP_MobileLinesApp", Con);
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@QueryType", "GetLineCounts");
+                SqlDataAdapter da = new SqlDataAdapter(cmd);
+                DataSet ds = new DataSet();
+                da.Fill(ds);
 
-        //        int i = 0;
-        //        if (ds.Tables[0].Rows.Count > 0)
-        //        {
-        //            while (ds.Tables[0].Rows.Count > i)
-        //            {
-        //                var objItem = new clsLine();
-        //                objItem.LineCount = Convert.ToInt64(ds.Tables[0].Rows[i]["LineCount"]);
-        //                objItem.LineStatus = Convert.ToString(ds.Tables[0].Rows[i]["LineStatus"]);
-        //                objItem.vErrorMsg = "Success";
-        //                objItem.vErrorCode = 200;
-        //                objResp.Add(objItem);
-        //                i++;
-        //            }
-        //        }
-        //        else
-        //        {
-        //            var objItem = new clsLine();
-        //            objItem.vErrorMsg = "No Line Counts Found";
-        //            objResp.Add(objItem);
-        //        }
-        //    }
-        //    catch (Exception exp)
-        //    {
-        //        var objItem = new clsLine();
-        //        objItem.vErrorCode = 500;
-        //        Logger.WriteLog("Function Name : Fn_Get_ActiveLineCount", " " + "Error Msg : " + exp.Message.ToString(), new StackTrace(exp, true));
-        //        objItem.vErrorMsg = exp.Message.ToString();
-        //        objResp.Add(objItem);
-        //    }
-        //    finally
-        //    {
-        //        Con.Close();
-        //    }
-        //    return objResp;
-        //}
+                int i = 0;
+                if (ds.Tables[0].Rows.Count > 0)
+                {
+                    while (ds.Tables[0].Rows.Count > i)
+                    {
+                        var objItem = new clsLine();
+                        objItem.LineCount = Convert.ToInt64(ds.Tables[0].Rows[i]["LineCount"]);
+                        objItem.LineStatus = Convert.ToString(ds.Tables[0].Rows[i]["LineStatus"]);
+                        objItem.vErrorMsg = "Success";
+                        objItem.vErrorCode = 200;
+                        objResp.Add(objItem);
+                        i++;
+                    }
+                }
+                else
+                {
+                    var objItem = new clsLine();
+                    objItem.vErrorMsg = "No Line Counts Found";
+                    objResp.Add(objItem);
+                }
+            }
+            catch (Exception exp)
+            {
+                var objItem = new clsLine();
+                objItem.vErrorCode = 500;
+                Logger.WriteLog("Function Name : Fn_Get_ActiveLineCount", " " + "Error Msg : " + exp.Message.ToString(), new StackTrace(exp, true));
+                objItem.vErrorMsg = exp.Message.ToString();
+                objResp.Add(objItem);
+            }
+            finally
+            {
+                Con.Close();
+            }
+            return objResp;
+        }
 
 
     }
