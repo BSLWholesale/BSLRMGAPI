@@ -19,10 +19,20 @@ namespace BSLDaman.Controllers
 
         [System.Web.Http.HttpGet]
         [System.Web.Http.Route("api/MOBProduction/Fn_Get_ActiveBundle")]
-        public List<clsBundleCompile> Fn_Get_ActiveBundle(clsBundleCompile objReq)
+        public List<clsBundleCompile> Fn_Get_ActiveBundle(Int64? BundleID = null)
         {
-            var objResp = new List<clsBundleCompile>();
-            objResp = _MOBDALProduction.Fn_Get_ActiveBundle(objReq);
+            clsBundleCompile objReq = new clsBundleCompile();
+
+            if (BundleID.HasValue)
+            {
+                objReq.BundleID = BundleID.Value;
+            }
+            else
+            {
+                objReq.BundleID = 0;
+            }
+
+            var objResp = _MOBDALProduction.Fn_Get_ActiveBundle(objReq);
             return objResp;
         }
 
@@ -39,20 +49,40 @@ namespace BSLDaman.Controllers
 
         [System.Web.Http.HttpGet]
         [System.Web.Http.Route("api/MOBProduction/Fn_Get_OperationNumber")]
-        public List<clsOPBreackDownDetail> Fn_Get_OperationNumber(clsOPBreackDownDetail objReq)
+        public List<clsOPBreackDownDetail> Fn_Get_OperationNumber(int? OpNo = null)
         {
-            var objResp = new List<clsOPBreackDownDetail>();
-            objResp = _MOBDALProduction.Fn_Get_OperationNumber(objReq);
+            clsOPBreackDownDetail objReq = new clsOPBreackDownDetail();
+
+            if (OpNo.HasValue)
+            {
+                objReq.OpNo = OpNo.Value;
+            }
+            else
+            {
+                objReq.OpNo = 0;
+            }
+
+            var objResp = _MOBDALProduction.Fn_Get_OperationNumber(objReq);
             return objResp;
         }
 
 
         [System.Web.Http.HttpGet]
         [System.Web.Http.Route("api/MOBProduction/Fn_Get_MachineLogMaster")]
-        public List<clsMachineLogMaster> Fn_Get_MachineLogMaster(clsMachineLogMaster objReq)
+        public List<clsMachineLogMaster> Fn_Get_MachineLogMaster(int? MachineLogId = null)
         {
-            var objResp = new List<clsMachineLogMaster>();
-            objResp = _MOBDALProduction.Fn_Get_MachineLogMaster(objReq);
+            clsMachineLogMaster objReq = new clsMachineLogMaster();
+
+            if (MachineLogId.HasValue)
+            {
+                objReq.MachineLogId = MachineLogId.Value;
+            }
+            else
+            {
+                objReq.MachineLogId = 0;
+            }
+
+            var objResp = _MOBDALProduction.Fn_Get_MachineLogMaster(objReq);
             return objResp;
         }
 
@@ -79,10 +109,20 @@ namespace BSLDaman.Controllers
 
         [System.Web.Http.HttpGet]
         [System.Web.Http.Route("api/MOBProduction/Fn_Get_All_MachineLogTransactions")]
-        public List<clsMachineLogLostTimeTransactions> Fn_Get_All_MachineLogTransactions(clsMachineLogLostTimeTransactions objReq)
+        public List<clsMachineLogLostTimeTransactions> Fn_Get_All_MachineLogTransactions(Int64? ID = null)
         {
-            var objResp = new List<clsMachineLogLostTimeTransactions>();
-            objResp = _MOBDALProduction.Fn_Get_All_MachineLogTransactions(objReq);
+            clsMachineLogLostTimeTransactions objReq = new clsMachineLogLostTimeTransactions();
+
+            if (ID.HasValue)
+            {
+                objReq.ID = ID.Value;
+            }
+            else
+            {
+                objReq.ID = 0;
+            }
+
+            var objResp = _MOBDALProduction.Fn_Get_All_MachineLogTransactions(objReq);
             return objResp;
         }
 
@@ -148,14 +188,14 @@ namespace BSLDaman.Controllers
         }
 
 
-        //[System.Web.Http.HttpGet]
-        //[System.Web.Http.Route("api/MOBProduction/Fn_Get_ActiveLineCount")]
-        //public List<clsLine> Fn_Get_ActiveLineCount(clsLine objReq)
-        //{
-        //    var objResp = new List<clsLine>();
-        //    objResp = _MOBDALProduction.Fn_Get_ActiveLineCount(objReq);
-        //    return objResp;
-        //}
+        [System.Web.Http.HttpGet]
+        [System.Web.Http.Route("api/MOBProduction/Fn_Get_ActiveLineCount")]
+        public List<clsLine> Fn_Get_ActiveLineCount(clsLine objReq)
+        {
+            var objResp = new List<clsLine>();
+            objResp = _MOBDALProduction.Fn_Get_ActiveLineCount(objReq);
+            return objResp;
+        }
 
 
     }
