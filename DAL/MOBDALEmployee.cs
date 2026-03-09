@@ -441,11 +441,10 @@ namespace BSLDaman.DAL
         }
 
 
-
         public List<clsMOBEmployee> Fn_Get_All_OperatorDetails(clsMOBEmployee objReq)
         {
-            var objRespList = new List<clsMOBEmployee>();
-            var objResp = new clsMOBEmployee();
+            var objResp = new List<clsMOBEmployee>();
+            var obj = new clsMOBEmployee();
             try
             {
                 if (Con.State == ConnectionState.Broken)
@@ -453,54 +452,66 @@ namespace BSLDaman.DAL
                 if (Con.State == ConnectionState.Closed)
                 { Con.Open(); }
 
-                SqlCommand cmd = new SqlCommand("USP_EmployeeMob", Con);
-                cmd.CommandType = CommandType.StoredProcedure;
-                cmd.Parameters.AddWithValue("@QueryType", "SelectAllOperators");
+                string strSql = "SELECT EmpId, EmpName, EmpGender, EmpMobile, EmpGrade, EmpRole, EmpLocation,";
+                strSql = strSql + " IsActive FROM EmployeeMaster WHERE 1=1 AND EmpRole = 'Operator' AND IsActive = 1";
+
+                if (objReq.nEmpId > 0)
+                {
+                    strSql = strSql + " AND EmpId = @EmpId";
+                }
+
+                SqlCommand cmd = new SqlCommand(strSql, Con);
+                cmd.CommandType = CommandType.Text;
+
+                if (objReq.nEmpId > 0)
+                {
+                    cmd.Parameters.AddWithValue("@EmpId", objReq.nEmpId);
+                }
 
                 SqlDataAdapter da = new SqlDataAdapter(cmd);
                 DataSet ds = new DataSet();
                 da.Fill(ds);
-
                 int i = 0;
+
                 if (ds.Tables[0].Rows.Count > 0)
                 {
                     while (ds.Tables[0].Rows.Count > i)
                     {
-                        objResp = new clsMOBEmployee();
-                        objResp.nEmpId = Convert.ToInt64(ds.Tables[0].Rows[i]["EmpId"]);
-                        objResp.vEmpName = Convert.ToString(ds.Tables[0].Rows[i]["EmpName"]);
-                        objResp.EmpGender = Convert.ToString(ds.Tables[0].Rows[i]["EmpGender"]);
-                        objResp.vEmpMobile = Convert.ToString(ds.Tables[0].Rows[i]["EmpMobile"]);
-                        objResp.vEmpGrade = Convert.ToString(ds.Tables[0].Rows[i]["EmpGrade"]);
-                        objResp.EmpRole = Convert.ToString(ds.Tables[0].Rows[i]["EmpRole"]);
-                        objResp.EmpLocation = Convert.ToString(ds.Tables[0].Rows[i]["EmpLocation"]);
-                        objResp.IsActive = Convert.ToBoolean(ds.Tables[0].Rows[i]["IsActive"]);
+                        obj = new clsMOBEmployee();
+                        obj.nEmpId = Convert.ToInt64(ds.Tables[0].Rows[i]["EmpId"]);
+                        obj.vEmpName = Convert.ToString(ds.Tables[0].Rows[i]["EmpName"]);
+                        obj.EmpGender = Convert.ToString(ds.Tables[0].Rows[i]["EmpGender"]);
+                        obj.vEmpMobile = Convert.ToString(ds.Tables[0].Rows[i]["EmpMobile"]);
+                        obj.vEmpGrade = Convert.ToString(ds.Tables[0].Rows[i]["EmpGrade"]);
+                        obj.EmpRole = Convert.ToString(ds.Tables[0].Rows[i]["EmpRole"]);
+                        obj.EmpLocation = Convert.ToString(ds.Tables[0].Rows[i]["EmpLocation"]);
+                        obj.IsActive = Convert.ToBoolean(ds.Tables[0].Rows[i]["IsActive"]);
 
-                        objResp.vErrorMsg = "Success";
-                        objResp.vErrorCode = 200;
-                        objRespList.Add(objResp);
+                        obj.vErrorMsg = "Success";
+                        obj.vErrorCode = 200;
+                        objResp.Add(obj);
                         i++;
                     }
                 }
                 else
                 {
-                    objResp.vErrorMsg = "No Operator Records found.";
-                    objRespList.Add(objResp);
-                    objResp.vErrorCode = 300;
+                    obj.vErrorMsg = "No Operator Records found.";
+                    objResp.Add(obj);
+                    obj.vErrorCode = 300;
                 }
             }
             catch (Exception exp)
             {
                 Logger.WriteLog("Function Name : Fn_Get_All_OperatorDetails", " " + "Error Msg : " + exp.Message.ToString(), new StackTrace(exp, true));
-                objResp.vErrorMsg = exp.Message.ToString();
-                objRespList.Add(objResp);
-                objResp.vErrorCode = 500;
+                obj.vErrorMsg = exp.Message.ToString();
+                objResp.Add(obj);
+                obj.vErrorCode = 500;
             }
             finally
             {
                 Con.Close();
             }
-            return objRespList;
+            return objResp;
         }
 
 
