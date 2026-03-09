@@ -97,10 +97,20 @@ namespace BSLDaman.Controllers
 
         [System.Web.Http.HttpGet]
         [System.Web.Http.Route("api/MOBEmployee/Fn_Get_All_OperatorDetails")]
-        public List<clsMOBEmployee> Fn_Get_All_OperatorDetails(clsMOBEmployee objReq)
+        public List<clsMOBEmployee> Fn_Get_All_OperatorDetails(Int64? nEmpId = null)
         {
-            var objResp = new List<clsMOBEmployee>();
-            objResp = _MOBDALEmployee.Fn_Get_All_OperatorDetails(objReq);
+            clsMOBEmployee objReq = new clsMOBEmployee();
+
+            if (nEmpId.HasValue)
+            {
+                objReq.nEmpId = nEmpId.Value;
+            }
+            else
+            {
+                objReq.nEmpId = 0;
+            }
+
+            var objResp = _MOBDALEmployee.Fn_Get_All_OperatorDetails(objReq);
             return objResp;
         }
 
