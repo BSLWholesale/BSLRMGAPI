@@ -124,5 +124,27 @@ namespace BSLDaman.Controllers
             return objResp;
         }
 
+
+        [System.Web.Http.HttpGet]
+        [System.Web.Http.Route("api/MOBEmployee/Fn_Get_All_SupervisorDetails")]
+        public List<clsMOBEmployee> Fn_Get_All_SupervisorDetails(Int64? nEmpId = null)
+        {
+            clsMOBEmployee objReq = new clsMOBEmployee();
+
+            if (nEmpId.HasValue)
+            {
+                objReq.nEmpId = nEmpId.Value;
+            }
+            else
+            {
+                objReq.nEmpId = 0;
+            }
+
+            var objResp = _MOBDALEmployee.Fn_Get_All_SupervisorDetails(objReq);
+            return objResp;
+        }
+
+
+
     }
 }
