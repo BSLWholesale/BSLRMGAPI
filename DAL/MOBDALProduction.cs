@@ -899,5 +899,112 @@ namespace BSLDaman.DAL
         }
 
 
+        public List<clsBundleCompile> Fn_Get_TotalBundleIdCount(clsBundleCompile objReq)
+        {
+            var objResp = new List<clsBundleCompile>();
+            try
+            {
+                if (Con.State == ConnectionState.Broken)
+                { Con.Close(); }
+                if (Con.State == ConnectionState.Closed)
+                { Con.Open(); }
+
+                SqlCommand cmd = new SqlCommand("USP_MobileBundleApp", Con);
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@QueryType", "GetTotalBundleIdCount");
+                SqlDataAdapter da = new SqlDataAdapter(cmd);
+                DataSet ds = new DataSet();
+                da.Fill(ds);
+
+                int i = 0;
+                if (ds.Tables[0].Rows.Count > 0)
+                {
+                    while (ds.Tables[0].Rows.Count > i)
+                    {
+                        var objItem = new clsBundleCompile();
+                        objItem.TotalBundleIdCount = Convert.ToString(ds.Tables[0].Rows[i]["TotalBundleIdCount"]);
+                        objItem.vErrorMsg = "Success";
+                        objItem.vErrorCode = 200;
+                        objResp.Add(objItem);
+                        i++;
+                    }
+                }
+                else
+                {
+                    var objItem = new clsBundleCompile();
+                    objItem.vErrorMsg = "Bundle ID Count not found.";
+                    objResp.Add(objItem);
+                }
+            }
+            catch (Exception exp)
+            {
+                var objItem = new clsBundleCompile();
+                objItem.vErrorCode = 500;
+                Logger.WriteLog("Function Name : Fn_Get_TotalBundleIdCount", " " + "Error Msg : " + exp.Message.ToString(), new StackTrace(exp, true));
+                objItem.vErrorMsg = exp.Message.ToString();
+                objResp.Add(objItem);
+            }
+            finally
+            {
+                Con.Close();
+            }
+            return objResp;
+        }
+
+
+
+        public List<clsMachineLogLostTimeTransactions> Fn_Get_MachineLogLostTimeInDaysHrMin(clsMachineLogLostTimeTransactions objReq)
+        {
+            var objResp = new List<clsMachineLogLostTimeTransactions>();
+            try
+            {
+                if (Con.State == ConnectionState.Broken)
+                { Con.Close(); }
+                if (Con.State == ConnectionState.Closed)
+                { Con.Open(); }
+
+                SqlCommand cmd = new SqlCommand("USP_MobileMachineLogTransactions", Con);
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@QueryType", "GetMachineLogLostTotalTime");
+                SqlDataAdapter da = new SqlDataAdapter(cmd);
+                DataSet ds = new DataSet();
+                da.Fill(ds);
+
+                int i = 0;
+                if (ds.Tables[0].Rows.Count > 0)
+                {
+                    while (ds.Tables[0].Rows.Count > i)
+                    {
+                        var objItem = new clsMachineLogLostTimeTransactions();
+                        objItem.TotalMachineLogLostTime = Convert.ToString(ds.Tables[0].Rows[i]["TotalMachineLogLostTime"]);
+                        objItem.vErrorMsg = "Success";
+                        objItem.vErrorCode = 200;
+                        objResp.Add(objItem);
+                        i++;
+                    }
+                }
+                else
+                {
+                    var objItem = new clsMachineLogLostTimeTransactions();
+                    objItem.vErrorMsg = "No Machine Log Lost time count not found.";
+                    objResp.Add(objItem);
+                }
+            }
+            catch (Exception exp)
+            {
+                var objItem = new clsMachineLogLostTimeTransactions();
+                objItem.vErrorCode = 500;
+                Logger.WriteLog("Function Name : Fn_Get_MachineLogLostTimeInDaysHrMin", " " + "Error Msg : " + exp.Message.ToString(), new StackTrace(exp, true));
+                objItem.vErrorMsg = exp.Message.ToString();
+                objResp.Add(objItem);
+            }
+            finally
+            {
+                Con.Close();
+            }
+            return objResp;
+        }
+
+
     }
 }
