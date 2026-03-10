@@ -198,5 +198,25 @@ namespace BSLDaman.Controllers
         }
 
 
+        [System.Web.Http.HttpGet]
+        [System.Web.Http.Route("api/MOBProduction/Fn_Get_TotalBundleIdCount")]
+        public List<clsBundleCompile> Fn_Get_TotalBundleIdCount(clsBundleCompile objReq)
+        {
+            var objResp = new List<clsBundleCompile>();
+            objResp = _MOBDALProduction.Fn_Get_TotalBundleIdCount(objReq);
+            return objResp;
+        }
+
+
+        [System.Web.Http.HttpGet]
+        [System.Web.Http.Route("api/MOBProduction/Fn_Get_MachineLogLostTimeInDaysHrMin")]
+        public List<clsMachineLogLostTimeTransactions> Fn_Get_MachineLogLostTimeInDaysHrMin(clsMachineLogLostTimeTransactions objReq)
+        {
+            var objResp = new List<clsMachineLogLostTimeTransactions>();
+            objResp = _MOBDALProduction.Fn_Get_MachineLogLostTimeInDaysHrMin(objReq);
+            return objResp;
+        }
+
+
     }
 }
