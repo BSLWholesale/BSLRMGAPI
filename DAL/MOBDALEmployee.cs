@@ -452,12 +452,16 @@ namespace BSLDaman.DAL
                 if (Con.State == ConnectionState.Closed)
                 { Con.Open(); }
 
-                string strSql = "SELECT EmpId, EmpName, EmpGender, EmpMobile, EmpGrade, EmpRole, EmpLocation,";
-                strSql = strSql + " IsActive FROM EmployeeMaster WHERE 1=1 AND EmpRole = 'Operator' AND IsActive = 1";
+                string strSql = "SELECT EM.EmpId AS EmpId, EM.EmpName AS EmpName, EM.EmpGender AS EmpGender, EM.EmpMobile AS EmpMobile,";
+                strSql = strSql + " EM.EmpGrade AS EmpGrade, EM.EmpRole AS EmpRole, ED.Units AS EmpLocation, ED.LineName AS LineName";
+                strSql = strSql + " FROM EmployeeMaster AS EM";
+                strSql = strSql + " INNER JOIN EmployeeDetail AS ED";
+                strSql = strSql + " ON EM.EmpId = ED.Code";
+                strSql = strSql + " WHERE EM.IsActive = 1 AND EM.EmpRole = 'Operator'";
 
                 if (objReq.nEmpId > 0)
                 {
-                    strSql = strSql + " AND EmpId = @EmpId";
+                    strSql = strSql + " AND EM.EmpId = @EmpId";
                 }
 
                 SqlCommand cmd = new SqlCommand(strSql, Con);
@@ -485,7 +489,8 @@ namespace BSLDaman.DAL
                         obj.vEmpGrade = Convert.ToString(ds.Tables[0].Rows[i]["EmpGrade"]);
                         obj.EmpRole = Convert.ToString(ds.Tables[0].Rows[i]["EmpRole"]);
                         obj.EmpLocation = Convert.ToString(ds.Tables[0].Rows[i]["EmpLocation"]);
-                        obj.IsActive = Convert.ToBoolean(ds.Tables[0].Rows[i]["IsActive"]);
+                        obj.LineName = Convert.ToString(ds.Tables[0].Rows[i]["LineName"]);
+                        //obj.IsActive = Convert.ToBoolean(ds.Tables[0].Rows[i]["IsActive"]);
 
                         obj.vErrorMsg = "Success";
                         obj.vErrorCode = 200;
@@ -560,6 +565,80 @@ namespace BSLDaman.DAL
                 Logger.WriteLog("Function Name : Fn_Get_OperatorCount", " " + "Error Msg : " + exp.Message.ToString(), new StackTrace(exp, true));
                 objOperator.vErrorMsg = exp.Message.ToString();
                 objResp.Add(objOperator);
+            }
+            finally
+            {
+                Con.Close();
+            }
+            return objResp;
+        }
+
+
+        public List<clsMOBEmployee> Fn_Get_All_SupervisorDetails(clsMOBEmployee objReq)
+        {
+            var objResp = new List<clsMOBEmployee>();
+            var obj = new clsMOBEmployee();
+            try
+            {
+                if (Con.State == ConnectionState.Broken)
+                { Con.Close(); }
+                if (Con.State == ConnectionState.Closed)
+                { Con.Open(); }
+
+                string strSql = "SELECT EmpId, EmpName, EmpGender, EmpMobile, EmpGrade, EmpRole, EmpLocation,";
+                strSql = strSql + " IsActive FROM EmployeeMaster WHERE 1=1 AND EmpRole = 'Supervisor' AND IsActive = 1";
+
+                if (objReq.nEmpId > 0)
+                {
+                    strSql = strSql + " AND EmpId = @EmpId";
+                }
+
+                SqlCommand cmd = new SqlCommand(strSql, Con);
+                cmd.CommandType = CommandType.Text;
+
+                if (objReq.nEmpId > 0)
+                {
+                    cmd.Parameters.AddWithValue("@EmpId", objReq.nEmpId);
+                }
+
+                SqlDataAdapter da = new SqlDataAdapter(cmd);
+                DataSet ds = new DataSet();
+                da.Fill(ds);
+                int i = 0;
+
+                if (ds.Tables[0].Rows.Count > 0)
+                {
+                    while (ds.Tables[0].Rows.Count > i)
+                    {
+                        obj = new clsMOBEmployee();
+                        obj.nEmpId = Convert.ToInt64(ds.Tables[0].Rows[i]["EmpId"]);
+                        obj.vEmpName = Convert.ToString(ds.Tables[0].Rows[i]["EmpName"]);
+                        obj.EmpGender = Convert.ToString(ds.Tables[0].Rows[i]["EmpGender"]);
+                        obj.vEmpMobile = Convert.ToString(ds.Tables[0].Rows[i]["EmpMobile"]);
+                        obj.vEmpGrade = Convert.ToString(ds.Tables[0].Rows[i]["EmpGrade"]);
+                        obj.EmpRole = Convert.ToString(ds.Tables[0].Rows[i]["EmpRole"]);
+                        obj.EmpLocation = Convert.ToString(ds.Tables[0].Rows[i]["EmpLocation"]);
+                        obj.IsActive = Convert.ToBoolean(ds.Tables[0].Rows[i]["IsActive"]);
+
+                        obj.vErrorMsg = "Success";
+                        obj.vErrorCode = 200;
+                        objResp.Add(obj);
+                        i++;
+                    }
+                }
+                else
+                {
+                    obj.vErrorMsg = "No Supervisor Records found.";
+                    objResp.Add(obj);
+                    obj.vErrorCode = 300;
+                }
+            }
+            catch (Exception exp)
+            {
+                Logger.WriteLog("Function Name : Fn_Get_All_SupervisorDetails", " " + "Error Msg : " + exp.Message.ToString(), new StackTrace(exp, true));
+                obj.vErrorMsg = exp.Message.ToString();
+                objResp.Add(obj);
+                obj.vErrorCode = 500;
             }
             finally
             {
