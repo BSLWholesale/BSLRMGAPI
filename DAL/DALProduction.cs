@@ -13,7 +13,7 @@ namespace BSLDaman.DAL
     public class DALProduction
     {
         SqlConnection Con = new SqlConnection(ConfigurationManager.ConnectionStrings["BSL"].ConnectionString);
-
+        DALOrder _DALOrder = new DALOrder();
         Int64 mxID = 0;
 
         public Int64 Fn_Get_MXID(string strTBLName, string strFieldName, string strCriteria)
@@ -966,7 +966,7 @@ namespace BSLDaman.DAL
                 {
                     strSql = strSql + " AND OrderNo = @OrderNo";
                 }
-                strSql = strSql + " ORDER BY SizeSelectionID DESC ";
+                strSql = strSql + " ORDER BY SizeName ASC ";
 
                 SqlCommand cmd = new SqlCommand(strSql, Con);
                 cmd.CommandType = CommandType.Text;
@@ -1421,7 +1421,20 @@ namespace BSLDaman.DAL
             var objResp = new clsBundleCompile();
             var subSectionList = Fn_Get_Subsection_List(objReq);
             string strCriteria = "";
-            
+
+            var checkOPBreakDown = new clsOPBreackDownMaster();
+            checkOPBreakDown.StyleCode = objReq.StyleCode;
+            checkOPBreakDown.CreatedBy = objReq.CreatedBy;
+            checkOPBreakDown.ProcessName = "PRODUCTION";
+            checkOPBreakDown = _DALOrder.Fn_Check_Exist_style_In_Master(checkOPBreakDown);
+            if(checkOPBreakDown.vErrorMsg != "Success" && checkOPBreakDown.vErrorCode != 200)
+            {
+                objResp.vErrorCode = 404;
+                objResp.vErrorMsg = "Please upload subsection, then compile.";
+                return objResp;
+            }
+
+
             try
             {
                 if (Con.State == ConnectionState.Broken)
@@ -1855,6 +1868,7 @@ namespace BSLDaman.DAL
                 {
                     strSql = strSql + " AND OrderNo = @OrderNo";
                 }
+                strSql = strSql + " ORDER BY Size ASC ";
 
                 SqlCommand cmd = new SqlCommand(strSql, Con);
                 cmd.CommandType = CommandType.Text;
@@ -2165,9 +2179,13 @@ namespace BSLDaman.DAL
                 {
                     strSql = strSql + " AND OrderNo = @OrderNo";
                 }
-                if (objReq.LayID != 0 && objReq.LayID != null)
+                if (objReq.LayID != 0 && objReq.LayID != null && objReq.PlyFrom == 0 && objReq.PlyTo == 0)
                 {
                     strSql = strSql + " AND LayID = @LayID ";
+                }
+                if(objReq.PlyFrom != 0 && objReq.PlyTo != 0)
+                {
+                    strSql = strSql + " AND LayID BETWEEN @PlyFrom AND @PlyTo ";
                 }
                 if (!String.IsNullOrWhiteSpace(objReq.SubSection))
                 {
@@ -2187,9 +2205,14 @@ namespace BSLDaman.DAL
                 {
                     cmd.Parameters.AddWithValue("@OrderNo", objReq.OrderNo);
                 }
-                if (objReq.LayID != 0 && objReq.LayID != null)
+                if (objReq.LayID != 0 && objReq.LayID != null && objReq.PlyFrom == 0 && objReq.PlyTo == 0)
                 {
                     cmd.Parameters.AddWithValue("@LayID", objReq.LayID);
+                }
+                if (objReq.PlyFrom != 0 && objReq.PlyTo != 0)
+                {
+                    cmd.Parameters.AddWithValue("@PlyFrom", objReq.PlyFrom);
+                    cmd.Parameters.AddWithValue("@PlyTo", objReq.PlyTo);
                 }
                 //if (!String.IsNullOrWhiteSpace(objReq.SubSection))
                 //{

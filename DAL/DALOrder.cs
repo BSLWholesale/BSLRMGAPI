@@ -256,6 +256,7 @@ namespace BSLDaman.DAL
                 {
                     strSql = strSql + " AND OrderNo = @OrderNo";
                 }
+                strSql = strSql + " ORDER BY Size ASC ";
 
                 SqlCommand cmd = new SqlCommand(strSql, Con);
                 cmd.CommandType = CommandType.Text;
