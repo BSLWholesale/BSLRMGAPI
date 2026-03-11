@@ -157,7 +157,6 @@ namespace BSLDaman.Controllers
         }
 
 
-
         [System.Web.Http.HttpPut]
         [System.Web.Http.Route("api/MOBProduction/Fn_Update_AppEmpEndBundleIDStatus")]
         public clsBundleCompile Fn_Update_AppEmpEndBundleIDStatus(clsBundleCompile objReq)
@@ -214,6 +213,16 @@ namespace BSLDaman.Controllers
         {
             var objResp = new List<clsMachineLogLostTimeTransactions>();
             objResp = _MOBDALProduction.Fn_Get_MachineLogLostTimeInDaysHrMin(objReq);
+            return objResp;
+        }
+
+
+        [System.Web.Http.HttpPut]
+        [System.Web.Http.Route("api/MOBProduction/Fn_Update_AppEmpStartEndBundleIDStatus")]
+        public clsBundleCompile Fn_Update_AppEmpStartEndBundleIDStatus(clsBundleCompile objReq)
+        {
+            var objResp = new clsBundleCompile();
+            objResp = _MOBDALProduction.Fn_Update_AppEmpStartEndBundleIDStatus(objReq);
             return objResp;
         }
 
