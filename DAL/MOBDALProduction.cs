@@ -1077,5 +1077,70 @@ namespace BSLDaman.DAL
 
 
 
+        public List<clsLine> Fn_Get_All_LinewiseOperatorCount(clsLine objReq)
+        {
+            var objResp = new List<clsLine>();
+            var obj = new clsLine();
+            try
+            {
+                if (Con.State == ConnectionState.Broken)
+                { Con.Close(); }
+                if (Con.State == ConnectionState.Closed)
+                { Con.Open(); }
+
+                string strSql = "SELECT LM.LineId, LM.LineName AS LineName, COUNT(EM.EmpId) AS OperatorCount";
+                strSql = strSql + " FROM EmployeeMaster AS EM";
+                strSql = strSql + " INNER JOIN EmployeeDetail AS ED";
+                strSql = strSql + " ON ED.Code = EM.EmpId";
+                strSql = strSql + " INNER JOIN LineMaster AS LM";
+                strSql = strSql + " ON LM.LineName=ED.LineName";
+                strSql = strSql + " WHERE EM.IsActive=1 AND EM.EmpRole='Operator' AND LM.LineStatus='Active'";
+                strSql = strSql + " GROUP BY LM.LineName, LM.LineId";
+                strSql = strSql + " ORDER BY LM.LineId ASC";
+
+                SqlCommand cmd = new SqlCommand(strSql, Con);
+                cmd.CommandType = CommandType.Text;
+
+                SqlDataAdapter da = new SqlDataAdapter(cmd);
+                DataSet ds = new DataSet();
+                da.Fill(ds);
+                int i = 0;
+
+                if (ds.Tables[0].Rows.Count > 0)
+                {
+                    while (ds.Tables[0].Rows.Count > i)
+                    {
+                        obj = new clsLine();
+                        obj.LineName = Convert.ToString(ds.Tables[0].Rows[i]["LineName"]);
+                        obj.OperatorCount = Convert.ToString(ds.Tables[0].Rows[i]["OperatorCount"]);
+
+                        obj.vErrorCode = 200;
+                        obj.vErrorMsg = "Success";
+                        objResp.Add(obj);
+                        i++;
+                    }
+                }
+                else
+                {
+                    obj.vErrorCode = 404;
+                    obj.vErrorMsg = "No Active Lineswise Operator not found.";
+                    objResp.Add(obj);
+                }
+            }
+            catch (Exception exp)
+            {
+                obj.vErrorCode = 500;
+                Logger.WriteLog("Function Name : Fn_Get_All_LinewiseOperatorCount", " " + "Error Msg : " + exp.Message.ToString(), new StackTrace(exp, true));
+                obj.vErrorMsg = exp.Message.ToString();
+                objResp.Add(obj);
+            }
+            finally
+            {
+                Con.Close();
+            }
+            return objResp;
+        }
+
+
     }
 }
