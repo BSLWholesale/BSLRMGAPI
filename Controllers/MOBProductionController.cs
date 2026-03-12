@@ -237,5 +237,16 @@ namespace BSLDaman.Controllers
         }
 
 
+        [System.Web.Http.HttpGet]
+        [System.Web.Http.Route("api/MOBProduction/Fn_Get_LineBundleIDCountOperator")]
+        public List<clsBundleCompile> Fn_Get_LineBundleIDCountOperator(clsBundleCompile objReq)
+        {
+            var objResp = new List<clsBundleCompile>();
+            objResp = _MOBDALProduction.Fn_Get_LineBundleIDCountOperator(objReq);
+            return objResp;
+        }
+
+
+
     }
 }
