@@ -508,7 +508,7 @@ namespace BSLDaman.DAL
                 {
                     strSql = strSql + " AND SM.StyleName LIKE '%@StyleName%'";
                 }
-
+                strSql = strSql + " ORDER BY SM.CreatedOn DESC ";
 
                 SqlCommand cmd = new SqlCommand(strSql, Con);
                 cmd.CommandType = CommandType.Text;
@@ -1764,9 +1764,17 @@ namespace BSLDaman.DAL
                 {
                     strSql = strSql + " AND BundleID = @BundleID ";
                 }
-                if (objReq.LayID != 0 && objReq.LayID != null)
+                if (objReq.LayID != 0 && objReq.LayID != null && objReq.PlyFrom == 0 && objReq.PlyTo == 0)
                 {
                     strSql = strSql + " AND LayID = @LayID ";
+                }
+                if (objReq.PlyFrom != 0 && objReq.PlyTo != 0)
+                {
+                    strSql = strSql + " AND LayID BETWEEN @PlyFrom AND @PlyTo ";
+                }
+                if (!String.IsNullOrWhiteSpace(objReq.SubSection))
+                {
+                    strSql = strSql + " AND SubSection IN (" + objReq.SubSection + ") ";
                 }
 
                 strSql = strSql + " ORDER BY BundleID ASC ";
@@ -1785,9 +1793,14 @@ namespace BSLDaman.DAL
                 {
                     cmd.Parameters.AddWithValue("@BundleID", objReq.BundleID);
                 }
-                if (objReq.LayID != 0 && objReq.LayID != null)
+                if (objReq.LayID != 0 && objReq.LayID != null && objReq.PlyFrom == 0 && objReq.PlyTo == 0)
                 {
                     cmd.Parameters.AddWithValue("@LayID", objReq.LayID);
+                }
+                if (objReq.PlyFrom != 0 && objReq.PlyTo != 0)
+                {
+                    cmd.Parameters.AddWithValue("@PlyFrom", objReq.PlyFrom);
+                    cmd.Parameters.AddWithValue("@PlyTo", objReq.PlyTo);
                 }
 
                 SqlDataAdapter da = new SqlDataAdapter(cmd);
