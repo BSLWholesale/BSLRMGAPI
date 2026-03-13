@@ -1283,5 +1283,101 @@ namespace BSLDaman.DAL
         }
 
 
+        public List<clsBundleCompile> Fn_Get_OperatorIDWiseBundleDetails(clsBundleCompile objReq)
+        {
+            var objResp = new List<clsBundleCompile>();
+            var obj = new clsBundleCompile();
+            try
+            {
+                if (objReq.AppEmpID == 0)
+                {
+                    obj.vErrorMsg = "Please Pass the Valid App Employee/Operator ID";
+                    obj.vErrorCode = 300;
+                }
+                else
+                {
+                    if (Con.State == ConnectionState.Broken)
+                    { Con.Close(); }
+                    if (Con.State == ConnectionState.Closed)
+                    { Con.Open(); }
+
+                    string strSql = "SELECT BC.AppEmpID AS EmpID, EM.EmpName AS EmpName, BC.BundleID AS BundleID, ED.LineName AS LineName,";
+                    strSql = strSql + " BC.SizeName AS SizeName, BC.Qty AS Qty, BC.SubSection AS SubSection, BC.StyleCode AS StyleCode,";
+                    strSql = strSql + " BC.OrderNo AS OrderNo, BC.ColorName AS ColorName, BC.BundleIDStatus AS BundleIDStatus";
+                    strSql = strSql + " FROM BundleCompile AS BC";
+                    strSql = strSql + " INNER JOIN EmployeeMaster AS EM";
+                    strSql = strSql + " ON BC.AppEmpID = EM.EmpId";
+                    strSql = strSql + " INNER JOIN EmployeeDetail AS ED";
+                    strSql = strSql + " ON ED.Code = EM.EmpId";
+                    strSql = strSql + " INNER JOIN LineMaster AS LM";
+                    strSql = strSql + " ON LM.LineName = ED.LineName";
+                    strSql = strSql + " WHERE 1=1";
+
+                    if (objReq.AppEmpID > 0)
+                    {
+                        strSql = strSql + " AND BC.AppEmpID = @AppEmpID";
+                    }
+
+                    SqlCommand cmd = new SqlCommand(strSql, Con);
+                    cmd.CommandType = CommandType.Text;
+
+                    if (objReq.AppEmpID > 0)
+                    {
+                        cmd.Parameters.AddWithValue("@AppEmpID", objReq.AppEmpID);
+                    }
+
+                    strSql = strSql + " ORDER BY BC.BundleID";
+
+                    SqlDataAdapter da = new SqlDataAdapter(cmd);
+                    DataSet ds = new DataSet();
+                    da.Fill(ds);
+
+                    int i = 0;
+                    if (ds.Tables[0].Rows.Count > 0)
+                    {
+                        while (ds.Tables[0].Rows.Count > i)
+                        {
+                            obj = new clsBundleCompile();
+                            obj.AppEmpID = Convert.ToInt32(ds.Tables[0].Rows[i]["EmpID"]);
+                            obj.AppEmpName = Convert.ToString(ds.Tables[0].Rows[i]["EmpName"]);
+                            obj.BundleID = Convert.ToInt64(ds.Tables[0].Rows[i]["BundleID"]);
+                            obj.LineName = Convert.ToString(ds.Tables[0].Rows[i]["LineName"]);
+                            obj.SizeName = Convert.ToString(ds.Tables[0].Rows[i]["SizeName"]);
+                            obj.Qty = Convert.ToInt32(ds.Tables[0].Rows[i]["Qty"]);
+                            obj.SubSection = Convert.ToString(ds.Tables[0].Rows[i]["SubSection"]);
+                            obj.StyleCode = Convert.ToString(ds.Tables[0].Rows[i]["StyleCode"]);
+                            obj.OrderNo = Convert.ToString(ds.Tables[0].Rows[i]["OrderNo"]);
+                            obj.ColorName = Convert.ToString(ds.Tables[0].Rows[i]["ColorName"]);
+                            obj.BundleIDStatus = Convert.ToString(ds.Tables[0].Rows[i]["BundleIDStatus"]);
+
+                            obj.vErrorCode = 200;
+                            obj.vErrorMsg = "Success";
+                            objResp.Add(obj);
+                            i++;
+                        }
+                    }
+                    else
+                    {
+                        obj.vErrorCode = 404;
+                        obj.vErrorMsg = "Operator/Worker/Employee Wise records are not found.";
+                        objResp.Add(obj);
+                    }
+                }
+            }
+            catch (Exception exp)
+            {
+                obj.vErrorCode = 500;
+                Logger.WriteLog("Function Name : Fn_Get_OperatorIDWiseBundleDetails", " " + "Error Msg : " + exp.Message.ToString(), new StackTrace(exp, true));
+                obj.vErrorMsg = exp.Message.ToString();
+                objResp.Add(obj);
+            }
+            finally
+            {
+                Con.Close();
+            }
+            return objResp;
+        }
+
+
     }
 }
