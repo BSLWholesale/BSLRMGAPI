@@ -247,6 +247,15 @@ namespace BSLDaman.Controllers
         }
 
 
+        [System.Web.Http.HttpGet]
+        [System.Web.Http.Route("api/MOBProduction/Fn_Get_OperatorBundleIDQtyStyleDetails")]
+        public List<clsBundleCompile> Fn_Get_OperatorBundleIDQtyStyleDetails(clsBundleCompile objReq)
+        {
+            var objResp = new List<clsBundleCompile>();
+            objResp = _MOBDALProduction.Fn_Get_OperatorBundleIDQtyStyleDetails(objReq);
+            return objResp;
+        }
+
 
     }
 }
