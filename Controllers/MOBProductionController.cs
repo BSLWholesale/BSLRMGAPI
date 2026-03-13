@@ -256,6 +256,17 @@ namespace BSLDaman.Controllers
             return objResp;
         }
 
+        
+
+        [System.Web.Http.HttpGet]
+        [System.Web.Http.Route("api/MOBProduction/Fn_Get_OperatorIDWiseBundleDetails")]
+        public List<clsBundleCompile> Fn_Get_OperatorIDWiseBundleDetails(clsBundleCompile objReq)
+        {
+            var objResp = new List<clsBundleCompile>();
+            objResp = _MOBDALProduction.Fn_Get_OperatorIDWiseBundleDetails(objReq);
+            return objResp;
+        }
+
 
     }
 }
