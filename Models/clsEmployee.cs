@@ -357,6 +357,7 @@ namespace BSLDaman.Models
         public string BundleIDStatus { get; set; }
         public string TotalBundleIdCount { get; set; }
         public string AppEmpName { get; set; }
+        public string LineName { get; set; }
         public string vErrorMsg { get; set; }
         public int vErrorCode { get; set; }
     }
