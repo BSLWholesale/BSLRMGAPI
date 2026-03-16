@@ -279,5 +279,15 @@ namespace BSLDaman.Controllers
         }
 
 
+        [System.Web.Http.HttpGet]
+        [System.Web.Http.Route("api/MOBProduction/Fn_Get_ActiveLineIDWiseOperatorBundleDetails")]
+        public List<clsBundleCompile> Fn_Get_ActiveLineIDWiseOperatorBundleDetails(clsBundleCompile objReq)
+        {
+            var objResp = new List<clsBundleCompile>();
+            objResp = _MOBDALProduction.Fn_Get_ActiveLineIDWiseOperatorBundleDetails(objReq);
+            return objResp;
+        }
+
+
     }
 }
