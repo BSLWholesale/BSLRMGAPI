@@ -268,5 +268,16 @@ namespace BSLDaman.Controllers
         }
 
 
+
+        [System.Web.Http.HttpGet]
+        [System.Web.Http.Route("api/MOBProduction/Fn_Get_LineOverviewDetails")]
+        public List<clsLine> Fn_Get_LineOverviewDetails(clsLine objReq)
+        {
+            var objResp = new List<clsLine>();
+            objResp = _MOBDALProduction.Fn_Get_LineOverviewDetails(objReq);
+            return objResp;
+        }
+
+
     }
 }
