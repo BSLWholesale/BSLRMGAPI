@@ -1391,7 +1391,7 @@ namespace BSLDaman.DAL
                 if (Con.State == ConnectionState.Closed)
                 { Con.Open(); }
 
-                string strSql = "SELECT ED.LineName AS LineName, ED.Units AS Units,";
+                string strSql = "SELECT LM.LineId AS LineId, ED.LineName AS LineName, ED.Units AS Units,";
                 strSql = strSql + " COUNT(EM.EmpId) AS Operators, LM.LineStatus AS LineStatus";
                 strSql = strSql + " FROM EmployeeMaster AS EM";
                 strSql = strSql + " INNER JOIN EmployeeDetail AS ED";
@@ -1399,7 +1399,7 @@ namespace BSLDaman.DAL
                 strSql = strSql + " INNER JOIN LineMaster AS LM";
                 strSql = strSql + " ON ED.LineName = LM.LineName";
                 strSql = strSql + " WHERE EM.IsActive = 1 AND 1=1";
-                strSql = strSql + " GROUP BY ED.LineName, ED.Units, LM.LineStatus";
+                strSql = strSql + " GROUP BY LM.LineId, ED.LineName, ED.Units, LM.LineStatus";
 
                 SqlCommand cmd = new SqlCommand(strSql, Con);
                 cmd.CommandType = CommandType.Text;
@@ -1414,6 +1414,7 @@ namespace BSLDaman.DAL
                     while (ds.Tables[0].Rows.Count > i)
                     {
                         obj = new clsLine();
+                        obj.LineId = Convert.ToInt64(ds.Tables[0].Rows[i]["LineId"]);
                         obj.LineName = Convert.ToString(ds.Tables[0].Rows[i]["LineName"]);
                         obj.Units = Convert.ToString(ds.Tables[0].Rows[i]["Units"]);
                         obj.OperatorCount = Convert.ToString(ds.Tables[0].Rows[i]["Operators"]);
