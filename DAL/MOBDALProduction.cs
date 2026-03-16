@@ -1379,5 +1379,73 @@ namespace BSLDaman.DAL
         }
 
 
+
+        public List<clsLine> Fn_Get_LineOverviewDetails(clsLine objReq)
+        {
+            var objResp = new List<clsLine>();
+            var obj = new clsLine();
+            try
+            {
+                if (Con.State == ConnectionState.Broken)
+                { Con.Close(); }
+                if (Con.State == ConnectionState.Closed)
+                { Con.Open(); }
+
+                string strSql = "SELECT ED.LineName AS LineName, ED.Units AS Units,";
+                strSql = strSql + " COUNT(EM.EmpId) AS Operators, LM.LineStatus AS LineStatus";
+                strSql = strSql + " FROM EmployeeMaster AS EM";
+                strSql = strSql + " INNER JOIN EmployeeDetail AS ED";
+                strSql = strSql + " ON EM.EmpId = ED.Code";
+                strSql = strSql + " INNER JOIN LineMaster AS LM";
+                strSql = strSql + " ON ED.LineName = LM.LineName";
+                strSql = strSql + " WHERE EM.IsActive = 1 AND 1=1";
+                strSql = strSql + " GROUP BY ED.LineName, ED.Units, LM.LineStatus";
+
+                SqlCommand cmd = new SqlCommand(strSql, Con);
+                cmd.CommandType = CommandType.Text;
+
+                SqlDataAdapter da = new SqlDataAdapter(cmd);
+                DataSet ds = new DataSet();
+                da.Fill(ds);
+
+                int i = 0;
+                if (ds.Tables[0].Rows.Count > 0)
+                {
+                    while (ds.Tables[0].Rows.Count > i)
+                    {
+                        obj = new clsLine();
+                        obj.LineName = Convert.ToString(ds.Tables[0].Rows[i]["LineName"]);
+                        obj.Units = Convert.ToString(ds.Tables[0].Rows[i]["Units"]);
+                        obj.OperatorCount = Convert.ToString(ds.Tables[0].Rows[i]["Operators"]);
+                        obj.LineStatus = Convert.ToString(ds.Tables[0].Rows[i]["LineStatus"]);
+
+                        obj.vErrorCode = 200;
+                        obj.vErrorMsg = "Success";
+                        objResp.Add(obj);
+                        i++;
+                    }
+                }
+                else
+                {
+                    obj.vErrorCode = 404;
+                    obj.vErrorMsg = "Line Overview details are not found.";
+                    objResp.Add(obj);
+                }
+            }
+            catch (Exception exp)
+            {
+                obj.vErrorCode = 500;
+                Logger.WriteLog("Function Name : Fn_Get_LineOverviewDetails", " " + "Error Msg : " + exp.Message.ToString(), new StackTrace(exp, true));
+                obj.vErrorMsg = exp.Message.ToString();
+                objResp.Add(obj);
+            }
+            finally
+            {
+                Con.Close();
+            }
+            return objResp;
+        }
+
+
     }
 }
