@@ -61,6 +61,7 @@ namespace BSLDaman.Models
         public string AssignOperator { get; set; }
         public Int64 LineCount { get; set; }
         public string OperatorCount { get; set; }
+        public string Units { get; set; }
         public string vErrorMsg { get; set; }
         public int vErrorCode { get; set; }
     }
