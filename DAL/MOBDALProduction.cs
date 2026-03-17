@@ -1531,5 +1531,86 @@ namespace BSLDaman.DAL
         }
 
 
+        public List<clsLine> Fn_Get_LineOverviewOperatorDetailsByLineID(clsLine objReq)
+        {
+            var objResp = new List<clsLine>();
+            var obj = new clsLine();
+            try
+            {
+                if (objReq.LineId < 0)
+                {
+                    obj.vErrorMsg = "Please Pass the Valid Line ID";
+                    obj.vErrorCode = 300;
+                }
+                else
+                {
+                    if (Con.State == ConnectionState.Broken)
+                    { Con.Close(); }
+                    if (Con.State == ConnectionState.Closed)
+                    { Con.Open(); }
+
+                    string strSql = "SELECT EM.EmpName AS EmpName, BC.BundleID AS BundleID,";
+                    strSql = strSql + " BC.SubSection AS SubSection, BC.Qty AS Qty,";
+                    strSql = strSql + " SUM(DATEDIFF(MINUTE, BC.AppStartTime, BC.AppEndTime))% 1440 AS Hours,";
+                    strSql = strSql + " SUM(DATEDIFF(MINUTE, BC.AppStartTime, BC.AppEndTime))% 60 AS Minutes";
+                    strSql = strSql + " FROM EmployeeMaster AS EM";
+                    strSql = strSql + " INNER JOIN EmployeeDetail AS ED";
+                    strSql = strSql + " ON EM.EmpId = ED.Code";
+                    strSql = strSql + " INNER JOIN BundleCompile AS BC";
+                    strSql = strSql + " ON BC.AppEmpID = ED.Code";
+                    strSql = strSql + " INNER JOIN LineMaster AS LM";
+                    strSql = strSql + " ON LM.LineName = ED.LineName";
+                    strSql = strSql + " WHERE LM.LineId = " + objReq.LineId;
+                    strSql = strSql + " GROUP BY EM.EmpName, BC.BundleID, BC.SubSection, BC.Qty";
+
+                    SqlCommand cmd = new SqlCommand(strSql, Con);
+                    cmd.CommandType = CommandType.Text;                    
+
+                    SqlDataAdapter da = new SqlDataAdapter(cmd);
+                    DataSet ds = new DataSet();
+                    da.Fill(ds);
+
+                    int i = 0;
+                    if (ds.Tables[0].Rows.Count > 0)
+                    {
+                        while (ds.Tables[0].Rows.Count > i)
+                        {
+                            obj = new clsLine();
+                            obj.AppEmpName = Convert.ToString(ds.Tables[0].Rows[i]["EmpName"]);
+                            obj.BundleID = Convert.ToInt64(ds.Tables[0].Rows[i]["BundleID"]);
+                            obj.SubSection = Convert.ToString(ds.Tables[0].Rows[i]["SubSection"]);
+                            obj.Qty = Convert.ToInt32(ds.Tables[0].Rows[i]["Qty"]);
+                            obj.Hours = Convert.ToString(ds.Tables[0].Rows[i]["Hours"]);
+                            obj.Minutes = Convert.ToString(ds.Tables[0].Rows[i]["Minutes"]);
+
+                            obj.vErrorCode = 200;
+                            obj.vErrorMsg = "Success";
+                            objResp.Add(obj);
+                            i++;
+                        }
+                    }
+                    else
+                    {
+                        obj.vErrorCode = 404;
+                        obj.vErrorMsg = "Line ID wise Operator/Worker/Employee details are not found.";
+                        objResp.Add(obj);
+                    }
+                }
+            }
+            catch (Exception exp)
+            {
+                obj.vErrorCode = 500;
+                Logger.WriteLog("Function Name : Fn_Get_LineOverviewOperatorDetailsByLineID", " " + "Error Msg : " + exp.Message.ToString(), new StackTrace(exp, true));
+                obj.vErrorMsg = exp.Message.ToString();
+                objResp.Add(obj);
+            }
+            finally
+            {
+                Con.Close();
+            }
+            return objResp;
+        }
+
+
     }
 }
