@@ -62,6 +62,12 @@ namespace BSLDaman.Models
         public Int64 LineCount { get; set; }
         public string OperatorCount { get; set; }
         public string Units { get; set; }
+        public string AppEmpName { get; set; }
+        public Int64 BundleID { get; set; }
+        public string SubSection { get; set; }
+        public int Qty { get; set; }
+        public string Hours { get; set; }
+        public string Minutes { get; set; }
         public string vErrorMsg { get; set; }
         public int vErrorCode { get; set; }
     }
