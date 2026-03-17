@@ -1425,7 +1425,7 @@ namespace BSLDaman.DAL
             var checkOPBreakDown = new clsOPBreackDownMaster();
             checkOPBreakDown.StyleCode = objReq.StyleCode;
             checkOPBreakDown.CreatedBy = objReq.CreatedBy;
-            checkOPBreakDown.ProcessName = "PRODUCTION";
+            //checkOPBreakDown.ProcessName = "PRODUCTION";
             checkOPBreakDown = _DALOrder.Fn_Check_Exist_style_In_Master(checkOPBreakDown);
             if(checkOPBreakDown.vErrorMsg != "Success" && checkOPBreakDown.vErrorCode != 200)
             {
