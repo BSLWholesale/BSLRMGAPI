@@ -1559,8 +1559,8 @@ namespace BSLDaman.DAL
                     strSql = strSql + " INNER JOIN BundleCompile AS BC";
                     strSql = strSql + " ON BC.AppEmpID = ED.Code";
                     strSql = strSql + " INNER JOIN LineMaster AS LM";
-                    strSql = strSql + " ON LM.LineName = ED.LineName";
-                    strSql = strSql + " WHERE LM.LineId = " + objReq.LineId;
+                    strSql = strSql + " ON LM.LineName = ED.LineName";                    
+                    strSql = strSql + " WHERE BC.BundleIDStatus = 'In Process' AND LM.LineId = " + objReq.LineId;
                     strSql = strSql + " GROUP BY EM.EmpName, BC.BundleID, BC.SubSection, BC.Qty";
 
                     SqlCommand cmd = new SqlCommand(strSql, Con);
