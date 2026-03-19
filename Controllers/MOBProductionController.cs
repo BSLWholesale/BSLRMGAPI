@@ -299,5 +299,36 @@ namespace BSLDaman.Controllers
             return objResp;
         }
 
+
+        //[System.Web.Http.HttpGet]
+        //[System.Web.Http.Route("api/MOBProduction/Fn_Get_ActiveLineDetailsOrderNo")]
+        //public List<clsLine> Fn_Get_ActiveLineDetailsOrderNo(Int64? LineId = null)
+        //{
+        //    clsLine objReq = new clsLine();
+
+        //    if (LineId.HasValue)
+        //    {
+        //        objReq.LineId = LineId.Value;
+        //    }
+        //    else
+        //    {
+        //        objReq.LineId = 0;
+        //    }
+
+        //    var objResp = _MOBDALProduction.Fn_Get_ActiveLineDetailsOrderNo(objReq);
+        //    return objResp;
+        //}
+
+
+        [System.Web.Http.HttpGet]
+        [System.Web.Http.Route("api/MOBProduction/Fn_Get_ActiveLineDetailsOrderNo")]
+        public List<clsLine> Fn_Get_ActiveLineDetailsOrderNo(clsLine objReq)
+        {
+            var objResp = new List<clsLine>();
+            objResp = _MOBDALProduction.Fn_Get_ActiveLineDetailsOrderNo(objReq);
+            return objResp;
+        }
+
+
     }
 }
