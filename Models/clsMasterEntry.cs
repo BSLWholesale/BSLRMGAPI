@@ -68,6 +68,7 @@ namespace BSLDaman.Models
         public int Qty { get; set; }
         public string Hours { get; set; }
         public string Minutes { get; set; }
+        public string OrderNo { get; set; }
         public string vErrorMsg { get; set; }
         public int vErrorCode { get; set; }
     }
