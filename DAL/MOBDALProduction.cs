@@ -794,21 +794,35 @@ namespace BSLDaman.DAL
                 if (Con.State == ConnectionState.Closed)
                 { Con.Open(); }
 
-                string strSql = "SELECT LineId, SeqNo, LineCode, LineName, SuperVisor, SectionName, SuperMarketCode,";
-                strSql = strSql + " DivisionID, LineStatus FROM LineMaster WHERE 1=1 AND LineStatus = 'Active'";
+                //string strSql = "SELECT LineId, SeqNo, LineCode, LineName, SuperVisor, SectionName, SuperMarketCode,";
+                //strSql = strSql + " DivisionID, LineStatus FROM LineMaster WHERE 1=1 AND LineStatus = 'Active'";
 
-                if (objReq.LineId > 0)
-                {
-                    strSql = strSql + " AND LineId = @LineId";
-                }
+                string strSql = "SELECT LM.LineId AS LineId, LM.LineName AS LineName,";
+                strSql = strSql + " LM.LineStatus AS LineStatus, COUNT(ED.Code) AS OperatorCount,";
+                strSql = strSql + " LM.SeqNo AS SeqNo, LM.LineCode AS LineCode, LM.SuperVisor AS SuperVisor,";
+                strSql = strSql + " LM.SuperMarketCode AS SuperMarketCode, LM.SectionName AS SectionName, LM.DivisionID AS DivisionID";
+                strSql = strSql + " FROM EmployeeMaster AS EM";
+                strSql = strSql + " INNER JOIN EmployeeDetail AS ED";
+                strSql = strSql + " ON EM.EmpId = ED.Code";
+                strSql = strSql + " INNER JOIN LineMaster AS LM";
+                strSql = strSql + " ON LM.LineName = ED.LineName";
+                strSql = strSql + " WHERE LM.LineStatus = 'Active' AND EM.IsActive = 1 AND EM.EmpRole = 'Operator'";
+                strSql = strSql + " GROUP BY LM.LineId, LM.LineName, LM.LineStatus,";
+                strSql = strSql + " LM.SeqNo, LM.LineCode, LM.SuperVisor, LM.SuperMarketCode, LM.SectionName, LM.DivisionID";
+                strSql = strSql + " ORDER BY LM.LineId";
+
+                //if (objReq.LineId > 0)
+                //{
+                //    strSql = strSql + " AND LineId = @LineId";
+                //}
 
                 SqlCommand cmd = new SqlCommand(strSql, Con);
                 cmd.CommandType = CommandType.Text;
 
-                if (objReq.LineId > 0)
-                {
-                    cmd.Parameters.AddWithValue("@LineId", objReq.LineId);
-                }
+                //if (objReq.LineId > 0)
+                //{
+                //    cmd.Parameters.AddWithValue("@LineId", objReq.LineId);
+                //}
 
                 SqlDataAdapter da = new SqlDataAdapter(cmd);
                 DataSet ds = new DataSet();
@@ -821,7 +835,10 @@ namespace BSLDaman.DAL
                     {
                         obj = new clsLine();
                         obj.LineId = Convert.ToInt64(ds.Tables[0].Rows[i]["LineId"]);
-                        
+                        obj.LineName = Convert.ToString(ds.Tables[0].Rows[i]["LineName"]);
+                        obj.LineStatus = Convert.ToString(ds.Tables[0].Rows[i]["LineStatus"]);
+                        obj.OperatorCount = Convert.ToString(ds.Tables[0].Rows[i]["OperatorCount"]);
+
                         if (ds.Tables[0].Rows[i]["SeqNo"] == DBNull.Value)
                         {
                             obj.SeqNo = 0;
@@ -839,8 +856,6 @@ namespace BSLDaman.DAL
                         {
                             obj.LineCode = Convert.ToString(ds.Tables[0].Rows[i]["LineCode"]);
                         }
-
-                        obj.LineName = Convert.ToString(ds.Tables[0].Rows[i]["LineName"]);
 
                         if (ds.Tables[0].Rows[i]["SuperVisor"] == null)
                         {
@@ -877,8 +892,6 @@ namespace BSLDaman.DAL
                         {
                             obj.DivisionID = Convert.ToInt64(ds.Tables[0].Rows[i]["DivisionID"]);
                         }
-
-                        obj.LineStatus = Convert.ToString(ds.Tables[0].Rows[i]["LineStatus"]);
 
                         obj.vErrorCode = 200;
                         obj.vErrorMsg = "Success";
