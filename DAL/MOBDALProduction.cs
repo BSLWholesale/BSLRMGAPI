@@ -821,13 +821,63 @@ namespace BSLDaman.DAL
                     {
                         obj = new clsLine();
                         obj.LineId = Convert.ToInt64(ds.Tables[0].Rows[i]["LineId"]);
-                        obj.SeqNo = Convert.ToInt32(ds.Tables[0].Rows[i]["SeqNo"]);
-                        obj.LineCode = Convert.ToString(ds.Tables[0].Rows[i]["LineCode"]);
+                        
+                        if (ds.Tables[0].Rows[i]["SeqNo"] == DBNull.Value)
+                        {
+                            obj.SeqNo = 0;
+                        }
+                        else
+                        {
+                            obj.SeqNo = Convert.ToInt32(ds.Tables[0].Rows[i]["SeqNo"]);
+                        }
+
+                        if (ds.Tables[0].Rows[i]["LineCode"] == null)
+                        {
+                            obj.LineCode = string.Empty;
+                        }
+                        else
+                        {
+                            obj.LineCode = Convert.ToString(ds.Tables[0].Rows[i]["LineCode"]);
+                        }
+
                         obj.LineName = Convert.ToString(ds.Tables[0].Rows[i]["LineName"]);
-                        obj.SuperVisor = Convert.ToString(ds.Tables[0].Rows[i]["SuperVisor"]);
-                        obj.SectionName = Convert.ToString(ds.Tables[0].Rows[i]["SectionName"]);
-                        obj.SuperMarketCode = Convert.ToInt32(ds.Tables[0].Rows[i]["SuperMarketCode"]);
-                        obj.DivisionID = Convert.ToInt64(ds.Tables[0].Rows[i]["DivisionID"]);
+
+                        if (ds.Tables[0].Rows[i]["SuperVisor"] == null)
+                        {
+                            obj.SuperVisor = string.Empty;
+                        }
+                        else
+                        {
+                            obj.SuperVisor = Convert.ToString(ds.Tables[0].Rows[i]["SuperVisor"]);
+                        }
+
+                        if (ds.Tables[0].Rows[i]["SectionName"] == null)
+                        {
+                            obj.SectionName = string.Empty;
+                        }
+                        else
+                        {
+                            obj.SectionName = Convert.ToString(ds.Tables[0].Rows[i]["SectionName"]);
+                        }
+
+                        if (ds.Tables[0].Rows[i]["SuperMarketCode"] == DBNull.Value)
+                        {
+                            obj.SuperMarketCode = 0;
+                        }
+                        else
+                        {
+                            obj.SuperMarketCode = Convert.ToInt32(ds.Tables[0].Rows[i]["SuperMarketCode"]);
+                        }
+
+                        if (ds.Tables[0].Rows[i]["DivisionID"] == DBNull.Value)
+                        {
+                            obj.DivisionID = 0;
+                        }
+                        else
+                        {
+                            obj.DivisionID = Convert.ToInt64(ds.Tables[0].Rows[i]["DivisionID"]);
+                        }
+
                         obj.LineStatus = Convert.ToString(ds.Tables[0].Rows[i]["LineStatus"]);
 
                         obj.vErrorCode = 200;
