@@ -26,34 +26,22 @@ namespace BSLDaman.DAL
                 if (Con.State == ConnectionState.Closed)
                 { Con.Open(); }
 
-                //string strSql = "SELECT BundleID, LayID, BundleNo, SizeName, ColorName, ShadeName, ";
-                //strSql = strSql + " Qty, PlyTo, PlyFrom, LotNo, SubSection, Dispatch, StyleCode, OrderNo ";
-                //strSql = strSql + " FROM BundleCompile WHERE 1=1";
-
                 string strSql = "SELECT BC.BundleID AS BundleID, BC.LayID AS LayID, BC.BundleNo AS BundleNo,";
                 strSql = strSql + " BC.SizeName AS SizeName, BC.ColorName AS ColorName, BC.ShadeName AS ShadeName,";
                 strSql = strSql + " BC.Qty AS Qty, BC.PlyTo AS PlyTo, BC.PlyFrom AS PlyFrom, BC.LotNo AS LotNo,";
                 strSql = strSql + " BC.SubSection AS SubSection, BC.Dispatch AS Dispatch, OM.StyleCode AS StyleCode, OM.OrderNo AS OrderNo";
                 strSql = strSql + " FROM BundleCompile AS BC";
                 strSql = strSql + " INNER JOIN OrderMaster AS OM";
-                strSql = strSql + " ON BC.OrderNo = OM.OrderNo WHERE 1=1";                
+                strSql = strSql + " ON BC.OrderNo = OM.OrderNo WHERE 1=1";
 
-                if (objReq.BundleID > 0)
-                {
-                    strSql = strSql + " AND BC.BundleID = " + objReq.BundleID;
-                }
-                //if (!String.IsNullOrWhiteSpace(objReq.StyleCode))
-                //{
-                //    strSql = strSql + " AND StyleCode = @StyleCode";
-                //}
                 if (!String.IsNullOrWhiteSpace(objReq.OrderNo))
                 {
                     strSql = strSql + " AND OM.OrderNo = '" + objReq.OrderNo + "'";
                 }
-                //if (objReq.LayID != 0 && objReq.LayID != null)
-                //{
-                //    strSql = strSql + " AND LayID = @LayID";
-                //}
+                if (objReq.BundleID > 0)
+                {
+                    strSql = strSql + " AND BC.BundleID = " + objReq.BundleID;
+                }
 
                 strSql = strSql + " ORDER BY BC.BundleID ASC";
 
@@ -64,17 +52,9 @@ namespace BSLDaman.DAL
                 //{
                 //    cmd.Parameters.AddWithValue("@BundleID", objReq.BundleID);
                 //}
-                //if (!String.IsNullOrWhiteSpace(objReq.StyleCode))
-                //{
-                //    cmd.Parameters.AddWithValue("@StyleCode", objReq.StyleCode);
-                //}
                 //if (!String.IsNullOrWhiteSpace(objReq.OrderNo))
                 //{
                 //    cmd.Parameters.AddWithValue("@OrderNo", objReq.OrderNo);
-                //}
-                //if (objReq.LayID != 0 && objReq.LayID != null)
-                //{
-                //    cmd.Parameters.AddWithValue("@LayID", objReq.LayID);
                 //}
 
                 SqlDataAdapter da = new SqlDataAdapter(cmd);
