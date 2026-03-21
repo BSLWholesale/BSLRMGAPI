@@ -70,6 +70,8 @@ namespace BSLDaman.Models
         public string Minutes { get; set; }
         public string OrderNo { get; set; }
         public int FinishedQty { get; set; }
+        public Int32 AppEmpID { get; set; }
+        public string BundleIDStatus { get; set; }
         public string vErrorMsg { get; set; }
         public int vErrorCode { get; set; }
     }
