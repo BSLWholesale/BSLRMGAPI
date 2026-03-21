@@ -1779,10 +1779,12 @@ namespace BSLDaman.DAL
                     while (ds.Tables[0].Rows.Count > i)
                     {
                         obj = new clsLine();
-                        obj.Qty = Convert.ToInt32(ds.Tables[0].Rows[i]["TotalQty"]);
-                        obj.FinishedQty = Convert.ToInt32(ds.Tables[0].Rows[i]["FinishedQty"]);
+                        //obj.Qty = Convert.ToInt32(ds.Tables[0].Rows[i]["TotalQty"]);
+                        //obj.FinishedQty = Convert.ToInt32(ds.Tables[0].Rows[i]["FinishedQty"]);
+                        obj.LineId = Convert.ToInt64(ds.Tables[0].Rows[i]["LineId"]);
                         obj.LineName = Convert.ToString(ds.Tables[0].Rows[i]["LineName"]);
-                        obj.AppEmpName = Convert.ToString(ds.Tables[0].Rows[i]["EmpName"]);
+                        //obj.AppEmpName = Convert.ToString(ds.Tables[0].Rows[i]["EmpName"]);
+                        obj.LineStatus = Convert.ToString(ds.Tables[0].Rows[i]["LineStatus"]);
                         obj.OrderNo = Convert.ToString(ds.Tables[0].Rows[i]["OrderNo"]);
 
                         obj.vErrorCode = 200;
