@@ -309,26 +309,6 @@ namespace BSLDaman.Controllers
         }
 
 
-        //[System.Web.Http.HttpGet]
-        //[System.Web.Http.Route("api/MOBProduction/Fn_Get_ActiveLineDetailsOrderNo")]
-        //public List<clsLine> Fn_Get_ActiveLineDetailsOrderNo(Int64? LineId = null)
-        //{
-        //    clsLine objReq = new clsLine();
-
-        //    if (LineId.HasValue)
-        //    {
-        //        objReq.LineId = LineId.Value;
-        //    }
-        //    else
-        //    {
-        //        objReq.LineId = 0;
-        //    }
-
-        //    var objResp = _MOBDALProduction.Fn_Get_ActiveLineDetailsOrderNo(objReq);
-        //    return objResp;
-        //}
-
-
         [System.Web.Http.HttpGet]
         [System.Web.Http.Route("api/MOBProduction/Fn_Get_ActiveLineDetailsOrderNo")]
         public List<clsLine> Fn_Get_ActiveLineDetailsOrderNo(clsLine objReq)
@@ -341,10 +321,40 @@ namespace BSLDaman.Controllers
 
         [System.Web.Http.HttpGet]
         [System.Web.Http.Route("api/MOBProduction/Fn_Get_ActiveLineWiseOrderNoDetails")]
-        public List<clsLine> Fn_Get_ActiveLineWiseOrderNoDetails(clsLine objReq)
+        public List<clsLine> Fn_Get_ActiveLineWiseOrderNoDetails(Int64? LineId = null)
         {
-            var objResp = new List<clsLine>();
-            objResp = _MOBDALProduction.Fn_Get_ActiveLineWiseOrderNoDetails(objReq);
+            clsLine objReq = new clsLine();
+
+            if (LineId.HasValue)
+            {
+                objReq.LineId = LineId.Value;
+            }
+            else
+            {
+                objReq.LineId = 0;
+            }
+
+            var objResp = _MOBDALProduction.Fn_Get_ActiveLineWiseOrderNoDetails(objReq);
+            return objResp;
+        }
+
+
+        [System.Web.Http.HttpGet]
+        [System.Web.Http.Route("api/MOBProduction/Fn_Get_All_OrderNoLineIDWise")]
+        public List<clsLine> Fn_Get_All_OrderNoLineIDWise(Int64? LineId = null)
+        {
+            clsLine objReq = new clsLine();
+
+            if (LineId.HasValue)
+            {
+                objReq.LineId = LineId.Value;
+            }
+            else
+            {
+                objReq.LineId = 0;
+            }
+
+            var objResp = _MOBDALProduction.Fn_Get_ActiveLineWiseOrderNoDetails(objReq);
             return objResp;
         }
 
