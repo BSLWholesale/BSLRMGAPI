@@ -1755,7 +1755,9 @@ namespace BSLDaman.DAL
                 //strSql = strSql + " ON OM.OrderNo = BC.OrderNo AND OM.OrderNo = '" + objReq.OrderNo + "'";
 
                 string strSql = "SELECT LM.LineId AS LineId, ED.LineName AS LineName,";
-                strSql = strSql + " LM.LineStatus AS LineStatus, BC.OrderNo AS OrderNo";
+                strSql = strSql + " LM.LineStatus AS LineStatus, BC.OrderNo AS OrderNo,";
+                strSql = strSql + " BC.AppEmpID AS AppEmpID, ED.EmpName AS AppEmpName,";
+                strSql = strSql + " BC.BundleID AS BundleID, BC.BundleIDStatus AS BundleIDStatus";
                 strSql = strSql + " FROM BundleCompile AS BC";
                 strSql = strSql + " INNER JOIN EmployeeDetail AS ED";
                 strSql = strSql + " ON BC.AppEmpID = ED.Code";
@@ -1763,8 +1765,19 @@ namespace BSLDaman.DAL
                 strSql = strSql + " ON LM.LineName = ED.LineName";
                 strSql = strSql + " INNER JOIN OrderMaster AS OM";
                 strSql = strSql + " ON OM.OrderNo = BC.OrderNo";
-                strSql = strSql + " WHERE LM.LineId = " + objReq.LineId;
-                strSql = strSql + " GROUP BY LM.LineId, ED.LineName, LM.LineStatus, BC.OrderNo";
+                strSql = strSql + " WHERE 1=1";
+
+                if (objReq.LineId > 0)
+                {
+                    strSql = strSql + " AND LM.LineId = " + objReq.LineId;
+                }
+                if (!String.IsNullOrWhiteSpace(objReq.OrderNo))
+                {
+                    strSql = strSql + " AND BC.OrderNo = '" + objReq.OrderNo + "'";
+                }
+
+                strSql = strSql + " GROUP BY LM.LineId, ED.LineName, LM.LineStatus, BC.OrderNo,";
+                strSql = strSql + " BC.AppEmpID, ED.EmpName, BC.BundleID, BC.BundleIDStatus";
 
                 SqlCommand cmd = new SqlCommand(strSql, Con);
                 cmd.CommandType = CommandType.Text;
@@ -1783,9 +1796,12 @@ namespace BSLDaman.DAL
                         //obj.FinishedQty = Convert.ToInt32(ds.Tables[0].Rows[i]["FinishedQty"]);
                         obj.LineId = Convert.ToInt64(ds.Tables[0].Rows[i]["LineId"]);
                         obj.LineName = Convert.ToString(ds.Tables[0].Rows[i]["LineName"]);
-                        //obj.AppEmpName = Convert.ToString(ds.Tables[0].Rows[i]["EmpName"]);
                         obj.LineStatus = Convert.ToString(ds.Tables[0].Rows[i]["LineStatus"]);
                         obj.OrderNo = Convert.ToString(ds.Tables[0].Rows[i]["OrderNo"]);
+                        obj.AppEmpID = Convert.ToInt32(ds.Tables[0].Rows[i]["AppEmpID"]);
+                        obj.AppEmpName = Convert.ToString(ds.Tables[0].Rows[i]["AppEmpName"]);
+                        obj.BundleID = Convert.ToInt64(ds.Tables[0].Rows[i]["BundleID"]);
+                        obj.BundleIDStatus = Convert.ToString(ds.Tables[0].Rows[i]["BundleIDStatus"]);
 
                         obj.vErrorCode = 200;
                         obj.vErrorMsg = "Success";
