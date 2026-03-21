@@ -1746,13 +1746,25 @@ namespace BSLDaman.DAL
                 if (Con.State == ConnectionState.Closed)
                 { Con.Open(); }
 
-                string strSql = "SELECT OM.Qty AS TotalQty, BC.Qty AS FinishedQty,";
-                strSql = strSql + " ED.LineName AS LineName, ED.EmpName AS EmpName, BC.OrderNo AS OrderNo";
+                //string strSql = "SELECT OM.Qty AS TotalQty, BC.Qty AS FinishedQty,";
+                //strSql = strSql + " ED.LineName AS LineName, ED.EmpName AS EmpName, BC.OrderNo AS OrderNo";
+                //strSql = strSql + " FROM BundleCompile AS BC";
+                //strSql = strSql + " INNER JOIN EmployeeDetail AS ED";
+                //strSql = strSql + " ON ED.Code = BC.AppEmpID";
+                //strSql = strSql + " INNER JOIN OrderMaster AS OM";
+                //strSql = strSql + " ON OM.OrderNo = BC.OrderNo AND OM.OrderNo = '" + objReq.OrderNo + "'";
+
+                string strSql = "SELECT LM.LineId AS LineId, ED.LineName AS LineName,";
+                strSql = strSql + " LM.LineStatus AS LineStatus, BC.OrderNo AS OrderNo";
                 strSql = strSql + " FROM BundleCompile AS BC";
                 strSql = strSql + " INNER JOIN EmployeeDetail AS ED";
-                strSql = strSql + " ON ED.Code = BC.AppEmpID";
+                strSql = strSql + " ON BC.AppEmpID = ED.Code";
+                strSql = strSql + " INNER JOIN LineMaster AS LM";
+                strSql = strSql + " ON LM.LineName = ED.LineName";
                 strSql = strSql + " INNER JOIN OrderMaster AS OM";
-                strSql = strSql + " ON OM.OrderNo = BC.OrderNo AND OM.OrderNo = '" + objReq.OrderNo + "'";
+                strSql = strSql + " ON OM.OrderNo = BC.OrderNo";
+                strSql = strSql + " WHERE LM.LineId = " + objReq.LineId;
+                strSql = strSql + " GROUP BY LM.LineId, ED.LineName, LM.LineStatus, BC.OrderNo";
 
                 SqlCommand cmd = new SqlCommand(strSql, Con);
                 cmd.CommandType = CommandType.Text;
@@ -1799,6 +1811,76 @@ namespace BSLDaman.DAL
             }
             return objResp;
         }
+
+
+        public List<clsLine> Fn_Get_All_OrderNoLineIDWise(clsLine objReq)
+        {
+            var objResp = new List<clsLine>();
+            var obj = new clsLine();
+            try
+            {
+                if (Con.State == ConnectionState.Broken)
+                { Con.Close(); }
+                if (Con.State == ConnectionState.Closed)
+                { Con.Open(); }
+
+                string strSql = "SELECT LM.LineId AS LineId, ED.LineName AS LineName,";
+                strSql = strSql + " LM.LineStatus AS LineStatus, BC.OrderNo AS OrderNo";
+                strSql = strSql + " FROM BundleCompile AS BC";
+                strSql = strSql + " INNER JOIN EmployeeDetail AS ED";
+                strSql = strSql + " ON BC.AppEmpID = ED.Code";
+                strSql = strSql + " INNER JOIN LineMaster AS LM";
+                strSql = strSql + " ON LM.LineName = ED.LineName";
+                strSql = strSql + " INNER JOIN OrderMaster AS OM";
+                strSql = strSql + " ON OM.OrderNo = BC.OrderNo";
+                strSql = strSql + " WHERE LM.LineId = " + objReq.LineId;
+                strSql = strSql + " GROUP BY LM.LineId, ED.LineName, LM.LineStatus, BC.OrderNo";
+
+                SqlCommand cmd = new SqlCommand(strSql, Con);
+                cmd.CommandType = CommandType.Text;
+
+                SqlDataAdapter da = new SqlDataAdapter(cmd);
+                DataSet ds = new DataSet();
+                da.Fill(ds);
+                int i = 0;
+
+                if (ds.Tables[0].Rows.Count > 0)
+                {
+                    while (ds.Tables[0].Rows.Count > i)
+                    {
+                        obj = new clsLine();
+                        obj.LineId = Convert.ToInt64(ds.Tables[0].Rows[i]["LineId"]);
+                        obj.LineName = Convert.ToString(ds.Tables[0].Rows[i]["LineName"]);
+                        obj.OrderNo = Convert.ToString(ds.Tables[0].Rows[i]["OrderNo"]);
+                        obj.LineStatus = Convert.ToString(ds.Tables[0].Rows[i]["LineStatus"]);
+
+                        obj.vErrorCode = 200;
+                        obj.vErrorMsg = "Success";
+                        objResp.Add(obj);
+                        i++;
+                    }
+                }
+                else
+                {
+                    obj.vErrorCode = 404;
+                    obj.vErrorMsg = "Line ID wise Order No Records are not found.";
+                    objResp.Add(obj);
+                }
+            }
+            catch (Exception exp)
+            {
+                obj.vErrorCode = 500;
+                Logger.WriteLog("Function Name : Fn_Get_All_OrderNoLineIDWise", " " + "Error Msg : " + exp.Message.ToString(), new StackTrace(exp, true));
+                obj.vErrorMsg = exp.Message.ToString();
+                objResp.Add(obj);
+            }
+            finally
+            {
+                Con.Close();
+            }
+            return objResp;
+        }
+
 
 
     }
