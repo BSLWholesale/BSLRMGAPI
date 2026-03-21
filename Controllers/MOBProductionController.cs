@@ -321,7 +321,7 @@ namespace BSLDaman.Controllers
 
         [System.Web.Http.HttpGet]
         [System.Web.Http.Route("api/MOBProduction/Fn_Get_ActiveLineWiseOrderNoDetails")]
-        public List<clsLine> Fn_Get_ActiveLineWiseOrderNoDetails(Int64? LineId = null)
+        public List<clsLine> Fn_Get_ActiveLineWiseOrderNoDetails(Int64? LineId = null, string OrderNo = null)
         {
             clsLine objReq = new clsLine();
 
@@ -332,6 +332,15 @@ namespace BSLDaman.Controllers
             else
             {
                 objReq.LineId = 0;
+            }
+
+            if (!string.IsNullOrWhiteSpace(OrderNo))
+            {
+                objReq.OrderNo = OrderNo;
+            }
+            else
+            {
+                objReq.OrderNo = null;
             }
 
             var objResp = _MOBDALProduction.Fn_Get_ActiveLineWiseOrderNoDetails(objReq);
