@@ -1505,7 +1505,7 @@ namespace BSLDaman.DAL
                             int lastQtyNew = (int)remainingQty - secondlastQty;
                             objReq.Qty = secondlastQty;
                             lastQty = lastQtyNew;
-
+                            objReq.BunleQty = secondlastQty;
                         }
                         else
                         {
@@ -2182,7 +2182,7 @@ namespace BSLDaman.DAL
                 if (Con.State == ConnectionState.Closed)
                 { Con.Open(); }
 
-                string strSql = "SELECT BundleNo, SubSection, StyleCode, OrderNo, LotNo, PlyFrom, PlyTo, SizeName, LayID,";
+                string strSql = "SELECT Distinct BundleID, ColorName, Qty, BundleNo, SubSection, StyleCode, OrderNo, PlyFrom, PlyTo, SizeName, LayID,";
                 strSql = strSql + " CreatedBy, FORMAT(CreatedOn, 'dd-MMM-yyy') AS CreatedOn FROM BundleCompile WHERE 1=1";
                 if (!String.IsNullOrWhiteSpace(objReq.StyleCode))
                 {
@@ -2241,16 +2241,18 @@ namespace BSLDaman.DAL
                     while (ds.Tables[0].Rows.Count > i)
                     {
                         obj = new clsBundleCompile();
+                        obj.BundleID = Convert.ToInt64(ds.Tables[0].Rows[i]["BundleID"]);
                         obj.BundleNo = Convert.ToInt32(ds.Tables[0].Rows[i]["BundleNo"]);
                         obj.SubSection = Convert.ToString(ds.Tables[0].Rows[i]["SubSection"]);
                         obj.StyleCode = Convert.ToString(ds.Tables[0].Rows[i]["StyleCode"]);
                         obj.OrderNo = Convert.ToString(ds.Tables[0].Rows[i]["OrderNo"]);
-                        obj.LotNo = Convert.ToInt32(ds.Tables[0].Rows[i]["LotNo"]);
+                        //obj.LotNo = Convert.ToInt32(ds.Tables[0].Rows[i]["LotNo"]);
                         obj.PlyFrom = Convert.ToInt32(ds.Tables[0].Rows[i]["PlyFrom"]);
                         obj.PlyTo = Convert.ToInt32(ds.Tables[0].Rows[i]["PlyTo"]);
                         obj.SizeName = Convert.ToString(ds.Tables[0].Rows[i]["SizeName"]);
                         obj.LayID = Convert.ToInt32(ds.Tables[0].Rows[i]["LayID"]);
-                        
+                        obj.ColorName = Convert.ToString(ds.Tables[0].Rows[i]["ColorName"]);
+                        obj.Qty = Convert.ToInt32(ds.Tables[0].Rows[i]["Qty"]);
                         obj.CreatedBy = Convert.ToInt32(ds.Tables[0].Rows[i]["CreatedBy"]);
                         obj.CreatedOn = Convert.ToString(ds.Tables[0].Rows[i]["CreatedOn"]);
                         obj.vErrorCode = 200;
