@@ -19,7 +19,7 @@ namespace BSLDaman.Controllers
 
         [System.Web.Http.HttpGet]
         [System.Web.Http.Route("api/MOBProduction/Fn_Get_ActiveBundle")]
-        public List<clsBundleCompile> Fn_Get_ActiveBundle(string OrderNo = null, Int64 ? BundleID = null)
+        public List<clsBundleCompile> Fn_Get_ActiveBundle(string OrderNo = null, Int64 ? BundleID = null, string BundleIDStatus = null)
         {
             clsBundleCompile objReq = new clsBundleCompile();
 
@@ -39,6 +39,15 @@ namespace BSLDaman.Controllers
             else
             {
                 objReq.BundleID = 0;
+            }
+
+            if (!string.IsNullOrWhiteSpace(BundleIDStatus))
+            {
+                objReq.BundleIDStatus = BundleIDStatus;
+            }
+            else
+            {
+                objReq.BundleIDStatus = null;
             }
 
             var objResp = _MOBDALProduction.Fn_Get_ActiveBundle(objReq);
@@ -363,7 +372,27 @@ namespace BSLDaman.Controllers
                 objReq.LineId = 0;
             }
 
-            var objResp = _MOBDALProduction.Fn_Get_ActiveLineWiseOrderNoDetails(objReq);
+            var objResp = _MOBDALProduction.Fn_Get_All_OrderNoLineIDWise(objReq);
+            return objResp;
+        }
+
+
+        [System.Web.Http.HttpGet]
+        [System.Web.Http.Route("api/MOBProduction/Fn_Fetch_OperatorIDWiseBundleIDDetails")]
+        public List<clsBundleCompile> Fn_Fetch_OperatorIDWiseBundleIDDetails(Int32? AppEmpID = null)
+        {
+            clsBundleCompile objReq = new clsBundleCompile();
+
+            if (AppEmpID.HasValue)
+            {
+                objReq.AppEmpID = AppEmpID.Value;
+            }
+            else
+            {
+                objReq.AppEmpID = 0;
+            }
+
+            var objResp = _MOBDALProduction.Fn_Fetch_OperatorIDWiseBundleIDDetails(objReq);
             return objResp;
         }
 
