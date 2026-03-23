@@ -29,7 +29,8 @@ namespace BSLDaman.DAL
                 string strSql = "SELECT BC.BundleID AS BundleID, BC.LayID AS LayID, BC.BundleNo AS BundleNo,";
                 strSql = strSql + " BC.SizeName AS SizeName, BC.ColorName AS ColorName, BC.ShadeName AS ShadeName,";
                 strSql = strSql + " BC.Qty AS Qty, BC.PlyTo AS PlyTo, BC.PlyFrom AS PlyFrom, BC.LotNo AS LotNo,";
-                strSql = strSql + " BC.SubSection AS SubSection, BC.Dispatch AS Dispatch, OM.StyleCode AS StyleCode, OM.OrderNo AS OrderNo";
+                strSql = strSql + " BC.SubSection AS SubSection, BC.Dispatch AS Dispatch, OM.StyleCode AS StyleCode,";
+                strSql = strSql + " OM.OrderNo AS OrderNo, BC.BundleIDStatus AS BundleIDStatus";
                 strSql = strSql + " FROM BundleCompile AS BC";
                 strSql = strSql + " INNER JOIN OrderMaster AS OM";
                 strSql = strSql + " ON BC.OrderNo = OM.OrderNo WHERE 1=1";
@@ -41,6 +42,10 @@ namespace BSLDaman.DAL
                 if (objReq.BundleID > 0)
                 {
                     strSql = strSql + " AND BC.BundleID = " + objReq.BundleID;
+                }
+                if (!String.IsNullOrWhiteSpace(objReq.BundleIDStatus))
+                {
+                    strSql = strSql + " AND BC.BundleID = '" + objReq.BundleIDStatus + "'";
                 }
 
                 strSql = strSql + " ORDER BY BC.BundleID ASC";
@@ -81,6 +86,7 @@ namespace BSLDaman.DAL
                         obj.IsDispatch = Convert.ToBoolean(ds.Tables[0].Rows[i]["Dispatch"]);
                         obj.StyleCode = Convert.ToString(ds.Tables[0].Rows[i]["StyleCode"]);
                         obj.OrderNo = Convert.ToString(ds.Tables[0].Rows[i]["OrderNo"]);
+                        obj.BundleIDStatus = Convert.ToString(ds.Tables[0].Rows[i]["BundleIDStatus"]);
 
                         obj.vErrorCode = 200;
                         obj.vErrorMsg = "Success";
@@ -591,6 +597,11 @@ namespace BSLDaman.DAL
                     objResp.vErrorMsg = "Please Pass the Valid Supervisor Employee ID";
                     objResp.vErrorCode = 300;
                 }
+                else if (objReq.OrderNo == null || objReq.OrderNo == "")
+                {
+                    objResp.vErrorMsg = "Please Pass the Valid Order No";
+                    objResp.vErrorCode = 300;
+                }
                 else if (objReq.BundleID == null || objReq.BundleID == 0)
                 {
                     objResp.vErrorMsg = "Please Pass the Valid Bundle ID";
@@ -610,8 +621,9 @@ namespace BSLDaman.DAL
 
                     SqlCommand cmd = new SqlCommand("USP_MobileBundleApp", Con);
                     cmd.CommandType = CommandType.StoredProcedure;
-                    cmd.Parameters.AddWithValue("@BundleID", objReq.BundleID);
                     cmd.Parameters.AddWithValue("@SupervisorID", objReq.SupervisorID);
+                    cmd.Parameters.AddWithValue("@OrderNo", objReq.OrderNo);
+                    cmd.Parameters.AddWithValue("@BundleID", objReq.BundleID);
                     cmd.Parameters.AddWithValue("@AppEmpID", objReq.AppEmpID);
                     cmd.Parameters.AddWithValue("@QueryType", "UpdateAssignedBundleID");
 
@@ -1889,6 +1901,82 @@ namespace BSLDaman.DAL
             {
                 obj.vErrorCode = 500;
                 Logger.WriteLog("Function Name : Fn_Get_All_OrderNoLineIDWise", " " + "Error Msg : " + exp.Message.ToString(), new StackTrace(exp, true));
+                obj.vErrorMsg = exp.Message.ToString();
+                objResp.Add(obj);
+            }
+            finally
+            {
+                Con.Close();
+            }
+            return objResp;
+        }
+
+
+
+        public List<clsBundleCompile> Fn_Fetch_OperatorIDWiseBundleIDDetails(clsBundleCompile objReq)
+        {
+            var objResp = new List<clsBundleCompile>();
+            var obj = new clsBundleCompile();
+            try
+            {
+                if (Con.State == ConnectionState.Broken)
+                { Con.Close(); }
+                if (Con.State == ConnectionState.Closed)
+                { Con.Open(); }
+
+                string strSql = "SELECT LM.LineId AS LineId, ED.LineName AS LineName,";
+                strSql = strSql + " LM.LineStatus AS LineStatus, BC.OrderNo AS OrderNo,";
+                strSql = strSql + " BC.BundleID AS BundleID, BC.StyleCode AS StyleCode,";
+                strSql = strSql + " BC.BundleIDStatus AS BundleIDStatus, BC.Qty AS Qty, BC.AppEmpID AS AppEmpID";
+                strSql = strSql + " FROM BundleCompile AS BC";
+                strSql = strSql + " INNER JOIN EmployeeDetail AS ED";
+                strSql = strSql + " ON BC.AppEmpID = ED.Code";
+                strSql = strSql + " INNER JOIN LineMaster AS LM";
+                strSql = strSql + " ON LM.LineName = ED.LineName";
+                strSql = strSql + " INNER JOIN OrderMaster AS OM";
+                strSql = strSql + " ON OM.OrderNo = BC.OrderNo";
+                strSql = strSql + " WHERE 1=1 AND BC.AppEmpID = " + objReq.AppEmpID;
+
+                SqlCommand cmd = new SqlCommand(strSql, Con);
+                cmd.CommandType = CommandType.Text;
+
+                SqlDataAdapter da = new SqlDataAdapter(cmd);
+                DataSet ds = new DataSet();
+                da.Fill(ds);
+                int i = 0;
+
+                if (ds.Tables[0].Rows.Count > 0)
+                {
+                    while (ds.Tables[0].Rows.Count > i)
+                    {
+                        obj = new clsBundleCompile();
+                        obj.LineId = Convert.ToInt64(ds.Tables[0].Rows[i]["LineId"]);
+                        obj.LineName = Convert.ToString(ds.Tables[0].Rows[i]["LineName"]);
+                        obj.OrderNo = Convert.ToString(ds.Tables[0].Rows[i]["OrderNo"]);
+                        obj.LineStatus = Convert.ToString(ds.Tables[0].Rows[i]["LineStatus"]);
+                        obj.BundleID = Convert.ToInt64(ds.Tables[0].Rows[i]["BundleID"]);
+                        obj.StyleCode = Convert.ToString(ds.Tables[0].Rows[i]["StyleCode"]);
+                        obj.BundleIDStatus = Convert.ToString(ds.Tables[0].Rows[i]["BundleIDStatus"]);
+                        obj.Qty = Convert.ToInt32(ds.Tables[0].Rows[i]["Qty"]);
+                        obj.AppEmpID = Convert.ToInt32(ds.Tables[0].Rows[i]["AppEmpID"]);
+
+                        obj.vErrorCode = 200;
+                        obj.vErrorMsg = "Success";
+                        objResp.Add(obj);
+                        i++;
+                    }
+                }
+                else
+                {
+                    obj.vErrorCode = 404;
+                    obj.vErrorMsg = "Operator/Worker ID Bundle ID details records are not found.";
+                    objResp.Add(obj);
+                }
+            }
+            catch (Exception exp)
+            {
+                obj.vErrorCode = 500;
+                Logger.WriteLog("Function Name : Fn_Fetch_OperatorIDWiseBundleIDDetails", " " + "Error Msg : " + exp.Message.ToString(), new StackTrace(exp, true));
                 obj.vErrorMsg = exp.Message.ToString();
                 objResp.Add(obj);
             }
