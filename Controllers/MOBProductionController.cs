@@ -55,16 +55,6 @@ namespace BSLDaman.Controllers
         }
 
 
-        [System.Web.Http.HttpPut]
-        [System.Web.Http.Route("api/MOBProduction/Fn_Update_BundleID_By_EmpID")]
-        public clsBundleCompile Fn_Update_BundleID_By_EmpID(clsBundleCompile objReq)
-        {
-            var objResp = new clsBundleCompile();
-            objResp = _MOBDALProduction.Fn_Update_BundleID_By_EmpID(objReq);
-            return objResp;
-        }
-
-
         [System.Web.Http.HttpGet]
         [System.Web.Http.Route("api/MOBProduction/Fn_Get_OperationNumber")]
         public List<clsOPBreackDownDetail> Fn_Get_OperationNumber(int? OpNo = null)
