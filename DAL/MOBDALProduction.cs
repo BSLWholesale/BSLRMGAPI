@@ -31,8 +31,8 @@ namespace BSLDaman.DAL
                 strSql = strSql + " BC.Qty AS Qty, BC.PlyTo AS PlyTo, BC.PlyFrom AS PlyFrom, BC.LotNo AS LotNo,";
                 strSql = strSql + " BC.SubSection AS SubSection, BC.Dispatch AS Dispatch, OM.StyleCode AS StyleCode,";
                 strSql = strSql + " OM.OrderNo AS OrderNo, BC.BundleIDStatus AS BundleIDStatus,";
-                strSql = strSql + " FORMAT(BC.SupervisorAssignedDate, 'dd-MMM-yyyy') AS SupervisorAssignedDate,";
-                strSql = strSql + " FORMAT(BC.AppStartTime, 'dd-MMM-yyyy') AS AppStartTime";
+                strSql = strSql + " FORMAT(BC.SupervisorAssignedDate, 'dd-MMM-yyyy HH:mm:ss') AS SupervisorAssignedDate,";
+                strSql = strSql + " FORMAT(BC.AppStartTime, 'dd-MMM-yyyy HH:mm:ss') AS AppStartTime";
                 strSql = strSql + " FROM BundleCompile AS BC";
                 strSql = strSql + " INNER JOIN OrderMaster AS OM";
                 strSql = strSql + " ON BC.OrderNo = OM.OrderNo WHERE 1=1";
