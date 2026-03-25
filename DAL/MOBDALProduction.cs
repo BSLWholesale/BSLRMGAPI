@@ -1898,7 +1898,10 @@ namespace BSLDaman.DAL
                 string strSql = "SELECT LM.LineId AS LineId, ED.LineName AS LineName,";
                 strSql = strSql + " LM.LineStatus AS LineStatus, BC.OrderNo AS OrderNo,";
                 strSql = strSql + " BC.BundleID AS BundleID, BC.StyleCode AS StyleCode,";
-                strSql = strSql + " BC.BundleIDStatus AS BundleIDStatus, BC.Qty AS Qty, BC.AppEmpID AS AppEmpID";
+                strSql = strSql + " BC.BundleIDStatus AS BundleIDStatus, BC.Qty AS Qty, BC.AppEmpID AS AppEmpID,";
+                strSql = strSql + " BC.BundleNo AS BundleNo, BC.SizeName AS SizeName, BC.ColorName AS ColorName,";
+                strSql = strSql + " BC.ShadeName AS ShadeName, BC.PlyFrom AS PlyFrom, BC.PlyTo AS PlyTo,";
+                strSql = strSql + " BC.LotNo AS LotNo, BC.SubSection AS SubSection, BC.LayID AS LayID";
                 strSql = strSql + " FROM BundleCompile AS BC";
                 strSql = strSql + " INNER JOIN EmployeeDetail AS ED";
                 strSql = strSql + " ON BC.AppEmpID = ED.Code";
@@ -1930,6 +1933,15 @@ namespace BSLDaman.DAL
                         obj.BundleIDStatus = Convert.ToString(ds.Tables[0].Rows[i]["BundleIDStatus"]);
                         obj.Qty = Convert.ToInt32(ds.Tables[0].Rows[i]["Qty"]);
                         obj.AppEmpID = Convert.ToInt32(ds.Tables[0].Rows[i]["AppEmpID"]);
+                        obj.BundleNo = Convert.ToInt32(ds.Tables[0].Rows[i]["BundleNo"]);
+                        obj.SizeName = Convert.ToString(ds.Tables[0].Rows[i]["SizeName"]);
+                        obj.ColorName = Convert.ToString(ds.Tables[0].Rows[i]["ColorName"]);
+                        obj.ShadeName = Convert.ToString(ds.Tables[0].Rows[i]["ShadeName"]);
+                        obj.PlyFrom = Convert.ToInt32(ds.Tables[0].Rows[i]["PlyFrom"]);
+                        obj.PlyTo = Convert.ToInt32(ds.Tables[0].Rows[i]["PlyTo"]);
+                        obj.LotNo = Convert.ToInt32(ds.Tables[0].Rows[i]["LotNo"]);
+                        obj.SubSection = Convert.ToString(ds.Tables[0].Rows[i]["SubSection"]);
+                        obj.LayID = Convert.ToInt64(ds.Tables[0].Rows[i]["LayID"]);
 
                         obj.vErrorCode = 200;
                         obj.vErrorMsg = "Success";
