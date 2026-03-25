@@ -30,7 +30,9 @@ namespace BSLDaman.DAL
                 strSql = strSql + " BC.SizeName AS SizeName, BC.ColorName AS ColorName, BC.ShadeName AS ShadeName,";
                 strSql = strSql + " BC.Qty AS Qty, BC.PlyTo AS PlyTo, BC.PlyFrom AS PlyFrom, BC.LotNo AS LotNo,";
                 strSql = strSql + " BC.SubSection AS SubSection, BC.Dispatch AS Dispatch, OM.StyleCode AS StyleCode,";
-                strSql = strSql + " OM.OrderNo AS OrderNo, BC.BundleIDStatus AS BundleIDStatus";
+                strSql = strSql + " OM.OrderNo AS OrderNo, BC.BundleIDStatus AS BundleIDStatus,";
+                strSql = strSql + " FORMAT(BC.SupervisorAssignedDate, 'dd-MMM-yyyy') AS SupervisorAssignedDate,";
+                strSql = strSql + " FORMAT(BC.AppStartTime, 'dd-MMM-yyyy') AS AppStartTime";
                 strSql = strSql + " FROM BundleCompile AS BC";
                 strSql = strSql + " INNER JOIN OrderMaster AS OM";
                 strSql = strSql + " ON BC.OrderNo = OM.OrderNo WHERE 1=1";
@@ -86,6 +88,8 @@ namespace BSLDaman.DAL
                         obj.IsDispatch = Convert.ToBoolean(ds.Tables[0].Rows[i]["Dispatch"]);
                         obj.StyleCode = Convert.ToString(ds.Tables[0].Rows[i]["StyleCode"]);
                         obj.OrderNo = Convert.ToString(ds.Tables[0].Rows[i]["OrderNo"]);
+                        obj.SupervisorAssignedDate = Convert.ToString(ds.Tables[0].Rows[i]["SupervisorAssignedDate"]);
+                        obj.AppStartTime = Convert.ToString(ds.Tables[0].Rows[i]["AppStartTime"]);
                         obj.BundleIDStatus = Convert.ToString(ds.Tables[0].Rows[i]["BundleIDStatus"]);
 
                         obj.vErrorCode = 200;
@@ -115,52 +119,6 @@ namespace BSLDaman.DAL
             return objResp;
         }
 
-
-        public clsBundleCompile Fn_Update_BundleID_By_EmpID(clsBundleCompile objReq)
-        {
-            var objResp = new clsBundleCompile();
-            try
-            {
-                if (Con.State == ConnectionState.Broken)
-                { Con.Close(); }
-                if (Con.State == ConnectionState.Closed)
-                { Con.Open(); }
-
-                SqlCommand cmd = new SqlCommand("USP_MobileBundleApp", Con);
-                cmd.CommandType = CommandType.StoredProcedure;
-
-                cmd.Parameters.AddWithValue("@BundleID", objReq.BundleID);
-                cmd.Parameters.AddWithValue("@AppEmpID", objReq.AppEmpID);
-                cmd.Parameters.AddWithValue("@AppStartTime", objReq.AppStartTime);
-                cmd.Parameters.AddWithValue("@ModifiedBy", objReq.ModifiedBy);
-                cmd.Parameters.AddWithValue("@QueryType", "UpdateBundleDetails");
-
-                using (SqlDataReader dr = cmd.ExecuteReader())
-                {
-                    if (dr.Read())
-                    {
-                        objResp.vErrorCode = Convert.ToInt32(dr["StatusCode"]);
-                        objResp.vErrorMsg = dr["Message"].ToString();
-                    }
-                    else
-                    {
-                        objResp.vErrorCode = 400;
-                        objResp.vErrorMsg = "Updating Failed.";
-                    }
-                }
-            }
-            catch (Exception exp)
-            {
-                objResp.vErrorCode = 500;
-                objResp.vErrorMsg = exp.Message.ToString();
-                Logger.WriteLog("Function Name : Fn_Update_BundleID_By_EmpID", "Error Msg : " + exp.Message.ToString(), new StackTrace(exp, true));
-            }
-            finally
-            {
-                Con.Close();
-            }
-            return objResp;           
-        }
 
 
         public List<clsOPBreackDownDetail> Fn_Get_OperationNumber(clsOPBreackDownDetail objReq)
