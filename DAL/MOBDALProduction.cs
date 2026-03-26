@@ -120,7 +120,6 @@ namespace BSLDaman.DAL
         }
 
 
-
         public List<clsOPBreackDownDetail> Fn_Get_OperationNumber(clsOPBreackDownDetail objReq)
         {
             var objResp = new List<clsOPBreackDownDetail>();
@@ -1960,6 +1959,76 @@ namespace BSLDaman.DAL
             {
                 obj.vErrorCode = 500;
                 Logger.WriteLog("Function Name : Fn_Fetch_OperatorIDWiseBundleIDDetails", " " + "Error Msg : " + exp.Message.ToString(), new StackTrace(exp, true));
+                obj.vErrorMsg = exp.Message.ToString();
+                objResp.Add(obj);
+            }
+            finally
+            {
+                Con.Close();
+            }
+            return objResp;
+        }
+
+
+        public List<clsOrderMaster> Fn_Fetch_All_OrderNumbers(clsOrderMaster objReq)
+        {
+            var objResp = new List<clsOrderMaster>();
+            var obj = new clsOrderMaster();
+            try
+            {
+                if (Con.State == ConnectionState.Broken)
+                { Con.Close(); }
+                if (Con.State == ConnectionState.Closed)
+                { Con.Open(); }
+
+                string strSql = "SELECT OrderNo, Qty, BundleQty, FORMAT(OrderDate, 'dd-MMM-yyyy HH:mm:ss') AS OrderDate,";
+                strSql = strSql + " StyleCode, FORMAT(CreatedOn, 'dd-MMM-yyyy HH:mm:ss') AS CreatedOn, CreatedBy,";
+                strSql = strSql + " OrderStatus FROM OrderMaster WHERE 1=1";
+
+                if (!String.IsNullOrWhiteSpace(objReq.OrderNo))
+                {
+                    strSql = strSql + " AND OrderNo = '" + objReq.OrderNo + "'";
+                }
+
+                SqlCommand cmd = new SqlCommand(strSql, Con);
+                cmd.CommandType = CommandType.Text;
+
+                SqlDataAdapter da = new SqlDataAdapter(cmd);
+                DataSet ds = new DataSet();
+                da.Fill(ds);
+                int i = 0;
+
+                if (ds.Tables[0].Rows.Count > 0)
+                {
+                    while (ds.Tables[0].Rows.Count > i)
+                    {
+                        obj = new clsOrderMaster();
+                        obj.OrderNo = Convert.ToString(ds.Tables[0].Rows[i]["OrderNo"]);
+                        obj.Qty = Convert.ToInt32(ds.Tables[0].Rows[i]["Qty"]);
+                        obj.BundleQty = Convert.ToInt32(ds.Tables[0].Rows[i]["BundleQty"]);
+                        obj.OrderDate = Convert.ToString(ds.Tables[0].Rows[i]["OrderDate"]);
+                        obj.StyleCode = Convert.ToString(ds.Tables[0].Rows[i]["StyleCode"]);
+                        obj.CreatedOn = Convert.ToString(ds.Tables[0].Rows[i]["CreatedOn"]);
+                        obj.CreatedBy = Convert.ToInt32(ds.Tables[0].Rows[i]["CreatedBy"]);
+                        obj.OrderStatus = Convert.ToString(ds.Tables[0].Rows[i]["OrderStatus"]);
+
+                        obj.vErrorCode = 200;
+                        obj.vErrorMsg = "Success";
+                        objResp.Add(obj);
+                        i++;
+                    }
+                }
+                else
+                {
+                    obj.vErrorCode = 404;
+                    obj.vErrorMsg = "Order Number records are not found.";
+                    objResp.Add(obj);
+                }
+            }
+            catch (Exception exp)
+            {
+                obj.vErrorCode = 500;
+                Logger.WriteLog("Function Name : Fn_Fetch_All_OrderNumbers", " " + "Error Msg : " + exp.Message.ToString(), new StackTrace(exp, true));
                 obj.vErrorMsg = exp.Message.ToString();
                 objResp.Add(obj);
             }
