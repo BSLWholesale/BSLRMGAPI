@@ -452,25 +452,33 @@ namespace BSLDaman.DAL
                 if (Con.State == ConnectionState.Closed)
                 { Con.Open(); }
 
-                string strSql = "SELECT EM.EmpId AS EmpId, EM.EmpName AS EmpName, EM.EmpGender AS EmpGender, EM.EmpMobile AS EmpMobile,";
-                strSql = strSql + " EM.EmpGrade AS EmpGrade, EM.EmpRole AS EmpRole, ED.Units AS EmpLocation, ED.LineName AS LineName";
+                string strSql = "SELECT EM.EmpId AS EmpId, EM.EmpName AS EmpName, EM.EmpGender AS EmpGender,";
+                strSql = strSql + " EM.EmpMobile AS EmpMobile, EM.EmpGrade AS EmpGrade, EM.EmpRole AS EmpRole,";
+                strSql = strSql + " ED.Units AS EmpLocation, ED.LineName AS LineName, LM.LineId AS LineId";
                 strSql = strSql + " FROM EmployeeMaster AS EM";
                 strSql = strSql + " INNER JOIN EmployeeDetail AS ED";
                 strSql = strSql + " ON EM.EmpId = ED.Code";
+                strSql = strSql + " INNER JOIN LineMaster AS LM";
+                strSql = strSql + " ON LM.LineName = ED.LineName";
                 strSql = strSql + " WHERE EM.IsActive = 1 AND EM.EmpRole = 'Operator'";
 
                 if (objReq.nEmpId > 0)
                 {
-                    strSql = strSql + " AND EM.EmpId = @EmpId";
+                    strSql = strSql + " AND EM.EmpId = " + objReq.nEmpId;
+                }
+
+                if (objReq.LineId > 0)
+                {
+                    strSql = strSql + " AND LM.LineId = " + objReq.LineId;
                 }
 
                 SqlCommand cmd = new SqlCommand(strSql, Con);
                 cmd.CommandType = CommandType.Text;
 
-                if (objReq.nEmpId > 0)
-                {
-                    cmd.Parameters.AddWithValue("@EmpId", objReq.nEmpId);
-                }
+                //if (objReq.nEmpId > 0)
+                //{
+                //    cmd.Parameters.AddWithValue("@EmpId", objReq.nEmpId);
+                //}
 
                 SqlDataAdapter da = new SqlDataAdapter(cmd);
                 DataSet ds = new DataSet();
@@ -490,6 +498,7 @@ namespace BSLDaman.DAL
                         obj.EmpRole = Convert.ToString(ds.Tables[0].Rows[i]["EmpRole"]);
                         obj.EmpLocation = Convert.ToString(ds.Tables[0].Rows[i]["EmpLocation"]);
                         obj.LineName = Convert.ToString(ds.Tables[0].Rows[i]["LineName"]);
+                        obj.LineId = Convert.ToInt64(ds.Tables[0].Rows[i]["LineId"]);
                         //obj.IsActive = Convert.ToBoolean(ds.Tables[0].Rows[i]["IsActive"]);
 
                         obj.vErrorMsg = "Success";
