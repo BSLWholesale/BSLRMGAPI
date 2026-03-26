@@ -436,6 +436,7 @@ namespace BSLDaman.Models
         public Int64 EmpOperatorCount { get; set; }
         public string EmpOperatorStatus { get; set; }
         public string LineName { get; set; }
+        public Int64 LineId { get; set; }
         public string vErrorMsg { get; set; }
         public int vErrorCode { get; set; }
 
