@@ -387,5 +387,25 @@ namespace BSLDaman.Controllers
         }
 
 
+        [System.Web.Http.HttpGet]
+        [System.Web.Http.Route("api/MOBProduction/Fn_Fetch_All_OrderNumbers")]
+        public List<clsOrderMaster> Fn_Fetch_All_OrderNumbers(string OrderNo = null)
+        {
+            clsOrderMaster objReq = new clsOrderMaster();
+
+            if (!string.IsNullOrWhiteSpace(OrderNo))
+            {
+                objReq.OrderNo = OrderNo;
+            }
+            else
+            {
+                objReq.OrderNo = null;
+            }
+
+            var objResp = _MOBDALProduction.Fn_Fetch_All_OrderNumbers(objReq);
+            return objResp;
+        }
+
+
     }
 }
