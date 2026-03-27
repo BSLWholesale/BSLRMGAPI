@@ -599,16 +599,16 @@ namespace BSLDaman.DAL
 
                 if (objReq.nEmpId > 0)
                 {
-                    strSql = strSql + " AND EmpId = @EmpId";
+                    strSql = strSql + " AND EmpId = " + objReq.nEmpId;
                 }
 
                 SqlCommand cmd = new SqlCommand(strSql, Con);
                 cmd.CommandType = CommandType.Text;
 
-                if (objReq.nEmpId > 0)
-                {
-                    cmd.Parameters.AddWithValue("@EmpId", objReq.nEmpId);
-                }
+                //if (objReq.nEmpId > 0)
+                //{
+                //    cmd.Parameters.AddWithValue("@EmpId", objReq.nEmpId);
+                //}
 
                 SqlDataAdapter da = new SqlDataAdapter(cmd);
                 DataSet ds = new DataSet();
