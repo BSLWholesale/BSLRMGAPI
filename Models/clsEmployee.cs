@@ -361,6 +361,7 @@ namespace BSLDaman.Models
         public string LineName { get; set; }
         public Int64 LineId { get; set; }
         public string LineStatus { get; set; }
+        public Int64 OperationNo { get; set; }
         public string vErrorMsg { get; set; }
         public int vErrorCode { get; set; }
     }
