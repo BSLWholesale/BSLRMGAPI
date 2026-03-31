@@ -106,7 +106,17 @@ namespace BSLDaman.Controllers
             var objResp = new List<clsResponseDropdown>();
             objResp = _DALEmployee.Fn_Fill_DropdownList(objReq);
             return objResp;
-
         }
+
+
+        [System.Web.Http.HttpPost]
+        [System.Web.Http.Route("api/Employee/Fn_Get_DashboardAttendenceEmpOperatorCount")]
+        public List<clsDashboardEmployeeCount> Fn_Get_DashboardAttendenceEmpOperatorCount(clsDashboardEmployeeCount objReq)
+        {
+            var objResp = new List<clsDashboardEmployeeCount>();
+            objResp = _DALEmployee.Fn_Get_DashboardAttendenceEmpOperatorCount(objReq);
+            return objResp;
+        }
+
     }
 }
