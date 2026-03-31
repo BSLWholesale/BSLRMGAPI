@@ -446,4 +446,13 @@ namespace BSLDaman.Models
     }
 
 
+    public class clsDashboardEmployeeCount
+    {
+        public string EmpInDateTime { get; set; }
+        public string UnitName { get; set; }
+        public Int32 EmployeeCount { get; set; }
+        public string vErrorMsg { get; set; }
+    }
+
+
 }
