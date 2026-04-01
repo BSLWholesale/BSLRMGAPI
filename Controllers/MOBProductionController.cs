@@ -417,6 +417,15 @@ namespace BSLDaman.Controllers
         }
 
 
+        [System.Web.Http.HttpGet]
+        [System.Web.Http.Route("api/MOBProduction/Fn_Fetch_FinishedTenBundleDetails")]
+        public List<clsBundleCompile> Fn_Fetch_FinishedTenBundleDetails(clsBundleCompile objReq)
+        {
+            var objResp = new List<clsBundleCompile>();
+            objResp = _MOBDALProduction.Fn_Fetch_FinishedTenBundleDetails(objReq);
+            return objResp;
+        }
+
 
     }
 }
