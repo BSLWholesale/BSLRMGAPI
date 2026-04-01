@@ -2076,15 +2076,18 @@ namespace BSLDaman.DAL
                 if (Con.State == ConnectionState.Closed)
                 { Con.Open(); }
 
-                string strSql = "SELECT TOP 10 BC.BundleID AS BundleID, BC.BundleNo AS BundleNo, BC.SizeName AS SizeName,";
+                string strSql = "SELECT TOP 10 BCD.BundleID AS BundleID, BC.BundleNo AS BundleNo, BCD.OperationNo AS OperationNo, BC.SizeName AS SizeName,";
                 strSql = strSql + " BC.ColorName AS ColorName, BC.Qty AS Qty, BC.PlyFrom AS PlyFrom, BC.PlyTo AS PlyTo, BC.LotNo AS LotNo,";
                 strSql = strSql + " BC.SubSection AS SubSection, BC.StyleCode AS StyleCode, OM.OrderNo AS OrderNo,";
                 strSql = strSql + " BC.LayID AS LayID, BC.BundleIDStatus AS BundleIDStatus, BC.UpdateType AS UpdateType";
                 strSql = strSql + " FROM OrderMaster AS OM";
                 strSql = strSql + " INNER JOIN BundleCompile AS BC";
                 strSql = strSql + " ON OM.OrderNo = BC.OrderNo";
-                strSql = strSql + " WHERE BC.BundleIDStatus = 'In Process' AND BC.AppEmpID = " + objReq.AppEmpID;
-                strSql = strSql + " ORDER BY BC.BundleID DESC";
+                strSql = strSql + " INNER JOIN BundleCompileDetail AS BCD";
+                strSql = strSql + " ON BC.BundleID = BCD.BundleID";
+                strSql = strSql + " WHERE BCD.BundleIDStatus = 'Assigned' AND BCD.AppEmpID = " + objReq.AppEmpID;
+                strSql = strSql + " ORDER BY BCD.OperationNo DESC";
+                //strSql = strSql + " ORDER BY BC.BundleID DESC";
 
                 SqlCommand cmd = new SqlCommand(strSql, Con);
                 cmd.CommandType = CommandType.Text;
@@ -2101,6 +2104,7 @@ namespace BSLDaman.DAL
                         obj = new clsBundleCompile();
                         obj.BundleID = Convert.ToInt64(ds.Tables[0].Rows[i]["BundleID"]);
                         obj.BundleNo = Convert.ToInt32(ds.Tables[0].Rows[i]["BundleNo"]);
+                        obj.OperationNo = Convert.ToInt32(ds.Tables[0].Rows[i]["OperationNo"]);
                         obj.SizeName = Convert.ToString(ds.Tables[0].Rows[i]["SizeName"]);
                         obj.ColorName = Convert.ToString(ds.Tables[0].Rows[i]["ColorName"]);
                         obj.Qty = Convert.ToInt32(ds.Tables[0].Rows[i]["Qty"]);
@@ -2140,6 +2144,87 @@ namespace BSLDaman.DAL
             }
             return objResp;
         }
+
+
+        public List<clsBundleCompile> Fn_Fetch_FinishedTenBundleDetails(clsBundleCompile objReq)
+        {
+            var objResp = new List<clsBundleCompile>();
+            var obj = new clsBundleCompile();
+            try
+            {
+                if (Con.State == ConnectionState.Broken)
+                { Con.Close(); }
+                if (Con.State == ConnectionState.Closed)
+                { Con.Open(); }
+
+                string strSql = "SELECT TOP 10 BCD.BundleID AS BundleID, BC.BundleNo AS BundleNo, BCD.OperationNo AS OperationNo, BC.SizeName AS SizeName,";
+                strSql = strSql + " BC.ColorName AS ColorName, BC.Qty AS Qty, BC.PlyFrom AS PlyFrom, BC.PlyTo AS PlyTo, BC.LotNo AS LotNo,";
+                strSql = strSql + " BC.SubSection AS SubSection, BC.StyleCode AS StyleCode, OM.OrderNo AS OrderNo,";
+                strSql = strSql + " BC.LayID AS LayID, BCD.BundleIDStatus AS BundleIDStatus, BC.UpdateType AS UpdateType";
+                strSql = strSql + " FROM OrderMaster AS OM";
+                strSql = strSql + " INNER JOIN BundleCompile AS BC";
+                strSql = strSql + " ON OM.OrderNo = BC.OrderNo";
+                strSql = strSql + " INNER JOIN BundleCompileDetail AS BCD";
+                strSql = strSql + " ON BC.BundleID = BCD.BundleID";
+                strSql = strSql + " WHERE BC.BundleIDStatus = 'Finished' AND BCD.AppEmpID = " + objReq.AppEmpID;
+                strSql = strSql + " ORDER BY BCD.OperationNo DESC";
+
+                SqlCommand cmd = new SqlCommand(strSql, Con);
+                cmd.CommandType = CommandType.Text;
+
+                SqlDataAdapter da = new SqlDataAdapter(cmd);
+                DataSet ds = new DataSet();
+                da.Fill(ds);
+                int i = 0;
+
+                if (ds.Tables[0].Rows.Count > 0)
+                {
+                    while (ds.Tables[0].Rows.Count > i)
+                    {
+                        obj = new clsBundleCompile();
+                        obj.BundleID = Convert.ToInt64(ds.Tables[0].Rows[i]["BundleID"]);
+                        obj.BundleNo = Convert.ToInt32(ds.Tables[0].Rows[i]["BundleNo"]);
+                        obj.OperationNo = Convert.ToInt32(ds.Tables[0].Rows[i]["OperationNo"]);
+                        obj.SizeName = Convert.ToString(ds.Tables[0].Rows[i]["SizeName"]);
+                        obj.ColorName = Convert.ToString(ds.Tables[0].Rows[i]["ColorName"]);
+                        obj.Qty = Convert.ToInt32(ds.Tables[0].Rows[i]["Qty"]);
+                        obj.PlyFrom = Convert.ToInt32(ds.Tables[0].Rows[i]["PlyFrom"]);
+                        obj.PlyTo = Convert.ToInt32(ds.Tables[0].Rows[i]["PlyTo"]);
+                        obj.LotNo = Convert.ToInt32(ds.Tables[0].Rows[i]["LotNo"]);
+                        obj.SubSection = Convert.ToString(ds.Tables[0].Rows[i]["SubSection"]);
+                        obj.StyleCode = Convert.ToString(ds.Tables[0].Rows[i]["StyleCode"]);
+                        obj.OrderNo = Convert.ToString(ds.Tables[0].Rows[i]["OrderNo"]);
+                        obj.LayID = Convert.ToInt64(ds.Tables[0].Rows[i]["LayID"]);
+                        obj.BundleIDStatus = Convert.ToString(ds.Tables[0].Rows[i]["BundleIDStatus"]);
+                        obj.UpdateType = Convert.ToString(ds.Tables[0].Rows[i]["UpdateType"]);
+
+                        obj.vErrorCode = 200;
+                        obj.vErrorMsg = "Success";
+                        objResp.Add(obj);
+                        i++;
+                    }
+                }
+                else
+                {
+                    obj.vErrorCode = 400;
+                    obj.vErrorMsg = "Bundles ID finished records are not found.";
+                    objResp.Add(obj);
+                }
+            }
+            catch (Exception exp)
+            {
+                obj.vErrorCode = 500;
+                Logger.WriteLog("Function Name : Fn_Fetch_FinishedTenBundleDetails", " " + "Error Msg : " + exp.Message.ToString(), new StackTrace(exp, true));
+                obj.vErrorMsg = exp.Message.ToString();
+                objResp.Add(obj);
+            }
+            finally
+            {
+                Con.Close();
+            }
+            return objResp;
+        }
+
 
 
     }
