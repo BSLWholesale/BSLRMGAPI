@@ -103,5 +103,31 @@ namespace BSLDaman.Controllers
         }
 
         #endregion End 24-FEB-2026 Check_Exist_style_In_Master
+
+        #region Start Fn_Get_OB_BY_Product 30-MAR-2026
+
+        [System.Web.Http.HttpPost]
+        [System.Web.Http.Route("api/Order/Fn_Get_OB_BY_Product")]
+        public List<clsOPBreackDownDetail> Fn_Get_OB_BY_Product(clsOPBreackDownDetail objReq)
+        {
+            var objResp = new List<clsOPBreackDownDetail>();
+            objResp = _DALOrder.Fn_Get_OB_BY_Product(objReq);
+            return objResp;
+        }
+
+        #endregion End Fn_Get_OB_BY_Product 30-MAR-2026
+
+        #region Start Fn_Update_Rate_In_OB_Master 01-APR-2026
+
+        [System.Web.Http.HttpPost]
+        [System.Web.Http.Route("api/Order/Fn_Update_Rate_In_OB_Master")]
+        public clsOPBreackDownDetail Fn_Update_Rate_In_OB_Master(clsOPBreackDownDetail objReq)
+        {
+            var objResp = new clsOPBreackDownDetail();
+            objResp = _DALOrder.Fn_Update_Rate_In_OB_Master(objReq);
+            return objResp;
+        }
+
+        #endregion End Fn_Update_Rate_In_OB_Master 01-APR-2026
     }
 }
