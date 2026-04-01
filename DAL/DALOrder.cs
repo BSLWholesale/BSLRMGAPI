@@ -504,16 +504,25 @@ namespace BSLDaman.DAL
                 {
                     objResp.vErrorCode = 400;
                     objResp.vErrorMsg = "StyleCode is empty";
+                    return objResp;
                 }
                 else if (String.IsNullOrWhiteSpace(objReq.ProcessName))
                 {
                     objResp.vErrorCode = 400;
                     objResp.vErrorMsg = "ProcessName is empty";
+                    return objResp;
+                }
+                else if (objReq.oList == null)
+                {
+                    objResp.vErrorCode = 400;
+                    objResp.vErrorMsg = "Please select List";
+                    return objResp;
                 }
                 if (!String.IsNullOrWhiteSpace(objReq.vErrorMsg))
                 {
                     objResp.vErrorCode = objReq.vErrorCode;
                     objResp.vErrorMsg = objReq.vErrorMsg;
+                    return objResp;
                 }
                 else
                 {
@@ -803,5 +812,137 @@ namespace BSLDaman.DAL
             }
             return objResp;
         }
+
+        #region Start Fn_Get_OB_BY_Product 30-MAR-2026
+
+        public List<clsOPBreackDownDetail> Fn_Get_OB_BY_Product(clsOPBreackDownDetail objReq)
+        {
+            var objResp = new List<clsOPBreackDownDetail>();
+            var obj = new clsOPBreackDownDetail();
+            try
+            {
+                if (Con.State == ConnectionState.Broken)
+                { Con.Close(); }
+                if (Con.State == ConnectionState.Closed)
+                { Con.Open(); }
+
+                string strSql = "Select Distinct OperationNo AS OpNo, OperationName AS Descriptions, Machine,";
+                strSql = strSql + " SubSection, StdMin, Rate, SubProduct AS Product from OBMainMasterNew WHERE 1=1";
+                if (!String.IsNullOrWhiteSpace(objReq.Product))
+                {
+                    strSql = strSql + " AND SubProduct = @Product";
+                }
+                
+                strSql = strSql + " ORDER BY SubSection, OpNo ASC ";
+
+                SqlCommand cmd = new SqlCommand(strSql, Con);
+                cmd.CommandType = CommandType.Text;
+                if (!String.IsNullOrWhiteSpace(objReq.Product))
+                {
+                    cmd.Parameters.AddWithValue("@Product", objReq.Product);
+                }
+                
+
+                SqlDataAdapter da = new SqlDataAdapter(cmd);
+                DataSet ds = new DataSet();
+                da.Fill(ds);
+                int i = 0;
+                if (ds.Tables[0].Rows.Count > 0)
+                {
+                    while (ds.Tables[0].Rows.Count > i)
+                    {
+                        obj = new clsOPBreackDownDetail();
+                        obj.OpNo = Convert.ToInt32(ds.Tables[0].Rows[i]["OpNo"]);
+                        obj.Descriptions = Convert.ToString(ds.Tables[0].Rows[i]["Descriptions"]);
+                        obj.Machine = Convert.ToString(ds.Tables[0].Rows[i]["Machine"]);
+                        obj.SubSection = Convert.ToString(ds.Tables[0].Rows[i]["SubSection"]);
+                        string StdMin = Convert.ToString(ds.Tables[0].Rows[i]["StdMin"]);
+                        if (StdMin != "")
+                        {
+                            obj.StdMin = Convert.ToDecimal(ds.Tables[0].Rows[i]["StdMin"]);
+                        }
+                        string Rate = Convert.ToString(ds.Tables[0].Rows[i]["Rate"]);
+                        if (Rate != "")
+                        {
+                            obj.Rate = Convert.ToDecimal(ds.Tables[0].Rows[i]["Rate"]);
+                        }
+                        obj.Product = Convert.ToString(ds.Tables[0].Rows[i]["Product"]);
+
+                        obj.vErrorCode = 200;
+                        obj.vErrorMsg = "Success";
+                        objResp.Add(obj);
+                        i++;
+                    }
+                }
+                else
+                {
+                    obj.vErrorCode = 404;
+                    obj.vErrorMsg = "No Record found";
+                    objResp.Add(obj);
+                }
+
+            }
+            catch (Exception exp)
+            {
+                obj.vErrorCode = 500;
+                Logger.WriteLog("Function Name : Fn_Get_OB_BY_Product", " " + "Error Msg : " + exp.Message.ToString(), new StackTrace(exp, true));
+                obj.vErrorMsg = exp.Message.ToString();
+                objResp.Add(obj);
+            }
+            finally
+            {
+                Con.Close();
+            }
+            return objResp;
+        }
+
+        #endregion End Fn_Get_OB_BY_Product 30-MAR-2026
+
+        #region Start Fn_Update_Rate_In_OB_Master 02-APR-2026
+
+        public clsOPBreackDownDetail Fn_Update_Rate_In_OB_Master(clsOPBreackDownDetail objReq)
+        {
+            var objResp = new clsOPBreackDownDetail();
+            try
+            {
+
+                if (Con.State == ConnectionState.Broken)
+                { Con.Close(); }
+                if (Con.State == ConnectionState.Closed)
+                { Con.Open(); }
+
+                SqlCommand cmd = new SqlCommand("USP_OPEARTION_BREACK_DOWN", Con);
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@OpNo", objReq.OpNo);
+                cmd.Parameters.AddWithValue("@Rate", objReq.Rate);
+                cmd.Parameters.AddWithValue("@CreatedBy", objReq.CreatedBy);
+                cmd.Parameters.AddWithValue("@QueryType", "Update_OB_Master_Rate");
+                int i = 0;
+                i = cmd.ExecuteNonQuery();
+                if (i > 0)
+                {
+                    objResp.vErrorCode = 200;
+                    objResp.vErrorMsg = "Success";
+                }
+                else
+                {
+                    objResp.vErrorCode = 400;
+                    objResp.vErrorMsg = "Deleting Failed";
+                }
+            }
+            catch (Exception exp)
+            {
+                objResp.vErrorCode = 500;
+                Logger.WriteLog("Function Name : Fn_Update_Rate_In_OB_Master", " " + "Error Msg : " + exp.Message.ToString(), new StackTrace(exp, true));
+                objResp.vErrorMsg = exp.Message.ToString();
+            }
+            finally
+            {
+                Con.Close();
+            }
+            return objResp;
+        }
+
+        #endregion End Fn_Update_Rate_In_OB_Master 02-APR-2026
     }
 }
