@@ -2157,7 +2157,8 @@ namespace BSLDaman.DAL
                 if (Con.State == ConnectionState.Closed)
                 { Con.Open(); }
 
-                string strSql = "SELECT TOP 10 BCD.BundleID AS BundleID, BC.BundleNo AS BundleNo, BCD.OperationNo AS OperationNo, BC.SizeName AS SizeName,";
+                string strSql = "SELECT TOP 10 BCD.BundleID AS BundleID, BC.BundleNo AS BundleNo, BCD.OperationNo AS OperationNo,";
+                strSql = strSql + " OBM.SubSection AS SubSection, OBM.OperationName AS OperationName, OBM.SubProduct AS SubProduct, BC.SizeName AS SizeName,";
                 strSql = strSql + " BC.ColorName AS ColorName, BC.Qty AS Qty, BC.PlyFrom AS PlyFrom, BC.PlyTo AS PlyTo, BC.LotNo AS LotNo,";
                 strSql = strSql + " BC.SubSection AS SubSection, BC.StyleCode AS StyleCode, OM.OrderNo AS OrderNo,";
                 strSql = strSql + " BC.LayID AS LayID, BCD.BundleIDStatus AS BundleIDStatus, BC.UpdateType AS UpdateType";
@@ -2166,6 +2167,8 @@ namespace BSLDaman.DAL
                 strSql = strSql + " ON OM.OrderNo = BC.OrderNo";
                 strSql = strSql + " INNER JOIN BundleCompileDetail AS BCD";
                 strSql = strSql + " ON BC.BundleID = BCD.BundleID";
+                strSql = strSql + " INNER JOIN OBMainMasterNew AS OBM";
+                strSql = strSql + " ON OBM.OperationNo = BCD.OperationNo";
                 strSql = strSql + " WHERE BC.BundleIDStatus = 'Finished' AND BCD.AppEmpID = " + objReq.AppEmpID;
                 strSql = strSql + " ORDER BY BCD.OperationNo DESC";
 
