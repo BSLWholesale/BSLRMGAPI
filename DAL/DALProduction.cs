@@ -2010,7 +2010,7 @@ namespace BSLDaman.DAL
                 if (Con.State == ConnectionState.Closed)
                 { Con.Open(); }
 
-                string strSql = "SELECT D.SubSection From OperationBreackDown D INNER JOIN OperationBreackDownMaster M ";
+                string strSql = "SELECT D.SubSection From OperationBreackDownDetail D INNER JOIN OperationBreackDownMaster M ";
                 strSql = strSql + " ON D.MID = M.ID WHERE 1=1 ";
                 if (!String.IsNullOrWhiteSpace(objReq.StyleCode))
                 {
