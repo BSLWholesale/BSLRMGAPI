@@ -30,9 +30,9 @@ namespace BSLDaman.DAL
                 strSql = strSql + " BC.SizeName AS SizeName, BC.ColorName AS ColorName, BC.ShadeName AS ShadeName,";
                 strSql = strSql + " BC.Qty AS Qty, BC.PlyTo AS PlyTo, BC.PlyFrom AS PlyFrom, BC.LotNo AS LotNo,";
                 strSql = strSql + " BC.SubSection AS SubSection, BC.Dispatch AS Dispatch, OM.StyleCode AS StyleCode,";
-                strSql = strSql + " OM.OrderNo AS OrderNo, BC.BundleIDStatus AS BundleIDStatus,";
-                strSql = strSql + " FORMAT(BC.SupervisorAssignedDate, 'dd-MMM-yyyy HH:mm:ss') AS SupervisorAssignedDate,";
-                strSql = strSql + " FORMAT(BC.AppStartTime, 'dd-MMM-yyyy HH:mm:ss') AS AppStartTime";
+                strSql = strSql + " OM.OrderNo AS OrderNo, BC.BundleIDStatus AS BundleIDStatus, BC.SupervisorID AS SupervisorID,";
+                strSql = strSql + " FORMAT(BC.SupervisorAssignedDate, 'dd-MMM-yyyy HH:mm:ss') AS SupervisorAssignedDate";
+                //strSql = strSql + " FORMAT(BC.AppStartTime, 'dd-MMM-yyyy HH:mm:ss') AS AppStartTime";
                 strSql = strSql + " FROM BundleCompile AS BC";
                 strSql = strSql + " INNER JOIN OrderMaster AS OM";
                 strSql = strSql + " ON BC.OrderNo = OM.OrderNo WHERE 1=1";
@@ -47,22 +47,13 @@ namespace BSLDaman.DAL
                 }
                 if (!String.IsNullOrWhiteSpace(objReq.BundleIDStatus))
                 {
-                    strSql = strSql + " AND BC.BundleID = '" + objReq.BundleIDStatus + "'";
+                    strSql = strSql + " AND BC.BundleIDStatus = '" + objReq.BundleIDStatus + "'";
                 }
 
                 strSql = strSql + " ORDER BY BC.BundleID ASC";
 
                 SqlCommand cmd = new SqlCommand(strSql, Con);
                 cmd.CommandType = CommandType.Text;
-
-                //if (objReq.BundleID > 0)
-                //{
-                //    cmd.Parameters.AddWithValue("@BundleID", objReq.BundleID);
-                //}
-                //if (!String.IsNullOrWhiteSpace(objReq.OrderNo))
-                //{
-                //    cmd.Parameters.AddWithValue("@OrderNo", objReq.OrderNo);
-                //}
 
                 SqlDataAdapter da = new SqlDataAdapter(cmd);
                 DataSet ds = new DataSet();
@@ -89,7 +80,7 @@ namespace BSLDaman.DAL
                         obj.StyleCode = Convert.ToString(ds.Tables[0].Rows[i]["StyleCode"]);
                         obj.OrderNo = Convert.ToString(ds.Tables[0].Rows[i]["OrderNo"]);
                         obj.SupervisorAssignedDate = Convert.ToString(ds.Tables[0].Rows[i]["SupervisorAssignedDate"]);
-                        obj.AppStartTime = Convert.ToString(ds.Tables[0].Rows[i]["AppStartTime"]);
+                        //obj.AppStartTime = Convert.ToString(ds.Tables[0].Rows[i]["AppStartTime"]);
                         obj.BundleIDStatus = Convert.ToString(ds.Tables[0].Rows[i]["BundleIDStatus"]);
 
                         obj.vErrorCode = 200;
