@@ -512,7 +512,7 @@ namespace BSLDaman.DAL
                     objResp.vErrorMsg = "ProcessName is empty";
                     return objResp;
                 }
-                else if (objReq.oList == null)
+                else if (objReq.oList == null || objReq.oList.Count == 0)
                 {
                     objResp.vErrorCode = 400;
                     objResp.vErrorMsg = "Please select List";
@@ -557,7 +557,7 @@ namespace BSLDaman.DAL
                             {
                                 if (_oList.DetailID == 0 || _oList.DetailID == null)
                                 {
-                                    Fn_Get_MXID("OperationBreackDown", "DetailID");
+                                    Fn_Get_MXID("OperationBreackDownDetail", "DetailID");
                                     _oList.DetailID = mxID;
 
                                     //if (Con.State == ConnectionState.Broken)
@@ -649,7 +649,7 @@ namespace BSLDaman.DAL
                 string strSql = "SELECT OD.MID, OD.DetailID, OD.SeqNo, OD.OpNo, OD.Descriptions, OD.Machine, OD.SubSection,";
                 strSql = strSql + " OD.StdMin, OD.Rate, OD.Product, OD.Skill, OD.Grade, OD.Folder, OD.Seamlength, OD.IsDirect,";
                 strSql = strSql + " OD.ProgressPoint, OD.IsDispatch, OD.DependOPNO, OD.IsDS, OD.CreatedBy, OM.StyleCode, OM.ProcessName,";
-                strSql = strSql + " FORMAT(OD.CreatedOn, 'dd-MMM-yyy') AS CreatedOn FROM OperationBreackDown OD";
+                strSql = strSql + " FORMAT(OD.CreatedOn, 'dd-MMM-yyy') AS CreatedOn FROM OperationBreackDownDetail OD";
                 strSql = strSql + " INNER JOIN OperationBreackDownMaster OM ON OD.MID = OM.ID WHERE 1=1";
                 if (!String.IsNullOrWhiteSpace(objReq.ProcessName))
                 {
