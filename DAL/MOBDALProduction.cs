@@ -623,21 +623,21 @@ namespace BSLDaman.DAL
                         objResp.vErrorMsg = "Please Pass the Valid App Employee ID";
                         objResp.vErrorCode = 300;
                     }
-                    else if (objReq.OrderNo == null || objReq.OrderNo == "")
-                    {
-                        objResp.vErrorMsg = "Please Pass the Valid Order No";
-                        objResp.vErrorCode = 300;
-                    }
+                    //else if (objReq.OrderNo == null || objReq.OrderNo == "")
+                    //{
+                    //    objResp.vErrorMsg = "Please Pass the Valid Order No";
+                    //    objResp.vErrorCode = 300;
+                    //}
                     else if (objReq.BundleID == null || objReq.BundleID == 0)
                     {
                         objResp.vErrorMsg = "Please Pass the Valid Bundle ID";
                         objResp.vErrorCode = 300;
                     }
-                    else if (objReq.OperationNo == null || objReq.OperationNo == 0)
-                    {
-                        objResp.vErrorMsg = "Please Pass the Valid Operation Number";
-                        objResp.vErrorCode = 300;
-                    }
+                    //else if (objReq.OperationNo == null || objReq.OperationNo == 0)
+                    //{
+                    //    objResp.vErrorMsg = "Please Pass the Valid Operation Number";
+                    //    objResp.vErrorCode = 300;
+                    //}
                     else
                     {
                         if (Con.State == ConnectionState.Broken)
@@ -648,9 +648,9 @@ namespace BSLDaman.DAL
                         SqlCommand cmd = new SqlCommand("USP_MobileBundleApp", Con);
                         cmd.CommandType = CommandType.StoredProcedure;
                         cmd.Parameters.AddWithValue("@AppEmpID", objReq.AppEmpID);
-                        cmd.Parameters.AddWithValue("@OrderNo", objReq.OrderNo);
+                        //cmd.Parameters.AddWithValue("@OrderNo", objReq.OrderNo);
                         cmd.Parameters.AddWithValue("@BundleID", objReq.BundleID);
-                        cmd.Parameters.AddWithValue("@OperationNo", objReq.OperationNo);
+                        //cmd.Parameters.AddWithValue("@OperationNo", objReq.OperationNo);
                         cmd.Parameters.AddWithValue("@QueryType", "UpdateAppEmpStartBundleIDStatus");
 
                         using (SqlDataReader dr = cmd.ExecuteReader())
@@ -673,9 +673,9 @@ namespace BSLDaman.DAL
                     MOBDALProduction _MOBDALProduction = new MOBDALProduction();
                     var objBundleCompile = new clsBundleCompile();
                     objBundleCompile.AppEmpID = objReq.AppEmpID;
-                    objBundleCompile.OrderNo = objReq.OrderNo;
+                    //objBundleCompile.OrderNo = objReq.OrderNo;
                     objBundleCompile.BundleID = objReq.BundleID;
-                    objBundleCompile.OperationNo = objReq.OperationNo;
+                    //objBundleCompile.OperationNo = objReq.OperationNo;
                     objBundleCompile = _MOBDALProduction.Fn_Update_AppEmpStartEndBundleIDStatus(objBundleCompile);
                     objResp.vErrorCode = objBundleCompile.vErrorCode;
                     objResp.vErrorMsg = objBundleCompile.vErrorMsg;
@@ -1066,21 +1066,21 @@ namespace BSLDaman.DAL
                     objResp.vErrorMsg = "Please Pass the Valid App Employee ID";
                     objResp.vErrorCode = 300;
                 }
-                else if (objReq.OrderNo == null || objReq.OrderNo == "")
-                {
-                    objResp.vErrorMsg = "Please Pass the Valid Order No";
-                    objResp.vErrorCode = 300;
-                }
+                //else if (objReq.OrderNo == null || objReq.OrderNo == "")
+                //{
+                //    objResp.vErrorMsg = "Please Pass the Valid Order No";
+                //    objResp.vErrorCode = 300;
+                //}
                 else if (objReq.BundleID == null || objReq.BundleID == 0)
                 {
                     objResp.vErrorMsg = "Please Pass the Valid Bundle ID";
                     objResp.vErrorCode = 300;
                 }
-                else if (objReq.OperationNo == null || objReq.OperationNo == 0)
-                {
-                    objResp.vErrorMsg = "Please Pass the Valid Operation Number";
-                    objResp.vErrorCode = 300;
-                }
+                //else if (objReq.OperationNo == null || objReq.OperationNo == 0)
+                //{
+                //    objResp.vErrorMsg = "Please Pass the Valid Operation Number";
+                //    objResp.vErrorCode = 300;
+                //}
                 else
                 {
                     if (Con.State == ConnectionState.Broken)
@@ -1091,9 +1091,9 @@ namespace BSLDaman.DAL
                     SqlCommand cmd = new SqlCommand("USP_MobileBundleApp", Con);
                     cmd.CommandType = CommandType.StoredProcedure;
                     cmd.Parameters.AddWithValue("@AppEmpID", objReq.AppEmpID);
-                    cmd.Parameters.AddWithValue("@OrderNo", objReq.OrderNo);
+                    //cmd.Parameters.AddWithValue("@OrderNo", objReq.OrderNo);
                     cmd.Parameters.AddWithValue("@BundleID", objReq.BundleID);
-                    cmd.Parameters.AddWithValue("@OperationNo", objReq.OperationNo);
+                    //cmd.Parameters.AddWithValue("@OperationNo", objReq.OperationNo);
                     cmd.Parameters.AddWithValue("@QueryType", "UpdateAppEmpStartEndBundleIDStatus");
 
                     using (SqlDataReader dr = cmd.ExecuteReader())
