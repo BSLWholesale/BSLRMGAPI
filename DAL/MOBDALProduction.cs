@@ -555,11 +555,11 @@ namespace BSLDaman.DAL
                     objResp.vErrorMsg = "Please Pass the Valid Bundle ID";
                     objResp.vErrorCode = 300;
                 }
-                //else if (objReq.OperationNo == null || objReq.OperationNo == 0)
-                //{
-                //    objResp.vErrorMsg = "Please Pass the Valid Operation Number.";
-                //    objResp.vErrorCode = 300;
-                //}
+                else if (objReq.OperationNo == null || objReq.OperationNo == 0)
+                {
+                    objResp.vErrorMsg = "Please Pass the Valid Operation Number.";
+                    objResp.vErrorCode = 300;
+                }
                 else if (objReq.AppEmpID == null || objReq.AppEmpID == 0)
                 {
                     objResp.vErrorMsg = "Please Pass the Valid App Employee/Worker ID";
@@ -577,7 +577,7 @@ namespace BSLDaman.DAL
                     cmd.Parameters.AddWithValue("@SupervisorID", objReq.SupervisorID);
                     //cmd.Parameters.AddWithValue("@OrderNo", objReq.OrderNo);
                     cmd.Parameters.AddWithValue("@BundleID", objReq.BundleID);
-                    //cmd.Parameters.AddWithValue("@OperationNo", objReq.OperationNo);
+                    cmd.Parameters.AddWithValue("@OperationNo", objReq.OperationNo);
                     cmd.Parameters.AddWithValue("@AppEmpID", objReq.AppEmpID);
                     cmd.Parameters.AddWithValue("@QueryType", "UpdateAssignedBundleID");
 
