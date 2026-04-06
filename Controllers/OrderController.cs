@@ -129,5 +129,18 @@ namespace BSLDaman.Controllers
         }
 
         #endregion End Fn_Update_Rate_In_OB_Master 01-APR-2026
+
+        #region Start Fn_Add_New_OpNo 03-APR-2026
+
+        [System.Web.Http.HttpPost]
+        [System.Web.Http.Route("api/Order/Fn_Add_New_OpNo")]
+        public clsOPBreackDownDetail Fn_Add_New_OpNo(clsOPBreackDownDetail objReq)
+        {
+            var objResp = new clsOPBreackDownDetail();
+            objResp = _DALOrder.Fn_Add_New_OpNo(objReq);
+            return objResp;
+        }
+
+        #endregion End Fn_Add_New_OpNo 03-APR-2026
     }
 }

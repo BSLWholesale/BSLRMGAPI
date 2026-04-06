@@ -1421,13 +1421,19 @@ namespace BSLDaman.DAL
             var objResp = new clsBundleCompile();
             var subSectionList = Fn_Get_Subsection_List(objReq);
             string strCriteria = "";
-
+            
             var checkOPBreakDown = new clsOPBreackDownMaster();
             checkOPBreakDown.StyleCode = objReq.StyleCode;
             checkOPBreakDown.CreatedBy = objReq.CreatedBy;
             //checkOPBreakDown.ProcessName = "PRODUCTION";
             checkOPBreakDown = _DALOrder.Fn_Check_Exist_style_In_Master(checkOPBreakDown);
             if(checkOPBreakDown.vErrorMsg != "Success" && checkOPBreakDown.vErrorCode != 200)
+            {
+                objResp.vErrorCode = 404;
+                objResp.vErrorMsg = "Please upload subsection, then compile.";
+                return objResp;
+            }
+            if (subSectionList[0].vErrorMsg != "Success" && subSectionList[0].vErrorCode != 200)
             {
                 objResp.vErrorCode = 404;
                 objResp.vErrorMsg = "Please upload subsection, then compile.";
@@ -2017,7 +2023,13 @@ namespace BSLDaman.DAL
                     strSql = strSql + " AND M.StyleCode = @StyleCode";
                 }
 
-                strSql = strSql + " ORDER BY D.CreatedOn ASC ";
+                // strSql = strSql + " ORDER BY D.CreatedOn ASC ";
+                strSql = strSql + " ORDER BY ";
+                strSql = strSql + "CASE";
+                strSql = strSql + "    WHEN D.SubSection IN('Post Assembly', 'POST ASSEMBLY') THEN 1";
+                strSql = strSql + "    ELSE 0";
+                strSql = strSql + " END,";
+                strSql = strSql + " D.CreatedOn ASC; ";
 
                 SqlCommand cmd = new SqlCommand(strSql, Con);
                 cmd.CommandType = CommandType.Text;

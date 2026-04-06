@@ -497,6 +497,8 @@ namespace BSLDaman.DAL
         {
             var objResp = new clsOPBreackDownMaster();
 
+            var filteredList = objReq.oList.Where(x => x.SubSection == "Post Assmbly" || x.SubSection == "POST ASSEMBLY").ToList();
+
             try
             {
 
@@ -522,6 +524,12 @@ namespace BSLDaman.DAL
                 {
                     objResp.vErrorCode = objReq.vErrorCode;
                     objResp.vErrorMsg = objReq.vErrorMsg;
+                    return objResp;
+                }
+                if (filteredList.Count == 0)
+                {
+                    objResp.vErrorCode = 400;
+                    objResp.vErrorMsg = "Please Post Assmbly in SubSection";
                     return objResp;
                 }
                 else
@@ -827,7 +835,7 @@ namespace BSLDaman.DAL
                 { Con.Open(); }
 
                 string strSql = "Select Distinct OperationNo AS OpNo, OperationName AS Descriptions, Machine,";
-                strSql = strSql + " SubSection, StdMin, Rate, SubProduct AS Product from OBMainMasterNew WHERE 1=1";
+                strSql = strSql + " SubSection, StdMin, Rate, SubProduct AS Product from OBMainMasterNew WHERE 1=1 AND SubSection <> 'Null' ";
                 if (!String.IsNullOrWhiteSpace(objReq.Product))
                 {
                     strSql = strSql + " AND SubProduct = @Product";
@@ -944,5 +952,56 @@ namespace BSLDaman.DAL
         }
 
         #endregion End Fn_Update_Rate_In_OB_Master 02-APR-2026
+
+        #region Start Fn_Add_New_OpNo 03-APR-2026
+
+        public clsOPBreackDownDetail Fn_Add_New_OpNo (clsOPBreackDownDetail objReq)
+        {
+            var objResp = new clsOPBreackDownDetail();
+            try
+            {
+                if (Con.State == ConnectionState.Broken)
+                { Con.Close(); }
+                if (Con.State == ConnectionState.Closed)
+                { Con.Open(); }
+
+                SqlCommand cmd = new SqlCommand("USP_OPEARTION_BREACK_DOWN", Con);
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@Product", objReq.Product);
+                cmd.Parameters.AddWithValue("@Descriptions", objReq.Descriptions);
+                cmd.Parameters.AddWithValue("@OpNo", objReq.OpNo);
+                cmd.Parameters.AddWithValue("@Machine", objReq.Machine);
+                cmd.Parameters.AddWithValue("@SubSection", objReq.SubSection);
+                cmd.Parameters.AddWithValue("@StdMin", objReq.StdMin);
+                cmd.Parameters.AddWithValue("@Rate", objReq.Rate);
+                cmd.Parameters.AddWithValue("@CreatedBy", objReq.CreatedBy);
+                cmd.Parameters.AddWithValue("@QueryType", "Add_NEW_OPNo_In_OB_Master");
+                int i = 0;
+                i = cmd.ExecuteNonQuery();
+                if (i > 0)
+                {
+                    objResp.vErrorCode = 200;
+                    objResp.vErrorMsg = "Success";
+                }
+                else
+                {
+                    objResp.vErrorCode = 400;
+                    objResp.vErrorMsg = "Deleting Failed";
+                }
+            }
+            catch (Exception exp)
+            {
+                objResp.vErrorCode = 500;
+                Logger.WriteLog("Function Name : Fn_Add_New_OpNo", " " + "Error Msg : " + exp.Message.ToString(), new StackTrace(exp, true));
+                objResp.vErrorMsg = exp.Message.ToString();
+            }
+            finally
+            {
+                Con.Close();
+            }
+            return objResp;
+        }
+
+        #endregion End Fn_Add_New_OpNo 03-APR-2026
     }
 }
