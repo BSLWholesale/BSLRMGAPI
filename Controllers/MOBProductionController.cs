@@ -19,7 +19,7 @@ namespace BSLDaman.Controllers
 
         [System.Web.Http.HttpGet]
         [System.Web.Http.Route("api/MOBProduction/Fn_Get_ActiveBundle")]
-        public List<clsBundleCompile> Fn_Get_ActiveBundle(string OrderNo = null, Int64 ? BundleID = null, string BundleIDStatus = null)
+        public List<clsBundleCompile> Fn_Get_ActiveBundle(string OrderNo = null, Int64 ? OperationNo = null, Int64 ? BundleID = null, string BundleIDStatus = null)
         {
             clsBundleCompile objReq = new clsBundleCompile();
 
@@ -30,6 +30,15 @@ namespace BSLDaman.Controllers
             else
             {
                 objReq.OrderNo = null;
+            }
+
+            if (OperationNo.HasValue)
+            {
+                objReq.OperationNo = OperationNo.Value;
+            }
+            else
+            {
+                objReq.OperationNo = 0;
             }
 
             if (BundleID.HasValue)
