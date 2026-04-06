@@ -26,20 +26,37 @@ namespace BSLDaman.DAL
                 if (Con.State == ConnectionState.Closed)
                 { Con.Open(); }
 
-                string strSql = "SELECT BC.BundleID AS BundleID, BC.LayID AS LayID, BC.BundleNo AS BundleNo,";
-                strSql = strSql + " BC.SizeName AS SizeName, BC.ColorName AS ColorName, BC.ShadeName AS ShadeName,";
-                strSql = strSql + " BC.Qty AS Qty, BC.PlyTo AS PlyTo, BC.PlyFrom AS PlyFrom, BC.LotNo AS LotNo,";
-                strSql = strSql + " BC.SubSection AS SubSection, BC.Dispatch AS Dispatch, OM.StyleCode AS StyleCode,";
-                strSql = strSql + " OM.OrderNo AS OrderNo, BC.BundleIDStatus AS BundleIDStatus, BC.SupervisorID AS SupervisorID,";
-                strSql = strSql + " FORMAT(BC.SupervisorAssignedDate, 'dd-MMM-yyyy HH:mm:ss') AS SupervisorAssignedDate";
-                //strSql = strSql + " FORMAT(BC.AppStartTime, 'dd-MMM-yyyy HH:mm:ss') AS AppStartTime";
+                //string strSql = "SELECT BC.BundleID AS BundleID, BC.LayID AS LayID, BC.BundleNo AS BundleNo,";
+                //strSql = strSql + " BC.SizeName AS SizeName, BC.ColorName AS ColorName, BC.ShadeName AS ShadeName,";
+                //strSql = strSql + " BC.Qty AS Qty, BC.PlyTo AS PlyTo, BC.PlyFrom AS PlyFrom, BC.LotNo AS LotNo,";
+                //strSql = strSql + " BC.SubSection AS SubSection, BC.Dispatch AS Dispatch, OM.StyleCode AS StyleCode,";
+                //strSql = strSql + " OM.OrderNo AS OrderNo, BC.BundleIDStatus AS BundleIDStatus, BC.SupervisorID AS SupervisorID,";
+                //strSql = strSql + " FORMAT(BC.SupervisorAssignedDate, 'dd-MMM-yyyy HH:mm:ss') AS SupervisorAssignedDate";
+                ////strSql = strSql + " FORMAT(BC.AppStartTime, 'dd-MMM-yyyy HH:mm:ss') AS AppStartTime";
+                //strSql = strSql + " FROM BundleCompile AS BC";
+                //strSql = strSql + " INNER JOIN OrderMaster AS OM";
+                //strSql = strSql + " ON BC.OrderNo = OM.OrderNo WHERE 1=1";
+
+                string strSql = "SELECT BD.BundleID AS BundleID, BD.OperationNo AS OperationNo, BC.LayID AS LayID,";
+                strSql = strSql + " BC.BundleNo AS BundleNo, BC.SizeName AS SizeName, BC.ColorName AS ColorName, BC.ShadeName AS ShadeName,";
+                strSql = strSql + " BC.Qty AS Qty, BC.PlyTo AS PlyTo, BC.PlyFrom AS PlyFrom, BC.LotNo AS LotNo, BD.SubSection AS SubSection,";
+                strSql = strSql + " BC.Dispatch AS Dispatch, OM.StyleCode AS StyleCode, OM.OrderNo AS OrderNo, BC.SupervisorID AS SupervisorID,";
+                strSql = strSql + " FORMAT(BC.SupervisorAssignedDate, 'dd-MMM-yyyy HH:mm:ss') AS SupervisorAssignedDate, BD.AppEmpID AS AppEmpID,";
+                strSql = strSql + " BD.AppStartTime AS AppStartTime, BD.AppEndTime AS AppEndTime, BD.BundleIDStatus AS BundleIDStatus";
                 strSql = strSql + " FROM BundleCompile AS BC";
                 strSql = strSql + " INNER JOIN OrderMaster AS OM";
-                strSql = strSql + " ON BC.OrderNo = OM.OrderNo WHERE 1=1";
+                strSql = strSql + " ON BC.OrderNo = OM.OrderNo";
+                strSql = strSql + " INNER JOIN BundleCompileDetail AS BD";
+                strSql = strSql + " ON BD.BundleID = BC.BundleID";
+                strSql = strSql + " WHERE 1=1";
 
                 if (!String.IsNullOrWhiteSpace(objReq.OrderNo))
                 {
                     strSql = strSql + " AND OM.OrderNo = '" + objReq.OrderNo + "'";
+                }
+                if (objReq.OperationNo > 0)
+                {
+                    strSql = strSql + " AND BD.OperationNo = " + objReq.OperationNo;
                 }
                 if (objReq.BundleID > 0)
                 {
@@ -50,7 +67,7 @@ namespace BSLDaman.DAL
                     strSql = strSql + " AND BC.BundleIDStatus = '" + objReq.BundleIDStatus + "'";
                 }
 
-                strSql = strSql + " ORDER BY BC.BundleID ASC";
+                //strSql = strSql + " ORDER BY BC.BundleID ASC";
 
                 SqlCommand cmd = new SqlCommand(strSql, Con);
                 cmd.CommandType = CommandType.Text;
@@ -66,6 +83,7 @@ namespace BSLDaman.DAL
                     {
                         obj = new clsBundleCompile();
                         obj.BundleID = Convert.ToInt64(ds.Tables[0].Rows[i]["BundleID"]);
+                        obj.OperationNo = Convert.ToInt64(ds.Tables[0].Rows[i]["OperationNo"]);
                         obj.LayID = Convert.ToInt64(ds.Tables[0].Rows[i]["LayID"]);
                         obj.BundleNo = Convert.ToInt32(ds.Tables[0].Rows[i]["BundleNo"]);
                         obj.SizeName = Convert.ToString(ds.Tables[0].Rows[i]["SizeName"]);
@@ -79,9 +97,66 @@ namespace BSLDaman.DAL
                         obj.IsDispatch = Convert.ToBoolean(ds.Tables[0].Rows[i]["Dispatch"]);
                         obj.StyleCode = Convert.ToString(ds.Tables[0].Rows[i]["StyleCode"]);
                         obj.OrderNo = Convert.ToString(ds.Tables[0].Rows[i]["OrderNo"]);
-                        obj.SupervisorAssignedDate = Convert.ToString(ds.Tables[0].Rows[i]["SupervisorAssignedDate"]);
+                        
+                        if (ds.Tables[0].Rows[i]["SupervisorID"] == DBNull.Value)
+                        {
+                            obj.SupervisorID = 0;
+                        }
+                        else
+                        {
+                            obj.SupervisorID = Convert.ToInt32(ds.Tables[0].Rows[i]["SupervisorID"]);
+                        }
+
+                        if (ds.Tables[0].Rows[i]["SupervisorAssignedDate"] == null)
+                        {
+                            obj.SupervisorAssignedDate = string.Empty;
+                        }
+                        else
+                        {
+                            obj.SupervisorAssignedDate = Convert.ToString(ds.Tables[0].Rows[i]["SupervisorAssignedDate"]);
+                        }
+
+                        if (ds.Tables[0].Rows[i]["AppEmpID"] == DBNull.Value)
+                        {
+                            obj.AppEmpID = 0;
+                        }
+                        else
+                        {
+                            obj.AppEmpID = Convert.ToInt32(ds.Tables[0].Rows[i]["AppEmpID"]);
+                        }
+
+                        if (ds.Tables[0].Rows[i]["AppStartTime"] == null)
+                        {
+                            obj.AppStartTime = string.Empty;
+                        }
+                        else
+                        {
+                            obj.AppStartTime = Convert.ToString(ds.Tables[0].Rows[i]["AppStartTime"]);
+                        }
+
+                        if (ds.Tables[0].Rows[i]["AppEndTime"] == null)
+                        {
+                            obj.AppEndTime = string.Empty;
+                        }
+                        else
+                        {
+                            obj.AppEndTime = Convert.ToString(ds.Tables[0].Rows[i]["AppEndTime"]);
+                        }
+
+                        if (ds.Tables[0].Rows[i]["BundleIDStatus"] == null)
+                        {
+                            obj.BundleIDStatus = string.Empty;
+                        }
+                        else
+                        {
+                            obj.BundleIDStatus = Convert.ToString(ds.Tables[0].Rows[i]["BundleIDStatus"]);
+                        }
+
+                        //obj.SupervisorAssignedDate = Convert.ToString(ds.Tables[0].Rows[i]["SupervisorAssignedDate"]);
+                        //obj.AppEmpID = Convert.ToInt32(ds.Tables[0].Rows[i]["AppEmpID"]);
                         //obj.AppStartTime = Convert.ToString(ds.Tables[0].Rows[i]["AppStartTime"]);
-                        obj.BundleIDStatus = Convert.ToString(ds.Tables[0].Rows[i]["BundleIDStatus"]);
+                        //obj.AppEndTime = Convert.ToString(ds.Tables[0].Rows[i]["AppEndTime"]);
+                        //obj.BundleIDStatus = Convert.ToString(ds.Tables[0].Rows[i]["BundleIDStatus"]);
 
                         obj.vErrorCode = 200;
                         obj.vErrorMsg = "Success";
