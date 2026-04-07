@@ -286,5 +286,19 @@ namespace BSLDaman.Controllers
             objResp = _DALProduction.Fn_Get_Subsection_List(objReq);
             return objResp;
         }
+
+
+        #region Start Fn_Get_Bundle_Report 96-APR-2026
+
+        [System.Web.Http.HttpPost]
+        [System.Web.Http.Route("api/Production/Fn_Get_Bundle_Report")]
+        public List<clsBundleCompile> Fn_Get_Bundle_Report(clsBundleCompile objReq)
+        {
+            var objResp = new List<clsBundleCompile>();
+            objResp = _DALProduction.Fn_Get_Bundle_Report(objReq);
+            return objResp;
+        }
+
+        #endregion End Fn_Get_Bundle_Report 96-APR-2026
     }
 }
