@@ -378,7 +378,7 @@ namespace BSLDaman.Controllers
 
         [System.Web.Http.HttpGet]
         [System.Web.Http.Route("api/MOBProduction/Fn_Fetch_OperatorIDWiseBundleIDDetails")]
-        public List<clsBundleCompile> Fn_Fetch_OperatorIDWiseBundleIDDetails(Int32? AppEmpID = null)
+        public List<clsBundleCompile> Fn_Fetch_OperatorIDWiseBundleIDDetails(Int32? AppEmpID = null, string BundleIDStatus = null)
         {
             clsBundleCompile objReq = new clsBundleCompile();
 
@@ -389,6 +389,15 @@ namespace BSLDaman.Controllers
             else
             {
                 objReq.AppEmpID = 0;
+            }
+
+            if (!string.IsNullOrWhiteSpace(BundleIDStatus))
+            {
+                objReq.BundleIDStatus = BundleIDStatus;
+            }
+            else
+            {
+                objReq.BundleIDStatus = null;
             }
 
             var objResp = _MOBDALProduction.Fn_Fetch_OperatorIDWiseBundleIDDetails(objReq);

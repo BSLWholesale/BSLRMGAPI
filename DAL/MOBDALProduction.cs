@@ -26,17 +26,6 @@ namespace BSLDaman.DAL
                 if (Con.State == ConnectionState.Closed)
                 { Con.Open(); }
 
-                //string strSql = "SELECT BC.BundleID AS BundleID, BC.LayID AS LayID, BC.BundleNo AS BundleNo,";
-                //strSql = strSql + " BC.SizeName AS SizeName, BC.ColorName AS ColorName, BC.ShadeName AS ShadeName,";
-                //strSql = strSql + " BC.Qty AS Qty, BC.PlyTo AS PlyTo, BC.PlyFrom AS PlyFrom, BC.LotNo AS LotNo,";
-                //strSql = strSql + " BC.SubSection AS SubSection, BC.Dispatch AS Dispatch, OM.StyleCode AS StyleCode,";
-                //strSql = strSql + " OM.OrderNo AS OrderNo, BC.BundleIDStatus AS BundleIDStatus, BC.SupervisorID AS SupervisorID,";
-                //strSql = strSql + " FORMAT(BC.SupervisorAssignedDate, 'dd-MMM-yyyy HH:mm:ss') AS SupervisorAssignedDate";
-                ////strSql = strSql + " FORMAT(BC.AppStartTime, 'dd-MMM-yyyy HH:mm:ss') AS AppStartTime";
-                //strSql = strSql + " FROM BundleCompile AS BC";
-                //strSql = strSql + " INNER JOIN OrderMaster AS OM";
-                //strSql = strSql + " ON BC.OrderNo = OM.OrderNo WHERE 1=1";
-
                 string strSql = "SELECT BD.BundleID AS BundleID, BD.OperationNo AS OperationNo, BC.LayID AS LayID,";
                 strSql = strSql + " BC.BundleNo AS BundleNo, BC.SizeName AS SizeName, BC.ColorName AS ColorName, BC.ShadeName AS ShadeName,";
                 strSql = strSql + " BC.Qty AS Qty, BC.PlyTo AS PlyTo, BC.PlyFrom AS PlyFrom, BC.LotNo AS LotNo, BD.SubSection AS SubSection,";
@@ -708,11 +697,11 @@ namespace BSLDaman.DAL
                         objResp.vErrorMsg = "Please Pass the Valid Bundle ID";
                         objResp.vErrorCode = 300;
                     }
-                    //else if (objReq.OperationNo == null || objReq.OperationNo == 0)
-                    //{
-                    //    objResp.vErrorMsg = "Please Pass the Valid Operation Number";
-                    //    objResp.vErrorCode = 300;
-                    //}
+                    else if (objReq.OperationNo == null || objReq.OperationNo == 0)
+                    {
+                        objResp.vErrorMsg = "Please Pass the Valid Operation Number";
+                        objResp.vErrorCode = 300;
+                    }
                     else
                     {
                         if (Con.State == ConnectionState.Broken)
@@ -725,7 +714,7 @@ namespace BSLDaman.DAL
                         cmd.Parameters.AddWithValue("@AppEmpID", objReq.AppEmpID);
                         //cmd.Parameters.AddWithValue("@OrderNo", objReq.OrderNo);
                         cmd.Parameters.AddWithValue("@BundleID", objReq.BundleID);
-                        //cmd.Parameters.AddWithValue("@OperationNo", objReq.OperationNo);
+                        cmd.Parameters.AddWithValue("@OperationNo", objReq.OperationNo);
                         cmd.Parameters.AddWithValue("@QueryType", "UpdateAppEmpStartBundleIDStatus");
 
                         using (SqlDataReader dr = cmd.ExecuteReader())
@@ -750,7 +739,7 @@ namespace BSLDaman.DAL
                     objBundleCompile.AppEmpID = objReq.AppEmpID;
                     //objBundleCompile.OrderNo = objReq.OrderNo;
                     objBundleCompile.BundleID = objReq.BundleID;
-                    //objBundleCompile.OperationNo = objReq.OperationNo;
+                    objBundleCompile.OperationNo = objReq.OperationNo;
                     objBundleCompile = _MOBDALProduction.Fn_Update_AppEmpStartEndBundleIDStatus(objBundleCompile);
                     objResp.vErrorCode = objBundleCompile.vErrorCode;
                     objResp.vErrorMsg = objBundleCompile.vErrorMsg;
@@ -1151,11 +1140,11 @@ namespace BSLDaman.DAL
                     objResp.vErrorMsg = "Please Pass the Valid Bundle ID";
                     objResp.vErrorCode = 300;
                 }
-                //else if (objReq.OperationNo == null || objReq.OperationNo == 0)
-                //{
-                //    objResp.vErrorMsg = "Please Pass the Valid Operation Number";
-                //    objResp.vErrorCode = 300;
-                //}
+                else if (objReq.OperationNo == null || objReq.OperationNo == 0)
+                {
+                    objResp.vErrorMsg = "Please Pass the Valid Operation Number";
+                    objResp.vErrorCode = 300;
+                }
                 else
                 {
                     if (Con.State == ConnectionState.Broken)
@@ -1168,7 +1157,7 @@ namespace BSLDaman.DAL
                     cmd.Parameters.AddWithValue("@AppEmpID", objReq.AppEmpID);
                     //cmd.Parameters.AddWithValue("@OrderNo", objReq.OrderNo);
                     cmd.Parameters.AddWithValue("@BundleID", objReq.BundleID);
-                    //cmd.Parameters.AddWithValue("@OperationNo", objReq.OperationNo);
+                    cmd.Parameters.AddWithValue("@OperationNo", objReq.OperationNo);
                     cmd.Parameters.AddWithValue("@QueryType", "UpdateAppEmpStartEndBundleIDStatus");
 
                     using (SqlDataReader dr = cmd.ExecuteReader())
@@ -1181,7 +1170,7 @@ namespace BSLDaman.DAL
                         else
                         {
                             objResp.vErrorCode = 400;
-                            objResp.vErrorMsg = "Supervisor needs to assigned the Bundle ID to Worker/Employee";
+                            objResp.vErrorMsg = "Supervisor needs to assigned the Bundle ID to Operator/Worker/Employee";
                         }
                     }
                 }
@@ -1985,21 +1974,34 @@ namespace BSLDaman.DAL
                 if (Con.State == ConnectionState.Closed)
                 { Con.Open(); }
 
-                string strSql = "SELECT LM.LineId AS LineId, ED.LineName AS LineName,";
-                strSql = strSql + " LM.LineStatus AS LineStatus, BC.OrderNo AS OrderNo,";
-                strSql = strSql + " BC.BundleID AS BundleID, BC.StyleCode AS StyleCode,";
-                strSql = strSql + " BC.BundleIDStatus AS BundleIDStatus, BC.Qty AS Qty, BC.AppEmpID AS AppEmpID,";
-                strSql = strSql + " BC.BundleNo AS BundleNo, BC.SizeName AS SizeName, BC.ColorName AS ColorName,";
-                strSql = strSql + " BC.ShadeName AS ShadeName, BC.PlyFrom AS PlyFrom, BC.PlyTo AS PlyTo,";
-                strSql = strSql + " BC.LotNo AS LotNo, BC.SubSection AS SubSection, BC.LayID AS LayID";
+                string strSql = "SELECT LM.LineId AS LineId, ED.LineName AS LineName, LM.LineStatus AS LineStatus, BC.OrderNo AS OrderNo,";
+                strSql = strSql + " BC.BundleID AS BundleID, BC.StyleCode AS StyleCode, BD.BundleIDStatus AS BundleIDStatus, BC.Qty AS Qty,";
+                strSql = strSql + " BD.AppEmpID AS AppEmpID, BC.BundleNo AS BundleNo, BC.SizeName AS SizeName, BC.ColorName AS ColorName,";
+                strSql = strSql + " BC.ShadeName AS ShadeName, BC.PlyFrom AS PlyFrom, BC.PlyTo AS PlyTo, BC.LotNo AS LotNo,";
+                strSql = strSql + " BC.SubSection AS SubSection, BC.LayID AS LayID, BD.OperationNo AS OperationNo";
                 strSql = strSql + " FROM BundleCompile AS BC";
-                strSql = strSql + " INNER JOIN EmployeeDetail AS ED";
-                strSql = strSql + " ON BC.AppEmpID = ED.Code";
-                strSql = strSql + " INNER JOIN LineMaster AS LM";
-                strSql = strSql + " ON LM.LineName = ED.LineName";
+                strSql = strSql + " INNER JOIN BundleCompileDetail AS BD";
+                strSql = strSql + " ON BC.BundleID = BD.BundleID";
                 strSql = strSql + " INNER JOIN OrderMaster AS OM";
                 strSql = strSql + " ON OM.OrderNo = BC.OrderNo";
-                strSql = strSql + " WHERE 1=1 AND BC.AppEmpID = " + objReq.AppEmpID;
+                strSql = strSql + " INNER JOIN EmployeeDetail AS ED";
+                strSql = strSql + " ON BD.AppEmpID = ED.Code";
+                strSql = strSql + " INNER JOIN LineMaster AS LM";
+                strSql = strSql + " ON LM.LineName = ED.LineName";
+                strSql = strSql + " WHERE 1=1";
+
+                if (objReq.AppEmpID > 0)
+                {
+                    strSql = strSql + " AND BD.AppEmpID = " + objReq.AppEmpID;
+                }
+                if (objReq.BundleIDStatus == null || objReq.BundleIDStatus == "")
+                {
+                    strSql = strSql + " AND BD.BundleIDStatus = 'Assigned'";
+                }
+                else
+                {
+                    strSql = strSql + " AND BD.BundleIDStatus = '" + objReq.BundleIDStatus + "'";
+                }
 
                 SqlCommand cmd = new SqlCommand(strSql, Con);
                 cmd.CommandType = CommandType.Text;
@@ -2016,8 +2018,8 @@ namespace BSLDaman.DAL
                         obj = new clsBundleCompile();
                         obj.LineId = Convert.ToInt64(ds.Tables[0].Rows[i]["LineId"]);
                         obj.LineName = Convert.ToString(ds.Tables[0].Rows[i]["LineName"]);
-                        obj.OrderNo = Convert.ToString(ds.Tables[0].Rows[i]["OrderNo"]);
                         obj.LineStatus = Convert.ToString(ds.Tables[0].Rows[i]["LineStatus"]);
+                        obj.OrderNo = Convert.ToString(ds.Tables[0].Rows[i]["OrderNo"]);
                         obj.BundleID = Convert.ToInt64(ds.Tables[0].Rows[i]["BundleID"]);
                         obj.StyleCode = Convert.ToString(ds.Tables[0].Rows[i]["StyleCode"]);
                         obj.BundleIDStatus = Convert.ToString(ds.Tables[0].Rows[i]["BundleIDStatus"]);
@@ -2032,6 +2034,7 @@ namespace BSLDaman.DAL
                         obj.LotNo = Convert.ToInt32(ds.Tables[0].Rows[i]["LotNo"]);
                         obj.SubSection = Convert.ToString(ds.Tables[0].Rows[i]["SubSection"]);
                         obj.LayID = Convert.ToInt64(ds.Tables[0].Rows[i]["LayID"]);
+                        obj.OperationNo = Convert.ToInt64(ds.Tables[0].Rows[i]["OperationNo"]);
 
                         obj.vErrorCode = 200;
                         obj.vErrorMsg = "Success";
