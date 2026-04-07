@@ -26,17 +26,6 @@ namespace BSLDaman.DAL
                 if (Con.State == ConnectionState.Closed)
                 { Con.Open(); }
 
-                //string strSql = "SELECT BC.BundleID AS BundleID, BC.LayID AS LayID, BC.BundleNo AS BundleNo,";
-                //strSql = strSql + " BC.SizeName AS SizeName, BC.ColorName AS ColorName, BC.ShadeName AS ShadeName,";
-                //strSql = strSql + " BC.Qty AS Qty, BC.PlyTo AS PlyTo, BC.PlyFrom AS PlyFrom, BC.LotNo AS LotNo,";
-                //strSql = strSql + " BC.SubSection AS SubSection, BC.Dispatch AS Dispatch, OM.StyleCode AS StyleCode,";
-                //strSql = strSql + " OM.OrderNo AS OrderNo, BC.BundleIDStatus AS BundleIDStatus, BC.SupervisorID AS SupervisorID,";
-                //strSql = strSql + " FORMAT(BC.SupervisorAssignedDate, 'dd-MMM-yyyy HH:mm:ss') AS SupervisorAssignedDate";
-                ////strSql = strSql + " FORMAT(BC.AppStartTime, 'dd-MMM-yyyy HH:mm:ss') AS AppStartTime";
-                //strSql = strSql + " FROM BundleCompile AS BC";
-                //strSql = strSql + " INNER JOIN OrderMaster AS OM";
-                //strSql = strSql + " ON BC.OrderNo = OM.OrderNo WHERE 1=1";
-
                 string strSql = "SELECT BD.BundleID AS BundleID, BD.OperationNo AS OperationNo, BC.LayID AS LayID,";
                 strSql = strSql + " BC.BundleNo AS BundleNo, BC.SizeName AS SizeName, BC.ColorName AS ColorName, BC.ShadeName AS ShadeName,";
                 strSql = strSql + " BC.Qty AS Qty, BC.PlyTo AS PlyTo, BC.PlyFrom AS PlyFrom, BC.LotNo AS LotNo, BD.SubSection AS SubSection,";
@@ -2029,8 +2018,8 @@ namespace BSLDaman.DAL
                         obj = new clsBundleCompile();
                         obj.LineId = Convert.ToInt64(ds.Tables[0].Rows[i]["LineId"]);
                         obj.LineName = Convert.ToString(ds.Tables[0].Rows[i]["LineName"]);
-                        obj.OrderNo = Convert.ToString(ds.Tables[0].Rows[i]["OrderNo"]);
                         obj.LineStatus = Convert.ToString(ds.Tables[0].Rows[i]["LineStatus"]);
+                        obj.OrderNo = Convert.ToString(ds.Tables[0].Rows[i]["OrderNo"]);
                         obj.BundleID = Convert.ToInt64(ds.Tables[0].Rows[i]["BundleID"]);
                         obj.StyleCode = Convert.ToString(ds.Tables[0].Rows[i]["StyleCode"]);
                         obj.BundleIDStatus = Convert.ToString(ds.Tables[0].Rows[i]["BundleIDStatus"]);
@@ -2045,6 +2034,7 @@ namespace BSLDaman.DAL
                         obj.LotNo = Convert.ToInt32(ds.Tables[0].Rows[i]["LotNo"]);
                         obj.SubSection = Convert.ToString(ds.Tables[0].Rows[i]["SubSection"]);
                         obj.LayID = Convert.ToInt64(ds.Tables[0].Rows[i]["LayID"]);
+                        obj.OperationNo = Convert.ToInt64(ds.Tables[0].Rows[i]["OperationNo"]);
 
                         obj.vErrorCode = 200;
                         obj.vErrorMsg = "Success";
