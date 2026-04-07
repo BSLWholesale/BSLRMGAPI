@@ -1985,21 +1985,34 @@ namespace BSLDaman.DAL
                 if (Con.State == ConnectionState.Closed)
                 { Con.Open(); }
 
-                string strSql = "SELECT LM.LineId AS LineId, ED.LineName AS LineName,";
-                strSql = strSql + " LM.LineStatus AS LineStatus, BC.OrderNo AS OrderNo,";
-                strSql = strSql + " BC.BundleID AS BundleID, BC.StyleCode AS StyleCode,";
-                strSql = strSql + " BC.BundleIDStatus AS BundleIDStatus, BC.Qty AS Qty, BC.AppEmpID AS AppEmpID,";
-                strSql = strSql + " BC.BundleNo AS BundleNo, BC.SizeName AS SizeName, BC.ColorName AS ColorName,";
-                strSql = strSql + " BC.ShadeName AS ShadeName, BC.PlyFrom AS PlyFrom, BC.PlyTo AS PlyTo,";
-                strSql = strSql + " BC.LotNo AS LotNo, BC.SubSection AS SubSection, BC.LayID AS LayID";
+                string strSql = "SELECT LM.LineId AS LineId, ED.LineName AS LineName, LM.LineStatus AS LineStatus, BC.OrderNo AS OrderNo,";
+                strSql = strSql + " BC.BundleID AS BundleID, BC.StyleCode AS StyleCode, BD.BundleIDStatus AS BundleIDStatus, BC.Qty AS Qty,";
+                strSql = strSql + " BD.AppEmpID AS AppEmpID, BC.BundleNo AS BundleNo, BC.SizeName AS SizeName, BC.ColorName AS ColorName,";
+                strSql = strSql + " BC.ShadeName AS ShadeName, BC.PlyFrom AS PlyFrom, BC.PlyTo AS PlyTo, BC.LotNo AS LotNo,";
+                strSql = strSql + " BC.SubSection AS SubSection, BC.LayID AS LayID, BD.OperationNo AS OperationNo";
                 strSql = strSql + " FROM BundleCompile AS BC";
-                strSql = strSql + " INNER JOIN EmployeeDetail AS ED";
-                strSql = strSql + " ON BC.AppEmpID = ED.Code";
-                strSql = strSql + " INNER JOIN LineMaster AS LM";
-                strSql = strSql + " ON LM.LineName = ED.LineName";
+                strSql = strSql + " INNER JOIN BundleCompileDetail AS BD";
+                strSql = strSql + " ON BC.BundleID = BD.BundleID";
                 strSql = strSql + " INNER JOIN OrderMaster AS OM";
                 strSql = strSql + " ON OM.OrderNo = BC.OrderNo";
-                strSql = strSql + " WHERE 1=1 AND BC.AppEmpID = " + objReq.AppEmpID;
+                strSql = strSql + " INNER JOIN EmployeeDetail AS ED";
+                strSql = strSql + " ON BD.AppEmpID = ED.Code";
+                strSql = strSql + " INNER JOIN LineMaster AS LM";
+                strSql = strSql + " ON LM.LineName = ED.LineName";
+                strSql = strSql + " WHERE 1=1";
+
+                if (objReq.AppEmpID > 0)
+                {
+                    strSql = strSql + " AND BD.AppEmpID = " + objReq.AppEmpID;
+                }
+                if (objReq.BundleIDStatus == null || objReq.BundleIDStatus == "")
+                {
+                    strSql = strSql + " AND BD.BundleIDStatus = 'Assigned'";
+                }
+                else
+                {
+                    strSql = strSql + " AND BD.BundleIDStatus = '" + objReq.BundleIDStatus + "'";
+                }
 
                 SqlCommand cmd = new SqlCommand(strSql, Con);
                 cmd.CommandType = CommandType.Text;
