@@ -445,5 +445,25 @@ namespace BSLDaman.Controllers
         }
 
 
+        [System.Web.Http.HttpGet]
+        [System.Web.Http.Route("api/MOBProduction/Fn_Fetch_OperationNumberWiseDetails")]
+        public List<clsBundleCompile> Fn_Fetch_OperationNumberWiseDetails(Int64? OperationNo = null)
+        {
+            clsBundleCompile objReq = new clsBundleCompile();
+
+            if (OperationNo.HasValue)
+            {
+                objReq.OperationNo = OperationNo.Value;
+            }
+            else
+            {
+                objReq.OperationNo = 0;
+            }
+
+            var objResp = _MOBDALProduction.Fn_Fetch_OperationNumberWiseDetails(objReq);
+            return objResp;
+        }
+
+
     }
 }
