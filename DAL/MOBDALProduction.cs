@@ -2298,6 +2298,126 @@ namespace BSLDaman.DAL
         }
 
 
+        public List<clsBundleCompile> Fn_Fetch_OperationNumberWiseDetails(clsBundleCompile objReq)
+        {
+            var objResp = new List<clsBundleCompile>();
+            var obj = new clsBundleCompile();
+            try
+            {
+                if (Con.State == ConnectionState.Broken)
+                { Con.Close(); }
+                if (Con.State == ConnectionState.Closed)
+                { Con.Open(); }
+
+                string strSql = "SELECT LM.LineId AS LineId, ED.LineName AS LineName, BC.OrderNo AS OrderNo,";
+                strSql = strSql + " BD.BundleID AS BundleID, BC.SupervisorID AS SupervisorID, BD.BundleIDStatus AS BundleIDStatus,";
+                strSql = strSql + " BD.AppEmpID AS AppEmpID, BD.OperationNo AS OperationNo";
+                strSql = strSql + " FROM BundleCompile AS BC";
+                strSql = strSql + " LEFT JOIN BundleCompileDetail AS BD";
+                strSql = strSql + " ON BC.BundleID = BD.BundleID";
+                strSql = strSql + " LEFT JOIN OrderMaster AS OM";
+                strSql = strSql + " ON OM.OrderNo = BC.OrderNo";
+                strSql = strSql + " LEFT JOIN EmployeeDetail AS ED";
+                strSql = strSql + " ON BD.AppEmpID = ED.Code";
+                strSql = strSql + " LEFT JOIN LineMaster AS LM";
+                strSql = strSql + " ON LM.LineName = ED.LineName";
+                strSql = strSql + " WHERE 1=1";
+
+                if (objReq.OperationNo > 0)
+                {
+                    strSql = strSql + " AND BD.OperationNo = " + objReq.OperationNo;
+                }
+
+                SqlCommand cmd = new SqlCommand(strSql, Con);
+                cmd.CommandType = CommandType.Text;
+
+                SqlDataAdapter da = new SqlDataAdapter(cmd);
+                DataSet ds = new DataSet();
+                da.Fill(ds);
+                int i = 0;
+
+                if (ds.Tables[0].Rows.Count > 0)
+                {
+                    while (ds.Tables[0].Rows.Count > i)
+                    {
+                        obj = new clsBundleCompile();
+                        if (ds.Tables[0].Rows[i]["LineId"] == DBNull.Value)
+                        {
+                            obj.LineId = 0;
+                        }
+                        else
+                        {
+                            obj.LineId = Convert.ToInt64(ds.Tables[0].Rows[i]["LineId"]);
+                        }
+
+                        if (ds.Tables[0].Rows[i]["LineName"] == null)
+                        {
+                            obj.LineName = string.Empty;
+                        }
+                        else
+                        {
+                            obj.LineName = Convert.ToString(ds.Tables[0].Rows[i]["LineName"]);
+                        }
+
+                        obj.OrderNo = Convert.ToString(ds.Tables[0].Rows[i]["OrderNo"]);
+                        obj.BundleID = Convert.ToInt64(ds.Tables[0].Rows[i]["BundleID"]);
+
+                        if (ds.Tables[0].Rows[i]["SupervisorID"] == DBNull.Value)
+                        {
+                            obj.SupervisorID = 0;
+                        }
+                        else
+                        {
+                            obj.SupervisorID = Convert.ToInt32(ds.Tables[0].Rows[i]["SupervisorID"]);
+                        }
+
+                        if (ds.Tables[0].Rows[i]["BundleIDStatus"] == null)
+                        {
+                            obj.BundleIDStatus = string.Empty;
+                        }
+                        else
+                        {
+                            obj.BundleIDStatus = Convert.ToString(ds.Tables[0].Rows[i]["BundleIDStatus"]);
+                        }
+
+                        if (ds.Tables[0].Rows[i]["AppEmpID"] == DBNull.Value)
+                        {
+                            obj.AppEmpID = 0;
+                        }
+                        else
+                        {
+                            obj.AppEmpID = Convert.ToInt32(ds.Tables[0].Rows[i]["AppEmpID"]);
+                        }
+                        
+                        obj.OperationNo = Convert.ToInt64(ds.Tables[0].Rows[i]["OperationNo"]);
+
+                        obj.vErrorCode = 200;
+                        obj.vErrorMsg = "Success";
+                        objResp.Add(obj);
+                        i++;
+                    }
+                }
+                else
+                {
+                    obj.vErrorCode = 400;
+                    obj.vErrorMsg = "Operation Number details records are not found";
+                    objResp.Add(obj);
+                }
+            }
+            catch (Exception exp)
+            {
+                obj.vErrorCode = 500;
+                Logger.WriteLog("Function Name : Fn_Fetch_OperationNumberWiseDetails", " " + "Error Msg : " + exp.Message.ToString(), new StackTrace(exp, true));
+                obj.vErrorMsg = exp.Message.ToString();
+                objResp.Add(obj);
+            }
+            finally
+            {
+                Con.Close();
+            }
+            return objResp;
+        }
+
 
     }
 }
