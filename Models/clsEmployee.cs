@@ -363,6 +363,16 @@ namespace BSLDaman.Models
         public string LineStatus { get; set; }
         public Int64 OperationNo { get; set; }
         public string UpdateType { get; set; }
+        public decimal StdMin { get; set; }
+        public decimal StdRate { get; set; }
+        public decimal TodaysEarning { get; set; }
+        public decimal MonthlyEarning { get; set; }
+        public decimal Earnings { get; set; }
+        public string Months { get; set; }
+        public decimal TotalAmount { get; set; }
+        public string CurrentDate { get; set; }
+        public string TimePeriod { get; set; }
+        public string Descriptions { get; set; }
         public string vErrorMsg { get; set; }
         public int vErrorCode { get; set; }
     }
