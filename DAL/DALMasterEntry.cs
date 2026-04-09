@@ -1197,31 +1197,62 @@ namespace BSLDaman.DAL
         public clsSizeMaster Fn_Add_New_SizeName(clsSizeMaster objReq)
         {
             var objResp = new clsSizeMaster();
-
+            if (objReq.ID == 0 || objReq.ID == null)
+            {
+                Fn_Get_MXID("SizeMaster", "ID");
+                objReq.ID = Convert.ToInt32(mxID);
+            }
+            
             try
             {
-
-                if (Con.State == ConnectionState.Broken)
-                { Con.Close(); }
-                if (Con.State == ConnectionState.Closed)
-                { Con.Open(); }
-
-                SqlCommand cmd = new SqlCommand("USP_MASTERENTRY", Con);
-                cmd.CommandType = CommandType.StoredProcedure;
-                cmd.Parameters.AddWithValue("@vName", objReq.SizeName);
-                cmd.Parameters.AddWithValue("@CreatedBy", objReq.CreatedBy);
-                cmd.Parameters.AddWithValue("@QueryType", "InsertSizeName");
-                int i = 0;
-                i = cmd.ExecuteNonQuery();
-                if (i > 0)
+                if (objReq.ID == 0 || objReq.ID == null)
                 {
-                    objResp.vErrorCode = 200;
-                    objResp.vErrorMsg = "Success";
+                    objResp.vErrorCode = 400;
+                    objResp.vErrorMsg = "SizeId not supply.";
+                }
+                else if (objReq.SeqNo == 0 || objReq.SeqNo == null)
+                {
+                    objResp.vErrorCode = 400;
+                    objResp.vErrorMsg = "Please enter SeqNo";
+                }
+                else if (String.IsNullOrWhiteSpace(objReq.Grid))
+                {
+                    objResp.vErrorCode = 400;
+                    objResp.vErrorMsg = "Please enter Grid";
+                }
+                else if (String.IsNullOrWhiteSpace(objReq.SizeName))
+                {
+                    objResp.vErrorCode = 400;
+                    objResp.vErrorMsg = "Please enter SizeName";
                 }
                 else
                 {
-                    objResp.vErrorCode = 400;
-                    objResp.vErrorMsg = "Inserting Failed";
+
+                    if (Con.State == ConnectionState.Broken)
+                    { Con.Close(); }
+                    if (Con.State == ConnectionState.Closed)
+                    { Con.Open(); }
+
+                    SqlCommand cmd = new SqlCommand("USP_MASTERENTRY", Con);
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("@ID", objReq.ID);
+                    cmd.Parameters.AddWithValue("@SeqNo", objReq.SeqNo);
+                    cmd.Parameters.AddWithValue("@Grid", objReq.Grid);
+                    cmd.Parameters.AddWithValue("@SizeName", objReq.SizeName);
+                    cmd.Parameters.AddWithValue("@CreatedBy", objReq.CreatedBy);
+                    cmd.Parameters.AddWithValue("@QueryType", "InsertSizeName");
+                    int i = 0;
+                    i = cmd.ExecuteNonQuery();
+                    if (i > 0)
+                    {
+                        objResp.vErrorCode = 200;
+                        objResp.vErrorMsg = "Success";
+                    }
+                    else
+                    {
+                        objResp.vErrorCode = 400;
+                        objResp.vErrorMsg = "Inserting Failed";
+                    }
                 }
             }
             catch (Exception exp)
@@ -1252,7 +1283,9 @@ namespace BSLDaman.DAL
                 SqlCommand cmd = new SqlCommand("USP_MASTERENTRY", Con);
                 cmd.CommandType = CommandType.StoredProcedure;
                 cmd.Parameters.AddWithValue("@ID", objReq.ID);
-                cmd.Parameters.AddWithValue("@vName", objReq.SizeName);
+                cmd.Parameters.AddWithValue("@SeqNo", objReq.SeqNo);
+                cmd.Parameters.AddWithValue("@Grid", objReq.Grid);
+                cmd.Parameters.AddWithValue("@SizeName", objReq.SizeName);
                 cmd.Parameters.AddWithValue("@ModifiedBy", objReq.ModifiedBy);
                 cmd.Parameters.AddWithValue("@QueryType", "UpdateSizeName");
                 int i = 0;
@@ -1280,10 +1313,10 @@ namespace BSLDaman.DAL
             }
             return objResp;
         }
-        public clsSizeMaster Fn_Delete_Customer(clsSizeMaster objReq)
+        public clsSizeMaster Fn_Delete_SizeName(clsSizeMaster objReq)
         {
             var objResp = new clsSizeMaster();
-
+            
             try
             {
 
@@ -1340,6 +1373,10 @@ namespace BSLDaman.DAL
                 {
                     strSql = strSql + " AND ID = @ID";
                 }
+                if (objReq.SeqNo != 0)
+                {
+                    strSql = strSql + " AND SeqNo = @SeqNo";
+                }
                 if (!String.IsNullOrWhiteSpace(objReq.SizeName))
                 {
                     strSql = strSql + " AND SizeName LIKE @SizeName ";
@@ -1348,12 +1385,17 @@ namespace BSLDaman.DAL
                 {
                     strSql = strSql + " AND Grid = @Grid";
                 }
+                strSql = strSql + " ORDER BY ID ";
 
                 SqlCommand cmd = new SqlCommand(strSql, Con);
                 cmd.CommandType = CommandType.Text;
                 if (objReq.ID != 0)
                 {
                     cmd.Parameters.AddWithValue("@ID", objReq.ID);
+                }
+                if (objReq.SeqNo != 0)
+                {
+                    cmd.Parameters.AddWithValue("@SeqNo", objReq.SeqNo);
                 }
                 if (!String.IsNullOrWhiteSpace(objReq.SizeName))
                 {
@@ -1372,9 +1414,11 @@ namespace BSLDaman.DAL
                     while (ds.Tables[0].Rows.Count > i)
                     {
                         obj = new clsSizeMaster();
-                        obj.ID = Convert.ToInt16(ds.Tables[0].Rows[i]["ID"]);
+                        obj.ID = Convert.ToInt32(ds.Tables[0].Rows[i]["ID"]);
+                        obj.SeqNo = Convert.ToInt32(ds.Tables[0].Rows[i]["SeqNo"]);
                         obj.SizeName = Convert.ToString(ds.Tables[0].Rows[i]["SizeName"]);
-                        obj.CreatedBy = Convert.ToInt16(ds.Tables[0].Rows[i]["CreatedBy"]);
+                        obj.Grid = Convert.ToString(ds.Tables[0].Rows[i]["Grid"]);
+                        obj.CreatedBy = Convert.ToInt32(ds.Tables[0].Rows[i]["CreatedBy"]);
                         obj.CreatedOn = Convert.ToString(ds.Tables[0].Rows[i]["CreatedOn"]);
 
                         obj.vErrorCode = 200;
