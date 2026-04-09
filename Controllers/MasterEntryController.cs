@@ -235,11 +235,11 @@ namespace BSLDaman.Controllers
         }
 
         [System.Web.Http.HttpPost]
-        [System.Web.Http.Route("api/MasterEntry/Fn_Delete_Customer")]
-        public clsSizeMaster Fn_Delete_Customer(clsSizeMaster objReq)
+        [System.Web.Http.Route("api/MasterEntry/Fn_Delete_SizeName")]
+        public clsSizeMaster Fn_Delete_SizeName(clsSizeMaster objReq)
         {
             var objResp = new clsSizeMaster();
-            objResp = _DALMasterEntry.Fn_Delete_Customer(objReq);
+            objResp = _DALMasterEntry.Fn_Delete_SizeName(objReq);
             return objResp;
         }
 
