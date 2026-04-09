@@ -65,26 +65,6 @@ namespace BSLDaman.Controllers
 
 
         [System.Web.Http.HttpGet]
-        [System.Web.Http.Route("api/MOBProduction/Fn_Get_OperationNumber")]
-        public List<clsOPBreackDownDetail> Fn_Get_OperationNumber(int? OpNo = null)
-        {
-            clsOPBreackDownDetail objReq = new clsOPBreackDownDetail();
-
-            if (OpNo.HasValue)
-            {
-                objReq.OpNo = OpNo.Value;
-            }
-            else
-            {
-                objReq.OpNo = 0;
-            }
-
-            var objResp = _MOBDALProduction.Fn_Get_OperationNumber(objReq);
-            return objResp;
-        }
-
-
-        [System.Web.Http.HttpGet]
         [System.Web.Http.Route("api/MOBProduction/Fn_Get_MachineLogMaster")]
         public List<clsMachineLogMaster> Fn_Get_MachineLogMaster(int? MachineLogId = null)
         {
