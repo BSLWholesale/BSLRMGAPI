@@ -465,5 +465,73 @@ namespace BSLDaman.Controllers
         }
 
 
+        [System.Web.Http.HttpGet]
+        [System.Web.Http.Route("api/MOBProduction/Fn_Fetch_TotalEarningDetails")]
+        public List<clsBundleCompile> Fn_Fetch_TotalEarningDetails(Int32? AppEmpID = null, string CurrentDate = null)
+        {
+            clsBundleCompile objReq = new clsBundleCompile();
+
+            if (AppEmpID.HasValue)
+            {
+                objReq.AppEmpID = AppEmpID.Value; 
+            }
+            else
+            {
+                objReq.AppEmpID = 0;
+            }
+
+            if (!string.IsNullOrWhiteSpace(CurrentDate))
+            {
+                objReq.CurrentDate = CurrentDate;
+            }
+            else
+            {
+                objReq.CurrentDate = null;
+            }
+
+            var objResp = _MOBDALProduction.Fn_Fetch_TotalEarningDetails(objReq);
+            return objResp;
+        }
+
+
+        [System.Web.Http.HttpGet]
+        [System.Web.Http.Route("api/MOBProduction/Fn_Fetch_TotalEarningDetailsByOpNo")]
+        public List<clsBundleCompile> Fn_Fetch_TotalEarningDetailsByOpNo(Int32? AppEmpID = null, string CurrentDate = null, string LineName = null)
+        {
+            clsBundleCompile objReq = new clsBundleCompile();
+
+            if (AppEmpID.HasValue)
+            {
+                objReq.AppEmpID = AppEmpID.Value;
+            }
+            else
+            {
+                objReq.AppEmpID = 0;
+            }
+
+            if (!string.IsNullOrWhiteSpace(CurrentDate))
+            {
+                objReq.CurrentDate = CurrentDate;
+            }
+            else
+            {
+                objReq.CurrentDate = null;
+            }
+
+            if (!string.IsNullOrWhiteSpace(LineName))
+            {
+                objReq.LineName = LineName;
+            }
+            else
+            {
+                objReq.LineName = null;
+            }
+
+            var objResp = _MOBDALProduction.Fn_Fetch_TotalEarningDetailsByOpNo(objReq);
+            return objResp;
+        }
+
+
+
     }
 }
