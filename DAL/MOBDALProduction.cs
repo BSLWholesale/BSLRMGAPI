@@ -2419,5 +2419,153 @@ namespace BSLDaman.DAL
         }
 
 
+        public List<clsBundleCompile> Fn_Fetch_TotalEarningDetails(clsBundleCompile objReq)
+        {
+            var objResp = new List<clsBundleCompile>();
+            var obj = new clsBundleCompile();
+            try
+            {
+                if (Con.State == ConnectionState.Broken)
+                { Con.Close(); }
+                if (Con.State == ConnectionState.Closed)
+                { Con.Open(); }
+
+                string strSql = "DECLARE @CurDate DATE = '" + objReq.CurrentDate + "'";
+                strSql = strSql + " SELECT SUM(BD.StdRate*BC.Qty) AS Earnings, CONVERT(VARCHAR, @CurDate) AS Months,'Today' AS TimePeriod";
+                strSql = strSql + " FROM BundleCompileDetail AS BD";
+                strSql = strSql + " INNER JOIN BundleCompile AS BC";
+                strSql = strSql + " ON BC.BundleID = BD.BundleID";
+                strSql = strSql + " WHERE CONVERT(DATE, BD.CreatedOn) = CONVERT(DATE, @CurDate) AND BD.AppEmpId = " + objReq.AppEmpID;
+                strSql = strSql + " UNION";
+                strSql = strSql + " SELECT SUM(BD.StdRate*BC.Qty) AS Earnings, DATENAME(MONTH, @CurDate) AS Months,'Month' AS TimePeriod";
+                strSql = strSql + " FROM BundleCompileDetail AS BD";
+                strSql = strSql + " INNER JOIN BundleCompile AS BC";
+                strSql = strSql + " ON BC.BundleID = BD.BundleID";
+                strSql = strSql + " WHERE MONTH(BD.CreatedOn) = MONTH(@CurDate) AND BD.AppEmpId = " + objReq.AppEmpID;
+
+                SqlCommand cmd = new SqlCommand(strSql, Con);
+                cmd.CommandType = CommandType.Text;
+
+                SqlDataAdapter da = new SqlDataAdapter(cmd);
+                DataSet ds = new DataSet();
+                da.Fill(ds);
+                int i = 0;
+
+                if (ds.Tables[0].Rows.Count > 0)
+                {
+                    while (ds.Tables[0].Rows.Count > i)
+                    {
+                        obj = new clsBundleCompile();
+                        obj.Earnings = Convert.ToDecimal(ds.Tables[0].Rows[i]["Earnings"]);
+                        obj.Months = Convert.ToString(ds.Tables[0].Rows[i]["Months"]);
+                        obj.TimePeriod = Convert.ToString(ds.Tables[0].Rows[i]["TimePeriod"]);
+
+                        obj.vErrorCode = 200;
+                        obj.vErrorMsg = "Success";
+                        objResp.Add(obj);
+                        i++;
+                    }
+                }
+                else
+                {
+                    obj.vErrorCode = 400;
+                    obj.vErrorMsg = "Total Earning records are not found";
+                    objResp.Add(obj);
+                }
+            }
+            catch (Exception exp)
+            {
+                obj.vErrorCode = 500;
+                Logger.WriteLog("Function Name : Fn_Fetch_TotalEarningDetails", " " + "Error Msg : " + exp.Message.ToString(), new StackTrace(exp, true));
+                obj.vErrorMsg = exp.Message.ToString();
+                objResp.Add(obj);
+            }
+            finally
+            {
+                Con.Close();
+            }
+            return objResp;
+        }
+
+
+        public List<clsBundleCompile> Fn_Fetch_TotalEarningDetailsByOpNo(clsBundleCompile objReq)
+        {
+            var objResp = new List<clsBundleCompile>();
+            var obj = new clsBundleCompile();
+            try
+            {
+                if (Con.State == ConnectionState.Broken)
+                { Con.Close(); }
+                if (Con.State == ConnectionState.Closed)
+                { Con.Open(); }
+
+                string strSql = "DECLARE @CurrentDate DATE = '" + objReq.CurrentDate + "'";
+                strSql = strSql + " SELECT BD.OperationNo AS OperationNo, BD.SubSection AS SubSection, BD.BundleID AS BundleID,";
+                strSql = strSql + " BD.StdRate AS StdRate, BC.Qty AS Qty, (BD.StdRate*BC.Qty) AS TotalAmount, ED.LineName AS LineName,";
+                strSql = strSql + " BC.StyleCode AS StyleCode, OB.Descriptions AS Descriptions";                  
+                strSql = strSql + " FROM BundleCompileDetail AS BD";
+                strSql = strSql + " INNER JOIN BundleCompile AS BC";
+                strSql = strSql + " ON BC.BundleID = BD.BundleID";
+                strSql = strSql + " INNER JOIN EmployeeDetail AS ED";
+                strSql = strSql + " ON ED.Code = BD.AppEmpID";
+                strSql = strSql + " INNER JOIN OperationBreackDownDetail AS OB";
+                strSql = strSql + " ON OB.OpNo = BD.OperationNo";
+                strSql = strSql + " INNER JOIN LineMaster AS LM";
+                strSql = strSql + " ON LM.LineName = ED.LineName";
+                strSql = strSql + " WHERE BD.AppEmpID = " + objReq.AppEmpID;
+                strSql = strSql + " AND BD.CreatedOn >= @CurrentDate AND BD.CreatedOn < DATEADD(DAY, 1, @CurrentDate) AND LM.LineName = '" + objReq.LineName + "'";
+
+                SqlCommand cmd = new SqlCommand(strSql, Con);
+                cmd.CommandType = CommandType.Text;
+
+                SqlDataAdapter da = new SqlDataAdapter(cmd);
+                DataSet ds = new DataSet();
+                da.Fill(ds);
+                int i = 0;
+
+                if (ds.Tables[0].Rows.Count > 0)
+                {
+                    while (ds.Tables[0].Rows.Count > i)
+                    {
+                        obj = new clsBundleCompile();
+                        obj.OperationNo = Convert.ToInt64(ds.Tables[0].Rows[i]["OperationNo"]);
+                        obj.SubSection = Convert.ToString(ds.Tables[0].Rows[i]["SubSection"]);
+                        obj.BundleID = Convert.ToInt64(ds.Tables[0].Rows[i]["BundleID"]);
+                        obj.StdRate = Convert.ToDecimal(ds.Tables[0].Rows[i]["StdRate"]);
+                        obj.Qty = Convert.ToInt32(ds.Tables[0].Rows[i]["Qty"]);
+                        obj.TotalAmount = Convert.ToDecimal(ds.Tables[0].Rows[i]["TotalAmount"]);
+                        obj.LineName = Convert.ToString(ds.Tables[0].Rows[i]["LineName"]);
+                        obj.StyleCode = Convert.ToString(ds.Tables[0].Rows[i]["StyleCode"]);
+                        obj.Descriptions = Convert.ToString(ds.Tables[0].Rows[i]["Descriptions"]);
+
+                        obj.vErrorCode = 200;
+                        obj.vErrorMsg = "Success";
+                        objResp.Add(obj);
+                        i++;
+                    }
+                }
+                else
+                {
+                    obj.vErrorCode = 400;
+                    obj.vErrorMsg = "Operation Number wise Earning records are not found";
+                    objResp.Add(obj);
+                }
+            }
+            catch (Exception exp)
+            {
+                obj.vErrorCode = 500;
+                Logger.WriteLog("Function Name : Fn_Fetch_TotalEarningDetailsByOpNo", " " + "Error Msg : " + exp.Message.ToString(), new StackTrace(exp, true));
+                obj.vErrorMsg = exp.Message.ToString();
+                objResp.Add(obj);
+            }
+            finally
+            {
+                Con.Close();
+            }
+            return objResp;
+        }
+
+
+
     }
 }
