@@ -2381,7 +2381,14 @@ namespace BSLDaman.DAL
                     while (ds.Tables[0].Rows.Count > i)
                     {
                         obj = new clsBundleCompile();
-                        obj.Earnings = Convert.ToDecimal(ds.Tables[0].Rows[i]["Earnings"]);
+                        if (ds.Tables[0].Rows[i]["Earnings"] == DBNull.Value)
+                        {
+                            obj.Earnings = 0;
+                        }
+                        else
+                        {
+                            obj.Earnings = Convert.ToDecimal(ds.Tables[0].Rows[i]["Earnings"]);
+                        }
                         obj.Months = Convert.ToString(ds.Tables[0].Rows[i]["Months"]);
                         obj.TimePeriod = Convert.ToString(ds.Tables[0].Rows[i]["TimePeriod"]);
 
