@@ -693,7 +693,7 @@ namespace BSLDaman.DAL
         }
 
         public clsBundleLayerMaster Fn_Delete_Bundle_Layer(clsBundleLayerMaster objReq)
-        {
+        {            
             var objResp = new clsBundleLayerMaster();
             try
             {
@@ -1757,6 +1757,7 @@ namespace BSLDaman.DAL
 
                 string strSql = "SELECT BundleID, LayID, BundleNo, SizeName, ColorName, ShadeName,";
                 strSql = strSql + " Qty, PlyFrom, PlyTo, LotNo, SubSection, Dispatch, StyleCode, OrderNo, BundleQty,";
+                strSql = strSql + " SupervisorID, SupervisorAssignedDate, UpdateType, ";
                 strSql = strSql + " CreatedBy, FORMAT(CreatedOn, 'dd-MMM-yyy') AS CreatedOn FROM BundleCompile WHERE 1=1";
                 if (!String.IsNullOrWhiteSpace(objReq.StyleCode))
                 {
@@ -1838,6 +1839,13 @@ namespace BSLDaman.DAL
                         if (strBundleQty != "")
                         {
                             obj.BunleQty = Convert.ToInt32(ds.Tables[0].Rows[i]["BundleQty"]);
+                        }
+                        obj.UpdateType = Convert.ToString(ds.Tables[0].Rows[i]["UpdateType"]);
+                        obj.SupervisorAssignedDate = Convert.ToString(ds.Tables[0].Rows[i]["SupervisorAssignedDate"]);
+                        string SupervisorID = Convert.ToString(ds.Tables[0].Rows[i]["SupervisorID"]);
+                        if (SupervisorID != "")
+                        {
+                            obj.SupervisorID = Convert.ToInt32(ds.Tables[0].Rows[i]["SupervisorID"]);
                         }
                         obj.vErrorCode = 200;
                         obj.vErrorMsg = "Success";
@@ -2315,6 +2323,7 @@ namespace BSLDaman.DAL
                 cmd.CommandType = CommandType.StoredProcedure;
                 cmd.Parameters.AddWithValue("@BundleID", objReq.BundleID);
                 cmd.Parameters.AddWithValue("@AppEmpID", objReq.AppEmpID);
+                cmd.Parameters.AddWithValue("@OpNo", objReq.OperationNo);
                 cmd.Parameters.AddWithValue("@AppStartTime", objReq.AppStartTime);
                 cmd.Parameters.AddWithValue("@AppEndTime", objReq.AppEndTime);
                 cmd.Parameters.AddWithValue("@CreatedBy", objReq.CreatedBy);
