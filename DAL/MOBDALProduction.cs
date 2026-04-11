@@ -622,7 +622,12 @@ namespace BSLDaman.DAL
                         objResp.vErrorMsg = "Please Pass the Valid Bundle ID";
                         objResp.vErrorCode = 300;
                     }
-                    else if (objReq.OperationNo == null || objReq.OperationNo == 0)
+                    //else if (objReq.OperationNo == null || objReq.OperationNo == 0)
+                    //{
+                    //    objResp.vErrorMsg = "Please Pass the Valid Operation Number";
+                    //    objResp.vErrorCode = 300;
+                    //}
+                    else if (string.IsNullOrWhiteSpace(objReq.OperationNos))
                     {
                         objResp.vErrorMsg = "Please Pass the Valid Operation Number";
                         objResp.vErrorCode = 300;
@@ -639,7 +644,8 @@ namespace BSLDaman.DAL
                         cmd.Parameters.AddWithValue("@AppEmpID", objReq.AppEmpID);
                         //cmd.Parameters.AddWithValue("@OrderNo", objReq.OrderNo);
                         cmd.Parameters.AddWithValue("@BundleID", objReq.BundleID);
-                        cmd.Parameters.AddWithValue("@OperationNo", objReq.OperationNo);
+                        //cmd.Parameters.AddWithValue("@OperationNo", objReq.OperationNo);
+                        cmd.Parameters.AddWithValue("@OperationNos", objReq.OperationNos);
                         cmd.Parameters.AddWithValue("@QueryType", "UpdateAppEmpStartBundleIDStatus");
 
                         using (SqlDataReader dr = cmd.ExecuteReader())
@@ -664,7 +670,8 @@ namespace BSLDaman.DAL
                     objBundleCompile.AppEmpID = objReq.AppEmpID;
                     //objBundleCompile.OrderNo = objReq.OrderNo;
                     objBundleCompile.BundleID = objReq.BundleID;
-                    objBundleCompile.OperationNo = objReq.OperationNo;
+                    //objBundleCompile.OperationNo = objReq.OperationNo;
+                    objBundleCompile.OperationNos = objReq.OperationNos;
                     objBundleCompile = _MOBDALProduction.Fn_Update_AppEmpStartEndBundleIDStatus(objBundleCompile);
                     objResp.vErrorCode = objBundleCompile.vErrorCode;
                     objResp.vErrorMsg = objBundleCompile.vErrorMsg;
@@ -1065,7 +1072,12 @@ namespace BSLDaman.DAL
                     objResp.vErrorMsg = "Please Pass the Valid Bundle ID";
                     objResp.vErrorCode = 300;
                 }
-                else if (objReq.OperationNo == null || objReq.OperationNo == 0)
+                //else if (objReq.OperationNo == null || objReq.OperationNo == 0)
+                //{
+                //    objResp.vErrorMsg = "Please Pass the Valid Operation Number";
+                //    objResp.vErrorCode = 300;
+                //}
+                else if (string.IsNullOrWhiteSpace(objReq.OperationNos))
                 {
                     objResp.vErrorMsg = "Please Pass the Valid Operation Number";
                     objResp.vErrorCode = 300;
@@ -1082,7 +1094,8 @@ namespace BSLDaman.DAL
                     cmd.Parameters.AddWithValue("@AppEmpID", objReq.AppEmpID);
                     //cmd.Parameters.AddWithValue("@OrderNo", objReq.OrderNo);
                     cmd.Parameters.AddWithValue("@BundleID", objReq.BundleID);
-                    cmd.Parameters.AddWithValue("@OperationNo", objReq.OperationNo);
+                    //cmd.Parameters.AddWithValue("@OperationNo", objReq.OperationNo);
+                    cmd.Parameters.AddWithValue("@OperationNos", objReq.OperationNos);
                     cmd.Parameters.AddWithValue("@QueryType", "UpdateAppEmpStartEndBundleIDStatus");
 
                     using (SqlDataReader dr = cmd.ExecuteReader())
