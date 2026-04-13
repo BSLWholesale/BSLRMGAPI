@@ -14,7 +14,7 @@ namespace BSLDaman.DAL
     public class DALEmployee
     {
         SqlConnection Con = new SqlConnection(ConfigurationManager.ConnectionStrings["BSL"].ConnectionString);
-        string AttendenceDate = "27-MAR-2026";
+        //string AttendenceDate = "27-MAR-2026";
         public clsEmployeeDetail Fn_Add_Employee_Detail(clsEmployeeDetail objReq)
         {
             var objResp = new clsEmployeeDetail();
@@ -555,7 +555,7 @@ namespace BSLDaman.DAL
 
                 SqlCommand cmd = new SqlCommand("USP_DashboardEmployeeCount", Con);
                 cmd.CommandType = CommandType.StoredProcedure;
-                cmd.Parameters.AddWithValue("@AttendenceDate", AttendenceDate);
+                //cmd.Parameters.AddWithValue("@AttendenceDate", AttendenceDate);
 
                 SqlDataAdapter da = new SqlDataAdapter(cmd);
                 DataSet ds = new DataSet();
