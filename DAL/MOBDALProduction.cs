@@ -402,7 +402,8 @@ namespace BSLDaman.DAL
                 { Con.Open(); }
 
                 string strSql = "SELECT ID, LineId, MachineId, MachineLogDescription, EmpId,";
-                strSql = strSql + " MachineStatus, Needle, Oiling, CreatedBy, FORMAT(CreatedOn, 'dd-MMM-yyyy') AS CreatedOn";
+                strSql = strSql + " MachineStatus, Needle, Oiling, CreatedBy, FORMAT(CreatedOn, 'dd-MMM-yyyy HH:mm:ss') AS CreatedOn,";
+                strSql = strSql + " ModifiedBy, FORMAT(ModifiedOn, 'dd-MMM-yyyy HH:mm:ss') AS ModifiedOn";
                 strSql = strSql + " FROM MachineLogLostTimeTransactions WHERE 1=1";
 
                 if (objReq.ID > 0)
@@ -438,6 +439,24 @@ namespace BSLDaman.DAL
                         obj.Oiling = Convert.ToBoolean(ds.Tables[0].Rows[i]["Oiling"]);
                         obj.CreatedBy = Convert.ToInt32(ds.Tables[0].Rows[i]["CreatedBy"]);
                         obj.CreatedOn = Convert.ToString(ds.Tables[0].Rows[i]["CreatedOn"]);
+
+                        if (ds.Tables[0].Rows[i]["ModifiedBy"] == DBNull.Value)
+                        {
+                            obj.ModifiedBy = 0;
+                        }
+                        else
+                        {
+                            obj.ModifiedBy = Convert.ToInt32(ds.Tables[0].Rows[i]["ModifiedBy"]);
+                        }
+
+                        if (ds.Tables[0].Rows[i]["ModifiedOn"] == null)
+                        {
+                            obj.ModifiedOn = string.Empty;
+                        }
+                        else
+                        {
+                            obj.ModifiedOn = Convert.ToString(ds.Tables[0].Rows[i]["ModifiedOn"]);
+                        }
 
                         obj.vErrorCode = 200;
                         obj.vErrorMsg = "Success";
