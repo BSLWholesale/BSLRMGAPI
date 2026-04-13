@@ -31,7 +31,9 @@ namespace BSLDaman.DAL
                 strSql = strSql + " BC.Qty AS Qty, BC.PlyTo AS PlyTo, BC.PlyFrom AS PlyFrom, BC.LotNo AS LotNo, BD.SubSection AS SubSection,";
                 strSql = strSql + " BC.Dispatch AS Dispatch, OM.StyleCode AS StyleCode, OM.OrderNo AS OrderNo, BC.SupervisorID AS SupervisorID,";
                 strSql = strSql + " FORMAT(BC.SupervisorAssignedDate, 'dd-MMM-yyyy HH:mm:ss') AS SupervisorAssignedDate, BD.AppEmpID AS AppEmpID,";
-                strSql = strSql + " BD.AppStartTime AS AppStartTime, BD.AppEndTime AS AppEndTime, BD.BundleIDStatus AS BundleIDStatus";
+                strSql = strSql + " FORMAT(BD.AppStartTime, 'dd-MMM-yyyy HH:mm:ss') AS AppStartTime, FORMAT(BD.AppEndTime, 'dd-MMM-yyyy HH:mm:ss') AS AppEndTime,";
+                strSql = strSql + " BD.BundleIDStatus AS BundleIDStatus, BD.CreatedBy AS CreatedBy, FORMAT(BD.CreatedOn, 'dd-MMM-yyyy HH:mm:ss') AS CreatedOn,";
+                strSql = strSql + " BD.ModifiedBy AS ModifiedBy, FORMAT(BD.ModifiedOn, 'dd-MMM-yyyy HH:mm:ss') AS ModifiedOn";
                 strSql = strSql + " FROM BundleCompile AS BC";
                 strSql = strSql + " INNER JOIN OrderMaster AS OM";
                 strSql = strSql + " ON BC.OrderNo = OM.OrderNo";
@@ -141,11 +143,26 @@ namespace BSLDaman.DAL
                             obj.BundleIDStatus = Convert.ToString(ds.Tables[0].Rows[i]["BundleIDStatus"]);
                         }
 
-                        //obj.SupervisorAssignedDate = Convert.ToString(ds.Tables[0].Rows[i]["SupervisorAssignedDate"]);
-                        //obj.AppEmpID = Convert.ToInt32(ds.Tables[0].Rows[i]["AppEmpID"]);
-                        //obj.AppStartTime = Convert.ToString(ds.Tables[0].Rows[i]["AppStartTime"]);
-                        //obj.AppEndTime = Convert.ToString(ds.Tables[0].Rows[i]["AppEndTime"]);
-                        //obj.BundleIDStatus = Convert.ToString(ds.Tables[0].Rows[i]["BundleIDStatus"]);
+                        obj.CreatedBy = Convert.ToInt32(ds.Tables[0].Rows[i]["CreatedBy"]);
+                        obj.CreatedOn = Convert.ToString(ds.Tables[0].Rows[i]["CreatedOn"]);
+
+                        if (ds.Tables[0].Rows[i]["ModifiedBy"] == DBNull.Value)
+                        {
+                            obj.ModifiedBy = 0;
+                        }
+                        else
+                        {
+                            obj.ModifiedBy = Convert.ToInt32(ds.Tables[0].Rows[i]["ModifiedBy"]);
+                        }
+
+                        if (ds.Tables[0].Rows[i]["ModifiedOn"] == null)
+                        {
+                            obj.ModifiedOn = string.Empty;
+                        }
+                        else
+                        {
+                            obj.ModifiedOn = Convert.ToString(ds.Tables[0].Rows[i]["ModifiedOn"]);
+                        }
 
                         obj.vErrorCode = 200;
                         obj.vErrorMsg = "Success";
