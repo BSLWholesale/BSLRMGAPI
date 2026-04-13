@@ -512,6 +512,46 @@ namespace BSLDaman.Controllers
         }
 
 
+        [System.Web.Http.HttpGet]
+        [System.Web.Http.Route("api/MOBProduction/Fn_Get_SupervisorAssignToOperator")]
+        public List<clsBundleCompile> Fn_Get_SupervisorAssignToOperator(string OrderNo = null)
+        {
+            clsBundleCompile objReq = new clsBundleCompile();
+
+            if (!string.IsNullOrWhiteSpace(OrderNo))
+            {
+                objReq.OrderNo = OrderNo;
+            }
+            else
+            {
+                objReq.OrderNo = null;
+            }
+
+            var objResp = _MOBDALProduction.Fn_Get_SupervisorAssignToOperator(objReq);
+            return objResp;
+        }
+
+
+        [System.Web.Http.HttpGet]
+        [System.Web.Http.Route("api/MOBProduction/Fn_Get_AssignedOperationNumberDetails")]
+        public List<clsBundleCompile> Fn_Get_AssignedOperationNumberDetails(Int32? AppEmpID = null)
+        {
+            clsBundleCompile objReq = new clsBundleCompile();
+
+            if (AppEmpID.HasValue)
+            {
+                objReq.AppEmpID = AppEmpID.Value;
+            }
+            else
+            {
+                objReq.AppEmpID = 0;
+            }
+
+            var objResp = _MOBDALProduction.Fn_Get_AssignedOperationNumberDetails(objReq);
+            return objResp;
+        }
+
+
 
     }
 }
