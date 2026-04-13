@@ -2032,7 +2032,8 @@ namespace BSLDaman.DAL
 
                 string strSql = "SELECT OrderNo, Qty, BundleQty, FORMAT(OrderDate, 'dd-MMM-yyyy HH:mm:ss') AS OrderDate,";
                 strSql = strSql + " StyleCode, FORMAT(CreatedOn, 'dd-MMM-yyyy HH:mm:ss') AS CreatedOn, CreatedBy,";
-                strSql = strSql + " OrderStatus FROM OrderMaster WHERE 1=1";
+                strSql = strSql + " FORMAT(ModifiedOn, 'dd-MMM-yyyy HH:mm:ss') AS ModifiedOn, ModifiedBy, OrderStatus";
+                strSql = strSql + " FROM OrderMaster WHERE 1=1";
 
                 if (!String.IsNullOrWhiteSpace(objReq.OrderNo))
                 {
@@ -2059,6 +2060,25 @@ namespace BSLDaman.DAL
                         obj.StyleCode = Convert.ToString(ds.Tables[0].Rows[i]["StyleCode"]);
                         obj.CreatedOn = Convert.ToString(ds.Tables[0].Rows[i]["CreatedOn"]);
                         obj.CreatedBy = Convert.ToInt32(ds.Tables[0].Rows[i]["CreatedBy"]);
+
+                        if (ds.Tables[0].Rows[i]["ModifiedOn"] == null)
+                        {
+                            obj.ModifiedOn = string.Empty;
+                        }
+                        else
+                        {
+                            obj.ModifiedOn = Convert.ToString(ds.Tables[0].Rows[i]["ModifiedOn"]);
+                        }
+
+                        if (ds.Tables[0].Rows[i]["ModifiedBy"] == DBNull.Value)
+                        {
+                            obj.ModifiedBy = 0;
+                        }
+                        else
+                        {
+                            obj.ModifiedBy = Convert.ToInt32(ds.Tables[0].Rows[i]["ModifiedBy"]);
+                        }
+
                         obj.OrderStatus = Convert.ToString(ds.Tables[0].Rows[i]["OrderStatus"]);
 
                         obj.vErrorCode = 200;
