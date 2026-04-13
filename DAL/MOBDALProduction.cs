@@ -800,13 +800,12 @@ namespace BSLDaman.DAL
                 if (Con.State == ConnectionState.Closed)
                 { Con.Open(); }
 
-                //string strSql = "SELECT LineId, SeqNo, LineCode, LineName, SuperVisor, SectionName, SuperMarketCode,";
-                //strSql = strSql + " DivisionID, LineStatus FROM LineMaster WHERE 1=1 AND LineStatus = 'Active'";
-
                 string strSql = "SELECT LM.LineId AS LineId, LM.LineName AS LineName,";
                 strSql = strSql + " LM.LineStatus AS LineStatus, COUNT(ED.Code) AS OperatorCount,";
                 strSql = strSql + " LM.SeqNo AS SeqNo, LM.LineCode AS LineCode, LM.SuperVisor AS SuperVisor,";
-                strSql = strSql + " LM.SuperMarketCode AS SuperMarketCode, LM.SectionName AS SectionName, LM.DivisionID AS DivisionID";
+                strSql = strSql + " LM.SuperMarketCode AS SuperMarketCode, LM.SectionName AS SectionName, LM.DivisionID AS DivisionID,";
+                strSql = strSql + " FORMAT(LM.CreatedOn, 'dd-MMM-yyyy HH:mm:ss') AS CreatedOn, LM.CreatedBy,";
+                strSql = strSql + " FORMAT(LM.ModifiedOn, 'dd-MMM-yyyy HH:mm:ss') AS ModifiedOn, LM.ModifiedBy";
                 strSql = strSql + " FROM EmployeeMaster AS EM";
                 strSql = strSql + " INNER JOIN EmployeeDetail AS ED";
                 strSql = strSql + " ON EM.EmpId = ED.Code";
@@ -814,21 +813,12 @@ namespace BSLDaman.DAL
                 strSql = strSql + " ON LM.LineName = ED.LineName";
                 strSql = strSql + " WHERE LM.LineStatus = 'Active' AND EM.IsActive = 1 AND EM.EmpRole = 'Operator'";
                 strSql = strSql + " GROUP BY LM.LineId, LM.LineName, LM.LineStatus,";
-                strSql = strSql + " LM.SeqNo, LM.LineCode, LM.SuperVisor, LM.SuperMarketCode, LM.SectionName, LM.DivisionID";
+                strSql = strSql + " LM.SeqNo, LM.LineCode, LM.SuperVisor, LM.SuperMarketCode, LM.SectionName, LM.DivisionID,";
+                strSql = strSql + " LM.CreatedOn, LM.CreatedBy, LM.ModifiedOn, LM.ModifiedBy";
                 strSql = strSql + " ORDER BY LM.LineId";
-
-                //if (objReq.LineId > 0)
-                //{
-                //    strSql = strSql + " AND LineId = @LineId";
-                //}
 
                 SqlCommand cmd = new SqlCommand(strSql, Con);
                 cmd.CommandType = CommandType.Text;
-
-                //if (objReq.LineId > 0)
-                //{
-                //    cmd.Parameters.AddWithValue("@LineId", objReq.LineId);
-                //}
 
                 SqlDataAdapter da = new SqlDataAdapter(cmd);
                 DataSet ds = new DataSet();
@@ -897,6 +887,42 @@ namespace BSLDaman.DAL
                         else
                         {
                             obj.DivisionID = Convert.ToInt64(ds.Tables[0].Rows[i]["DivisionID"]);
+                        }
+
+                        if (ds.Tables[0].Rows[i]["CreatedOn"] == null)
+                        {
+                            obj.CreatedOn = string.Empty;
+                        }
+                        else
+                        {
+                            obj.CreatedOn = Convert.ToString(ds.Tables[0].Rows[i]["CreatedOn"]);
+                        }
+
+                        if (ds.Tables[0].Rows[i]["CreatedBy"] == DBNull.Value)
+                        {
+                            obj.CreatedBy = 0;
+                        }
+                        else
+                        {
+                            obj.CreatedBy = Convert.ToInt32(ds.Tables[0].Rows[i]["CreatedBy"]);
+                        }
+
+                        if (ds.Tables[0].Rows[i]["ModifiedOn"] == null)
+                        {
+                            obj.ModifiedOn = string.Empty;
+                        }
+                        else
+                        {
+                            obj.ModifiedOn = Convert.ToString(ds.Tables[0].Rows[i]["ModifiedOn"]);
+                        }
+
+                        if (ds.Tables[0].Rows[i]["ModifiedBy"] == DBNull.Value)
+                        {
+                            obj.ModifiedBy = 0;
+                        }
+                        else
+                        {
+                            obj.ModifiedBy = Convert.ToInt32(ds.Tables[0].Rows[i]["ModifiedBy"]);
                         }
 
                         obj.vErrorCode = 200;
