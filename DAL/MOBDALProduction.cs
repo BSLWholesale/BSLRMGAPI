@@ -2593,6 +2593,177 @@ namespace BSLDaman.DAL
         }
 
 
+        public List<clsBundleCompile> Fn_Get_SupervisorAssignToOperator(clsBundleCompile objReq)
+        {
+            var objResp = new List<clsBundleCompile>();
+            var obj = new clsBundleCompile();
+            try
+            {
+                if (string.IsNullOrWhiteSpace(objReq.OrderNo))
+                {
+                    obj.vErrorMsg = "Please Pass the Valid Order No";
+                    obj.vErrorCode = 300;
+                }
+                else
+                {
+                    if (Con.State == ConnectionState.Broken)
+                    { Con.Close(); }
+                    if (Con.State == ConnectionState.Closed)
+                    { Con.Open(); }
+
+                    string strSql = "Select BC.OrderNo AS OrderNo, BC.BundleID AS BundleID, BD.OperationNo AS OperationNo,";
+                    strSql = strSql + " BD.SubSection AS SubSection, BC.SupervisorID AS SupervisorID, BC.BundleIDStatus AS BundleIDStatus";
+                    strSql = strSql + " FROM BundleCompile AS BC";
+                    strSql = strSql + " INNER JOIN BundleCompileDetail AS BD";
+                    strSql = strSql + " ON BC.BundleID = BD.BundleID";
+                    strSql = strSql + " WHERE BC.SupervisorID IS NULL";
+                    strSql = strSql + " AND BC.BundleIDStatus IS NULL AND BC.OrderNo = '" + objReq.OrderNo + "'";
+
+                    SqlCommand cmd = new SqlCommand(strSql, Con);
+                    cmd.CommandType = CommandType.Text;
+
+                    SqlDataAdapter da = new SqlDataAdapter(cmd);
+                    DataSet ds = new DataSet();
+                    da.Fill(ds);
+
+                    int i = 0;
+                    if (ds.Tables[0].Rows.Count > 0)
+                    {
+                        while (ds.Tables[0].Rows.Count > i)
+                        {
+                            obj = new clsBundleCompile();
+                            obj.OrderNo = Convert.ToString(ds.Tables[0].Rows[i]["OrderNo"]);
+                            obj.BundleID = Convert.ToInt64(ds.Tables[0].Rows[i]["BundleID"]);
+                            obj.OperationNo = Convert.ToInt64(ds.Tables[0].Rows[i]["OperationNo"]);
+                            obj.SubSection = Convert.ToString(ds.Tables[0].Rows[i]["SubSection"]);
+
+                            if (ds.Tables[0].Rows[i]["SupervisorID"] == DBNull.Value)
+                            {
+                                obj.SupervisorID = 0;
+                            }
+                            else
+                            {
+                                obj.SupervisorID = Convert.ToInt32(ds.Tables[0].Rows[i]["SupervisorID"]);
+                            }
+
+                            if (ds.Tables[0].Rows[i]["BundleIDStatus"] == null)
+                            {
+                                obj.BundleIDStatus = string.Empty;
+                            }
+                            else
+                            {
+                                obj.BundleIDStatus = Convert.ToString(ds.Tables[0].Rows[i]["BundleIDStatus"]);
+                            }
+
+                            obj.vErrorCode = 200;
+                            obj.vErrorMsg = "Success";
+                            objResp.Add(obj);
+                            i++;
+                        }
+                    }
+                    else
+                    {
+                        obj.vErrorCode = 404;
+                        obj.vErrorMsg = "Supervisor Assign to Operator records are not found.";
+                        objResp.Add(obj);
+                    }
+                }
+            }
+            catch (Exception exp)
+            {
+                obj.vErrorCode = 500;
+                Logger.WriteLog("Function Name : Fn_Get_SupervisorAssignToOperator", " " + "Error Msg : " + exp.Message.ToString(), new StackTrace(exp, true));
+                obj.vErrorMsg = exp.Message.ToString();
+                objResp.Add(obj);
+            }
+            finally
+            {
+                Con.Close();
+            }
+            return objResp;
+        }
+
+
+
+        public List<clsBundleCompile> Fn_Get_AssignedOperationNumberDetails(clsBundleCompile objReq)
+        {
+            var objResp = new List<clsBundleCompile>();
+            var obj = new clsBundleCompile();
+            try
+            {
+                if (objReq.AppEmpID == 0)
+                {
+                    obj.vErrorMsg = "Please Pass the Valid App Employee/Operator ID";
+                    obj.vErrorCode = 300;
+                }
+                else
+                {
+                    if (Con.State == ConnectionState.Broken)
+                    { Con.Close(); }
+                    if (Con.State == ConnectionState.Closed)
+                    { Con.Open(); }
+
+                    string strSql = "SELECT BD.AppEmpID AS EmpID, EM.EmpName AS EmpName, BC.BundleID AS BundleID,";
+                    strSql = strSql + " BD.OperationNo AS OperationNo, BC.SubSection AS SubSection, BC.OrderNo AS OrderNo,";
+                    strSql = strSql + " BD.BundleIDStatus AS BundleIDStatus";
+                    strSql = strSql + " FROM BundleCompile AS BC";
+                    strSql = strSql + " INNER JOIN BundleCompileDetail AS BD";
+                    strSql = strSql + " ON BD.BundleID = BC.BundleID";
+                    strSql = strSql + " INNER JOIN EmployeeMaster AS EM";
+                    strSql = strSql + " ON BD.AppEmpID = EM.EmpId";
+                    strSql = strSql + " WHERE BD.BundleIDStatus = 'Assigned' AND BD.AppEmpID = " + objReq.AppEmpID;
+
+                    SqlCommand cmd = new SqlCommand(strSql, Con);
+                    cmd.CommandType = CommandType.Text;
+
+                    SqlDataAdapter da = new SqlDataAdapter(cmd);
+                    DataSet ds = new DataSet();
+                    da.Fill(ds);
+
+                    int i = 0;
+                    if (ds.Tables[0].Rows.Count > 0)
+                    {
+                        while (ds.Tables[0].Rows.Count > i)
+                        {
+                            obj = new clsBundleCompile();
+                            obj.AppEmpID = Convert.ToInt32(ds.Tables[0].Rows[i]["EmpID"]);
+                            obj.AppEmpName = Convert.ToString(ds.Tables[0].Rows[i]["EmpName"]);
+                            obj.BundleID = Convert.ToInt64(ds.Tables[0].Rows[i]["BundleID"]);
+                            obj.OperationNo = Convert.ToInt64(ds.Tables[0].Rows[i]["OperationNo"]);
+                            obj.SubSection = Convert.ToString(ds.Tables[0].Rows[i]["SubSection"]);
+                            obj.OrderNo = Convert.ToString(ds.Tables[0].Rows[i]["OrderNo"]);
+                            obj.BundleIDStatus = Convert.ToString(ds.Tables[0].Rows[i]["BundleIDStatus"]);
+
+                            obj.vErrorCode = 200;
+                            obj.vErrorMsg = "Success";
+                            objResp.Add(obj);
+                            i++;
+                        }
+                    }
+                    else
+                    {
+                        obj.vErrorCode = 404;
+                        obj.vErrorMsg = "Operator ID Wise assigned operation number records are not found.";
+                        objResp.Add(obj);
+                    }
+                }
+            }
+            catch (Exception exp)
+            {
+                obj.vErrorCode = 500;
+                Logger.WriteLog("Function Name : Fn_Get_AssignedOperationNumberDetails", " " + "Error Msg : " + exp.Message.ToString(), new StackTrace(exp, true));
+                obj.vErrorMsg = exp.Message.ToString();
+                objResp.Add(obj);
+            }
+            finally
+            {
+                Con.Close();
+            }
+            return objResp;
+        }
+
+
+
 
     }
 }
