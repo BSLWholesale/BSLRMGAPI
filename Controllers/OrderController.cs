@@ -142,5 +142,18 @@ namespace BSLDaman.Controllers
         }
 
         #endregion End Fn_Add_New_OpNo 03-APR-2026
+
+        #region Start Fn_Get_Order_Chart 13-APR-2026
+
+        [System.Web.Http.HttpPost]
+        [System.Web.Http.Route("api/Order/Fn_Get_Order_Chart")]
+        public List<clsOrderMaster> Fn_Get_Order_Chart(clsOrderMaster objReq)
+        {
+            var objResp = new List<clsOrderMaster>();
+            objResp = _DALOrder.Fn_Get_Order_Chart(objReq);
+            return objResp;
+        }
+
+        #endregion End Fn_Get_Order_Chart 13-APR-2026
     }
 }
