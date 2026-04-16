@@ -162,11 +162,13 @@
     <Compile Include="Controllers\MOBProductionController.cs" />
     <Compile Include="Controllers\OrderController.cs" />
     <Compile Include="Controllers\ProductionController.cs" />
+    <Compile Include="Controllers\ReportController.cs" />
     <Compile Include="Controllers\ValuesController.cs" />
     <Compile Include="DAL\DALEmployee.cs" />
     <Compile Include="DAL\DALMasterEntry.cs" />
     <Compile Include="DAL\DALOrder.cs" />
     <Compile Include="DAL\DALProduction.cs" />
+    <Compile Include="DAL\DALReport.cs" />
     <Compile Include="DAL\MOBDALEmployee.cs" />
     <Compile Include="DAL\MOBDALProduction.cs" />
     <Compile Include="Global.asax.cs">
@@ -238,6 +240,7 @@
     <Folder Include="Views\MOBProduction\" />
     <Folder Include="Views\Order\" />
     <Folder Include="Views\Production\" />
+    <Folder Include="Views\Report\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff2" />
