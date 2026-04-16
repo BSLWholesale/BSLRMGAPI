@@ -1003,5 +1003,79 @@ namespace BSLDaman.DAL
         }
 
         #endregion End Fn_Add_New_OpNo 03-APR-2026
+
+        #region Start Fn_Get_Order_Chart 13-APR-2026
+
+        public List<clsOrderMaster> Fn_Get_Order_Chart(clsOrderMaster objReq)
+        {
+            var objResp = new List<clsOrderMaster>();
+            var obj = new clsOrderMaster();
+            try
+            {
+                if (Con.State == ConnectionState.Broken)
+                { Con.Close(); }
+                if (Con.State == ConnectionState.Closed)
+                { Con.Open(); }
+
+                string strSql = "Select Format(Min(CreatedOn),'MMM') AS SMonth, Format(Max(CreatedOn),'MMM') AS EMonth,Sum(Qty) as Qty,OrderNo ";
+                strSql = strSql + " FROM  BundleCompile WHERE 1=1";
+               
+                if (!String.IsNullOrWhiteSpace(objReq.OrderNo))
+                {
+                    strSql = strSql + " AND OrderNo = @OrderNo";
+                }
+
+                strSql = strSql + " GROUP BY  CreatedOn,OrderNo ";
+                strSql = strSql + " Order by CreatedOn ";
+
+                SqlCommand cmd = new SqlCommand(strSql, Con);
+                cmd.CommandType = CommandType.Text;
+                if (!String.IsNullOrWhiteSpace(objReq.OrderNo))
+                {
+                    cmd.Parameters.AddWithValue("@OrderNo", objReq.OrderNo);
+                }
+
+
+                SqlDataAdapter da = new SqlDataAdapter(cmd);
+                DataSet ds = new DataSet();
+                da.Fill(ds);
+                int i = 0;
+                if (ds.Tables[0].Rows.Count > 0)
+                {
+                    while (ds.Tables[0].Rows.Count > i)
+                    {
+                        obj = new clsOrderMaster();
+                        obj.CreatedOn = Convert.ToString(ds.Tables[0].Rows[i]["SMonth"]);
+                        obj.Qty = Convert.ToInt32(ds.Tables[0].Rows[i]["Qty"]);
+                        obj.OrderNo = Convert.ToString(ds.Tables[0].Rows[i]["OrderNo"]);
+                        obj.vErrorCode = 200;
+                        obj.vErrorMsg = "Success";
+                        objResp.Add(obj);
+                        i++;
+                    }
+                }
+                else
+                {
+                    obj.vErrorCode = 404;
+                    obj.vErrorMsg = "No Record found";
+                    objResp.Add(obj);
+                }
+
+            }
+            catch (Exception exp)
+            {
+                obj.vErrorCode = 500;
+                Logger.WriteLog("Function Name : Fn_Get_Order_Chart", " " + "Error Msg : " + exp.Message.ToString(), new StackTrace(exp, true));
+                obj.vErrorMsg = exp.Message.ToString();
+                objResp.Add(obj);
+            }
+            finally
+            {
+                Con.Close();
+            }
+            return objResp;
+        }
+
+        #endregion End Fn_Get_Order_Chart 13-APR-2026
     }
 }
