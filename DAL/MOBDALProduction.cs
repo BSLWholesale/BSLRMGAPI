@@ -569,11 +569,16 @@ namespace BSLDaman.DAL
                     objResp.vErrorMsg = "Please Pass the Valid Order No";
                     objResp.vErrorCode = 300;
                 }
-                else if (objReq.BundleID == null || objReq.BundleID == 0)
+                else if (string.IsNullOrWhiteSpace(objReq.BundleIDs))
                 {
-                    objResp.vErrorMsg = "Please Pass the Valid Bundle ID";
+                    objResp.vErrorMsg = "Please Pass the Valid Bundle IDs";
                     objResp.vErrorCode = 300;
                 }
+                //else if (objReq.BundleID == null || objReq.BundleID == 0)
+                //{
+                //    objResp.vErrorMsg = "Please Pass the Valid Bundle ID";
+                //    objResp.vErrorCode = 300;
+                //}
                 //else if (objReq.OperationNo == null || objReq.OperationNo == 0)
                 //{
                 //    objResp.vErrorMsg = "Please Pass the Valid Operation Number.";
@@ -600,7 +605,8 @@ namespace BSLDaman.DAL
                     cmd.CommandType = CommandType.StoredProcedure;
                     cmd.Parameters.AddWithValue("@SupervisorID", objReq.SupervisorID);
                     cmd.Parameters.AddWithValue("@OrderNo", objReq.OrderNo);
-                    cmd.Parameters.AddWithValue("@BundleID", objReq.BundleID);
+                    cmd.Parameters.AddWithValue("@BundleIDs", objReq.BundleIDs);
+                    //cmd.Parameters.AddWithValue("@BundleID", objReq.BundleID);
                     //cmd.Parameters.AddWithValue("@OperationNo", objReq.OperationNo);
                     cmd.Parameters.AddWithValue("@OperationNos", objReq.OperationNos);
                     cmd.Parameters.AddWithValue("@AppEmpID", objReq.AppEmpID);
@@ -648,11 +654,11 @@ namespace BSLDaman.DAL
                         objResp.vErrorMsg = "Please Pass the Valid App Employee ID";
                         objResp.vErrorCode = 300;
                     }
-                    //else if (objReq.OrderNo == null || objReq.OrderNo == "")
-                    //{
-                    //    objResp.vErrorMsg = "Please Pass the Valid Order No";
-                    //    objResp.vErrorCode = 300;
-                    //}
+                    else if (objReq.OrderNo == null || objReq.OrderNo == "")
+                    {
+                        objResp.vErrorMsg = "Please Pass the Valid Order No";
+                        objResp.vErrorCode = 300;
+                    }
                     else if (objReq.BundleID == null || objReq.BundleID == 0)
                     {
                         objResp.vErrorMsg = "Please Pass the Valid Bundle ID";
@@ -678,7 +684,7 @@ namespace BSLDaman.DAL
                         SqlCommand cmd = new SqlCommand("USP_MobileBundleApp", Con);
                         cmd.CommandType = CommandType.StoredProcedure;
                         cmd.Parameters.AddWithValue("@AppEmpID", objReq.AppEmpID);
-                        //cmd.Parameters.AddWithValue("@OrderNo", objReq.OrderNo);
+                        cmd.Parameters.AddWithValue("@OrderNo", objReq.OrderNo);
                         cmd.Parameters.AddWithValue("@BundleID", objReq.BundleID);
                         //cmd.Parameters.AddWithValue("@OperationNo", objReq.OperationNo);
                         cmd.Parameters.AddWithValue("@OperationNos", objReq.OperationNos);
@@ -704,7 +710,7 @@ namespace BSLDaman.DAL
                     MOBDALProduction _MOBDALProduction = new MOBDALProduction();
                     var objBundleCompile = new clsBundleCompile();
                     objBundleCompile.AppEmpID = objReq.AppEmpID;
-                    //objBundleCompile.OrderNo = objReq.OrderNo;
+                    objBundleCompile.OrderNo = objReq.OrderNo;
                     objBundleCompile.BundleID = objReq.BundleID;
                     //objBundleCompile.OperationNo = objReq.OperationNo;
                     objBundleCompile.OperationNos = objReq.OperationNos;
@@ -1124,11 +1130,11 @@ namespace BSLDaman.DAL
                     objResp.vErrorMsg = "Please Pass the Valid App Employee ID";
                     objResp.vErrorCode = 300;
                 }
-                //else if (objReq.OrderNo == null || objReq.OrderNo == "")
-                //{
-                //    objResp.vErrorMsg = "Please Pass the Valid Order No";
-                //    objResp.vErrorCode = 300;
-                //}
+                else if (objReq.OrderNo == null || objReq.OrderNo == "")
+                {
+                    objResp.vErrorMsg = "Please Pass the Valid Order No";
+                    objResp.vErrorCode = 300;
+                }
                 else if (objReq.BundleID == null || objReq.BundleID == 0)
                 {
                     objResp.vErrorMsg = "Please Pass the Valid Bundle ID";
@@ -1154,7 +1160,7 @@ namespace BSLDaman.DAL
                     SqlCommand cmd = new SqlCommand("USP_MobileBundleApp", Con);
                     cmd.CommandType = CommandType.StoredProcedure;
                     cmd.Parameters.AddWithValue("@AppEmpID", objReq.AppEmpID);
-                    //cmd.Parameters.AddWithValue("@OrderNo", objReq.OrderNo);
+                    cmd.Parameters.AddWithValue("@OrderNo", objReq.OrderNo);
                     cmd.Parameters.AddWithValue("@BundleID", objReq.BundleID);
                     //cmd.Parameters.AddWithValue("@OperationNo", objReq.OperationNo);
                     cmd.Parameters.AddWithValue("@OperationNos", objReq.OperationNos);
@@ -2075,15 +2081,19 @@ namespace BSLDaman.DAL
                 if (Con.State == ConnectionState.Closed)
                 { Con.Open(); }
 
-                string strSql = "SELECT OrderNo, Qty, BundleQty, FORMAT(OrderDate, 'dd-MMM-yyyy HH:mm:ss') AS OrderDate,";
-                strSql = strSql + " StyleCode, FORMAT(CreatedOn, 'dd-MMM-yyyy HH:mm:ss') AS CreatedOn, CreatedBy,";
-                strSql = strSql + " FORMAT(ModifiedOn, 'dd-MMM-yyyy HH:mm:ss') AS ModifiedOn, ModifiedBy, OrderStatus";
-                strSql = strSql + " FROM OrderMaster WHERE 1=1";
+                //string strSql = "SELECT OrderNo, Qty, BundleQty, FORMAT(OrderDate, 'dd-MMM-yyyy HH:mm:ss') AS OrderDate,";
+                //strSql = strSql + " StyleCode, FORMAT(CreatedOn, 'dd-MMM-yyyy HH:mm:ss') AS CreatedOn, CreatedBy,";
+                //strSql = strSql + " FORMAT(ModifiedOn, 'dd-MMM-yyyy HH:mm:ss') AS ModifiedOn, ModifiedBy, OrderStatus";
+                //strSql = strSql + " FROM OrderMaster WHERE 1=1";
 
-                if (!String.IsNullOrWhiteSpace(objReq.OrderNo))
-                {
-                    strSql = strSql + " AND OrderNo = '" + objReq.OrderNo + "'";
-                }
+                string strSql = "SELECT DISTINCT OrderNo FROM BundleCompile AS BC";
+                strSql = strSql + " INNER JOIN BundleCompileDetail AS BD";
+                strSql = strSql + " ON BD.BundleID = BC.BundleID";
+
+                //if (!String.IsNullOrWhiteSpace(objReq.OrderNo))
+                //{
+                //    strSql = strSql + " AND BC.OrderNo = '" + objReq.OrderNo + "'";
+                //}
 
                 SqlCommand cmd = new SqlCommand(strSql, Con);
                 cmd.CommandType = CommandType.Text;
@@ -2099,32 +2109,32 @@ namespace BSLDaman.DAL
                     {
                         obj = new clsOrderMaster();
                         obj.OrderNo = Convert.ToString(ds.Tables[0].Rows[i]["OrderNo"]);
-                        obj.Qty = Convert.ToInt32(ds.Tables[0].Rows[i]["Qty"]);
-                        obj.BundleQty = Convert.ToInt32(ds.Tables[0].Rows[i]["BundleQty"]);
-                        obj.OrderDate = Convert.ToString(ds.Tables[0].Rows[i]["OrderDate"]);
-                        obj.StyleCode = Convert.ToString(ds.Tables[0].Rows[i]["StyleCode"]);
-                        obj.CreatedOn = Convert.ToString(ds.Tables[0].Rows[i]["CreatedOn"]);
-                        obj.CreatedBy = Convert.ToInt32(ds.Tables[0].Rows[i]["CreatedBy"]);
+                        //obj.Qty = Convert.ToInt32(ds.Tables[0].Rows[i]["Qty"]);
+                        //obj.BundleQty = Convert.ToInt32(ds.Tables[0].Rows[i]["BundleQty"]);
+                        //obj.OrderDate = Convert.ToString(ds.Tables[0].Rows[i]["OrderDate"]);
+                        //obj.StyleCode = Convert.ToString(ds.Tables[0].Rows[i]["StyleCode"]);
+                        //obj.CreatedOn = Convert.ToString(ds.Tables[0].Rows[i]["CreatedOn"]);
+                        //obj.CreatedBy = Convert.ToInt32(ds.Tables[0].Rows[i]["CreatedBy"]);
 
-                        if (ds.Tables[0].Rows[i]["ModifiedOn"] == null)
-                        {
-                            obj.ModifiedOn = string.Empty;
-                        }
-                        else
-                        {
-                            obj.ModifiedOn = Convert.ToString(ds.Tables[0].Rows[i]["ModifiedOn"]);
-                        }
+                        //if (ds.Tables[0].Rows[i]["ModifiedOn"] == null)
+                        //{
+                        //    obj.ModifiedOn = string.Empty;
+                        //}
+                        //else
+                        //{
+                        //    obj.ModifiedOn = Convert.ToString(ds.Tables[0].Rows[i]["ModifiedOn"]);
+                        //}
 
-                        if (ds.Tables[0].Rows[i]["ModifiedBy"] == DBNull.Value)
-                        {
-                            obj.ModifiedBy = 0;
-                        }
-                        else
-                        {
-                            obj.ModifiedBy = Convert.ToInt32(ds.Tables[0].Rows[i]["ModifiedBy"]);
-                        }
+                        //if (ds.Tables[0].Rows[i]["ModifiedBy"] == DBNull.Value)
+                        //{
+                        //    obj.ModifiedBy = 0;
+                        //}
+                        //else
+                        //{
+                        //    obj.ModifiedBy = Convert.ToInt32(ds.Tables[0].Rows[i]["ModifiedBy"]);
+                        //}
 
-                        obj.OrderStatus = Convert.ToString(ds.Tables[0].Rows[i]["OrderStatus"]);
+                        //obj.OrderStatus = Convert.ToString(ds.Tables[0].Rows[i]["OrderStatus"]);
 
                         obj.vErrorCode = 200;
                         obj.vErrorMsg = "Success";
@@ -2761,7 +2771,6 @@ namespace BSLDaman.DAL
             }
             return objResp;
         }
-
 
 
 
