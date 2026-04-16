@@ -332,6 +332,7 @@ namespace BSLDaman.Models
     {
         public Int64 LayID { get; set; }
         public Int64 BundleID { get; set; }
+        public string BundleIDs { get; set; }
         public int BundleNo { get; set; }
         public string SizeName { get; set; }
         public string ColorName { get; set; }
