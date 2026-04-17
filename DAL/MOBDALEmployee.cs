@@ -72,6 +72,42 @@ namespace BSLDaman.DAL
                             objResp.TokenId = Convert.ToString(ds.Tables[0].Rows[i]["TokenId"]);
                         }
 
+                        if (ds.Tables[0].Rows[0]["CreatedOn"] == null)
+                        {
+                            objResp.CreatedOn = string.Empty;
+                        }
+                        else
+                        {
+                            objResp.CreatedOn = Convert.ToString(ds.Tables[0].Rows[0]["CreatedOn"]);
+                        }
+
+                        if (ds.Tables[0].Rows[0]["CreatedBy"] == DBNull.Value)
+                        {
+                            objResp.CreatedBy = 0;
+                        }
+                        else
+                        {
+                            objResp.CreatedBy = Convert.ToInt32(ds.Tables[0].Rows[0]["CreatedBy"]);
+                        }
+
+                        if (ds.Tables[0].Rows[0]["ModifiedOn"] == null)
+                        {
+                            objResp.ModifiedOn = string.Empty;
+                        }
+                        else
+                        {
+                            objResp.ModifiedOn = Convert.ToString(ds.Tables[0].Rows[0]["ModifiedOn"]);
+                        }
+
+                        if (ds.Tables[0].Rows[0]["ModifiedBy"] == DBNull.Value)
+                        {
+                            objResp.ModifiedBy = 0;
+                        }
+                        else
+                        {
+                            objResp.ModifiedBy = Convert.ToInt32(ds.Tables[0].Rows[0]["ModifiedBy"]);
+                        }
+
                         objResp.IsActive = Convert.ToBoolean(ds.Tables[0].Rows[i]["IsActive"]);
                         if (objResp.IsActive == true)
                         {
@@ -80,11 +116,9 @@ namespace BSLDaman.DAL
                         }
                         else
                         {
-                            objResp.vErrorMsg = "Employee ID is Inactive.";
+                            objResp.vErrorMsg = "Operator/Employee ID is Inactive.";
                             objResp.vErrorCode = 300;
                         }
-                        //objResp.vErrorMsg = "Success";
-                        //objResp.vErrorCode = 200;
                     }
                     else
                     {
@@ -145,13 +179,101 @@ namespace BSLDaman.DAL
                 {
                     objResp.nEmpId = Convert.ToInt32(ds.Tables[0].Rows[0]["EmpId"]);
                     objResp.vEmpName = Convert.ToString(ds.Tables[0].Rows[0]["EmpName"]);
-                    objResp.vEmpMobile = Convert.ToString(ds.Tables[0].Rows[0]["EmpMobile"]);
+                    
+                    if (ds.Tables[0].Rows[0]["EmpMobile"] == null)
+                    {
+                        objResp.vEmpMobile = string.Empty;
+                    }
+                    else
+                    {
+                        objResp.vEmpMobile = Convert.ToString(ds.Tables[0].Rows[0]["EmpMobile"]);
+                    }
+                    
                     objResp.EmpRole = Convert.ToString(ds.Tables[0].Rows[0]["EmpRole"]);
-                    objResp.vEmpGrade = Convert.ToString(ds.Tables[0].Rows[0]["EmpGrade"]);
-                    objResp.OperatorType = Convert.ToString(ds.Tables[0].Rows[0]["OperatorType"]);
+                    
+                    if (ds.Tables[0].Rows[0]["EmpGrade"] == null)
+                    {
+                        objResp.vEmpGrade = string.Empty;
+                    }
+                    else
+                    {
+                        objResp.vEmpGrade = Convert.ToString(ds.Tables[0].Rows[0]["EmpGrade"]);
+                    }
+
                     objResp.EmpGender = Convert.ToString(ds.Tables[0].Rows[0]["EmpGender"]);
                     objResp.DeviceId = Convert.ToString(ds.Tables[0].Rows[0]["DeviceId"]);
-                    //objResp.TokenId = Convert.ToString(ds.Tables[0].Rows[0]["TokenId"]);
+
+                    if (ds.Tables[0].Rows[0]["TokenId"] == null)
+                    {
+                        objResp.TokenId = string.Empty;
+                    }
+                    else
+                    {
+                        objResp.TokenId = Convert.ToString(ds.Tables[0].Rows[0]["TokenId"]);
+                    }
+
+                    if (ds.Tables[0].Rows[0]["LineName"] == null)
+                    {
+                        objResp.LineName = string.Empty;
+                    }
+                    else
+                    {
+                        objResp.LineName = Convert.ToString(ds.Tables[0].Rows[0]["LineName"]);
+                    }
+
+                    if (ds.Tables[0].Rows[0]["Units"] == null)
+                    {
+                        objResp.Units = string.Empty;
+                    }
+                    else
+                    {
+                        objResp.Units = Convert.ToString(ds.Tables[0].Rows[0]["Units"]);
+                    }
+
+                    if (ds.Tables[0].Rows[0]["EmpLocation"] == null)
+                    {
+                        objResp.EmpLocation = string.Empty;
+                    }
+                    else
+                    {
+                        objResp.EmpLocation = Convert.ToString(ds.Tables[0].Rows[0]["EmpLocation"]);
+                    }
+
+                    if (ds.Tables[0].Rows[0]["CreatedOn"] == null)
+                    {
+                        objResp.CreatedOn = string.Empty;
+                    }
+                    else
+                    {
+                        objResp.CreatedOn = Convert.ToString(ds.Tables[0].Rows[0]["CreatedOn"]);
+                    }
+
+                    if (ds.Tables[0].Rows[0]["CreatedBy"] == DBNull.Value)
+                    {
+                        objResp.CreatedBy = 0;
+                    }
+                    else
+                    {
+                        objResp.CreatedBy = Convert.ToInt32(ds.Tables[0].Rows[0]["CreatedBy"]);
+                    }
+
+                    if (ds.Tables[0].Rows[0]["ModifiedOn"] == null)
+                    {
+                        objResp.ModifiedOn = string.Empty;
+                    }
+                    else
+                    {
+                        objResp.ModifiedOn = Convert.ToString(ds.Tables[0].Rows[0]["ModifiedOn"]);
+                    }
+
+                    if (ds.Tables[0].Rows[0]["ModifiedBy"] == DBNull.Value)
+                    {
+                        objResp.ModifiedBy = 0;
+                    }
+                    else
+                    {
+                        objResp.ModifiedBy = Convert.ToInt32(ds.Tables[0].Rows[0]["ModifiedBy"]);
+                    }
 
                     objResp.vErrorMsg = "Success";
                     objResp.vErrorCode = 200;
@@ -405,12 +527,84 @@ namespace BSLDaman.DAL
                         objResp = new clsMOBEmployee();
 
                         objResp.nEmpId = Convert.ToInt64(ds.Tables[0].Rows[i]["EmpId"]);
-                        objResp.vEmpName = Convert.ToString(ds.Tables[0].Rows[i]["EmpName"]);
-                        objResp.EmpGender = Convert.ToString(ds.Tables[0].Rows[i]["EmpGender"]);
-                        objResp.vEmpMobile = Convert.ToString(ds.Tables[0].Rows[i]["EmpMobile"]);
-                        objResp.vEmpGrade = Convert.ToString(ds.Tables[0].Rows[i]["EmpGrade"]);
-                        objResp.EmpRole = Convert.ToString(ds.Tables[0].Rows[i]["EmpRole"]);
+                        objResp.vEmpName = Convert.ToString(ds.Tables[0].Rows[i]["EmpName"]);                        
+
+                        if (ds.Tables[0].Rows[0]["EmpMobile"] == null)
+                        {
+                            objResp.vEmpMobile = string.Empty;
+                        }
+                        else
+                        {
+                            objResp.vEmpMobile = Convert.ToString(ds.Tables[0].Rows[0]["EmpMobile"]);
+                        }
+
+                        if (ds.Tables[0].Rows[0]["EmpRole"] == null)
+                        {
+                            objResp.EmpRole = string.Empty;
+                        }
+                        else
+                        {
+                            objResp.EmpRole = Convert.ToString(ds.Tables[0].Rows[0]["EmpRole"]);
+                        }
+
+                        if (ds.Tables[0].Rows[0]["EmpGrade"] == null)
+                        {
+                            objResp.vEmpGrade = string.Empty;
+                        }
+                        else
+                        {
+                            objResp.vEmpGrade = Convert.ToString(ds.Tables[0].Rows[0]["EmpGrade"]);
+                        }
+
+                        if (ds.Tables[0].Rows[0]["EmpGender"] == null)
+                        {
+                            objResp.EmpGender = string.Empty;
+                        }
+                        else
+                        {
+                            objResp.EmpGender = Convert.ToString(ds.Tables[0].Rows[0]["EmpGender"]);
+                        }
+
                         objResp.EmpLocation = Convert.ToString(ds.Tables[0].Rows[i]["EmpLocation"]);
+                        objResp.LineName = Convert.ToString(ds.Tables[0].Rows[i]["LineName"]);
+                        objResp.Units = Convert.ToString(ds.Tables[0].Rows[i]["Units"]);
+
+                        if (ds.Tables[0].Rows[0]["CreatedOn"] == null)
+                        {
+                            objResp.CreatedOn = string.Empty;
+                        }
+                        else
+                        {
+                            objResp.CreatedOn = Convert.ToString(ds.Tables[0].Rows[0]["CreatedOn"]);
+                        }
+
+                        if (ds.Tables[0].Rows[0]["CreatedBy"] == DBNull.Value)
+                        {
+                            objResp.CreatedBy = 0;
+                        }
+                        else
+                        {
+                            objResp.CreatedBy = Convert.ToInt32(ds.Tables[0].Rows[0]["CreatedBy"]);
+                        }
+
+                        if (ds.Tables[0].Rows[0]["ModifiedOn"] == null)
+                        {
+                            objResp.ModifiedOn = string.Empty;
+                        }
+                        else
+                        {
+                            objResp.ModifiedOn = Convert.ToString(ds.Tables[0].Rows[0]["ModifiedOn"]);
+                        }
+
+                        if (ds.Tables[0].Rows[0]["ModifiedBy"] == DBNull.Value)
+                        {
+                            objResp.ModifiedBy = 0;
+                        }
+                        else
+                        {
+                            objResp.ModifiedBy = Convert.ToInt32(ds.Tables[0].Rows[0]["ModifiedBy"]);
+                        }
+
                         objResp.IsActive = Convert.ToBoolean(ds.Tables[0].Rows[i]["IsActive"]);
 
                         objResp.vErrorMsg = "Success";
