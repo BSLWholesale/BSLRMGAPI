@@ -2150,18 +2150,16 @@ namespace BSLDaman.DAL
                 if (Con.State == ConnectionState.Closed)
                 { Con.Open(); }
 
-                string strSql = "SELECT TOP 10 BCD.BundleID AS BundleID, BC.BundleNo AS BundleNo, BCD.OperationNo AS OperationNo, BC.SizeName AS SizeName,";
+                string strSql = "SELECT BD.BundleID AS BundleID, BC.BundleNo AS BundleNo, BD.OperationNo AS OperationNo, BC.SizeName AS SizeName,";
                 strSql = strSql + " BC.ColorName AS ColorName, BC.Qty AS Qty, BC.PlyFrom AS PlyFrom, BC.PlyTo AS PlyTo, BC.LotNo AS LotNo,";
-                strSql = strSql + " BC.SubSection AS SubSection, BC.StyleCode AS StyleCode, OM.OrderNo AS OrderNo,";
-                strSql = strSql + " BC.LayID AS LayID, BC.BundleIDStatus AS BundleIDStatus, BC.UpdateType AS UpdateType";
-                strSql = strSql + " FROM OrderMaster AS OM";
+                strSql = strSql + " BC.SubSection AS SubSection, BC.StyleCode AS StyleCode, BC.OrderNo AS OrderNo,";
+                strSql = strSql + " BC.LayID AS LayID, BC.BundleIDStatus AS BundleIDStatus, BC.UpdateType AS UpdateType,";
+                strSql = strSql + " FORMAT(BD.CreatedOn, 'dd-MMM-yyyy HH:mm:ss') AS CreatedOn, BD.CreatedBy AS CreatedBy,";
+                strSql = strSql + " FORMAT(BD.ModifiedOn,'dd-MMM-yyyy HH:mm:ss') AS ModifiedOn, BD.ModifiedBy AS ModifiedBy";
+                strSql = strSql + " FROM BundleCompileDetail AS BD";
                 strSql = strSql + " INNER JOIN BundleCompile AS BC";
-                strSql = strSql + " ON OM.OrderNo = BC.OrderNo";
-                strSql = strSql + " INNER JOIN BundleCompileDetail AS BCD";
-                strSql = strSql + " ON BC.BundleID = BCD.BundleID";
-                strSql = strSql + " WHERE BCD.BundleIDStatus = 'Assigned' AND BCD.AppEmpID = " + objReq.AppEmpID;
-                strSql = strSql + " ORDER BY BCD.OperationNo DESC";
-                //strSql = strSql + " ORDER BY BC.BundleID DESC";
+                strSql = strSql + " ON BD.BundleID = BC.BundleID";
+                strSql = strSql + " WHERE BD.BundleIDStatus = 'Assigned' AND BD.AppEmpID = " + objReq.AppEmpID;
 
                 SqlCommand cmd = new SqlCommand(strSql, Con);
                 cmd.CommandType = CommandType.Text;
@@ -2191,6 +2189,26 @@ namespace BSLDaman.DAL
                         obj.LayID = Convert.ToInt64(ds.Tables[0].Rows[i]["LayID"]);
                         obj.BundleIDStatus = Convert.ToString(ds.Tables[0].Rows[i]["BundleIDStatus"]);
                         obj.UpdateType = Convert.ToString(ds.Tables[0].Rows[i]["UpdateType"]);
+                        obj.CreatedOn = Convert.ToString(ds.Tables[0].Rows[i]["CreatedOn"]);
+                        obj.CreatedBy = Convert.ToInt32(ds.Tables[0].Rows[i]["CreatedBy"]);
+
+                        if (ds.Tables[0].Rows[i]["ModifiedOn"] == null)
+                        {
+                            obj.ModifiedOn = string.Empty;
+                        }
+                        else
+                        {
+                            obj.ModifiedOn = Convert.ToString(ds.Tables[0].Rows[i]["ModifiedOn"]);
+                        }
+
+                        if (ds.Tables[0].Rows[i]["ModifiedBy"] == DBNull.Value)
+                        {
+                            obj.ModifiedBy = 0;
+                        }
+                        else
+                        {
+                            obj.ModifiedBy = Convert.ToInt32(ds.Tables[0].Rows[i]["ModifiedBy"]);
+                        }
 
                         obj.vErrorCode = 200;
                         obj.vErrorMsg = "Success";
@@ -2231,20 +2249,19 @@ namespace BSLDaman.DAL
                 if (Con.State == ConnectionState.Closed)
                 { Con.Open(); }
 
-                string strSql = "SELECT TOP 10 BCD.BundleID AS BundleID, BC.BundleNo AS BundleNo, BCD.OperationNo AS OperationNo,";
-                strSql = strSql + " OBM.SubSection AS SubSection, OBM.OperationName AS OperationName, OBM.SubProduct AS SubProduct, BC.SizeName AS SizeName,";
-                strSql = strSql + " BC.ColorName AS ColorName, BC.Qty AS Qty, BC.PlyFrom AS PlyFrom, BC.PlyTo AS PlyTo, BC.LotNo AS LotNo,";
-                strSql = strSql + " BC.SubSection AS SubSection, BC.StyleCode AS StyleCode, OM.OrderNo AS OrderNo,";
-                strSql = strSql + " BC.LayID AS LayID, BCD.BundleIDStatus AS BundleIDStatus, BC.UpdateType AS UpdateType";
-                strSql = strSql + " FROM OrderMaster AS OM";
+                string strSql = "SELECT TOP 10 BD.BundleID AS BundleID, BC.BundleNo AS BundleNo, BD.OperationNo AS OperationNo,";
+                strSql = strSql + " BC.SubSection AS SubSection, OBM.OperationName AS OperationName, OBM.SubProduct AS SubProduct,";
+                strSql = strSql + " BC.SizeName AS SizeName, BC.ColorName AS ColorName, BC.Qty AS Qty, BC.PlyFrom AS PlyFrom,";
+                strSql = strSql + " BC.PlyTo AS PlyTo, BC.LotNo AS LotNo, BC.StyleCode AS StyleCode, BC.OrderNo AS OrderNo,";
+                strSql = strSql + " BC.LayID AS LayID, BD.BundleIDStatus AS BundleIDStatus, BC.UpdateType AS UpdateType,";
+                strSql = strSql + " FORMAT(BD.CreatedOn, 'dd-MMM-yyyy HH:mm:ss') AS CreatedOn, BD.CreatedBy AS CreatedBy,";
+                strSql = strSql + " FORMAT(BD.ModifiedOn,'dd-MMM-yyyy HH:mm:ss') AS ModifiedOn, BD.ModifiedBy AS ModifiedBy";
+                strSql = strSql + " FROM BundleCompileDetail AS BD";
                 strSql = strSql + " INNER JOIN BundleCompile AS BC";
-                strSql = strSql + " ON OM.OrderNo = BC.OrderNo";
-                strSql = strSql + " INNER JOIN BundleCompileDetail AS BCD";
-                strSql = strSql + " ON BC.BundleID = BCD.BundleID";
+                strSql = strSql + " ON BD.BundleID = BC.BundleID";
                 strSql = strSql + " INNER JOIN OBMainMasterNew AS OBM";
-                strSql = strSql + " ON OBM.OperationNo = BCD.OperationNo";
-                strSql = strSql + " WHERE BC.BundleIDStatus = 'Finished' AND BCD.AppEmpID = " + objReq.AppEmpID;
-                strSql = strSql + " ORDER BY BCD.OperationNo DESC";
+                strSql = strSql + " ON OBM.OperationNo = BD.OperationNo";
+                strSql = strSql + " WHERE BD.BundleIDStatus = 'Finished' AND BD.AppEmpID = " + objReq.AppEmpID;                
 
                 SqlCommand cmd = new SqlCommand(strSql, Con);
                 cmd.CommandType = CommandType.Text;
@@ -2262,18 +2279,40 @@ namespace BSLDaman.DAL
                         obj.BundleID = Convert.ToInt64(ds.Tables[0].Rows[i]["BundleID"]);
                         obj.BundleNo = Convert.ToInt32(ds.Tables[0].Rows[i]["BundleNo"]);
                         obj.OperationNo = Convert.ToInt32(ds.Tables[0].Rows[i]["OperationNo"]);
+                        obj.SubSection = Convert.ToString(ds.Tables[0].Rows[i]["SubSection"]);
+                        obj.OperationName = Convert.ToString(ds.Tables[0].Rows[i]["OperationName"]);
+                        obj.SubProduct = Convert.ToString(ds.Tables[0].Rows[i]["SubProduct"]);
                         obj.SizeName = Convert.ToString(ds.Tables[0].Rows[i]["SizeName"]);
                         obj.ColorName = Convert.ToString(ds.Tables[0].Rows[i]["ColorName"]);
                         obj.Qty = Convert.ToInt32(ds.Tables[0].Rows[i]["Qty"]);
                         obj.PlyFrom = Convert.ToInt32(ds.Tables[0].Rows[i]["PlyFrom"]);
                         obj.PlyTo = Convert.ToInt32(ds.Tables[0].Rows[i]["PlyTo"]);
                         obj.LotNo = Convert.ToInt32(ds.Tables[0].Rows[i]["LotNo"]);
-                        obj.SubSection = Convert.ToString(ds.Tables[0].Rows[i]["SubSection"]);
                         obj.StyleCode = Convert.ToString(ds.Tables[0].Rows[i]["StyleCode"]);
                         obj.OrderNo = Convert.ToString(ds.Tables[0].Rows[i]["OrderNo"]);
                         obj.LayID = Convert.ToInt64(ds.Tables[0].Rows[i]["LayID"]);
                         obj.BundleIDStatus = Convert.ToString(ds.Tables[0].Rows[i]["BundleIDStatus"]);
                         obj.UpdateType = Convert.ToString(ds.Tables[0].Rows[i]["UpdateType"]);
+                        obj.CreatedOn = Convert.ToString(ds.Tables[0].Rows[i]["CreatedOn"]);
+                        obj.CreatedBy = Convert.ToInt32(ds.Tables[0].Rows[i]["CreatedBy"]);
+
+                        if (ds.Tables[0].Rows[i]["ModifiedOn"] == null)
+                        {
+                            obj.ModifiedOn = string.Empty;
+                        }
+                        else
+                        {
+                            obj.ModifiedOn = Convert.ToString(ds.Tables[0].Rows[i]["ModifiedOn"]);
+                        }
+
+                        if (ds.Tables[0].Rows[i]["ModifiedBy"] == DBNull.Value)
+                        {
+                            obj.ModifiedBy = 0;
+                        }
+                        else
+                        {
+                            obj.ModifiedBy = Convert.ToInt32(ds.Tables[0].Rows[i]["ModifiedBy"]);
+                        }
 
                         obj.vErrorCode = 200;
                         obj.vErrorMsg = "Success";
@@ -2514,7 +2553,9 @@ namespace BSLDaman.DAL
                 string strSql = "DECLARE @CurrentDate DATE = '" + objReq.CurrentDate + "'";
                 strSql = strSql + " SELECT BD.OperationNo AS OperationNo, BD.SubSection AS SubSection, BD.BundleID AS BundleID,";
                 strSql = strSql + " BD.StdRate AS StdRate, BC.Qty AS Qty, (BD.StdRate*BC.Qty) AS TotalAmount, ED.LineName AS LineName,";
-                strSql = strSql + " BC.StyleCode AS StyleCode, OB.Descriptions AS Descriptions";                  
+                strSql = strSql + " BC.StyleCode AS StyleCode, OB.Descriptions AS Descriptions,";
+                strSql = strSql + " FORMAT(BD.CreatedOn, 'dd-MMM-yyyy HH:mm:ss') AS CreatedOn, BD.CreatedBy,";
+                strSql = strSql + " FORMAT(BD.ModifiedOn, 'dd-MMM-yyyy HH:mm:ss') AS ModifiedOn, BD.ModifiedBy";
                 strSql = strSql + " FROM BundleCompileDetail AS BD";
                 strSql = strSql + " INNER JOIN BundleCompile AS BC";
                 strSql = strSql + " ON BC.BundleID = BD.BundleID";
@@ -2549,6 +2590,26 @@ namespace BSLDaman.DAL
                         obj.LineName = Convert.ToString(ds.Tables[0].Rows[i]["LineName"]);
                         obj.StyleCode = Convert.ToString(ds.Tables[0].Rows[i]["StyleCode"]);
                         obj.Descriptions = Convert.ToString(ds.Tables[0].Rows[i]["Descriptions"]);
+                        obj.CreatedOn = Convert.ToString(ds.Tables[0].Rows[i]["CreatedOn"]);
+                        obj.CreatedBy = Convert.ToInt32(ds.Tables[0].Rows[i]["CreatedBy"]);
+
+                        if (ds.Tables[0].Rows[i]["ModifiedOn"] == null)
+                        {
+                            obj.ModifiedOn = string.Empty;
+                        }
+                        else
+                        {
+                            obj.ModifiedOn = Convert.ToString(ds.Tables[0].Rows[i]["ModifiedOn"]);
+                        }
+
+                        if (ds.Tables[0].Rows[i]["ModifiedBy"] == DBNull.Value)
+                        {
+                            obj.ModifiedBy = 0;
+                        }
+                        else
+                        {
+                            obj.ModifiedBy = Convert.ToInt32(ds.Tables[0].Rows[i]["ModifiedBy"]);
+                        }
 
                         obj.vErrorCode = 200;
                         obj.vErrorMsg = "Success";
