@@ -407,20 +407,40 @@ namespace BSLDaman.Controllers
 
         [System.Web.Http.HttpGet]
         [System.Web.Http.Route("api/MOBProduction/Fn_Fetch_AssignedTenBundleDetails")]
-        public List<clsBundleCompile> Fn_Fetch_AssignedTenBundleDetails(clsBundleCompile objReq)
+        public List<clsBundleCompile> Fn_Fetch_AssignedTenBundleDetails(Int32? AppEmpID = null)
         {
-            var objResp = new List<clsBundleCompile>();
-            objResp = _MOBDALProduction.Fn_Fetch_AssignedTenBundleDetails(objReq);
+            clsBundleCompile objReq = new clsBundleCompile();
+
+            if (AppEmpID.HasValue)
+            {
+                objReq.AppEmpID = AppEmpID.Value;
+            }
+            else
+            {
+                objReq.AppEmpID = 0;
+            }
+
+            var objResp = _MOBDALProduction.Fn_Fetch_AssignedTenBundleDetails(objReq);
             return objResp;
         }
 
 
         [System.Web.Http.HttpGet]
         [System.Web.Http.Route("api/MOBProduction/Fn_Fetch_FinishedTenBundleDetails")]
-        public List<clsBundleCompile> Fn_Fetch_FinishedTenBundleDetails(clsBundleCompile objReq)
+        public List<clsBundleCompile> Fn_Fetch_FinishedTenBundleDetails(Int32? AppEmpID = null)
         {
-            var objResp = new List<clsBundleCompile>();
-            objResp = _MOBDALProduction.Fn_Fetch_FinishedTenBundleDetails(objReq);
+            clsBundleCompile objReq = new clsBundleCompile();
+
+            if (AppEmpID.HasValue)
+            {
+                objReq.AppEmpID = AppEmpID.Value;
+            }
+            else
+            {
+                objReq.AppEmpID = 0;
+            }
+
+            var objResp = _MOBDALProduction.Fn_Fetch_FinishedTenBundleDetails(objReq);
             return objResp;
         }
 
