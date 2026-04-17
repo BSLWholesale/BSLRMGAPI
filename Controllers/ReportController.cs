@@ -35,5 +35,18 @@ namespace BSLDaman.Controllers
             objResp = _DALReport.Fn_Get_OperationWise_OrderDetail_Report(objReq);
             return objResp;
         }
+
+        #region Start Fn_Get_Earning_Report 17-APR-2026
+
+        [System.Web.Http.HttpPost]
+        [System.Web.Http.Route("api/Report/Fn_Get_Earning_Report")]
+        public List<clsEarningReport> Fn_Get_Earning_Report(clsEarningReport objReq)
+        {
+            var objResp = new List<clsEarningReport>();
+            objResp = _DALReport.Fn_Get_Earning_Report(objReq);
+            return objResp;
+        }
+
+        #endregion End Fn_Get_Earning_Report 17-APR-2026
     }
 }

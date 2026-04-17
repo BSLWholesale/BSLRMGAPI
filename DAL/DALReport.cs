@@ -146,7 +146,7 @@ namespace BSLDaman.DAL
             return objResp;
         }
 
-        #endregion End Fn_Get_Bundle_Report 96-APR-2026
+        #endregion End Fn_Get_Bundle_Report 06-APR-2026
 
         public List<clsOperationwiswReport> Fn_Get_OperationWise_OrderDetail_Report(clsOperationwiswReport objReq)
         {
@@ -160,10 +160,10 @@ namespace BSLDaman.DAL
                 if (Con.State == ConnectionState.Closed)
                 { Con.Open(); }
 
-                string strSql = "SELECT FORMAT(Bd.AppStartTime, 'dd-MMM-yyyy') AS WorkDate, BC.OrderNo, ED.LineName,";
+                string strSql = "SELECT FORMAT(BD.AppStartTime, 'dd-MMM-yyyy') AS WorkDate, BC.OrderNo, ED.LineName,";
                 strSql = strSql + " BD.AppEmpID AS Code, ED.EmpName, SUM(1) AS TotalQty, BC.UpdateType FROM BundleCompile BC";
                 strSql = strSql + " INNER JOIN BundleCompileDetail BD ON BC.BundleID = BD.BundleID";
-                strSql = strSql + " INNER JOIN EmployeeDetail ED ON ED.Code = BD.AppEmpID WHERE 1=1";
+                strSql = strSql + " INNER JOIN EmployeeDetail ED ON ED.Code = BD.AppEmpID WHERE 1=1 AND BD.BundleIDStatus = 'Finished'  ";
                 if (!String.IsNullOrWhiteSpace(objReq.OrderNo))
                 {
                     strSql = strSql + " AND BC.OrderNo = @OrderNo ";
@@ -176,7 +176,11 @@ namespace BSLDaman.DAL
                 {
                     strSql = strSql + " AND ED.LineName = @LineName ";
                 }
-                strSql = strSql + " GROUP BY  FORMAT(Bd.AppStartTime, 'dd-MMM-yyyy'), BC.OrderNo,ED.LineName, BD.AppEmpID, ED.EmpName, BC.UpdateType";
+                if (!String.IsNullOrWhiteSpace(objReq.WorkDate))
+                {
+                    strSql = strSql + " AND FORMAT(BD.AppStartTime, 'dd-MMM-yyyy') = @WorkDate ";
+                }
+                strSql = strSql + " GROUP BY  FORMAT(BD.AppStartTime, 'dd-MMM-yyyy'), BC.OrderNo,ED.LineName, BD.AppEmpID, ED.EmpName, BC.UpdateType";
                 strSql = strSql + " ORDER BY WorkDate";
 
                 SqlCommand cmd = new SqlCommand(strSql, Con);
@@ -194,7 +198,10 @@ namespace BSLDaman.DAL
                 {
                     cmd.Parameters.AddWithValue("@LineName", objReq.LineName);
                 }
-
+                if (!String.IsNullOrWhiteSpace(objReq.WorkDate))
+                {
+                    cmd.Parameters.AddWithValue("@WorkDate", objReq.WorkDate);
+                }
 
                 SqlDataAdapter da = new SqlDataAdapter(cmd);
                 DataSet ds = new DataSet();
@@ -240,5 +247,119 @@ namespace BSLDaman.DAL
             Logger.ErrorLog(JsonConvert.SerializeObject(objResp), "Response", "Fn_Get_OperationWise_OrderDetail_Report");
             return objResp;
         }
+
+        #region Start Fn_Get_Earning_Report 17-APR-2026
+
+        public List<clsEarningReport> Fn_Get_Earning_Report(clsEarningReport objReq)
+        {
+            var objResp = new List<clsEarningReport>();
+            var obj = new clsEarningReport();
+            Logger.ErrorLog(JsonConvert.SerializeObject(objReq), "Request", "Fn_Get_Earning_Report");
+            try
+            {
+                if (Con.State == ConnectionState.Broken)
+                { Con.Close(); }
+                if (Con.State == ConnectionState.Closed)
+                { Con.Open(); }
+
+                string strSql = "Select BC.OrderNo, BD.BundleID, BD.OperationNo, BD.SubSection, ED.LineName, BD.AppEmpID, ED.EmpName, BD.AppStartTime,";
+                strSql = strSql + " BD.AppEndTime, '1' As Qty, BD.StdRate, BD.StdMin, BC.UpdateType from BundleCompileDetail BD";
+                strSql = strSql + " INNER JOIN EmployeeDetail ED ON BD.AppEmpID = ED.Code";
+                strSql = strSql + " INNER JOIN BundleCompile BC ON BC.BundleID = BD.BundleID WHERE 1=1 AND BD.BundleIDStatus = 'Finished'  ";
+                if (!String.IsNullOrWhiteSpace(objReq.OrderNo))
+                {
+                    strSql = strSql + " AND BC.OrderNo = @OrderNo ";
+                }
+                if (!String.IsNullOrWhiteSpace(objReq.Code))
+                {
+                    strSql = strSql + " AND BD.AppEmpID = @Code ";
+                }
+                if (!String.IsNullOrWhiteSpace(objReq.LineName))
+                {
+                    strSql = strSql + " AND ED.LineName = @LineName ";
+                }
+                if (!String.IsNullOrWhiteSpace(objReq.StartDate) && String.IsNullOrWhiteSpace(objReq.EndDate))
+                {
+                    strSql = strSql + " AND FORMAT(BD.AppStartTime, 'dd-MMM-yyyy') = @StartDate ";
+                }
+                if (!String.IsNullOrWhiteSpace(objReq.StartDate) && !String.IsNullOrWhiteSpace(objReq.EndDate))
+                {
+                    strSql = strSql + " AND FORMAT(BD.AppStartTime, 'dd-MMM-yyyy') BETWEEN '" + objReq.StartDate + "' AND '" + objReq.EndDate + "'";
+                }
+
+
+                SqlCommand cmd = new SqlCommand(strSql, Con);
+                cmd.CommandType = CommandType.Text;
+
+                if (!String.IsNullOrWhiteSpace(objReq.OrderNo))
+                {
+                    cmd.Parameters.AddWithValue("@OrderNo", objReq.OrderNo);
+                }
+                if (!String.IsNullOrWhiteSpace(objReq.Code))
+                {
+                    cmd.Parameters.AddWithValue("@Code", objReq.Code);
+                }
+                if (!String.IsNullOrWhiteSpace(objReq.LineName))
+                {
+                    cmd.Parameters.AddWithValue("@LineName", objReq.LineName);
+                }
+                if (!String.IsNullOrWhiteSpace(objReq.StartDate))
+                {
+                    cmd.Parameters.AddWithValue("@StartDate", objReq.StartDate);
+                }
+                
+
+                SqlDataAdapter da = new SqlDataAdapter(cmd);
+                DataSet ds = new DataSet();
+                da.Fill(ds);
+                int i = 0;
+                if (ds.Tables[0].Rows.Count > 0)
+                {
+                    while (ds.Tables[0].Rows.Count > i)
+                    {
+                        obj = new clsEarningReport();
+                        obj.OrderNo = Convert.ToString(ds.Tables[0].Rows[i]["OrderNo"]);
+                        obj.BundleID = Convert.ToInt64(ds.Tables[0].Rows[i]["BundleID"]);
+                        obj.OpNo = Convert.ToInt32(ds.Tables[0].Rows[i]["OperationNo"]);
+                        obj.SubSection = Convert.ToString(ds.Tables[0].Rows[i]["SubSection"]);
+                        obj.LineName = Convert.ToString(ds.Tables[0].Rows[i]["LineName"]);
+                        obj.Code = Convert.ToString(ds.Tables[0].Rows[i]["AppEmpID"]);
+                        obj.EmpName = Convert.ToString(ds.Tables[0].Rows[i]["EmpName"]);
+                        obj.StartDate = Convert.ToString(ds.Tables[0].Rows[i]["AppStartTime"]);
+                        obj.EndDate = Convert.ToString(ds.Tables[0].Rows[i]["AppEndTime"]);
+                        obj.Qty = Convert.ToInt32(ds.Tables[0].Rows[i]["Qty"]);
+                        obj.StdRate = Convert.ToDecimal(ds.Tables[0].Rows[i]["StdRate"]);
+                        obj.StdMin = Convert.ToDecimal(ds.Tables[0].Rows[i]["StdMin"]);
+                        obj.UpdateType = Convert.ToString(ds.Tables[0].Rows[i]["UpdateType"]);
+                        obj.vErrorCode = 200;
+                        obj.vErrorMsg = "Success";
+                        objResp.Add(obj);
+                        i++;
+                    }
+                }
+                else
+                {
+                    obj.vErrorCode = 404;
+                    obj.vErrorMsg = "No Record found";
+                    objResp.Add(obj);
+                }
+
+            }
+            catch (Exception exp)
+            {
+                obj.vErrorCode = 500;
+                Logger.WriteLog("Function Name : Fn_Get_Earning_Report", " " + "Error Msg : " + exp.Message.ToString(), new StackTrace(exp, true));
+                obj.vErrorMsg = exp.Message.ToString();
+                objResp.Add(obj);
+            }
+            finally
+            {
+                Con.Close();
+            }
+            Logger.ErrorLog(JsonConvert.SerializeObject(objResp), "Response", "Fn_Get_Earning_Report");
+            return objResp;
+        }
+
+        #endregion End Fn_Get_OperationWise_Earning_Report 17-APR-2026
     }
 }
