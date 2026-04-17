@@ -375,6 +375,8 @@ namespace BSLDaman.Models
         public string CurrentDate { get; set; }
         public string TimePeriod { get; set; }
         public string Descriptions { get; set; }
+        public string OperationName { get; set; }
+        public string SubProduct { get; set; }
         public string vErrorMsg { get; set; }
         public int vErrorCode { get; set; }
     }
