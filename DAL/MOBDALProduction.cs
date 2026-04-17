@@ -1959,12 +1959,12 @@ namespace BSLDaman.DAL
                 strSql = strSql + " BC.BundleID AS BundleID, BC.StyleCode AS StyleCode, BD.BundleIDStatus AS BundleIDStatus, BC.Qty AS Qty,";
                 strSql = strSql + " BD.AppEmpID AS AppEmpID, BC.BundleNo AS BundleNo, BC.SizeName AS SizeName, BC.ColorName AS ColorName,";
                 strSql = strSql + " BC.ShadeName AS ShadeName, BC.PlyFrom AS PlyFrom, BC.PlyTo AS PlyTo, BC.LotNo AS LotNo,";
-                strSql = strSql + " BC.SubSection AS SubSection, BC.LayID AS LayID, BD.OperationNo AS OperationNo";
+                strSql = strSql + " BC.SubSection AS SubSection, BC.LayID AS LayID, BD.OperationNo AS OperationNo,";
+                strSql = strSql + " FORMAT(BD.CreatedOn, 'dd-MMM-yyyy HH:mm:ss') AS CreatedOn, BD.CreatedBy AS CreatedBy,";
+                strSql = strSql + " FORMAT(BD.ModifiedOn, 'dd-MMM-yyyy HH:mm:ss') AS ModifiedOn, BD.ModifiedBy AS ModifiedBy";
                 strSql = strSql + " FROM BundleCompile AS BC";
                 strSql = strSql + " INNER JOIN BundleCompileDetail AS BD";
                 strSql = strSql + " ON BC.BundleID = BD.BundleID";
-                strSql = strSql + " INNER JOIN OrderMaster AS OM";
-                strSql = strSql + " ON OM.OrderNo = BC.OrderNo";
                 strSql = strSql + " INNER JOIN EmployeeDetail AS ED";
                 strSql = strSql + " ON BD.AppEmpID = ED.Code";
                 strSql = strSql + " INNER JOIN LineMaster AS LM";
@@ -2016,6 +2016,42 @@ namespace BSLDaman.DAL
                         obj.SubSection = Convert.ToString(ds.Tables[0].Rows[i]["SubSection"]);
                         obj.LayID = Convert.ToInt64(ds.Tables[0].Rows[i]["LayID"]);
                         obj.OperationNo = Convert.ToInt64(ds.Tables[0].Rows[i]["OperationNo"]);
+
+                        if (ds.Tables[0].Rows[0]["CreatedOn"] == null)
+                        {
+                            obj.CreatedOn = string.Empty;
+                        }
+                        else
+                        {
+                            obj.CreatedOn = Convert.ToString(ds.Tables[0].Rows[0]["CreatedOn"]);
+                        }
+
+                        if (ds.Tables[0].Rows[0]["CreatedBy"] == DBNull.Value)
+                        {
+                            obj.CreatedBy = 0;
+                        }
+                        else
+                        {
+                            obj.CreatedBy = Convert.ToInt32(ds.Tables[0].Rows[0]["CreatedBy"]);
+                        }
+
+                        if (ds.Tables[0].Rows[0]["ModifiedOn"] == null)
+                        {
+                            obj.ModifiedOn = string.Empty;
+                        }
+                        else
+                        {
+                            obj.ModifiedOn = Convert.ToString(ds.Tables[0].Rows[0]["ModifiedOn"]);
+                        }
+
+                        if (ds.Tables[0].Rows[0]["ModifiedBy"] == DBNull.Value)
+                        {
+                            obj.ModifiedBy = 0;
+                        }
+                        else
+                        {
+                            obj.ModifiedBy = Convert.ToInt32(ds.Tables[0].Rows[0]["ModifiedBy"]);
+                        }
 
                         obj.vErrorCode = 200;
                         obj.vErrorMsg = "Success";
