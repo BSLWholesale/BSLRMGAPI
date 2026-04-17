@@ -487,4 +487,24 @@ namespace BSLDaman.Models
 
     }
 
+    public class clsEarningReport
+    {
+        public Int64 BundleID { get; set; }
+        public string OrderNo { get; set; }
+        public int OpNo { get; set; }
+        public string SubSection { get; set; }
+        public string LineName { get; set; }
+        public string Code { get; set; }
+        public string EmpName { get; set; }
+        public string StartDate { get; set; }
+        public string EndDate { get; set; }
+        public int Qty { get; set; }
+        public decimal StdMin { get; set; }
+        public decimal StdRate { get; set; }
+        public string UpdateType { get; set; }
+        public string vErrorMsg { get; set; }
+        public int vErrorCode { get; set; }
+
+    }
+
 }
