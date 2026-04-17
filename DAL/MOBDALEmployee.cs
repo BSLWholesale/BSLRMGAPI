@@ -648,7 +648,9 @@ namespace BSLDaman.DAL
 
                 string strSql = "SELECT EM.EmpId AS EmpId, EM.EmpName AS EmpName, EM.EmpGender AS EmpGender,";
                 strSql = strSql + " EM.EmpMobile AS EmpMobile, EM.EmpGrade AS EmpGrade, EM.EmpRole AS EmpRole,";
-                strSql = strSql + " ED.Units AS EmpLocation, ED.LineName AS LineName, LM.LineId AS LineId";
+                strSql = strSql + " ED.EmpLocation AS EmpLocation, ED.Units AS Units, ED.LineName AS LineName, LM.LineId AS LineId,";
+                strSql = strSql + " FORMAT(EM.CreatedOn, 'dd-MMM-yyyy HH:mm:ss') AS CreatedOn, EM.CreatedBy AS CreatedBy,";
+                strSql = strSql + " FORMAT(EM.ModifiedOn, 'dd-MMM-yyyy HH:mm:ss') AS ModifiedOn, EM.ModifiedBy AS ModifiedBy";
                 strSql = strSql + " FROM EmployeeMaster AS EM";
                 strSql = strSql + " INNER JOIN EmployeeDetail AS ED";
                 strSql = strSql + " ON EM.EmpId = ED.Code";
@@ -669,11 +671,6 @@ namespace BSLDaman.DAL
                 SqlCommand cmd = new SqlCommand(strSql, Con);
                 cmd.CommandType = CommandType.Text;
 
-                //if (objReq.nEmpId > 0)
-                //{
-                //    cmd.Parameters.AddWithValue("@EmpId", objReq.nEmpId);
-                //}
-
                 SqlDataAdapter da = new SqlDataAdapter(cmd);
                 DataSet ds = new DataSet();
                 da.Fill(ds);
@@ -686,14 +683,75 @@ namespace BSLDaman.DAL
                         obj = new clsMOBEmployee();
                         obj.nEmpId = Convert.ToInt64(ds.Tables[0].Rows[i]["EmpId"]);
                         obj.vEmpName = Convert.ToString(ds.Tables[0].Rows[i]["EmpName"]);
-                        obj.EmpGender = Convert.ToString(ds.Tables[0].Rows[i]["EmpGender"]);
-                        obj.vEmpMobile = Convert.ToString(ds.Tables[0].Rows[i]["EmpMobile"]);
-                        obj.vEmpGrade = Convert.ToString(ds.Tables[0].Rows[i]["EmpGrade"]);
+
+                        if (ds.Tables[0].Rows[0]["EmpGender"] == null)
+                        {
+                            obj.EmpGender = string.Empty;
+                        }
+                        else
+                        {
+                            obj.EmpGender = Convert.ToString(ds.Tables[0].Rows[0]["EmpGender"]);
+                        }
+
+                        if (ds.Tables[0].Rows[0]["EmpMobile"] == null)
+                        {
+                            obj.vEmpMobile = string.Empty;
+                        }
+                        else
+                        {
+                            obj.vEmpMobile = Convert.ToString(ds.Tables[0].Rows[i]["EmpMobile"]);
+                        }
+
+                        if (ds.Tables[0].Rows[0]["EmpGrade"] == null)
+                        {
+                            obj.vEmpGrade = string.Empty;
+                        }
+                        else
+                        {
+                            obj.vEmpGrade = Convert.ToString(ds.Tables[0].Rows[i]["EmpGrade"]);
+                        }
+
                         obj.EmpRole = Convert.ToString(ds.Tables[0].Rows[i]["EmpRole"]);
                         obj.EmpLocation = Convert.ToString(ds.Tables[0].Rows[i]["EmpLocation"]);
+                        obj.Units = Convert.ToString(ds.Tables[0].Rows[i]["Units"]);
                         obj.LineName = Convert.ToString(ds.Tables[0].Rows[i]["LineName"]);
                         obj.LineId = Convert.ToInt64(ds.Tables[0].Rows[i]["LineId"]);
-                        //obj.IsActive = Convert.ToBoolean(ds.Tables[0].Rows[i]["IsActive"]);
+
+                        if (ds.Tables[0].Rows[0]["CreatedOn"] == null)
+                        {
+                            obj.CreatedOn = string.Empty;
+                        }
+                        else
+                        {
+                            obj.CreatedOn = Convert.ToString(ds.Tables[0].Rows[0]["CreatedOn"]);
+                        }
+
+                        if (ds.Tables[0].Rows[0]["CreatedBy"] == DBNull.Value)
+                        {
+                            obj.CreatedBy = 0;
+                        }
+                        else
+                        {
+                            obj.CreatedBy = Convert.ToInt32(ds.Tables[0].Rows[0]["CreatedBy"]);
+                        }
+
+                        if (ds.Tables[0].Rows[0]["ModifiedOn"] == null)
+                        {
+                            obj.ModifiedOn = string.Empty;
+                        }
+                        else
+                        {
+                            obj.ModifiedOn = Convert.ToString(ds.Tables[0].Rows[0]["ModifiedOn"]);
+                        }
+
+                        if (ds.Tables[0].Rows[0]["ModifiedBy"] == DBNull.Value)
+                        {
+                            obj.ModifiedBy = 0;
+                        }
+                        else
+                        {
+                            obj.ModifiedBy = Convert.ToInt32(ds.Tables[0].Rows[0]["ModifiedBy"]);
+                        }
 
                         obj.vErrorMsg = "Success";
                         obj.vErrorCode = 200;
