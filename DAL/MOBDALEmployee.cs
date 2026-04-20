@@ -846,21 +846,28 @@ namespace BSLDaman.DAL
                 if (Con.State == ConnectionState.Closed)
                 { Con.Open(); }
 
-                string strSql = "SELECT EmpId, EmpName, EmpGender, EmpMobile, EmpGrade, EmpRole, EmpLocation,";
-                strSql = strSql + " IsActive FROM EmployeeMaster WHERE 1=1 AND EmpRole = 'Supervisor' AND IsActive = 1";
+                //string strSql = "SELECT EmpId, EmpName, EmpGender, EmpMobile, EmpGrade, EmpRole, EmpLocation,";
+                //strSql = strSql + " IsActive FROM EmployeeMaster WHERE 1=1 AND EmpRole = 'Supervisor' AND IsActive = 1";
+
+                string strSql = "SELECT EM.EmpId AS EmpId, EM.EmpName AS EmpName, EM.EmpGender AS EmpGender,";
+                strSql = strSql + " EM.EmpMobile AS EmpMobile, EM.EmpGrade AS EmpGrade, EM.EmpRole AS EmpRole,";
+                strSql = strSql + " ED.EmpLocation AS EmpLocation, ED.Units AS Units, ED.LineName AS LineName, LM.LineId AS LineId,";
+                strSql = strSql + " FORMAT(EM.CreatedOn, 'dd-MMM-yyyy HH:mm:ss') AS CreatedOn, EM.CreatedBy AS CreatedBy,";
+                strSql = strSql + " FORMAT(EM.ModifiedOn, 'dd-MMM-yyyy HH:mm:ss') AS ModifiedOn, EM.ModifiedBy AS ModifiedBy";
+                strSql = strSql + " FROM EmployeeMaster AS EM";
+                strSql = strSql + " INNER JOIN EmployeeDetail AS ED";
+                strSql = strSql + " ON EM.EmpId = ED.Code";
+                strSql = strSql + " INNER JOIN LineMaster AS LM";
+                strSql = strSql + " ON LM.LineName = ED.LineName";
+                strSql = strSql + " WHERE EM.IsActive = 1 AND EM.EmpRole = 'Supervisor'";
 
                 if (objReq.nEmpId > 0)
                 {
-                    strSql = strSql + " AND EmpId = " + objReq.nEmpId;
+                    strSql = strSql + " AND EM.EmpId = " + objReq.nEmpId;
                 }
 
                 SqlCommand cmd = new SqlCommand(strSql, Con);
                 cmd.CommandType = CommandType.Text;
-
-                //if (objReq.nEmpId > 0)
-                //{
-                //    cmd.Parameters.AddWithValue("@EmpId", objReq.nEmpId);
-                //}
 
                 SqlDataAdapter da = new SqlDataAdapter(cmd);
                 DataSet ds = new DataSet();
@@ -874,12 +881,77 @@ namespace BSLDaman.DAL
                         obj = new clsMOBEmployee();
                         obj.nEmpId = Convert.ToInt64(ds.Tables[0].Rows[i]["EmpId"]);
                         obj.vEmpName = Convert.ToString(ds.Tables[0].Rows[i]["EmpName"]);
-                        obj.EmpGender = Convert.ToString(ds.Tables[0].Rows[i]["EmpGender"]);
-                        obj.vEmpMobile = Convert.ToString(ds.Tables[0].Rows[i]["EmpMobile"]);
-                        obj.vEmpGrade = Convert.ToString(ds.Tables[0].Rows[i]["EmpGrade"]);
+
+                        if (ds.Tables[0].Rows[i]["EmpGender"] == null)
+                        {
+                            obj.EmpGender = string.Empty;
+                        }
+                        else
+                        {
+                            obj.EmpGender = Convert.ToString(ds.Tables[0].Rows[i]["EmpGender"]);
+                        }
+
+                        if (ds.Tables[0].Rows[i]["EmpMobile"] == null)
+                        {
+                            obj.vEmpMobile = string.Empty;
+                        }
+                        else
+                        {
+                            obj.vEmpMobile = Convert.ToString(ds.Tables[0].Rows[i]["EmpMobile"]);
+                        }
+
+                        if (ds.Tables[0].Rows[i]["EmpGrade"] == null)
+                        {
+                            obj.vEmpGrade = string.Empty;
+                        }
+                        else
+                        {
+                            obj.vEmpGrade = Convert.ToString(ds.Tables[0].Rows[i]["EmpGrade"]);
+                        }
+
                         obj.EmpRole = Convert.ToString(ds.Tables[0].Rows[i]["EmpRole"]);
                         obj.EmpLocation = Convert.ToString(ds.Tables[0].Rows[i]["EmpLocation"]);
-                        obj.IsActive = Convert.ToBoolean(ds.Tables[0].Rows[i]["IsActive"]);
+                        obj.Units = Convert.ToString(ds.Tables[0].Rows[i]["Units"]);
+                        obj.LineName = Convert.ToString(ds.Tables[0].Rows[i]["LineName"]);
+                        obj.LineId = Convert.ToInt64(ds.Tables[0].Rows[i]["LineId"]);
+
+                        if (ds.Tables[0].Rows[i]["CreatedOn"] == null)
+                        {
+                            obj.CreatedOn = string.Empty;
+                        }
+                        else
+                        {
+                            obj.CreatedOn = Convert.ToString(ds.Tables[0].Rows[i]["CreatedOn"]);
+                        }
+
+                        if (ds.Tables[0].Rows[i]["CreatedBy"] == DBNull.Value)
+                        {
+                            obj.CreatedBy = 0;
+                        }
+                        else
+                        {
+                            obj.CreatedBy = Convert.ToInt32(ds.Tables[0].Rows[i]["CreatedBy"]);
+                        }
+
+                        if (ds.Tables[0].Rows[i]["ModifiedOn"] == null)
+                        {
+                            obj.ModifiedOn = string.Empty;
+                        }
+                        else
+                        {
+                            obj.ModifiedOn = Convert.ToString(ds.Tables[0].Rows[i]["ModifiedOn"]);
+                        }
+
+                        if (ds.Tables[0].Rows[i]["ModifiedBy"] == DBNull.Value)
+                        {
+                            obj.ModifiedBy = 0;
+                        }
+                        else
+                        {
+                            obj.ModifiedBy = Convert.ToInt32(ds.Tables[0].Rows[i]["ModifiedBy"]);
+                        }
+
+                        //obj.IsActive = Convert.ToBoolean(ds.Tables[0].Rows[i]["IsActive"]);
 
                         obj.vErrorMsg = "Success";
                         obj.vErrorCode = 200;
