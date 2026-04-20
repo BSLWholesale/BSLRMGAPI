@@ -163,7 +163,7 @@ namespace BSLDaman.DAL
                 string strSql = "SELECT FORMAT(BD.AppStartTime, 'dd-MMM-yyyy') AS WorkDate, BC.OrderNo, ED.LineName,";
                 strSql = strSql + " BD.AppEmpID AS Code, ED.EmpName, SUM(1) AS TotalQty, BC.UpdateType FROM BundleCompile BC";
                 strSql = strSql + " INNER JOIN BundleCompileDetail BD ON BC.BundleID = BD.BundleID";
-                strSql = strSql + " INNER JOIN EmployeeDetail ED ON ED.Code = BD.AppEmpID WHERE 1=1 AND BD.BundleIDStatus = 'Finished'  ";
+                strSql = strSql + " INNER JOIN EmployeeDetail ED ON ED.Code = BD.AppEmpID WHERE 1=1 AND BD.BundleIDStatus = 'Finished' AND BC.UpdateType <>'NULL' ";
                 if (!String.IsNullOrWhiteSpace(objReq.OrderNo))
                 {
                     strSql = strSql + " AND BC.OrderNo = @OrderNo ";
@@ -262,8 +262,8 @@ namespace BSLDaman.DAL
                 if (Con.State == ConnectionState.Closed)
                 { Con.Open(); }
 
-                string strSql = "Select BC.OrderNo, BD.BundleID, BD.OperationNo, BD.SubSection, ED.LineName, BD.AppEmpID, ED.EmpName, BD.AppStartTime,";
-                strSql = strSql + " BD.AppEndTime, '1' As Qty, BD.StdRate, BD.StdMin, BC.UpdateType from BundleCompileDetail BD";
+                string strSql = "Select BC.OrderNo, BD.BundleID, BD.OperationNo, BD.SubSection, ED.LineName, BD.AppEmpID, ED.EmpName, FORMAT(BD.AppStartTime, 'dd-MMM-yyyy hh:mm:ss:tt') AS AppStartTime,";
+                strSql = strSql + " FORMAT(BD.AppEndTime, 'dd-MMM-yyyy hh:mm:ss:tt') AS AppEndTime, '1' As Qty, BD.StdRate, BD.StdMin, BC.UpdateType from BundleCompileDetail BD";
                 strSql = strSql + " INNER JOIN EmployeeDetail ED ON BD.AppEmpID = ED.Code";
                 strSql = strSql + " INNER JOIN BundleCompile BC ON BC.BundleID = BD.BundleID WHERE 1=1 AND BD.BundleIDStatus = 'Finished'  ";
                 if (!String.IsNullOrWhiteSpace(objReq.OrderNo))
