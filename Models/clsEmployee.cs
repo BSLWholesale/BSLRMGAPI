@@ -377,6 +377,14 @@ namespace BSLDaman.Models
         public string Descriptions { get; set; }
         public string OperationName { get; set; }
         public string SubProduct { get; set; }
+        public Int32 PageNumber { get; set; } = 1;
+        public Int32 PageSize { get; set; } = 20;
+        public string SortBy { get; set; } = "BundleID";        // Default sort column
+        public string SortDirection { get; set; } = "ASC";      // ASC or DESC
+        public Int32 TotalRecords { get; set; }                 // Pagination metadata (for response)
+        public Int32 TotalPages { get; set; }
+        public bool HasNextPage { get; set; }
+        public bool HasPreviousPage { get; set; }
         public string vErrorMsg { get; set; }
         public int vErrorCode { get; set; }
     }
