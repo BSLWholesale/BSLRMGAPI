@@ -17,9 +17,56 @@ namespace BSLDaman.Controllers
         MOBDALProduction _MOBDALProduction = new MOBDALProduction();
 
 
+        //[System.Web.Http.HttpGet]
+        //[System.Web.Http.Route("api/MOBProduction/Fn_Get_ActiveBundle")]
+        //public List<clsBundleCompile> Fn_Get_ActiveBundle(string OrderNo = null, Int64 ? OperationNo = null, Int64 ? BundleID = null, string BundleIDStatus = null)
+        //{
+        //    clsBundleCompile objReq = new clsBundleCompile();
+
+        //    if (!string.IsNullOrWhiteSpace(OrderNo))
+        //    {
+        //        objReq.OrderNo = OrderNo;
+        //    }
+        //    else
+        //    {
+        //        objReq.OrderNo = null;
+        //    }
+
+        //    if (OperationNo.HasValue)
+        //    {
+        //        objReq.OperationNo = OperationNo.Value;
+        //    }
+        //    else
+        //    {
+        //        objReq.OperationNo = 0;
+        //    }
+
+        //    if (BundleID.HasValue)
+        //    {
+        //        objReq.BundleID = BundleID.Value;
+        //    }
+        //    else
+        //    {
+        //        objReq.BundleID = 0;
+        //    }
+
+        //    if (!string.IsNullOrWhiteSpace(BundleIDStatus))
+        //    {
+        //        objReq.BundleIDStatus = BundleIDStatus;
+        //    }
+        //    else
+        //    {
+        //        objReq.BundleIDStatus = null;
+        //    }
+
+        //    var objResp = _MOBDALProduction.Fn_Get_ActiveBundle(objReq);
+        //    return objResp;
+        //}
+
+
         [System.Web.Http.HttpGet]
         [System.Web.Http.Route("api/MOBProduction/Fn_Get_ActiveBundle")]
-        public List<clsBundleCompile> Fn_Get_ActiveBundle(string OrderNo = null, Int64 ? OperationNo = null, Int64 ? BundleID = null, string BundleIDStatus = null)
+        public List<clsBundleCompile> Fn_Get_ActiveBundle(string OrderNo = null, Int32? PageNumber = null, Int32? PageSize = null, string SortBy = null, string SortDirection = null)
         {
             clsBundleCompile objReq = new clsBundleCompile();
 
@@ -32,31 +79,40 @@ namespace BSLDaman.Controllers
                 objReq.OrderNo = null;
             }
 
-            if (OperationNo.HasValue)
+            if (PageNumber.HasValue)
             {
-                objReq.OperationNo = OperationNo.Value;
+                objReq.PageNumber = PageNumber.Value;
             }
             else
             {
-                objReq.OperationNo = 0;
+                objReq.PageNumber = 0;
             }
 
-            if (BundleID.HasValue)
+            if (PageSize.HasValue)
             {
-                objReq.BundleID = BundleID.Value;
+                objReq.PageSize = PageSize.Value;
             }
             else
             {
-                objReq.BundleID = 0;
+                objReq.PageSize = 0;
             }
 
-            if (!string.IsNullOrWhiteSpace(BundleIDStatus))
+            if (!string.IsNullOrWhiteSpace(SortBy))
             {
-                objReq.BundleIDStatus = BundleIDStatus;
+                objReq.SortBy = SortBy;
             }
             else
             {
-                objReq.BundleIDStatus = null;
+                objReq.SortBy = null;
+            }
+
+            if (!string.IsNullOrWhiteSpace(SortDirection))
+            {
+                objReq.SortDirection = SortDirection;
+            }
+            else
+            {
+                objReq.SortDirection = null;
             }
 
             var objResp = _MOBDALProduction.Fn_Get_ActiveBundle(objReq);
