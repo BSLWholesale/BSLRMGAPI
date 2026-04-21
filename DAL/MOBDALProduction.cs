@@ -202,7 +202,7 @@ namespace BSLDaman.DAL
                 if (Con.State == ConnectionState.Closed)
                 { Con.Open(); }
 
-                using (SqlCommand cmd = new SqlCommand("USP_MOBGetActiveBundle", Con))
+                using (SqlCommand cmd = new SqlCommand("USP_MobileGetActiveBundle", Con))
                 {
                     cmd.CommandType = CommandType.StoredProcedure;
 
