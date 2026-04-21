@@ -1,4 +1,5 @@
 ﻿using BSLDaman.Models;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
@@ -64,7 +65,7 @@ namespace BSLDaman.DAL
         public clsOrderMaster Fn_Insert_Order_Master(clsOrderMaster objReq)
         {
             var objResp = new clsOrderMaster();
-
+            Logger.ErrorLog(JsonConvert.SerializeObject(objReq), "Request", "Fn_Insert_Order_Master");
             try
             {
 
@@ -147,6 +148,7 @@ namespace BSLDaman.DAL
             {
                 Con.Close();
             }
+            Logger.ErrorLog(JsonConvert.SerializeObject(objResp), "Response", "Fn_Insert_Order_Master");
             return objResp;
         }
 
@@ -154,6 +156,7 @@ namespace BSLDaman.DAL
         {
             var objResp = new List<clsOrderMaster>();
             var obj = new clsOrderMaster();
+            Logger.ErrorLog(JsonConvert.SerializeObject(objReq), "Request", "Fn_Get_Order_Master");
             try
             {
                 if (Con.State == ConnectionState.Broken)
@@ -232,6 +235,7 @@ namespace BSLDaman.DAL
             {
                 Con.Close();
             }
+            Logger.ErrorLog(JsonConvert.SerializeObject(objResp), "Response", "Fn_Get_Order_Master");
             return objResp;
         }
 
@@ -239,6 +243,7 @@ namespace BSLDaman.DAL
         {
             var objResp = new List<clsOrderDetail>();
             var obj = new clsOrderDetail();
+            Logger.ErrorLog(JsonConvert.SerializeObject(objReq), "Request", "Fn_Get_Order_Detail");
             try
             {
                 if (Con.State == ConnectionState.Broken)
@@ -313,6 +318,7 @@ namespace BSLDaman.DAL
             {
                 Con.Close();
             }
+            Logger.ErrorLog(JsonConvert.SerializeObject(objResp), "Response", "Fn_Get_Order_Detail");
             return objResp;
         }
 
@@ -326,6 +332,7 @@ namespace BSLDaman.DAL
             //    Fn_Get_MXID("ProcessMaster", "ID");
             //    objReq.ID = mxID;
             //}
+            Logger.ErrorLog(JsonConvert.SerializeObject(objReq), "Request", "Fn_Insert_New_Process");
             try
             {
 
@@ -370,12 +377,14 @@ namespace BSLDaman.DAL
             {
                 Con.Close();
             }
+            Logger.ErrorLog(JsonConvert.SerializeObject(objResp), "Response", "Fn_Insert_New_Process");
             return objResp;
         }
 
         public clsProcessMaster Fn_Delete_Process(clsProcessMaster objReq)
         {
             var objResp = new clsProcessMaster();
+            Logger.ErrorLog(JsonConvert.SerializeObject(objReq), "Request", "Fn_Delete_Process");
             try
             {
 
@@ -412,6 +421,7 @@ namespace BSLDaman.DAL
             {
                 Con.Close();
             }
+            Logger.ErrorLog(JsonConvert.SerializeObject(objResp), "Response", "Fn_Delete_Process");
             return objResp;
         }
 
@@ -419,6 +429,7 @@ namespace BSLDaman.DAL
         {
             var objResp = new List<clsProcessMaster>();
             var obj = new clsProcessMaster();
+            Logger.ErrorLog(JsonConvert.SerializeObject(objReq), "Request", "Fn_Get_ProcessMaster");
             try
             {
                 if (Con.State == ConnectionState.Broken)
@@ -488,6 +499,7 @@ namespace BSLDaman.DAL
             {
                 Con.Close();
             }
+            Logger.ErrorLog(JsonConvert.SerializeObject(objResp), "Response", "Fn_Get_ProcessMaster");
             return objResp;
         }
 
@@ -496,9 +508,8 @@ namespace BSLDaman.DAL
         public clsOPBreackDownMaster Fn_Upload_Operation_BreackdownFile(clsOPBreackDownMaster objReq)
         {
             var objResp = new clsOPBreackDownMaster();
-
-            var filteredList = objReq.oList.Where(x => x.SubSection == "Post Assmbly" || x.SubSection == "POST ASSEMBLY").ToList();
-
+            Logger.ErrorLog(JsonConvert.SerializeObject(objReq), "Request", "Fn_Upload_Operation_BreackdownFile");
+            var filteredList = objReq.oList.Where(x => x.SubSection == "Post Assmbly" || x.SubSection == "POST ASSEMBLY").ToList();            
             try
             {
 
@@ -640,6 +651,7 @@ namespace BSLDaman.DAL
             {
                 Con.Close();
             }
+            Logger.ErrorLog(JsonConvert.SerializeObject(objResp), "Response", "Fn_Upload_Operation_BreackdownFile");
             return objResp;
         }
 
@@ -647,6 +659,7 @@ namespace BSLDaman.DAL
         {
             var objResp = new List<clsOPBreackDownDetail>();
             var obj = new clsOPBreackDownDetail();
+            Logger.ErrorLog(JsonConvert.SerializeObject(objReq), "Request", "Fn_Get_Operation_BreackdownFile");
             try
             {
                 if (Con.State == ConnectionState.Broken)
@@ -744,12 +757,14 @@ namespace BSLDaman.DAL
             {
                 Con.Close();
             }
+            Logger.ErrorLog(JsonConvert.SerializeObject(objResp), "Response", "Fn_Get_Operation_BreackdownFile");
             return objResp;
         }
 
         public clsOPBreackDownMaster Fn_Check_Exist_style_In_Master(clsOPBreackDownMaster objReq)
         {
             var objResp = new clsOPBreackDownMaster();
+            Logger.ErrorLog(JsonConvert.SerializeObject(objReq), "Request", "Fn_Check_Exist_style_In_Master");
             try
             {
                 if (Con.State == ConnectionState.Broken)
@@ -818,6 +833,7 @@ namespace BSLDaman.DAL
             {
                 Con.Close();
             }
+            Logger.ErrorLog(JsonConvert.SerializeObject(objResp), "Response", "Fn_Check_Exist_style_In_Master");
             return objResp;
         }
 
@@ -827,6 +843,7 @@ namespace BSLDaman.DAL
         {
             var objResp = new List<clsOPBreackDownDetail>();
             var obj = new clsOPBreackDownDetail();
+            Logger.ErrorLog(JsonConvert.SerializeObject(objReq), "Request", "Fn_Get_OB_BY_Product");
             try
             {
                 if (Con.State == ConnectionState.Broken)
@@ -901,6 +918,7 @@ namespace BSLDaman.DAL
             {
                 Con.Close();
             }
+            Logger.ErrorLog(JsonConvert.SerializeObject(objResp), "Response", "Fn_Get_OB_BY_Product");
             return objResp;
         }
 
@@ -911,6 +929,7 @@ namespace BSLDaman.DAL
         public clsOPBreackDownDetail Fn_Update_Rate_In_OB_Master(clsOPBreackDownDetail objReq)
         {
             var objResp = new clsOPBreackDownDetail();
+            Logger.ErrorLog(JsonConvert.SerializeObject(objReq), "Request", "Fn_Update_Rate_In_OB_Master");
             try
             {
 
@@ -948,6 +967,7 @@ namespace BSLDaman.DAL
             {
                 Con.Close();
             }
+            Logger.ErrorLog(JsonConvert.SerializeObject(objResp), "Response", "Fn_Update_Rate_In_OB_Master");
             return objResp;
         }
 
@@ -958,6 +978,7 @@ namespace BSLDaman.DAL
         public clsOPBreackDownDetail Fn_Add_New_OpNo (clsOPBreackDownDetail objReq)
         {
             var objResp = new clsOPBreackDownDetail();
+            Logger.ErrorLog(JsonConvert.SerializeObject(objReq), "Request", "Fn_Add_New_OpNo");
             try
             {
                 if (Con.State == ConnectionState.Broken)
@@ -999,6 +1020,7 @@ namespace BSLDaman.DAL
             {
                 Con.Close();
             }
+            Logger.ErrorLog(JsonConvert.SerializeObject(objResp), "Response", "Fn_Add_New_OpNo");
             return objResp;
         }
 
@@ -1010,6 +1032,7 @@ namespace BSLDaman.DAL
         {
             var objResp = new List<clsOrderMaster>();
             var obj = new clsOrderMaster();
+            Logger.ErrorLog(JsonConvert.SerializeObject(objReq), "Request", "Fn_Get_Order_Chart");
             try
             {
                 if (Con.State == ConnectionState.Broken)
@@ -1073,6 +1096,7 @@ namespace BSLDaman.DAL
             {
                 Con.Close();
             }
+            Logger.ErrorLog(JsonConvert.SerializeObject(objResp), "Response", "Fn_Get_Order_Chart");
             return objResp;
         }
 

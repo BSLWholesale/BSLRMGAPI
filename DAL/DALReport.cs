@@ -328,8 +328,17 @@ namespace BSLDaman.DAL
                         obj.StartDate = Convert.ToString(ds.Tables[0].Rows[i]["AppStartTime"]);
                         obj.EndDate = Convert.ToString(ds.Tables[0].Rows[i]["AppEndTime"]);
                         obj.Qty = Convert.ToInt32(ds.Tables[0].Rows[i]["Qty"]);
-                        obj.StdRate = Convert.ToDecimal(ds.Tables[0].Rows[i]["StdRate"]);
-                        obj.StdMin = Convert.ToDecimal(ds.Tables[0].Rows[i]["StdMin"]);
+                        string StdRate = Convert.ToString(ds.Tables[0].Rows[i]["StdRate"]);
+                        if(StdRate != "")
+                        {
+                            obj.StdRate = Convert.ToDecimal(ds.Tables[0].Rows[i]["StdRate"]);
+                        }
+
+                        string StdMin = Convert.ToString(ds.Tables[0].Rows[i]["StdMin"]);
+                        if(StdMin != "")
+                        {
+                            obj.StdMin = Convert.ToDecimal(ds.Tables[0].Rows[i]["StdMin"]);
+                        }
                         obj.UpdateType = Convert.ToString(ds.Tables[0].Rows[i]["UpdateType"]);
                         obj.vErrorCode = 200;
                         obj.vErrorMsg = "Success";

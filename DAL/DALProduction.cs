@@ -1,4 +1,5 @@
 ﻿using BSLDaman.Models;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
@@ -68,6 +69,7 @@ namespace BSLDaman.DAL
         public clsProductionMaster Fn_Insert_Production_Order(clsProductionMaster objReq)
         {
             var objResp = new clsProductionMaster();
+            Logger.ErrorLog(JsonConvert.SerializeObject(objReq), "Request", "Fn_Insert_Production_Order");
             try
             {
 
@@ -141,6 +143,7 @@ namespace BSLDaman.DAL
             {
                 Con.Close();
             }
+            Logger.ErrorLog(JsonConvert.SerializeObject(objResp), "Response", "Fn_Insert_Production_Order");
             return objResp;
         }
 
@@ -148,6 +151,7 @@ namespace BSLDaman.DAL
         {
             var objResp = new List<clsProductionMaster>();
             var obj = new clsProductionMaster();
+            Logger.ErrorLog(JsonConvert.SerializeObject(objReq), "Request", "Fn_Get_Production_Order");
             try
             {
                 if (Con.State == ConnectionState.Broken)
@@ -268,6 +272,7 @@ namespace BSLDaman.DAL
             {
                 Con.Close();
             }
+            Logger.ErrorLog(JsonConvert.SerializeObject(objResp), "Response", "Fn_Get_Production_Order");
             return objResp;
         }
 
@@ -275,6 +280,7 @@ namespace BSLDaman.DAL
         {
             var objResp = new List<clsProductionDetail>();
             var obj = new clsProductionDetail();
+            Logger.ErrorLog(JsonConvert.SerializeObject(objReq), "Request", "Fn_Get_Production_Detail");
             try
             {
                 if (Con.State == ConnectionState.Broken)
@@ -338,12 +344,14 @@ namespace BSLDaman.DAL
             {
                 Con.Close();
             }
+            Logger.ErrorLog(JsonConvert.SerializeObject(objResp), "Response", "Fn_Get_Production_Detail");
             return objResp;
         }
 
         public clsProductionMaster Fn_Update_Production(clsProductionMaster objReq)
         {
             var objResp = new clsProductionMaster();
+            Logger.ErrorLog(JsonConvert.SerializeObject(objReq), "Request", "Fn_Update_Production");
             try
             {
 
@@ -416,6 +424,7 @@ namespace BSLDaman.DAL
             {
                 Con.Close();
             }
+            Logger.ErrorLog(JsonConvert.SerializeObject(objResp), "Response", "Fn_Update_Production");
             return objResp;
         }
 
@@ -424,6 +433,7 @@ namespace BSLDaman.DAL
         public clsStyle Fn_Insert_Style(clsStyle objReq)
         {
             var objResp = new clsStyle();
+            Logger.ErrorLog(JsonConvert.SerializeObject(objReq), "Request", "Fn_Insert_Style");
             try
             {
 
@@ -478,6 +488,7 @@ namespace BSLDaman.DAL
             {
                 Con.Close();
             }
+            Logger.ErrorLog(JsonConvert.SerializeObject(objResp), "Response", "Fn_Insert_Style");
             return objResp;
         }
 
@@ -485,6 +496,7 @@ namespace BSLDaman.DAL
         {
             var objResp = new List<clsStyle>();
             var obj = new clsStyle();
+            Logger.ErrorLog(JsonConvert.SerializeObject(objReq), "Request", "Fn_Get_Style");
             try
             {
                 if (Con.State == ConnectionState.Broken)
@@ -580,6 +592,7 @@ namespace BSLDaman.DAL
             {
                 Con.Close();
             }
+            Logger.ErrorLog(JsonConvert.SerializeObject(objResp), "Response", "Fn_Get_Style");
             return objResp;
         }
 
@@ -588,6 +601,7 @@ namespace BSLDaman.DAL
         public List<clsAutoCompliteResponse> Fn_AutoComplete_Textbox(clsAutoCompliteRequest obj)
         {
             var objResp = new List<clsAutoCompliteResponse>();
+            Logger.ErrorLog(JsonConvert.SerializeObject(obj), "Request", "Fn_AutoComplete_Textbox");
             try
             {
 
@@ -630,6 +644,7 @@ namespace BSLDaman.DAL
             {
                 Con.Close();
             }
+            Logger.ErrorLog(JsonConvert.SerializeObject(objResp), "Response", "Fn_AutoComplete_Textbox");
             return objResp;
         }
 
@@ -638,7 +653,7 @@ namespace BSLDaman.DAL
         public clsBundleLayerMaster Fn_Insert_Bundle_Layer(clsBundleLayerMaster objReq)
         {
             var objResp = new clsBundleLayerMaster();
-
+            Logger.ErrorLog(JsonConvert.SerializeObject(objReq), "Request", "Fn_Insert_Bundle_Layer");
             try
             {
 
@@ -689,12 +704,14 @@ namespace BSLDaman.DAL
             {
                 Con.Close();
             }
+            Logger.ErrorLog(JsonConvert.SerializeObject(objResp), "Response", "Fn_Insert_Bundle_Layer");
             return objResp;
         }
 
         public clsBundleLayerMaster Fn_Delete_Bundle_Layer(clsBundleLayerMaster objReq)
         {            
             var objResp = new clsBundleLayerMaster();
+            Logger.ErrorLog(JsonConvert.SerializeObject(objReq), "Request", "Fn_Delete_Bundle_Layer");
             try
             {
 
@@ -732,6 +749,7 @@ namespace BSLDaman.DAL
             {
                 Con.Close();
             }
+            Logger.ErrorLog(JsonConvert.SerializeObject(objResp), "Response", "Fn_Delete_Bundle_Layer");
             return objResp;
         }
 
@@ -739,6 +757,7 @@ namespace BSLDaman.DAL
         {
             var objResp = new List<clsBundleLayerMaster>();
             var obj = new clsBundleLayerMaster();
+            Logger.ErrorLog(JsonConvert.SerializeObject(objReq), "Request", "Fn_Get_Bundle_Layer");
             try
             {
                 if (Con.State == ConnectionState.Broken)
@@ -833,6 +852,7 @@ namespace BSLDaman.DAL
             {
                 Con.Close();
             }
+            Logger.ErrorLog(JsonConvert.SerializeObject(objResp), "Response", "Fn_Get_Bundle_Layer");
             return objResp;
         }
 
@@ -843,7 +863,7 @@ namespace BSLDaman.DAL
         public clsBundleSize Fn_Insert_Bundle_Size(clsBundleSize objReq)
         {
             var objResp = new clsBundleSize();
-
+            Logger.ErrorLog(JsonConvert.SerializeObject(objReq), "Request", "Fn_Insert_Bundle_Size");
             try
             {
 
@@ -891,12 +911,14 @@ namespace BSLDaman.DAL
             {
                 Con.Close();
             }
+            Logger.ErrorLog(JsonConvert.SerializeObject(objResp), "Response", "Fn_Insert_Bundle_Size");
             return objResp;
         }
 
         public clsBundleSize Fn_Delete_Bundle_Size(clsBundleSize objReq)
         {
             var objResp = new clsBundleSize();
+            Logger.ErrorLog(JsonConvert.SerializeObject(objReq), "Request", "Fn_Delete_Bundle_Size");
             try
             {
 
@@ -934,6 +956,7 @@ namespace BSLDaman.DAL
             {
                 Con.Close();
             }
+            Logger.ErrorLog(JsonConvert.SerializeObject(objResp), "Response", "Fn_Delete_Bundle_Size");
             return objResp;
         }
 
@@ -941,6 +964,7 @@ namespace BSLDaman.DAL
         {
             var objResp = new List<clsBundleSize>();
             var obj = new clsBundleSize();
+            Logger.ErrorLog(JsonConvert.SerializeObject(objReq), "Request", "Fn_Get_Bundle_Size");
             try
             {
                 if (Con.State == ConnectionState.Broken)
@@ -1027,6 +1051,7 @@ namespace BSLDaman.DAL
             {
                 Con.Close();
             }
+            Logger.ErrorLog(JsonConvert.SerializeObject(objResp), "Response", "Fn_Get_Bundle_Size");
             return objResp;
         }
 
@@ -1037,7 +1062,7 @@ namespace BSLDaman.DAL
         public clsBundleColor Fn_Insert_Bundle_Color(clsBundleColor objReq)
         {
             var objResp = new clsBundleColor();
-
+            Logger.ErrorLog(JsonConvert.SerializeObject(objReq), "Request", "Fn_Insert_Bundle_Color");
             try
             {
 
@@ -1083,12 +1108,14 @@ namespace BSLDaman.DAL
             {
                 Con.Close();
             }
+            Logger.ErrorLog(JsonConvert.SerializeObject(objResp), "Response", "Fn_Insert_Bundle_Color");
             return objResp;
         }
 
         public clsBundleColor Fn_Delete_Bundle_Color(clsBundleColor objReq)
         {
             var objResp = new clsBundleColor();
+            Logger.ErrorLog(JsonConvert.SerializeObject(objReq), "Request", "Fn_Delete_Bundle_Color");
             try
             {
 
@@ -1126,6 +1153,7 @@ namespace BSLDaman.DAL
             {
                 Con.Close();
             }
+            Logger.ErrorLog(JsonConvert.SerializeObject(objResp), "Response", "Fn_Delete_Bundle_Color");
             return objResp;
         }
 
@@ -1133,6 +1161,7 @@ namespace BSLDaman.DAL
         {
             var objResp = new List<clsBundleColor>();
             var obj = new clsBundleColor();
+            Logger.ErrorLog(JsonConvert.SerializeObject(objReq), "Request", "Fn_Get_Bundle_Color");
             try
             {
                 if (Con.State == ConnectionState.Broken)
@@ -1217,6 +1246,7 @@ namespace BSLDaman.DAL
             {
                 Con.Close();
             }
+            Logger.ErrorLog(JsonConvert.SerializeObject(objResp), "Response", "Fn_Get_Bundle_Color");
             return objResp;
         }
 
@@ -1227,7 +1257,7 @@ namespace BSLDaman.DAL
         public clsBundleShade Fn_Insert_Bundle_Shade(clsBundleShade objReq)
         {
             var objResp = new clsBundleShade();
-
+            Logger.ErrorLog(JsonConvert.SerializeObject(objReq), "Request", "Fn_Insert_Bundle_Shade");
             try
             {
 
@@ -1274,12 +1304,14 @@ namespace BSLDaman.DAL
             {
                 Con.Close();
             }
+            Logger.ErrorLog(JsonConvert.SerializeObject(objResp), "Response", "Fn_Insert_Bundle_Shade");
             return objResp;
         }
 
         public clsBundleShade Fn_Delete_Bundle_Shade(clsBundleShade objReq)
         {
             var objResp = new clsBundleShade();
+            Logger.ErrorLog(JsonConvert.SerializeObject(objReq), "Request", "Fn_Delete_Bundle_Shade");
             try
             {
 
@@ -1317,6 +1349,7 @@ namespace BSLDaman.DAL
             {
                 Con.Close();
             }
+            Logger.ErrorLog(JsonConvert.SerializeObject(objResp), "Response", "Fn_Delete_Bundle_Shade");
             return objResp;
         }
 
@@ -1324,6 +1357,7 @@ namespace BSLDaman.DAL
         {
             var objResp = new List<clsBundleShade>();
             var obj = new clsBundleShade();
+            Logger.ErrorLog(JsonConvert.SerializeObject(objReq), "Request", "Fn_Get_Bundle_Shade");
             try
             {
                 if (Con.State == ConnectionState.Broken)
@@ -1409,6 +1443,7 @@ namespace BSLDaman.DAL
             {
                 Con.Close();
             }
+            Logger.ErrorLog(JsonConvert.SerializeObject(objResp), "Response", "Fn_Get_Bundle_Shade");
             return objResp;
         }
 
@@ -1418,6 +1453,7 @@ namespace BSLDaman.DAL
 
         public clsBundleCompile Fn_Insert_Bundle_Compile(clsBundleCompile objReq)
         {
+            Logger.ErrorLog(JsonConvert.SerializeObject(objReq), "Request", "Fn_Insert_Bundle_Compile");
             var objResp = new clsBundleCompile();
             var subSectionList = Fn_Get_Subsection_List(objReq);
             string strCriteria = "";
@@ -1697,7 +1733,7 @@ namespace BSLDaman.DAL
             {
                 Con.Close();
             }
-
+            Logger.ErrorLog(JsonConvert.SerializeObject(objResp), "Response", "Fn_Insert_Bundle_Compile");
             return objResp;
         }
 
@@ -1705,6 +1741,7 @@ namespace BSLDaman.DAL
         public clsBundleCompile Fn_Delete_Bundle_Compile(clsBundleCompile objReq)
         {
             var objResp = new clsBundleCompile();
+            Logger.ErrorLog(JsonConvert.SerializeObject(objReq), "Request", "Fn_Delete_Bundle_Compile");
             try
             {
 
@@ -1741,6 +1778,7 @@ namespace BSLDaman.DAL
             {
                 Con.Close();
             }
+            Logger.ErrorLog(JsonConvert.SerializeObject(objResp), "Response", "Fn_Delete_Bundle_Compile");
             return objResp;
         }
 
@@ -1748,6 +1786,7 @@ namespace BSLDaman.DAL
         {
             var objResp = new List<clsBundleCompile>();
             var obj = new clsBundleCompile();
+            Logger.ErrorLog(JsonConvert.SerializeObject(objReq), "Request", "Fn_Get_Bundle_Compile");
             try
             {
                 if (Con.State == ConnectionState.Broken)
@@ -1872,6 +1911,7 @@ namespace BSLDaman.DAL
             {
                 Con.Close();
             }
+            Logger.ErrorLog(JsonConvert.SerializeObject(objResp), "Response", "Fn_Get_Bundle_Compile");
             return objResp;
         }
 
@@ -1882,6 +1922,7 @@ namespace BSLDaman.DAL
             var objResp = new List<clsSizeMaster>();
             var obj = new clsSizeMaster();
             string strSql = "";
+            Logger.ErrorLog(JsonConvert.SerializeObject(objReq), "Request", "Fn_Get_Order_SizeName");
             try
             {
 
@@ -1944,6 +1985,7 @@ namespace BSLDaman.DAL
             {
                 Con.Close();
             }
+            Logger.ErrorLog(JsonConvert.SerializeObject(objResp), "Response", "Fn_Get_Order_SizeName");
             return objResp;
         }
 
@@ -1951,6 +1993,7 @@ namespace BSLDaman.DAL
         {
             var objResp = new List<clsBundleColor>();
             var obj = new clsBundleColor();
+            Logger.ErrorLog(JsonConvert.SerializeObject(objReq), "Request", "Fn_Get_Order_Color");
             try
             {
                 if (Con.State == ConnectionState.Broken)
@@ -2010,6 +2053,7 @@ namespace BSLDaman.DAL
             {
                 Con.Close();
             }
+            Logger.ErrorLog(JsonConvert.SerializeObject(objResp), "Response", "Fn_Get_Order_Color");
             return objResp;
         }
 
@@ -2017,6 +2061,7 @@ namespace BSLDaman.DAL
         {
             var objResp = new List<clsBundleCompile>();
             var obj = new clsBundleCompile();
+            Logger.ErrorLog(JsonConvert.SerializeObject(objReq), "Request", "Fn_Get_Subsection_List");
             try
             {
                 if (Con.State == ConnectionState.Broken)
@@ -2088,12 +2133,14 @@ namespace BSLDaman.DAL
             {
                 Con.Close();
             }
+            Logger.ErrorLog(JsonConvert.SerializeObject(objResp), "Response", "Fn_Get_Subsection_List");
             return objResp;
         }
 
         public clsMAXID Fn_Get_Max_ID_With_DATE(clsMAXID objReq)
         {
             var objResp = new clsMAXID();
+            Logger.ErrorLog(JsonConvert.SerializeObject(objReq), "Request", "Fn_Get_Max_ID_With_DATE");
             try
             {
                 //if (Con.State == ConnectionState.Broken)
@@ -2140,12 +2187,14 @@ namespace BSLDaman.DAL
             {
                 //Con.Close();
             }
+            Logger.ErrorLog(JsonConvert.SerializeObject(objResp), "Response", "Fn_Get_Max_ID_With_DATE");
             return objResp;
         }
 
         public clsBundleLayerMaster Fn_Update_Layer_Qty(clsBundleLayerMaster objReq)
         {
             var objResp = new clsBundleLayerMaster();
+            Logger.ErrorLog(JsonConvert.SerializeObject(objReq), "Request", "Fn_Update_Layer_Qty");
             try
             {
 
@@ -2184,6 +2233,7 @@ namespace BSLDaman.DAL
             {
                 Con.Close();
             }
+            Logger.ErrorLog(JsonConvert.SerializeObject(objResp), "Response", "Fn_Update_Layer_Qty");
             return objResp;
         }
 
@@ -2193,6 +2243,7 @@ namespace BSLDaman.DAL
         {
             var objResp = new List<clsBundleCompile>();
             var obj = new clsBundleCompile();
+            Logger.ErrorLog(JsonConvert.SerializeObject(objReq), "Request", "Fn_Get_SectionWis_Compile_QR_Data");
             try
             {
                 string[] arrSubSection = objReq.SubSection.Split(',');
@@ -2300,6 +2351,7 @@ namespace BSLDaman.DAL
             {
                 Con.Close();
             }
+            Logger.ErrorLog(JsonConvert.SerializeObject(objResp), "Response", "Fn_Get_SectionWis_Compile_QR_Data");
             return objResp;
         }
 
@@ -2310,7 +2362,7 @@ namespace BSLDaman.DAL
         public clsBundleCompile Fn_Update_AppEmpId(clsBundleCompile objReq)
         {
             var objResp = new clsBundleCompile();
-
+            Logger.ErrorLog(JsonConvert.SerializeObject(objReq), "Request", "Fn_Update_AppEmpId");
             try
             {
 
@@ -2351,6 +2403,7 @@ namespace BSLDaman.DAL
             {
                 Con.Close();
             }
+            Logger.ErrorLog(JsonConvert.SerializeObject(objResp), "Response", "Fn_Update_AppEmpId");
             return objResp;
         }
 

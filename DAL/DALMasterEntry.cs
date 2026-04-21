@@ -1385,7 +1385,7 @@ namespace BSLDaman.DAL
                 {
                     strSql = strSql + " AND Grid = @Grid";
                 }
-                strSql = strSql + " ORDER BY ID ";
+                strSql = strSql + " ORDER BY CreatedOn DESC ";
 
                 SqlCommand cmd = new SqlCommand(strSql, Con);
                 cmd.CommandType = CommandType.Text;
