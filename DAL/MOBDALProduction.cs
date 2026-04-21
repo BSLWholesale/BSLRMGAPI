@@ -221,6 +221,7 @@ namespace BSLDaman.DAL
                         da.Fill(ds);
                         int i = 0;
 
+                        // === Fill Data ===
                         if (ds.Tables[0].Rows.Count > 0)
                         {
                             while (ds.Tables[0].Rows.Count > i)
@@ -265,54 +266,6 @@ namespace BSLDaman.DAL
                             obj.vErrorMsg = "No Records are found.";
                             objResp.Add(obj);
                         }
-
-                        // === Fill Data ===
-                        //if (ds.Tables[0].Rows.Count > 0)
-                        //{
-                        //    foreach (DataRow row in ds.Tables[0].Rows)
-                        //    {
-                        //        var obj = new clsBundleCompile
-                        //        {
-                        //            BundleID = Convert.ToInt64(row["BundleID"]),
-                        //            OperationNo = Convert.ToInt64(row["OperationNo"]),
-                        //            LayID = Convert.ToInt64(row["LayID"]),
-                        //            BundleNo = Convert.ToInt32(row["BundleNo"]),
-                        //            SizeName = row["SizeName"].ToString(),
-                        //            ColorName = row["ColorName"].ToString(),
-                        //            ShadeName = row["ShadeName"].ToString(),
-                        //            Qty = Convert.ToInt32(row["Qty"]),
-                        //            PlyTo = Convert.ToInt32(row["PlyTo"]),
-                        //            PlyFrom = Convert.ToInt32(row["PlyFrom"]),
-                        //            LotNo = Convert.ToInt32(row["LotNo"]),
-                        //            SubSection = row["SubSection"].ToString(),
-                        //            IsDispatch = Convert.ToBoolean(row["IsDispatch"]),
-                        //            StyleCode = row["StyleCode"].ToString(),
-                        //            OrderNo = row["OrderNo"].ToString(),
-                        //            SupervisorID = row["SupervisorID"] == DBNull.Value ? 0 : Convert.ToInt32(row["SupervisorID"]),
-                        //            SupervisorAssignedDate = row["SupervisorAssignedDate"]?.ToString() ?? "",
-                        //            AppEmpID = row["AppEmpID"] == DBNull.Value ? 0 : Convert.ToInt32(row["AppEmpID"]),
-                        //            AppStartTime = row["AppStartTime"]?.ToString() ?? "",
-                        //            AppEndTime = row["AppEndTime"]?.ToString() ?? "",
-                        //            BundleIDStatus = row["BundleIDStatus"]?.ToString() ?? "",
-                        //            CreatedBy = Convert.ToInt32(row["CreatedBy"]),
-                        //            CreatedOn = row["CreatedOn"]?.ToString() ?? "",
-                        //            ModifiedBy = row["ModifiedBy"] == DBNull.Value ? 0 : Convert.ToInt32(row["ModifiedBy"]),
-                        //            ModifiedOn = row["ModifiedOn"]?.ToString() ?? "",
-                        //            vErrorCode = 200,
-                        //            vErrorMsg = "Success"
-                        //        };
-
-                        //        objResp.Add(obj);
-                        //    }
-                        //}
-                        //else
-                        //{
-                        //    objResp.Add(new clsBundleCompile
-                        //    {
-                        //        vErrorCode = 404,
-                        //        vErrorMsg = "No Records Found"
-                        //    });
-                        //}
 
                         // === Fill Pagination Metadata ===
                         if (ds.Tables.Count > 1 && ds.Tables[1].Rows.Count > 0)
