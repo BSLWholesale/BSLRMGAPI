@@ -198,11 +198,11 @@ namespace BSLDaman.DAL
                         obj = new clsOrderMaster();
                         obj.ID = Convert.ToInt64(ds.Tables[0].Rows[i]["ID"]);
                         obj.OrderNo = Convert.ToString(ds.Tables[0].Rows[i]["OrderNo"]);
-                        obj.Qty = Convert.ToInt16(ds.Tables[0].Rows[i]["Qty"]);
+                        obj.Qty = Convert.ToInt32(ds.Tables[0].Rows[i]["Qty"]);
 
                         obj.IsFinished = Convert.ToBoolean(ds.Tables[0].Rows[i]["IsFinished"]);
                         obj.IsStkr = Convert.ToBoolean(ds.Tables[0].Rows[i]["IsStkr"]);
-                        obj.BundleQty = Convert.ToInt16(ds.Tables[0].Rows[i]["BundleQty"]);
+                        obj.BundleQty = Convert.ToInt32(ds.Tables[0].Rows[i]["BundleQty"]);
                         obj.OrderDate = Convert.ToString(ds.Tables[0].Rows[i]["OrderDate"]);
                         obj.CreatedBy = Convert.ToInt32(ds.Tables[0].Rows[i]["CreatedBy"]);
                         obj.CreatedOn = Convert.ToString(ds.Tables[0].Rows[i]["CreatedOn"]);
@@ -468,7 +468,7 @@ namespace BSLDaman.DAL
                     while (ds.Tables[0].Rows.Count > i)
                     {
                         obj = new clsProcessMaster();
-                        obj.ID = Convert.ToInt16(ds.Tables[0].Rows[i]["ID"]);
+                        obj.ID = Convert.ToInt32(ds.Tables[0].Rows[i]["ID"]);
                         obj.ProcessName = Convert.ToString(ds.Tables[0].Rows[i]["ProcessName"]);
                         obj.IsProduction = Convert.ToBoolean(ds.Tables[0].Rows[i]["IsProduction"]);
                         obj.CreatedBy = Convert.ToInt32(ds.Tables[0].Rows[i]["CreatedBy"]);
