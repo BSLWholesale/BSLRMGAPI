@@ -1187,7 +1187,7 @@ namespace BSLDaman.DAL
                 {
                     strSql = strSql + " AND OrderNo = @OrderNo ";
                 }
-                strSql = strSql + " ORDER BY ColorSelectionID ACS ";
+                strSql = strSql + " ORDER BY ColorSelectionID ASC ";
 
                 SqlCommand cmd = new SqlCommand(strSql, Con);
                 cmd.CommandType = CommandType.Text;
