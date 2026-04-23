@@ -56,7 +56,7 @@ namespace BSLDaman.DAL
                 {
                     strSql = strSql + " AND SubSection = @SubSection ";
                 }
-                strSql = strSql + " ORDER BY BundleID ASC ";
+                strSql = strSql + " ORDER BY SubSection, BundleNo ASC ";
 
 
                 SqlCommand cmd = new SqlCommand(strSql, Con);
