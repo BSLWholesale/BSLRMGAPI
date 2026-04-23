@@ -192,9 +192,10 @@ namespace BSLDaman.DAL
         //}
 
 
-        public List<clsBundleCompile> Fn_Get_ActiveBundle(clsBundleCompile objReq)
+        public ApiResponse<clsBundleCompile> Fn_Get_ActiveBundle(clsBundleCompile objReq)
         {
             var objResp = new List<clsBundleCompile>();
+            var response = new ApiResponse<clsBundleCompile>();
             try
             {
                 if (Con.State == ConnectionState.Broken)
@@ -206,12 +207,10 @@ namespace BSLDaman.DAL
                 {
                     cmd.CommandType = CommandType.StoredProcedure;
 
+                    // ===== Parameters =====
                     cmd.Parameters.AddWithValue("@OrderNo", string.IsNullOrWhiteSpace(objReq.OrderNo) ? (object)DBNull.Value : objReq.OrderNo);
-                    cmd.Parameters.AddWithValue("@OperationNo", objReq.OperationNo > 0 ? objReq.OperationNo : 0);
-                    //cmd.Parameters.AddWithValue("@BundleID", objReq.BundleID > 0 ? objReq.BundleID : 0);
-                    //cmd.Parameters.AddWithValue("@BundleIDStatus", string.IsNullOrWhiteSpace(objReq.BundleIDStatus) ? (object)DBNull.Value : objReq.BundleIDStatus);
-                    cmd.Parameters.AddWithValue("@PageNumber", objReq.PageNumber);
-                    cmd.Parameters.AddWithValue("@PageSize", objReq.PageSize);
+                    cmd.Parameters.AddWithValue("@PageNumber", objReq.PageNumber > 0 ? objReq.PageNumber : 1);
+                    cmd.Parameters.AddWithValue("@PageSize", objReq.PageSize > 0 ? objReq.PageSize : 10);
                     cmd.Parameters.AddWithValue("@SortBy", string.IsNullOrWhiteSpace(objReq.SortBy) ? "BundleID" : objReq.SortBy);
                     cmd.Parameters.AddWithValue("@SortDirection", string.IsNullOrWhiteSpace(objReq.SortDirection) ? "ASC" : objReq.SortDirection.ToUpper());
 
@@ -219,84 +218,101 @@ namespace BSLDaman.DAL
                     {
                         DataSet ds = new DataSet();
                         da.Fill(ds);
-                        int i = 0;
 
-                        // === Fill Data ===
-                        if (ds.Tables[0].Rows.Count > 0)
+                        // ================= Data Fetching =================
+                        if (ds.Tables.Count > 0 && ds.Tables[0].Rows.Count > 0)
                         {
-                            while (ds.Tables[0].Rows.Count > i)
+                            foreach (DataRow row in ds.Tables[0].Rows)
                             {
-                                var obj = new clsBundleCompile();
-                                obj.BundleID = Convert.ToInt64(ds.Tables[0].Rows[i]["BundleID"]);
-                                obj.OperationNo = Convert.ToInt64(ds.Tables[0].Rows[i]["OperationNo"]);
-                                obj.LayID = Convert.ToInt64(ds.Tables[0].Rows[i]["LayID"]);
-                                obj.BundleNo = Convert.ToInt32(ds.Tables[0].Rows[i]["BundleNo"]);
-                                obj.SizeName = ds.Tables[0].Rows[i]["SizeName"].ToString();
-                                obj.ColorName = ds.Tables[0].Rows[i]["ColorName"].ToString();
-                                obj.ShadeName = ds.Tables[0].Rows[i]["ShadeName"].ToString();
-                                obj.Qty = Convert.ToInt32(ds.Tables[0].Rows[i]["Qty"]);
-                                obj.PlyTo = Convert.ToInt32(ds.Tables[0].Rows[i]["PlyTo"]);
-                                obj.PlyFrom = Convert.ToInt32(ds.Tables[0].Rows[i]["PlyFrom"]);
-                                obj.LotNo = Convert.ToInt32(ds.Tables[0].Rows[i]["LotNo"]);
-                                obj.SubSection = ds.Tables[0].Rows[i]["SubSection"].ToString();
-                                obj.IsDispatch = Convert.ToBoolean(ds.Tables[0].Rows[i]["IsDispatch"]);
-                                obj.StyleCode = ds.Tables[0].Rows[i]["StyleCode"].ToString();
-                                obj.OrderNo = ds.Tables[0].Rows[i]["OrderNo"].ToString();
-                                obj.SupervisorID = ds.Tables[0].Rows[i]["SupervisorID"] == DBNull.Value ? 0 : Convert.ToInt32(ds.Tables[0].Rows[i]["SupervisorID"]);
-                                obj.SupervisorAssignedDate = ds.Tables[0].Rows[i]["SupervisorAssignedDate"]?.ToString() ?? "";
-                                obj.AppEmpID = ds.Tables[0].Rows[i]["AppEmpID"] == DBNull.Value ? 0 : Convert.ToInt32(ds.Tables[0].Rows[i]["AppEmpID"]);
-                                obj.AppStartTime = ds.Tables[0].Rows[i]["AppStartTime"]?.ToString() ?? "";
-                                obj.AppEndTime = ds.Tables[0].Rows[i]["AppEndTime"]?.ToString() ?? "";
-                                obj.BundleIDStatus = ds.Tables[0].Rows[i]["BundleIDStatus"]?.ToString() ?? "";
-                                obj.CreatedBy = Convert.ToInt32(ds.Tables[0].Rows[i]["CreatedBy"]);
-                                obj.CreatedOn = ds.Tables[0].Rows[i]["CreatedOn"]?.ToString() ?? "";
-                                obj.ModifiedBy = ds.Tables[0].Rows[i]["ModifiedBy"] == DBNull.Value ? 0 : Convert.ToInt32(ds.Tables[0].Rows[i]["ModifiedBy"]);
-                                obj.ModifiedOn = ds.Tables[0].Rows[i]["ModifiedOn"]?.ToString() ?? "";
-
-                                obj.vErrorCode = 200;
-                                obj.vErrorMsg = "Success";
+                                var obj = new clsBundleCompile
+                                {
+                                    BundleID = Convert.ToInt64(row["BundleID"]),
+                                    OperationNo = Convert.ToInt64(row["OperationNo"]),
+                                    LayID = Convert.ToInt64(row["LayID"]),
+                                    BundleNo = Convert.ToInt32(row["BundleNo"]),
+                                    SizeName = Convert.ToString(row["SizeName"]),
+                                    ColorName = Convert.ToString(row["ColorName"]),
+                                    ShadeName = Convert.ToString(row["ShadeName"]),
+                                    Qty = Convert.ToInt32(row["Qty"]),
+                                    PlyTo = Convert.ToInt32(row["PlyTo"]),
+                                    PlyFrom = Convert.ToInt32(row["PlyFrom"]),
+                                    LotNo = Convert.ToInt32(row["LotNo"]),
+                                    SubSection = Convert.ToString(row["SubSection"]),
+                                    IsDispatch = Convert.ToBoolean(row["IsDispatch"]),
+                                    StyleCode = Convert.ToString(row["StyleCode"]),
+                                    OrderNo = Convert.ToString(row["OrderNo"]),
+                                    SupervisorID = row["SupervisorID"] == DBNull.Value ? 0 : Convert.ToInt32(row["SupervisorID"]),
+                                    SupervisorAssignedDate = row["SupervisorAssignedDate"]?.ToString() ?? "",
+                                    AppEmpID = row["AppEmpID"] == DBNull.Value ? 0 : Convert.ToInt32(row["AppEmpID"]),
+                                    AppStartTime = row["AppStartTime"]?.ToString() ?? "",
+                                    AppEndTime = row["AppEndTime"]?.ToString() ?? "",
+                                    BundleIDStatus = row["BundleIDStatus"]?.ToString() ?? "",
+                                    CreatedBy = Convert.ToInt32(row["CreatedBy"]),
+                                    CreatedOn = row["CreatedOn"]?.ToString() ?? "",
+                                    ModifiedBy = row["ModifiedBy"] == DBNull.Value ? 0 : Convert.ToInt32(row["ModifiedBy"]),
+                                    ModifiedOn = row["ModifiedOn"]?.ToString() ?? ""
+                                };
                                 objResp.Add(obj);
-                                i++;
                             }
+                            response.vErrorCode = 200;
+                            response.vErrorMsg = "Success";
                         }
                         else
                         {
-                            var obj = new clsBundleCompile();
-                            obj.vErrorCode = 404;
-                            obj.vErrorMsg = "No Records are found.";
-                            objResp.Add(obj);
+                            // No data case
+                            response.Data = new List<clsBundleCompile>();
+                            response.Pagination = new clsPagination();
+                            response.vErrorCode = 404;
+                            response.vErrorMsg = "No Records Found";
+                            return response;
                         }
 
-                        // === Fill Pagination Metadata ===
+                        // ================= Pagination =================
                         if (ds.Tables.Count > 1 && ds.Tables[1].Rows.Count > 0)
                         {
                             DataRow pg = ds.Tables[1].Rows[0];
-                            if (objResp.Count > 0 && objResp[0] != null)
+
+                            response.Pagination = new clsPagination
                             {
-                                objResp[0].TotalRecords = Convert.ToInt32(pg["TotalRecords"]);
-                                objResp[0].TotalPages = Convert.ToInt32(pg["TotalPages"]);
-                                objResp[0].HasPreviousPage = Convert.ToBoolean(pg["HasPreviousPage"]);
-                                objResp[0].HasNextPage = Convert.ToBoolean(pg["HasNextPage"]);
-                                objResp[0].PageNumber = Convert.ToInt32(pg["PageNumber"]);
-                                objResp[0].PageSize = Convert.ToInt32(pg["PageSize"]);
-                            }
+                                PageNumber = Convert.ToInt32(pg["PageNumber"]),
+                                PageSize = Convert.ToInt32(pg["PageSize"]),
+                                TotalRecords = Convert.ToInt32(pg["TotalRecords"]),
+                                TotalPages = Convert.ToInt32(pg["TotalPages"]),
+                                HasNextPage = Convert.ToBoolean(pg["HasNextPage"]),
+                                HasPreviousPage = Convert.ToBoolean(pg["HasPreviousPage"])
+                            };
                         }
+                        else
+                        {
+                            // fallback pagination
+                            response.Pagination = new clsPagination
+                            {
+                                PageNumber = objReq.PageNumber,
+                                PageSize = objReq.PageSize,
+                                TotalRecords = objResp.Count,
+                                TotalPages = 1,
+                                HasNextPage = false,
+                                HasPreviousPage = false
+                            };
+                        }
+
+                        response.Data = objResp;
                     }
                 }
             }
             catch (Exception exp)
             {
-                var obj = new clsBundleCompile();
-                obj.vErrorCode = 500;
+                response.Data = new List<clsBundleCompile>();
+                response.Pagination = new clsPagination();
+                response.vErrorCode = 500;
+                response.vErrorMsg = exp.Message.ToString();
                 Logger.WriteLog("Function Name : Fn_Get_ActiveBundle", " " + "Error Msg : " + exp.Message.ToString(), new StackTrace(exp, true));
-                obj.vErrorMsg = exp.Message.ToString();
-                objResp.Add(obj);
             }
             finally
             {
-                 Con.Close();
+                Con.Close();
             }
-            return objResp;
+            return response;
         }
 
 
@@ -678,11 +694,11 @@ namespace BSLDaman.DAL
                     objResp.vErrorMsg = "Please Pass the Valid Order No";
                     objResp.vErrorCode = 300;
                 }
-                else if (string.IsNullOrWhiteSpace(objReq.BundleIDs))
-                {
-                    objResp.vErrorMsg = "Please Pass the Valid Bundle IDs";
-                    objResp.vErrorCode = 300;
-                }
+                //else if (string.IsNullOrWhiteSpace(objReq.BundleIDs))
+                //{
+                //    objResp.vErrorMsg = "Please Pass the Valid Bundle IDs";
+                //    objResp.vErrorCode = 300;
+                //}
                 else if (string.IsNullOrWhiteSpace(objReq.OperationNos))
                 {
                     objResp.vErrorMsg = "Please Pass the Operation Numbers";
@@ -2771,6 +2787,15 @@ namespace BSLDaman.DAL
                         obj.BundleID = Convert.ToInt64(ds.Tables[0].Rows[i]["BundleID"]);
                         obj.StdRate = Convert.ToDecimal(ds.Tables[0].Rows[i]["StdRate"]);
                         obj.Qty = Convert.ToInt32(ds.Tables[0].Rows[i]["Qty"]);
+
+                        if (ds.Tables[0].Rows[i]["TotalAmount"] == DBNull.Value)
+                        {
+                            obj.TotalAmount = 0;
+                        }
+                        else
+                        {
+                            obj.TotalAmount = Convert.ToDecimal(ds.Tables[0].Rows[i]["TotalAmount"]);
+                        }
                         obj.TotalAmount = Convert.ToDecimal(ds.Tables[0].Rows[i]["TotalAmount"]);
                         obj.LineName = Convert.ToString(ds.Tables[0].Rows[i]["LineName"]);
                         obj.StyleCode = Convert.ToString(ds.Tables[0].Rows[i]["StyleCode"]);
