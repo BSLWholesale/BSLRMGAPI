@@ -66,7 +66,7 @@ namespace BSLDaman.Controllers
 
         [System.Web.Http.HttpGet]
         [System.Web.Http.Route("api/MOBProduction/Fn_Get_ActiveBundle")]
-        public List<clsBundleCompile> Fn_Get_ActiveBundle(string OrderNo = null, Int32? PageNumber = null, Int32? PageSize = null, string SortBy = null, string SortDirection = null)
+        public ApiResponse<clsBundleCompile> Fn_Get_ActiveBundle(string OrderNo = null, Int32? PageNumber = null, Int32? PageSize = null, string SortBy = null, string SortDirection = null)
         {
             clsBundleCompile objReq = new clsBundleCompile();
 
