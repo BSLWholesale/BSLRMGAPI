@@ -192,10 +192,135 @@ namespace BSLDaman.DAL
         //}
 
 
-        public ApiResponse<clsBundleCompile> Fn_Get_ActiveBundle(clsBundleCompile objReq)
+        //public ApiResponse<clsBundleCompile> Fn_Get_ActiveBundle(clsBundleCompile objReq)
+        //{
+        //    var objResp = new List<clsBundleCompile>();
+        //    var response = new ApiResponse<clsBundleCompile>();
+        //    try
+        //    {
+        //        if (Con.State == ConnectionState.Broken)
+        //        { Con.Close(); }
+        //        if (Con.State == ConnectionState.Closed)
+        //        { Con.Open(); }
+
+        //        using (SqlCommand cmd = new SqlCommand("USP_MobileGetActiveBundle", Con))
+        //        {
+        //            cmd.CommandType = CommandType.StoredProcedure;
+
+        //            // ===== Parameters =====
+        //            cmd.Parameters.AddWithValue("@OrderNo", string.IsNullOrWhiteSpace(objReq.OrderNo) ? (object)DBNull.Value : objReq.OrderNo);
+        //            cmd.Parameters.AddWithValue("@PageNumber", objReq.PageNumber > 0 ? objReq.PageNumber : 1);
+        //            cmd.Parameters.AddWithValue("@PageSize", objReq.PageSize > 0 ? objReq.PageSize : 10);
+        //            cmd.Parameters.AddWithValue("@SortBy", string.IsNullOrWhiteSpace(objReq.SortBy) ? "BundleID" : objReq.SortBy);
+        //            cmd.Parameters.AddWithValue("@SortDirection", string.IsNullOrWhiteSpace(objReq.SortDirection) ? "ASC" : objReq.SortDirection.ToUpper());
+
+        //            using (SqlDataAdapter da = new SqlDataAdapter(cmd))
+        //            {
+        //                DataSet ds = new DataSet();
+        //                da.Fill(ds);
+
+        //                // ================= Data Fetching =================
+        //                if (ds.Tables.Count > 0 && ds.Tables[0].Rows.Count > 0)
+        //                {
+        //                    foreach (DataRow row in ds.Tables[0].Rows)
+        //                    {
+        //                        var obj = new clsBundleCompile
+        //                        {
+        //                            BundleID = Convert.ToInt64(row["BundleID"]),
+        //                            OperationNo = Convert.ToInt64(row["OperationNo"]),
+        //                            LayID = Convert.ToInt64(row["LayID"]),
+        //                            BundleNo = Convert.ToInt32(row["BundleNo"]),
+        //                            SizeName = Convert.ToString(row["SizeName"]),
+        //                            ColorName = Convert.ToString(row["ColorName"]),
+        //                            ShadeName = Convert.ToString(row["ShadeName"]),
+        //                            Qty = Convert.ToInt32(row["Qty"]),
+        //                            PlyTo = Convert.ToInt32(row["PlyTo"]),
+        //                            PlyFrom = Convert.ToInt32(row["PlyFrom"]),
+        //                            LotNo = Convert.ToInt32(row["LotNo"]),
+        //                            SubSection = Convert.ToString(row["SubSection"]),
+        //                            IsDispatch = Convert.ToBoolean(row["IsDispatch"]),
+        //                            StyleCode = Convert.ToString(row["StyleCode"]),
+        //                            OrderNo = Convert.ToString(row["OrderNo"]),
+        //                            SupervisorID = row["SupervisorID"] == DBNull.Value ? 0 : Convert.ToInt32(row["SupervisorID"]),
+        //                            SupervisorAssignedDate = row["SupervisorAssignedDate"]?.ToString() ?? "",
+        //                            AppEmpID = row["AppEmpID"] == DBNull.Value ? 0 : Convert.ToInt32(row["AppEmpID"]),
+        //                            AppStartTime = row["AppStartTime"]?.ToString() ?? "",
+        //                            AppEndTime = row["AppEndTime"]?.ToString() ?? "",
+        //                            BundleIDStatus = row["BundleIDStatus"]?.ToString() ?? "",
+        //                            CreatedBy = Convert.ToInt32(row["CreatedBy"]),
+        //                            CreatedOn = row["CreatedOn"]?.ToString() ?? "",
+        //                            ModifiedBy = row["ModifiedBy"] == DBNull.Value ? 0 : Convert.ToInt32(row["ModifiedBy"]),
+        //                            ModifiedOn = row["ModifiedOn"]?.ToString() ?? ""
+        //                        };
+        //                        objResp.Add(obj);
+        //                    }
+        //                    response.vErrorCode = 200;
+        //                    response.vErrorMsg = "Success";
+        //                }
+        //                else
+        //                {
+        //                    // No data case
+        //                    response.Data = new List<clsBundleCompile>();
+        //                    response.Pagination = new clsPagination();
+        //                    response.vErrorCode = 404;
+        //                    response.vErrorMsg = "No Records Found";
+        //                    return response;
+        //                }
+
+        //                // ================= Pagination =================
+        //                if (ds.Tables.Count > 1 && ds.Tables[1].Rows.Count > 0)
+        //                {
+        //                    DataRow pg = ds.Tables[1].Rows[0];
+
+        //                    response.Pagination = new clsPagination
+        //                    {
+        //                        PageNumber = Convert.ToInt32(pg["PageNumber"]),
+        //                        PageSize = Convert.ToInt32(pg["PageSize"]),
+        //                        TotalRecords = Convert.ToInt32(pg["TotalRecords"]),
+        //                        TotalPages = Convert.ToInt32(pg["TotalPages"]),
+        //                        HasNextPage = Convert.ToBoolean(pg["HasNextPage"]),
+        //                        HasPreviousPage = Convert.ToBoolean(pg["HasPreviousPage"])
+        //                    };
+        //                }
+        //                else
+        //                {
+        //                    // fallback pagination
+        //                    response.Pagination = new clsPagination
+        //                    {
+        //                        PageNumber = objReq.PageNumber,
+        //                        PageSize = objReq.PageSize,
+        //                        TotalRecords = objResp.Count,
+        //                        TotalPages = 1,
+        //                        HasNextPage = false,
+        //                        HasPreviousPage = false
+        //                    };
+        //                }
+
+        //                response.Data = objResp;
+        //            }
+        //        }
+        //    }
+        //    catch (Exception exp)
+        //    {
+        //        response.Data = new List<clsBundleCompile>();
+        //        response.Pagination = new clsPagination();
+        //        response.vErrorCode = 500;
+        //        response.vErrorMsg = exp.Message.ToString();
+        //        Logger.WriteLog("Function Name : Fn_Get_ActiveBundle", " " + "Error Msg : " + exp.Message.ToString(), new StackTrace(exp, true));
+        //    }
+        //    finally
+        //    {
+        //        Con.Close();
+        //    }
+        //    return response;
+        //}
+
+
+
+        public List<clsBundleCompile> Fn_Get_ActiveBundle(clsBundleCompile objReq)
         {
             var objResp = new List<clsBundleCompile>();
-            var response = new ApiResponse<clsBundleCompile>();
+            //var response = new ApiResponse<clsBundleCompile>();
             try
             {
                 if (Con.State == ConnectionState.Broken)
@@ -203,117 +328,61 @@ namespace BSLDaman.DAL
                 if (Con.State == ConnectionState.Closed)
                 { Con.Open(); }
 
-                using (SqlCommand cmd = new SqlCommand("USP_MobileGetActiveBundle", Con))
+                using (SqlCommand cmd = new SqlCommand("USP_MobileGetSubsectionWiseOpNo", Con))
                 {
                     cmd.CommandType = CommandType.StoredProcedure;
 
-                    // ===== Parameters =====
                     cmd.Parameters.AddWithValue("@OrderNo", string.IsNullOrWhiteSpace(objReq.OrderNo) ? (object)DBNull.Value : objReq.OrderNo);
-                    cmd.Parameters.AddWithValue("@PageNumber", objReq.PageNumber > 0 ? objReq.PageNumber : 1);
-                    cmd.Parameters.AddWithValue("@PageSize", objReq.PageSize > 0 ? objReq.PageSize : 10);
-                    cmd.Parameters.AddWithValue("@SortBy", string.IsNullOrWhiteSpace(objReq.SortBy) ? "BundleID" : objReq.SortBy);
-                    cmd.Parameters.AddWithValue("@SortDirection", string.IsNullOrWhiteSpace(objReq.SortDirection) ? "ASC" : objReq.SortDirection.ToUpper());
+                    //cmd.Parameters.AddWithValue("@PageNumber", objReq.PageNumber > 0 ? objReq.PageNumber : 1);
+                    //cmd.Parameters.AddWithValue("@PageSize", objReq.PageSize > 0 ? objReq.PageSize : 10);
+                    //cmd.Parameters.AddWithValue("@SortBy", string.IsNullOrWhiteSpace(objReq.SortBy) ? "BundleID" : objReq.SortBy);
+                    //cmd.Parameters.AddWithValue("@SortDirection", string.IsNullOrWhiteSpace(objReq.SortDirection) ? "ASC" : objReq.SortDirection.ToUpper());
 
                     using (SqlDataAdapter da = new SqlDataAdapter(cmd))
                     {
                         DataSet ds = new DataSet();
                         da.Fill(ds);
 
-                        // ================= Data Fetching =================
                         if (ds.Tables.Count > 0 && ds.Tables[0].Rows.Count > 0)
                         {
                             foreach (DataRow row in ds.Tables[0].Rows)
                             {
                                 var obj = new clsBundleCompile
                                 {
-                                    BundleID = Convert.ToInt64(row["BundleID"]),
                                     OperationNo = Convert.ToInt64(row["OperationNo"]),
-                                    LayID = Convert.ToInt64(row["LayID"]),
-                                    BundleNo = Convert.ToInt32(row["BundleNo"]),
-                                    SizeName = Convert.ToString(row["SizeName"]),
-                                    ColorName = Convert.ToString(row["ColorName"]),
-                                    ShadeName = Convert.ToString(row["ShadeName"]),
-                                    Qty = Convert.ToInt32(row["Qty"]),
-                                    PlyTo = Convert.ToInt32(row["PlyTo"]),
-                                    PlyFrom = Convert.ToInt32(row["PlyFrom"]),
-                                    LotNo = Convert.ToInt32(row["LotNo"]),
                                     SubSection = Convert.ToString(row["SubSection"]),
-                                    IsDispatch = Convert.ToBoolean(row["IsDispatch"]),
-                                    StyleCode = Convert.ToString(row["StyleCode"]),
                                     OrderNo = Convert.ToString(row["OrderNo"]),
-                                    SupervisorID = row["SupervisorID"] == DBNull.Value ? 0 : Convert.ToInt32(row["SupervisorID"]),
-                                    SupervisorAssignedDate = row["SupervisorAssignedDate"]?.ToString() ?? "",
-                                    AppEmpID = row["AppEmpID"] == DBNull.Value ? 0 : Convert.ToInt32(row["AppEmpID"]),
-                                    AppStartTime = row["AppStartTime"]?.ToString() ?? "",
-                                    AppEndTime = row["AppEndTime"]?.ToString() ?? "",
-                                    BundleIDStatus = row["BundleIDStatus"]?.ToString() ?? "",
-                                    CreatedBy = Convert.ToInt32(row["CreatedBy"]),
-                                    CreatedOn = row["CreatedOn"]?.ToString() ?? "",
-                                    ModifiedBy = row["ModifiedBy"] == DBNull.Value ? 0 : Convert.ToInt32(row["ModifiedBy"]),
-                                    ModifiedOn = row["ModifiedOn"]?.ToString() ?? ""
                                 };
+                                obj.vErrorCode = 200;
+                                obj.vErrorMsg = "Success";
                                 objResp.Add(obj);
                             }
-                            response.vErrorCode = 200;
-                            response.vErrorMsg = "Success";
                         }
                         else
                         {
-                            // No data case
-                            response.Data = new List<clsBundleCompile>();
-                            response.Pagination = new clsPagination();
-                            response.vErrorCode = 404;
-                            response.vErrorMsg = "No Records Found";
-                            return response;
+                            var obj = new clsBundleCompile();
+                            obj.vErrorCode = 404;
+                            obj.vErrorMsg = "No Records Found";
+                            objResp.Add(obj);
                         }
-
-                        // ================= Pagination =================
-                        if (ds.Tables.Count > 1 && ds.Tables[1].Rows.Count > 0)
-                        {
-                            DataRow pg = ds.Tables[1].Rows[0];
-
-                            response.Pagination = new clsPagination
-                            {
-                                PageNumber = Convert.ToInt32(pg["PageNumber"]),
-                                PageSize = Convert.ToInt32(pg["PageSize"]),
-                                TotalRecords = Convert.ToInt32(pg["TotalRecords"]),
-                                TotalPages = Convert.ToInt32(pg["TotalPages"]),
-                                HasNextPage = Convert.ToBoolean(pg["HasNextPage"]),
-                                HasPreviousPage = Convert.ToBoolean(pg["HasPreviousPage"])
-                            };
-                        }
-                        else
-                        {
-                            // fallback pagination
-                            response.Pagination = new clsPagination
-                            {
-                                PageNumber = objReq.PageNumber,
-                                PageSize = objReq.PageSize,
-                                TotalRecords = objResp.Count,
-                                TotalPages = 1,
-                                HasNextPage = false,
-                                HasPreviousPage = false
-                            };
-                        }
-
-                        response.Data = objResp;
+                        //response.Data = objResp;
                     }
                 }
             }
             catch (Exception exp)
             {
-                response.Data = new List<clsBundleCompile>();
-                response.Pagination = new clsPagination();
-                response.vErrorCode = 500;
-                response.vErrorMsg = exp.Message.ToString();
+                var obj = new clsBundleCompile();
+                obj.vErrorCode = 500;
+                obj.vErrorMsg = exp.Message.ToString();
                 Logger.WriteLog("Function Name : Fn_Get_ActiveBundle", " " + "Error Msg : " + exp.Message.ToString(), new StackTrace(exp, true));
             }
             finally
             {
                 Con.Close();
             }
-            return response;
+            return objResp;
         }
+
 
 
 
@@ -704,7 +773,12 @@ namespace BSLDaman.DAL
                     objResp.vErrorMsg = "Please Pass the Operation Numbers";
                     objResp.vErrorCode = 300;
                 }
-                else if (objReq.AppEmpID == null || objReq.AppEmpID == 0)
+                //else if (objReq.AppEmpID == null || objReq.AppEmpID == 0)
+                //{
+                //    objResp.vErrorMsg = "Please Pass the Valid App Employee/Worker ID";
+                //    objResp.vErrorCode = 300;
+                //}
+                else if (string.IsNullOrWhiteSpace(objReq.AppEmpIDs))
                 {
                     objResp.vErrorMsg = "Please Pass the Valid App Employee/Worker ID";
                     objResp.vErrorCode = 300;
@@ -720,9 +794,11 @@ namespace BSLDaman.DAL
                     cmd.CommandType = CommandType.StoredProcedure;
                     cmd.Parameters.AddWithValue("@SupervisorID", objReq.SupervisorID);
                     cmd.Parameters.AddWithValue("@OrderNo", objReq.OrderNo);
-                    cmd.Parameters.AddWithValue("@BundleIDs", objReq.BundleIDs);
+                    //cmd.Parameters.AddWithValue("@BundleIDs", objReq.BundleIDs);
                     cmd.Parameters.AddWithValue("@OperationNos", objReq.OperationNos);
-                    cmd.Parameters.AddWithValue("@AppEmpID", objReq.AppEmpID);
+                    cmd.Parameters.AddWithValue("@SubSection", objReq.SubSection);
+                    //cmd.Parameters.AddWithValue("@AppEmpID", objReq.AppEmpID);
+                    cmd.Parameters.AddWithValue("@AppEmpIDs", objReq.AppEmpIDs);
                     cmd.Parameters.AddWithValue("@QueryType", "UpdateAssignedBundleID");
 
                     using (SqlDataReader dr = cmd.ExecuteReader())
