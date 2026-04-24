@@ -316,6 +316,7 @@ namespace BSLDaman.Models
     {
         public Int64 ShadeSelectionID { get; set; }
         public Int64 ColorSelectionID { get; set; }
+        public Int64 LayID { get; set; }
         public string ShadeName { get; set; }
         public int CreatedBy { get; set; }
         public int Plies { get; set; }
@@ -537,6 +538,16 @@ namespace BSLDaman.Models
         public bool HasPreviousPage { get; set; }
     }
 
+    public class clsColorShade
+    {
+        public string OrderNo { get; set; }
+        public Int64 LayID { get; set; }
+        public string ColorName { get; set; }
+        public string ShadeName { get; set; }
+        public int Plies { get; set; }
+        public string vErrorMsg { get; set; }
+        public int vErrorCode { get; set; }
+    }
 
 
 }

@@ -286,6 +286,18 @@ namespace BSLDaman.Controllers
             objResp = _DALProduction.Fn_Get_Subsection_List(objReq);
             return objResp;
         }
-        
+
+        #region Start Fn_Get_Sum_Laywise_Plies 23-APR-2026
+
+        [System.Web.Http.HttpPost]
+        [System.Web.Http.Route("api/Production/Fn_Get_Sum_Laywise_Plies")]
+        public clsBundleShade Fn_Get_Sum_Laywise_Plies(clsBundleShade objReq)
+        {
+            var objResp = new clsBundleShade();
+            objResp = _DALProduction.Fn_Get_Sum_Laywise_Plies(objReq);
+            return objResp;
+        }
+
+        #endregion End Fn_Get_Sum_Laywise_Plies 23-APR-2026
     }
 }
