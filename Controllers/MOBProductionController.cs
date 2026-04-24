@@ -64,9 +64,65 @@ namespace BSLDaman.Controllers
         //}
 
 
+        //[System.Web.Http.HttpGet]
+        //[System.Web.Http.Route("api/MOBProduction/Fn_Get_ActiveBundle")]
+        //public ApiResponse<clsBundleCompile> Fn_Get_ActiveBundle(string OrderNo = null, Int32? PageNumber = null, Int32? PageSize = null, string SortBy = null, string SortDirection = null)
+        //{
+        //    clsBundleCompile objReq = new clsBundleCompile();
+
+        //    if (!string.IsNullOrWhiteSpace(OrderNo))
+        //    {
+        //        objReq.OrderNo = OrderNo;
+        //    }
+        //    else
+        //    {
+        //        objReq.OrderNo = null;
+        //    }
+
+        //    if (PageNumber.HasValue)
+        //    {
+        //        objReq.PageNumber = PageNumber.Value;
+        //    }
+        //    else
+        //    {
+        //        objReq.PageNumber = 0;
+        //    }
+
+        //    if (PageSize.HasValue)
+        //    {
+        //        objReq.PageSize = PageSize.Value;
+        //    }
+        //    else
+        //    {
+        //        objReq.PageSize = 0;
+        //    }
+
+        //    if (!string.IsNullOrWhiteSpace(SortBy))
+        //    {
+        //        objReq.SortBy = SortBy;
+        //    }
+        //    else
+        //    {
+        //        objReq.SortBy = null;
+        //    }
+
+        //    if (!string.IsNullOrWhiteSpace(SortDirection))
+        //    {
+        //        objReq.SortDirection = SortDirection;
+        //    }
+        //    else
+        //    {
+        //        objReq.SortDirection = null;
+        //    }
+
+        //    var objResp = _MOBDALProduction.Fn_Get_ActiveBundle(objReq);
+        //    return objResp;
+        //}
+
+
         [System.Web.Http.HttpGet]
         [System.Web.Http.Route("api/MOBProduction/Fn_Get_ActiveBundle")]
-        public ApiResponse<clsBundleCompile> Fn_Get_ActiveBundle(string OrderNo = null, Int32? PageNumber = null, Int32? PageSize = null, string SortBy = null, string SortDirection = null)
+        public List<clsBundleCompile> Fn_Get_ActiveBundle(string OrderNo = null)
         {
             clsBundleCompile objReq = new clsBundleCompile();
 
@@ -79,45 +135,46 @@ namespace BSLDaman.Controllers
                 objReq.OrderNo = null;
             }
 
-            if (PageNumber.HasValue)
-            {
-                objReq.PageNumber = PageNumber.Value;
-            }
-            else
-            {
-                objReq.PageNumber = 0;
-            }
+            //if (PageNumber.HasValue)
+            //{
+            //    objReq.PageNumber = PageNumber.Value;
+            //}
+            //else
+            //{
+            //    objReq.PageNumber = 0;
+            //}
 
-            if (PageSize.HasValue)
-            {
-                objReq.PageSize = PageSize.Value;
-            }
-            else
-            {
-                objReq.PageSize = 0;
-            }
+            //if (PageSize.HasValue)
+            //{
+            //    objReq.PageSize = PageSize.Value;
+            //}
+            //else
+            //{
+            //    objReq.PageSize = 0;
+            //}
 
-            if (!string.IsNullOrWhiteSpace(SortBy))
-            {
-                objReq.SortBy = SortBy;
-            }
-            else
-            {
-                objReq.SortBy = null;
-            }
+            //if (!string.IsNullOrWhiteSpace(SortBy))
+            //{
+            //    objReq.SortBy = SortBy;
+            //}
+            //else
+            //{
+            //    objReq.SortBy = null;
+            //}
 
-            if (!string.IsNullOrWhiteSpace(SortDirection))
-            {
-                objReq.SortDirection = SortDirection;
-            }
-            else
-            {
-                objReq.SortDirection = null;
-            }
+            //if (!string.IsNullOrWhiteSpace(SortDirection))
+            //{
+            //    objReq.SortDirection = SortDirection;
+            //}
+            //else
+            //{
+            //    objReq.SortDirection = null;
+            //}
 
             var objResp = _MOBDALProduction.Fn_Get_ActiveBundle(objReq);
             return objResp;
         }
+
 
 
         [System.Web.Http.HttpGet]
