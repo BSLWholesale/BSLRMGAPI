@@ -612,7 +612,7 @@ namespace BSLDaman.DAL
 
                 string strSql = "SELECT Distinct " + obj.FieldName + " FROM " + obj.TableName + " WHERE 1=1";
                 strSql = strSql + " AND " + obj.FieldName + " LIKE '%" + obj.SearchKeyword + "%' ";
-
+                
                 SqlCommand cmd = new SqlCommand(strSql, Con);
                 SqlDataAdapter da = new SqlDataAdapter(cmd);
                 DataSet ds = new DataSet();
@@ -709,7 +709,7 @@ namespace BSLDaman.DAL
         }
 
         public clsBundleLayerMaster Fn_Delete_Bundle_Layer(clsBundleLayerMaster objReq)
-        {            
+        {
             var objResp = new clsBundleLayerMaster();
             Logger.ErrorLog(JsonConvert.SerializeObject(objReq), "Request", "Fn_Delete_Bundle_Layer");
             try
@@ -1279,6 +1279,7 @@ namespace BSLDaman.DAL
                 cmd.Parameters.AddWithValue("@ShadeName", objReq.ShadeName);
                 cmd.Parameters.AddWithValue("@Plies", objReq.Plies);
                 cmd.Parameters.AddWithValue("@OrderNo", objReq.OrderNo);
+                cmd.Parameters.AddWithValue("@LayID", objReq.LayID);
                 cmd.Parameters.AddWithValue("@CreatedBy", objReq.CreatedBy);
                 cmd.Parameters.AddWithValue("@QueryType", "InsertBundleShade");
                 int i = 0;
@@ -1365,7 +1366,7 @@ namespace BSLDaman.DAL
                 if (Con.State == ConnectionState.Closed)
                 { Con.Open(); }
 
-                string strSql = "SELECT ColorSelectionID, ShadeSelectionID, ShadeName, Plies,";
+                string strSql = "SELECT ColorSelectionID, ShadeSelectionID, ShadeName, Plies, LayID, ";
                 strSql = strSql + " CreatedBy, FORMAT(CreatedOn, 'dd-MMM-yyy') AS CreatedOn FROM BundleShadeSelection WHERE 1=1";
                 if (!String.IsNullOrWhiteSpace(objReq.ShadeName))
                 {
@@ -1378,6 +1379,10 @@ namespace BSLDaman.DAL
                 if (objReq.ShadeSelectionID != 0 && objReq.ShadeSelectionID != null)
                 {
                     strSql = strSql + " AND ShadeSelectionID = @ShadeSelectionID ";
+                }
+                if (objReq.LayID != 0 && objReq.LayID != null)
+                {
+                    strSql = strSql + " AND LayID = @LayID ";
                 }
                 if (!String.IsNullOrWhiteSpace(objReq.OrderNo))
                 {
@@ -1399,6 +1404,10 @@ namespace BSLDaman.DAL
                 {
                     cmd.Parameters.AddWithValue("@ShadeSelectionID", objReq.ShadeSelectionID);
                 }
+                if (objReq.LayID != 0 && objReq.LayID != null)
+                {
+                    cmd.Parameters.AddWithValue("@LayID", objReq.LayID);
+                }
                 if (!String.IsNullOrWhiteSpace(objReq.OrderNo))
                 {
                     cmd.Parameters.AddWithValue("@OrderNo", objReq.OrderNo);
@@ -1414,6 +1423,7 @@ namespace BSLDaman.DAL
                         obj = new clsBundleShade();
                         obj.ColorSelectionID = Convert.ToInt64(ds.Tables[0].Rows[i]["ColorSelectionID"]);
                         obj.ShadeSelectionID = Convert.ToInt64(ds.Tables[0].Rows[i]["ShadeSelectionID"]);
+                        obj.LayID = Convert.ToInt64(ds.Tables[0].Rows[i]["LayID"]);
                         obj.ShadeName = Convert.ToString(ds.Tables[0].Rows[i]["ShadeName"]);
                         obj.CreatedBy = Convert.ToInt32(ds.Tables[0].Rows[i]["CreatedBy"]);
                         obj.Plies = Convert.ToInt32(ds.Tables[0].Rows[i]["Plies"]);
@@ -1457,13 +1467,19 @@ namespace BSLDaman.DAL
             var objResp = new clsBundleCompile();
             var subSectionList = Fn_Get_Subsection_List(objReq);
             string strCriteria = "";
-            
+
+            var colorshade = new clsColorShade();
+            colorshade.OrderNo = objReq.OrderNo;
+            colorshade.LayID = objReq.LayID;
+            var objColorShadeList = new List<clsColorShade>();
+            objColorShadeList = Fn_Get_Color_With_Shade(colorshade);
+
             var checkOPBreakDown = new clsOPBreackDownMaster();
             checkOPBreakDown.StyleCode = objReq.StyleCode;
             checkOPBreakDown.CreatedBy = objReq.CreatedBy;
-            //checkOPBreakDown.ProcessName = "PRODUCTION";
+            
             checkOPBreakDown = _DALOrder.Fn_Check_Exist_style_In_Master(checkOPBreakDown);
-            if(checkOPBreakDown.vErrorMsg != "Success" && checkOPBreakDown.vErrorCode != 200)
+            if (checkOPBreakDown.vErrorMsg != "Success" && checkOPBreakDown.vErrorCode != 200)
             {
                 objResp.vErrorCode = 404;
                 objResp.vErrorMsg = "Please upload subsection, then compile.";
@@ -1475,7 +1491,12 @@ namespace BSLDaman.DAL
                 objResp.vErrorMsg = "Please upload subsection, then compile.";
                 return objResp;
             }
-
+            if (objColorShadeList[0].vErrorMsg != "Success" && objColorShadeList[0].vErrorCode != 200)
+            {
+                objResp.vErrorCode = 404;
+                objResp.vErrorMsg = "Color and shade not found";
+                return objResp;
+            }
 
             try
             {
@@ -1495,68 +1516,66 @@ namespace BSLDaman.DAL
                     .Split(',')
                     .OrderBy(x => x)
                     .ToArray();
-               
+
                 // Split Color once
                 var colorArray = objReq.ColorName?.TrimEnd(',').Split(',');
 
-                objReq.ShadeName = objReq.ShadeName?.TrimEnd(',');
+                // objReq.ShadeName = objReq.ShadeName?.TrimEnd(',');
 
                 string prevSize = "";
                 long plyFrom = 0;
                 long plyTo = 0;
                 int prevBunleQty = objReq.BunleQty;
-
-                foreach (var size in sizeArray)
+                foreach (var oColorShadeList in objColorShadeList)
                 {
-                    bool checkPostAssembly = false;
-                    strCriteria = "";
-                    strCriteria = " AND OrderNo = '" + objReq.OrderNo + "'";
-
-                    if (size != prevSize)
+                    foreach (var size in sizeArray)
                     {
-                        long mxLotNo = Fn_Get_MXID("BundleCompile", "LotNo", strCriteria);
-                        objReq.LotNo = Convert.ToInt32(mxLotNo);
-                        prevSize = size;
-                        objReq.BunleQty = prevBunleQty;
-                    }
+                        bool checkPostAssembly = false;
+                        strCriteria = "";
+                        strCriteria = " AND OrderNo = '" + objReq.OrderNo + "'";
 
-                    long mxBundleNo = Fn_Get_MXID("BundleCompile", "BundleNo", strCriteria);
-
-                    int NumOfSize = sizeArray.Length;
-                    int Plies = objReq.CompileQty / NumOfSize;
-                    int lastQty = Plies % objReq.BunleQty;
-                    float TotalBundle = Plies / objReq.BunleQty;
-                    int secondLastBundle = 0;
-                    TotalBundle = TotalBundle + mxBundleNo;                   
-                    int bundleStart = 0;
-                    bundleStart = bundleStart + Convert.ToInt32(mxBundleNo);
-
-                    while (bundleStart <= TotalBundle)
-                    {
-                        secondLastBundle = Convert.ToInt32(TotalBundle) - 1;
-                        if (bundleStart == TotalBundle)
-                        {                           
-                            objReq.Qty = lastQty;
-                            objReq.BunleQty = lastQty;
-                        }
-                        if (bundleStart == secondLastBundle && lastQty <= 5)
+                        if (size != prevSize)
                         {
-                            float remainingQty = objReq.BunleQty + lastQty;
-
-                            int secondlastQty = (int)(remainingQty / 2);
-                            int lastQtyNew = (int)remainingQty - secondlastQty;
-                            objReq.Qty = secondlastQty;
-                            lastQty = lastQtyNew;
-                            objReq.BunleQty = secondlastQty;
+                            long mxLotNo = Fn_Get_MXID("BundleCompile", "LotNo", strCriteria);
+                            objReq.LotNo = Convert.ToInt32(mxLotNo);
+                            prevSize = size;
+                            objReq.BunleQty = prevBunleQty;
                         }
-                        else
-                        {
-                            objReq.Qty = objReq.BunleQty;
-                        }
-                       
 
-                        foreach (var color in colorArray)
+                        long mxBundleNo = Fn_Get_MXID("BundleCompile", "BundleNo", strCriteria);
+
+                        int NumOfSize = sizeArray.Length;
+                        int Plies = oColorShadeList.Plies;
+                        int lastQty = Plies % objReq.BunleQty;
+                        float TotalBundle = Plies / objReq.BunleQty;
+                        int secondLastBundle = 0;
+                        TotalBundle = TotalBundle + mxBundleNo;
+                        int bundleStart = 0;
+                        bundleStart = bundleStart + Convert.ToInt32(mxBundleNo);
+
+                        while (bundleStart <= TotalBundle)
                         {
+                            secondLastBundle = Convert.ToInt32(TotalBundle) - 1;
+                            if (bundleStart == TotalBundle)
+                            {
+                                objReq.Qty = lastQty;
+                                objReq.BunleQty = lastQty;
+                            }
+                            if (bundleStart == secondLastBundle && lastQty <= 5)
+                            {
+                                float remainingQty = objReq.BunleQty + lastQty;
+
+                                int secondlastQty = (int)(remainingQty / 2);
+                                int lastQtyNew = (int)remainingQty - secondlastQty;
+                                objReq.Qty = secondlastQty;
+                                lastQty = lastQtyNew;
+                                objReq.BunleQty = secondlastQty;
+                            }
+                            else
+                            {
+                                objReq.Qty = objReq.BunleQty;
+                            }
+
                             foreach (var subSection in subSectionList)
                             {
                                 strCriteria = "";
@@ -1570,11 +1589,11 @@ namespace BSLDaman.DAL
                                 if (subSection.SubSection != "POST ASSEMBLY")
                                 {
 
-                                    if(checkPostAssembly == true)
+                                    if (checkPostAssembly == true)
                                     {
                                         objReq.PlyFrom = Convert.ToInt32(plyFrom);
-                                        objReq.PlyTo = Convert.ToInt32(objReq.Qty) + Convert.ToInt32(plyTo) -1;
-                                        objReq.PlyFrom = Convert.ToInt32(plyTo); 
+                                        objReq.PlyTo = Convert.ToInt32(objReq.Qty) + Convert.ToInt32(plyTo) - 1;
+                                        objReq.PlyFrom = Convert.ToInt32(plyTo);
                                         //checkPostAssembly = false;
                                     }
                                     else
@@ -1606,8 +1625,8 @@ namespace BSLDaman.DAL
                                         cmd.Parameters.AddWithValue("@LayID", objReq.LayID);
                                         cmd.Parameters.AddWithValue("@BundleNo", objReq.BundleNo);
                                         cmd.Parameters.AddWithValue("@SizeName", size);
-                                        cmd.Parameters.AddWithValue("@ColorName", color);
-                                        cmd.Parameters.AddWithValue("@ShadeName", objReq.ShadeName);
+                                        cmd.Parameters.AddWithValue("@ColorName", oColorShadeList.ColorName);
+                                        cmd.Parameters.AddWithValue("@ShadeName", oColorShadeList.ShadeName);
                                         cmd.Parameters.AddWithValue("@Qty", objReq.Qty);
                                         cmd.Parameters.AddWithValue("@PlyFrom", objReq.PlyFrom);
                                         cmd.Parameters.AddWithValue("@PlyTo", objReq.PlyTo);
@@ -1645,7 +1664,7 @@ namespace BSLDaman.DAL
                                     plyTo = Fn_Get_MXID("BundleCompile", "PlyTo", strCriteria);
                                     while (pCount <= objReq.BunleQty)
                                     {
-                                        
+
                                         plyFrom = plyTo;
                                         objReq.Qty = 1;
                                         objReq.PlyFrom = Convert.ToInt32(plyFrom);
@@ -1674,8 +1693,8 @@ namespace BSLDaman.DAL
                                             cmd.Parameters.AddWithValue("@LayID", objReq.LayID);
                                             cmd.Parameters.AddWithValue("@BundleNo", objReq.BundleNo);
                                             cmd.Parameters.AddWithValue("@SizeName", size);
-                                            cmd.Parameters.AddWithValue("@ColorName", color);
-                                            cmd.Parameters.AddWithValue("@ShadeName", objReq.ShadeName);
+                                            cmd.Parameters.AddWithValue("@ColorName", oColorShadeList.ColorName);
+                                            cmd.Parameters.AddWithValue("@ShadeName", oColorShadeList.ShadeName);
                                             cmd.Parameters.AddWithValue("@Qty", objReq.Qty);
                                             cmd.Parameters.AddWithValue("@PlyFrom", objReq.PlyFrom);
                                             cmd.Parameters.AddWithValue("@PlyTo", objReq.PlyTo);
@@ -1707,12 +1726,12 @@ namespace BSLDaman.DAL
                                     }
                                 }
                             }
+
+                            bundleStart++;
                         }
-                        bundleStart++;
+
                     }
-
                 }
-
                 if (objResp.vErrorMsg == "Success")
                 {
                     var obj = new clsBundleLayerMaster();
@@ -2267,13 +2286,13 @@ namespace BSLDaman.DAL
                 {
                     strSql = strSql + " AND LayID = @LayID ";
                 }
-                if(objReq.PlyFrom != 0 && objReq.PlyTo != 0)
+                if (objReq.PlyFrom != 0 && objReq.PlyTo != 0)
                 {
                     strSql = strSql + " AND LayID BETWEEN @PlyFrom AND @PlyTo ";
                 }
                 if (!String.IsNullOrWhiteSpace(objReq.SubSection))
                 {
-                   // strSql = strSql + " AND SubSection IN (@SubSection) ";
+                    // strSql = strSql + " AND SubSection IN (@SubSection) ";
                     strSql = strSql + " AND SubSection IN (" + objReq.SubSection + ") ";
                 }
 
@@ -2408,5 +2427,153 @@ namespace BSLDaman.DAL
         }
 
         #endregion End Update BundleID by AppEmpId 26-FEB-2026
+
+        #region Start Fn_Get_Sum_Laywise_Plies 23-APR-2026
+
+        public clsBundleShade Fn_Get_Sum_Laywise_Plies(clsBundleShade objReq)
+        {
+            var objResp = new clsBundleShade();
+            Logger.ErrorLog(JsonConvert.SerializeObject(objReq), "Request", "Fn_Get_Sum_Laywise_Plies");
+            try
+            {
+                if (Con.State == ConnectionState.Broken)
+                { Con.Close(); }
+                if (Con.State == ConnectionState.Closed)
+                { Con.Open(); }
+
+                string strSql = "SELECT SUM(Plies) AS Plies FROM BundleShadeSelection WHERE 1=1";
+                if (objReq.LayID != 0 && objReq.LayID != null)
+                {
+                    strSql = strSql + " AND LayID = @LayID ";
+                }
+                if (!String.IsNullOrWhiteSpace(objReq.OrderNo))
+                {
+                    strSql = strSql + " AND OrderNo = @OrderNo ";
+                }
+                SqlCommand cmd = new SqlCommand(strSql, Con);
+                cmd.CommandType = CommandType.Text;
+                if (objReq.LayID != 0 && objReq.LayID != null)
+                {
+                    cmd.Parameters.AddWithValue("@LayID", objReq.LayID);
+                }
+                if (!String.IsNullOrWhiteSpace(objReq.OrderNo))
+                {
+                    cmd.Parameters.AddWithValue("@OrderNo", objReq.OrderNo);
+                }
+                SqlDataAdapter da = new SqlDataAdapter(cmd);
+                DataSet ds = new DataSet();
+                da.Fill(ds);
+                int i = 0;
+                if (ds.Tables[0].Rows.Count > 0)
+                {
+                    objResp.Plies = Convert.ToInt32(ds.Tables[0].Rows[i]["Plies"]);
+                    objResp.vErrorCode = 200;
+                    objResp.vErrorMsg = "Success";
+                }
+                else
+                {
+                    objResp.vErrorCode = 404;
+                    objResp.vErrorMsg = "No Record found";
+                }
+
+            }
+            catch (Exception exp)
+            {
+                objResp.vErrorCode = 500;
+                Logger.WriteLog("Function Name : Fn_Get_Sum_Laywise_Plies", " " + "Error Msg : " + exp.Message.ToString(), new StackTrace(exp, true));
+                objResp.vErrorMsg = exp.Message.ToString();
+            }
+            finally
+            {
+                Con.Close();
+            }
+            Logger.ErrorLog(JsonConvert.SerializeObject(objResp), "Response", "Fn_Get_Sum_Laywise_Plies");
+            return objResp;
+        }
+
+        #endregion End Fn_Get_Sum_Laywise_Plies 23-APR-2026
+
+        public List<clsColorShade> Fn_Get_Color_With_Shade(clsColorShade objReq)
+        {
+            var objResp = new List<clsColorShade>();
+            var obj = new clsColorShade();
+            Logger.ErrorLog(JsonConvert.SerializeObject(objReq), "Request", "Fn_Get_Color_With_Shade");
+            try
+            {
+
+                if (Con.State == ConnectionState.Broken)
+                { Con.Close(); }
+                if (Con.State == ConnectionState.Closed)
+                { Con.Open(); }
+
+                string strSql = "Select BCS.OrderNo, BCS.LayID, BCS.ColorSelectionID, BCS.ColorName, BSS.ShadeName, BSS.Plies from BundleColorSelection BCS ";
+                strSql = strSql + " INNER JOIN BundleShadeSelection BSS ON BCS.ColorSelectionID = BSS.ColorSelectionID AND BCS.LayID = BSS.LayID WHERE 1=1 ";
+                
+                if (!String.IsNullOrWhiteSpace(objReq.OrderNo))
+                {
+                    strSql = strSql + " AND BCS.OrderNo = @OrderNo";
+                }
+                if (objReq.LayID != 0 && objReq.LayID != null)
+                {
+                    strSql = strSql + " AND BCS.LayID = @LayID ";
+                }
+                
+                strSql = strSql + " ORDER BY BCS.ColorSelectionID ASC ";
+
+                SqlCommand cmd = new SqlCommand(strSql, Con);
+                cmd.CommandType = CommandType.Text;
+                
+                if (!String.IsNullOrWhiteSpace(objReq.OrderNo))
+                {
+                    cmd.Parameters.AddWithValue("@OrderNo", objReq.OrderNo);
+                }
+                if (objReq.LayID != 0 && objReq.LayID != null)
+                {
+                    cmd.Parameters.AddWithValue("@LayID", objReq.LayID);
+                }
+                
+                SqlDataAdapter da = new SqlDataAdapter(cmd);
+                DataSet ds = new DataSet();
+                da.Fill(ds);
+                int i = 0;
+                if (ds.Tables[0].Rows.Count > 0)
+                {
+                    while (ds.Tables[0].Rows.Count > i)
+                    {
+                        obj = new clsColorShade();
+                        obj.OrderNo = Convert.ToString(ds.Tables[0].Rows[i]["OrderNo"]);
+                        obj.LayID = Convert.ToInt64(ds.Tables[0].Rows[i]["LayID"]);
+                        obj.ColorName = Convert.ToString(ds.Tables[0].Rows[i]["ColorName"]);
+                        obj.ShadeName = Convert.ToString(ds.Tables[0].Rows[i]["ShadeName"]);
+                        obj.Plies = Convert.ToInt32(ds.Tables[0].Rows[i]["Plies"]);
+                        
+                        obj.vErrorCode = 200;
+                        obj.vErrorMsg = "Success";
+                        objResp.Add(obj);
+                        i++;
+                    }
+                }
+                else
+                {
+                    obj.vErrorCode = 404;
+                    obj.vErrorMsg = "No Record found";
+                    objResp.Add(obj);
+                }
+
+            }
+            catch (Exception exp)
+            {
+                obj.vErrorCode = 500;
+                Logger.WriteLog("Function Name : Fn_Get_Color_With_Shade", " " + "Error Msg : " + exp.Message.ToString(), new StackTrace(exp, true));
+                obj.vErrorMsg = exp.Message.ToString();
+                objResp.Add(obj);
+            }
+            finally
+            {
+                Con.Close();
+            }
+            Logger.ErrorLog(JsonConvert.SerializeObject(objResp), "Response", "Fn_Get_Color_With_Shade");
+            return objResp;
+        }       
     }
 }
