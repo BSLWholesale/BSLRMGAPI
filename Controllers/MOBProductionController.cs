@@ -705,5 +705,25 @@ namespace BSLDaman.Controllers
         }
 
 
+        [System.Web.Http.HttpGet]
+        [System.Web.Http.Route("api/MOBProduction/Fn_Fetch_AssignOperationNumbers")]
+        public List<clsBundleCompile> Fn_Fetch_AssignOperationNumbers(Int32? AppEmpID = null)
+        {
+            clsBundleCompile objReq = new clsBundleCompile();
+
+            if (AppEmpID.HasValue)
+            {
+                objReq.AppEmpID = AppEmpID.Value;
+            }
+            else
+            {
+                objReq.AppEmpID = 0;
+            }
+
+            var objResp = _MOBDALProduction.Fn_Fetch_AssignOperationNumbers(objReq);
+            return objResp;
+        }
+        
+
     }
 }
