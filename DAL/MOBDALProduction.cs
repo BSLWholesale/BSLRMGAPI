@@ -773,6 +773,11 @@ namespace BSLDaman.DAL
                     objResp.vErrorMsg = "Please Pass the Operation Numbers";
                     objResp.vErrorCode = 300;
                 }
+                else if (string.IsNullOrWhiteSpace(objReq.SubSection))
+                {
+                    objResp.vErrorMsg = "Please Pass the Sub Section";
+                    objResp.vErrorCode = 300;
+                }
                 //else if (objReq.AppEmpID == null || objReq.AppEmpID == 0)
                 //{
                 //    objResp.vErrorMsg = "Please Pass the Valid App Employee/Worker ID";
@@ -3178,6 +3183,71 @@ namespace BSLDaman.DAL
                 Con.Close();
             }
             return objResp;      
+        }
+
+
+
+        public List<clsBundleCompile> Fn_Fetch_AssignOperationNumbers(clsBundleCompile objReq)
+        {
+            var objResp = new List<clsBundleCompile>();
+            var obj = new clsBundleCompile();
+            try
+            {
+                if (Con.State == ConnectionState.Broken)
+                { Con.Close(); }
+                if (Con.State == ConnectionState.Closed)
+                { Con.Open(); }
+
+                string strSql = "SELECT OrderNo, OperationNo, SubSection, SupervisorID, FORMAT(SupAssignedDate, 'dd-MMM-yyyy HH:mm:ss') AS SupAssignedDate,";
+                strSql = strSql + " CreatedBy, FORMAT(CreatedOn, 'dd-MMM-yyyy HH:mm:ss') AS CreatedOn";
+                strSql = strSql + " FROM BundleCompileAssignDetail WHERE AppEmpID = " + objReq.AppEmpID;
+
+                SqlCommand cmd = new SqlCommand(strSql, Con);
+                cmd.CommandType = CommandType.Text;
+
+                SqlDataAdapter da = new SqlDataAdapter(cmd);
+                DataSet ds = new DataSet();
+                da.Fill(ds);
+                int i = 0;
+
+                if (ds.Tables[0].Rows.Count > 0)
+                {
+                    while (ds.Tables[0].Rows.Count > i)
+                    {
+                        obj = new clsBundleCompile();
+                        obj.OrderNo = Convert.ToString(ds.Tables[0].Rows[i]["OrderNo"]);
+                        obj.OperationNo = Convert.ToInt32(ds.Tables[0].Rows[i]["OperationNo"]);
+                        obj.SubSection = Convert.ToString(ds.Tables[0].Rows[i]["SubSection"]);
+                        obj.SupervisorID = Convert.ToInt32(ds.Tables[0].Rows[i]["SupervisorID"]);
+                        obj.SupervisorAssignedDate = Convert.ToString(ds.Tables[0].Rows[i]["SupAssignedDate"]);
+                        obj.CreatedBy = Convert.ToInt32(ds.Tables[0].Rows[i]["CreatedBy"]);
+                        obj.CreatedOn = Convert.ToString(ds.Tables[0].Rows[i]["CreatedOn"]);
+
+                        obj.vErrorCode = 200;
+                        obj.vErrorMsg = "Success";
+                        objResp.Add(obj);
+                        i++;
+                    }
+                }
+                else
+                {
+                    obj.vErrorCode = 404;
+                    obj.vErrorMsg = "Fetch Operation Number details are not found.";
+                    objResp.Add(obj);
+                }
+            }
+            catch (Exception exp)
+            {
+                obj.vErrorCode = 500;
+                Logger.WriteLog("Function Name : Fn_Fetch_AssignOperationNumbers", " " + "Error Msg : " + exp.Message.ToString(), new StackTrace(exp, true));
+                obj.vErrorMsg = exp.Message.ToString();
+                objResp.Add(obj);
+            }
+            finally
+            {
+                Con.Close();
+            }
+            return objResp;
         }
 
 
