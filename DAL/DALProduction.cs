@@ -612,7 +612,7 @@ namespace BSLDaman.DAL
 
                 string strSql = "SELECT Distinct " + obj.FieldName + " FROM " + obj.TableName + " WHERE 1=1";
                 strSql = strSql + " AND " + obj.FieldName + " LIKE '%" + obj.SearchKeyword + "%' ";
-                
+
                 SqlCommand cmd = new SqlCommand(strSql, Con);
                 SqlDataAdapter da = new SqlDataAdapter(cmd);
                 DataSet ds = new DataSet();
@@ -1477,7 +1477,7 @@ namespace BSLDaman.DAL
             var checkOPBreakDown = new clsOPBreackDownMaster();
             checkOPBreakDown.StyleCode = objReq.StyleCode;
             checkOPBreakDown.CreatedBy = objReq.CreatedBy;
-            
+
             checkOPBreakDown = _DALOrder.Fn_Check_Exist_style_In_Master(checkOPBreakDown);
             if (checkOPBreakDown.vErrorMsg != "Success" && checkOPBreakDown.vErrorCode != 200)
             {
@@ -1523,12 +1523,14 @@ namespace BSLDaman.DAL
                 // objReq.ShadeName = objReq.ShadeName?.TrimEnd(',');
 
                 string prevSize = "";
+                string prevColor = "";
                 long plyFrom = 0;
                 long plyTo = 0;
                 int prevBunleQty = objReq.BunleQty;
-                foreach (var oColorShadeList in objColorShadeList)
+
+                foreach (var size in sizeArray)
                 {
-                    foreach (var size in sizeArray)
+                    foreach (var oColorShadeList in objColorShadeList)
                     {
                         bool checkPostAssembly = false;
                         strCriteria = "";
@@ -1539,6 +1541,11 @@ namespace BSLDaman.DAL
                             long mxLotNo = Fn_Get_MXID("BundleCompile", "LotNo", strCriteria);
                             objReq.LotNo = Convert.ToInt32(mxLotNo);
                             prevSize = size;
+                            objReq.BunleQty = prevBunleQty;
+                        }
+                        if (oColorShadeList.ColorName != prevColor)
+                        {
+                            prevColor = oColorShadeList.ColorName;
                             objReq.BunleQty = prevBunleQty;
                         }
 
@@ -2118,17 +2125,19 @@ namespace BSLDaman.DAL
                 if (ds.Tables[0].Rows.Count > 0)
                 {
                     string strSubSection = "";
+                    HashSet<string> addedSubSections = new HashSet<string>();
+
                     while (ds.Tables[0].Rows.Count > i)
                     {
-
                         obj = new clsBundleCompile();
-                        obj.SubSection = Convert.ToString(ds.Tables[0].Rows[i]["SubSection"]);
-                        if (strSubSection != obj.SubSection)
+                        strSubSection = Convert.ToString(ds.Tables[0].Rows[i]["SubSection"]);
+                        if (!addedSubSections.Contains(strSubSection))
                         {
+                            obj.SubSection = strSubSection;
                             obj.vErrorCode = 200;
                             obj.vErrorMsg = "Success";
                             objResp.Add(obj);
-                            strSubSection = obj.SubSection;
+                            addedSubSections.Add(strSubSection);
                         }
                         i++;
                     }
@@ -2508,7 +2517,7 @@ namespace BSLDaman.DAL
 
                 string strSql = "Select BCS.OrderNo, BCS.LayID, BCS.ColorSelectionID, BCS.ColorName, BSS.ShadeName, BSS.Plies from BundleColorSelection BCS ";
                 strSql = strSql + " INNER JOIN BundleShadeSelection BSS ON BCS.ColorSelectionID = BSS.ColorSelectionID AND BCS.LayID = BSS.LayID WHERE 1=1 ";
-                
+
                 if (!String.IsNullOrWhiteSpace(objReq.OrderNo))
                 {
                     strSql = strSql + " AND BCS.OrderNo = @OrderNo";
@@ -2517,12 +2526,12 @@ namespace BSLDaman.DAL
                 {
                     strSql = strSql + " AND BCS.LayID = @LayID ";
                 }
-                
+
                 strSql = strSql + " ORDER BY BCS.ColorSelectionID ASC ";
 
                 SqlCommand cmd = new SqlCommand(strSql, Con);
                 cmd.CommandType = CommandType.Text;
-                
+
                 if (!String.IsNullOrWhiteSpace(objReq.OrderNo))
                 {
                     cmd.Parameters.AddWithValue("@OrderNo", objReq.OrderNo);
@@ -2531,7 +2540,7 @@ namespace BSLDaman.DAL
                 {
                     cmd.Parameters.AddWithValue("@LayID", objReq.LayID);
                 }
-                
+
                 SqlDataAdapter da = new SqlDataAdapter(cmd);
                 DataSet ds = new DataSet();
                 da.Fill(ds);
@@ -2546,7 +2555,7 @@ namespace BSLDaman.DAL
                         obj.ColorName = Convert.ToString(ds.Tables[0].Rows[i]["ColorName"]);
                         obj.ShadeName = Convert.ToString(ds.Tables[0].Rows[i]["ShadeName"]);
                         obj.Plies = Convert.ToInt32(ds.Tables[0].Rows[i]["Plies"]);
-                        
+
                         obj.vErrorCode = 200;
                         obj.vErrorMsg = "Success";
                         objResp.Add(obj);
