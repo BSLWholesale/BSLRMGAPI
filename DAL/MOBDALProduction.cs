@@ -2165,7 +2165,7 @@ namespace BSLDaman.DAL
                 strSql = strSql + " BC.BundleID AS BundleID, BC.StyleCode AS StyleCode, BD.BundleIDStatus AS BundleIDStatus, BC.Qty AS Qty,";
                 strSql = strSql + " BD.AppEmpID AS AppEmpID, BC.BundleNo AS BundleNo, BC.SizeName AS SizeName, BC.ColorName AS ColorName,";
                 strSql = strSql + " BC.ShadeName AS ShadeName, BC.PlyFrom AS PlyFrom, BC.PlyTo AS PlyTo, BC.LotNo AS LotNo,";
-                strSql = strSql + " BC.SubSection AS SubSection, BC.LayID AS LayID, BD.OperationNo AS OperationNo,";
+                strSql = strSql + " BC.SubSection AS SubSection, BC.LayID AS LayID, BD.OperationNo AS OperationNo, BC.SupervisorID AS SupervisorID, EM.EmpName AS SupervisorName,";
                 strSql = strSql + " FORMAT(BD.CreatedOn, 'dd-MMM-yyyy HH:mm:ss') AS CreatedOn, BD.CreatedBy AS CreatedBy,";
                 strSql = strSql + " FORMAT(BD.ModifiedOn, 'dd-MMM-yyyy HH:mm:ss') AS ModifiedOn, BD.ModifiedBy AS ModifiedBy";
                 strSql = strSql + " FROM BundleCompile AS BC";
@@ -2175,6 +2175,8 @@ namespace BSLDaman.DAL
                 strSql = strSql + " ON BD.AppEmpID = ED.Code";
                 strSql = strSql + " INNER JOIN LineMaster AS LM";
                 strSql = strSql + " ON LM.LineName = ED.LineName";
+                strSql = strSql + " INNER JOIN EmployeeMaster AS EM";
+                strSql = strSql + " ON EM.EmpId = BC.SupervisorID";
                 strSql = strSql + " WHERE 1=1";
 
                 if (objReq.AppEmpID > 0)
@@ -2222,6 +2224,8 @@ namespace BSLDaman.DAL
                         obj.SubSection = Convert.ToString(ds.Tables[0].Rows[i]["SubSection"]);
                         obj.LayID = Convert.ToInt64(ds.Tables[0].Rows[i]["LayID"]);
                         obj.OperationNo = Convert.ToInt64(ds.Tables[0].Rows[i]["OperationNo"]);
+                        obj.SupervisorID = Convert.ToInt32(ds.Tables[0].Rows[i]["SupervisorID"]);
+                        obj.SupervisorName = Convert.ToString(ds.Tables[0].Rows[i]["SupervisorName"]);
 
                         if (ds.Tables[0].Rows[0]["CreatedOn"] == null)
                         {
