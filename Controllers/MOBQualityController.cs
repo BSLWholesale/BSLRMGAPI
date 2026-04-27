@@ -9,7 +9,7 @@ using System.Web.Mvc;
 
 namespace BSLDaman.Controllers
 {
-    public class MOBQualityController : Controller
+    public class MOBQualityController : ApiController
     {
 
         MOBDALQuality _MOBDALQuality = new MOBDALQuality();
