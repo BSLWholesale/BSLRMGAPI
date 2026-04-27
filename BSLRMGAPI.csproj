@@ -160,6 +160,7 @@
     <Compile Include="Controllers\MasterEntryController.cs" />
     <Compile Include="Controllers\MOBEmployeeController.cs" />
     <Compile Include="Controllers\MOBProductionController.cs" />
+    <Compile Include="Controllers\MOBQualityController.cs" />
     <Compile Include="Controllers\OrderController.cs" />
     <Compile Include="Controllers\ProductionController.cs" />
     <Compile Include="Controllers\ReportController.cs" />
@@ -171,6 +172,7 @@
     <Compile Include="DAL\DALReport.cs" />
     <Compile Include="DAL\MOBDALEmployee.cs" />
     <Compile Include="DAL\MOBDALProduction.cs" />
+    <Compile Include="DAL\MOBDALQuality.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -238,6 +240,7 @@
     <Folder Include="Views\MasterEntry\" />
     <Folder Include="Views\MOBEmployee\" />
     <Folder Include="Views\MOBProduction\" />
+    <Folder Include="Views\MOBQuality\" />
     <Folder Include="Views\Order\" />
     <Folder Include="Views\Production\" />
     <Folder Include="Views\Report\" />
