@@ -354,6 +354,7 @@ namespace BSLDaman.Models
         public string ModifiedOn { get; set; }
         public Int32 SupervisorID { get; set; }
         public string SupervisorAssignedDate { get; set; }
+        public string SupervisorName { get; set; }
         public Int32 AppEmpID { get; set; }
         public string AppEmpIDs { get; set; }
         public string AppStartTime { get; set; }
