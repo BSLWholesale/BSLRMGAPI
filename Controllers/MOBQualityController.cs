@@ -24,8 +24,14 @@ namespace BSLDaman.Controllers
             return objResp;
         }
 
-
-
+        [System.Web.Http.HttpGet]
+        [System.Web.Http.Route("api/MOBQuality/Fn_Get_QA_checkPoint_Master")]
+        public List<clsQACheckPoint> Fn_Get_QA_checkPoint_Master(clsQACheckPoint objReq)
+        {
+            var objResp = new List<clsQACheckPoint>();
+            objResp = _MOBDALQuality.Fn_Get_QA_checkPoint_Master(objReq);
+            return objResp;
+        }
 
     }
 }

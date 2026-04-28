@@ -550,5 +550,13 @@ namespace BSLDaman.Models
         public int vErrorCode { get; set; }
     }
 
-
+    public class clsQACheckPoint
+    {
+        public Int64 ID { get; set; }
+        public string Products { get; set; }
+        public string SubSection { get; set; }
+        public string Defects { get; set; }
+        public string vErrorMsg { get; set; }
+        public int vErrorCode { get; set; }
+    }
 }
