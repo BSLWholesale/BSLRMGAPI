@@ -25,11 +25,20 @@ namespace BSLDaman.Controllers
         }
 
         [System.Web.Http.HttpGet]
-        [System.Web.Http.Route("api/MOBQuality/Fn_Get_QA_checkPoint_Master")]
-        public List<clsQACheckPoint> Fn_Get_QA_checkPoint_Master(clsQACheckPoint objReq)
+        [System.Web.Http.Route("api/MOBQuality/Fn_Get_QA_checkPoint")]
+        public List<clsQACheckPoint> Fn_Get_QA_checkPoint(clsQACheckPoint objReq)
         {
             var objResp = new List<clsQACheckPoint>();
-            objResp = _MOBDALQuality.Fn_Get_QA_checkPoint_Master(objReq);
+            objResp = _MOBDALQuality.Fn_Get_QA_checkPoint(objReq);
+            return objResp;
+        }
+
+        [System.Web.Http.HttpGet]
+        [System.Web.Http.Route("api/MOBQuality/Fn_Get_QA_Defects")]
+        public List<clsQADefects> Fn_Get_QA_Defects(clsQADefects objReq)
+        {
+            var objResp = new List<clsQADefects>();
+            objResp = _MOBDALQuality.Fn_Get_QA_Defects(objReq);
             return objResp;
         }
 

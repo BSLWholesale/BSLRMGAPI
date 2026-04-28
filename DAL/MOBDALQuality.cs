@@ -70,13 +70,13 @@ namespace BSLDaman.DAL
             return objResp;
         }
 
-        #region Start Fn_Get_QA_checkPoint_Master 28-APR-2026
+        #region Start Fn_Get_QA_checkPoint_SubSection 28-APR-2026
 
-        public List<clsQACheckPoint> Fn_Get_QA_checkPoint_Master(clsQACheckPoint objReq)
+        public List<clsQACheckPoint> Fn_Get_QA_checkPoint(clsQACheckPoint objReq)
         {
             var objResp = new List<clsQACheckPoint>();
             var obj = new clsQACheckPoint();
-            Logger.ErrorLog(JsonConvert.SerializeObject(objReq), "Request", "Fn_Get_QA_checkPoint_Master");
+            Logger.ErrorLog(JsonConvert.SerializeObject(objReq), "Request", "Fn_Get_QA_checkPoint");
             try
             {
                 if (Con.State == ConnectionState.Broken)
@@ -84,7 +84,7 @@ namespace BSLDaman.DAL
                 if (Con.State == ConnectionState.Closed)
                 { Con.Open(); }
 
-                string strSql = "SELECT ID, Products, SubSection, Defects from  QACheckPointMaster WHERE 1=1";
+                string strSql = "SELECT  DISTINCT Products, SubSection from  QACheckPointMaster WHERE 1=1";
                 if (!String.IsNullOrWhiteSpace(objReq.Products))
                 {
                     strSql = strSql + " AND Products = @Products";
@@ -93,7 +93,7 @@ namespace BSLDaman.DAL
                 {
                     strSql = strSql + " AND SubSection = @SubSection";
                 }
-                strSql = strSql + " ORDER BY SubSection";
+                strSql = strSql + " ORDER BY SubSection ";
 
 
                 SqlCommand cmd = new SqlCommand(strSql, Con);
@@ -116,6 +116,81 @@ namespace BSLDaman.DAL
                     while (ds.Tables[0].Rows.Count > i)
                     {
                         obj = new clsQACheckPoint();
+                        obj.Products = Convert.ToString(ds.Tables[0].Rows[i]["Products"]);
+                        obj.SubSection = Convert.ToString(ds.Tables[0].Rows[i]["SubSection"]);
+                        obj.vErrorCode = 200;
+                        obj.vErrorMsg = "Success";
+                        objResp.Add(obj);
+                        i++;
+                    }
+                }
+                else
+                {
+                    obj.vErrorCode = 404;
+                    obj.vErrorMsg = "No Record found";
+                    objResp.Add(obj);
+                }
+
+            }
+            catch (Exception exp)
+            {
+                obj.vErrorCode = 500;
+                Logger.WriteLog("Function Name : Fn_Get_QA_checkPoint", " " + "Error Msg : " + exp.Message.ToString(), new StackTrace(exp, true));
+                obj.vErrorMsg = exp.Message.ToString();
+                objResp.Add(obj);
+            }
+            finally
+            {
+                Con.Close();
+            }
+            Logger.ErrorLog(JsonConvert.SerializeObject(objResp), "Response", "Fn_Get_QA_checkPoint");
+            return objResp;
+        }
+
+        public List<clsQADefects> Fn_Get_QA_Defects(clsQADefects objReq)
+        {
+            var objResp = new List<clsQADefects>();
+            var obj = new clsQADefects();
+            Logger.ErrorLog(JsonConvert.SerializeObject(objReq), "Request", "Fn_Get_QA_Defects");
+            try
+            {
+                if (Con.State == ConnectionState.Broken)
+                { Con.Close(); }
+                if (Con.State == ConnectionState.Closed)
+                { Con.Open(); }
+
+                string strSql = "SELECT DISTINCT ID, Products, SubSection, Defects from  QACheckPointMaster WHERE 1=1";
+                if (!String.IsNullOrWhiteSpace(objReq.Products))
+                {
+                    strSql = strSql + " AND Products = @Products";
+                }
+                if (!String.IsNullOrWhiteSpace(objReq.SubSection))
+                {
+                    strSql = strSql + " AND SubSection = @SubSection";
+                }
+                strSql = strSql + " ORDER BY SubSection, Defects ";
+
+
+                SqlCommand cmd = new SqlCommand(strSql, Con);
+                cmd.CommandType = CommandType.Text;
+                if (!String.IsNullOrWhiteSpace(objReq.Products))
+                {
+                    cmd.Parameters.AddWithValue("@Products", objReq.Products);
+                }
+                if (!String.IsNullOrWhiteSpace(objReq.SubSection))
+                {
+                    cmd.Parameters.AddWithValue("@SubSection", objReq.SubSection);
+                }
+
+                SqlDataAdapter da = new SqlDataAdapter(cmd);
+                DataSet ds = new DataSet();
+                da.Fill(ds);
+                int i = 0;
+                if (ds.Tables[0].Rows.Count > 0)
+                {
+                    while (ds.Tables[0].Rows.Count > i)
+                    {
+                        obj = new clsQADefects();
                         obj.ID = Convert.ToInt64(ds.Tables[0].Rows[i]["ID"]);
                         obj.Products = Convert.ToString(ds.Tables[0].Rows[i]["Products"]);
                         obj.SubSection = Convert.ToString(ds.Tables[0].Rows[i]["SubSection"]);
@@ -137,7 +212,7 @@ namespace BSLDaman.DAL
             catch (Exception exp)
             {
                 obj.vErrorCode = 500;
-                Logger.WriteLog("Function Name : Fn_Get_QA_checkPoint_Master", " " + "Error Msg : " + exp.Message.ToString(), new StackTrace(exp, true));
+                Logger.WriteLog("Function Name : Fn_Get_QA_Defects", " " + "Error Msg : " + exp.Message.ToString(), new StackTrace(exp, true));
                 obj.vErrorMsg = exp.Message.ToString();
                 objResp.Add(obj);
             }
@@ -145,10 +220,10 @@ namespace BSLDaman.DAL
             {
                 Con.Close();
             }
-            Logger.ErrorLog(JsonConvert.SerializeObject(objResp), "Response", "Fn_Get_QA_checkPoint_Master");
+            Logger.ErrorLog(JsonConvert.SerializeObject(objResp), "Response", "Fn_Get_QA_Defects");
             return objResp;
         }
 
-        #endregion End Fn_Get_QA_checkPoint_Master 28-APR-2026
+        #endregion End Fn_Get_QA_checkPoint_SubSection 28-APR-2026
     }
 }
