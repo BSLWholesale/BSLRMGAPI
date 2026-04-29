@@ -40,4 +40,11 @@ namespace BSLDaman.Models
         public string vErrorMsg { get; set; }
         public int vErrorCode { get; set; }
     }
+    public class clsQASubSection
+    {
+        public string OrderNo { get; set; }
+        public string SubSection { get; set; }
+        public string vErrorMsg { get; set; }
+        public int vErrorCode { get; set; }
+    }
 }

@@ -59,5 +59,14 @@ namespace BSLDaman.Controllers
             objResp = _MOBDALQuality.Fn_Get_QA_Order_Size(objReq);
             return objResp;
         }
+
+        [System.Web.Http.HttpGet]
+        [System.Web.Http.Route("api/MOBQuality/Fn_Get_QA_Order_SubSection")]
+        public List<clsQASubSection> Fn_Get_QA_Order_SubSection(clsQASubSection objReq)
+        {
+            var objResp = new List<clsQASubSection>();
+            objResp = _MOBDALQuality.Fn_Get_QA_Order_SubSection(objReq);
+            return objResp;
+        }
     }
 }
