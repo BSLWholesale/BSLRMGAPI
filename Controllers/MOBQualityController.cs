@@ -17,9 +17,9 @@ namespace BSLDaman.Controllers
 
         [System.Web.Http.HttpGet]
         [System.Web.Http.Route("api/MOBQuality/Fn_Fetch_AllOrderNumbers")]
-        public List<clsOrderMaster> Fn_Fetch_AllOrderNumbers(clsOrderMaster objReq)
+        public List<clsQAOrderList> Fn_Fetch_AllOrderNumbers(clsQAOrderList objReq)
         {
-            var objResp = new List<clsOrderMaster>();
+            var objResp = new List<clsQAOrderList>();
             objResp = _MOBDALQuality.Fn_Fetch_AllOrderNumbers(objReq);
             return objResp;
         }
@@ -66,6 +66,15 @@ namespace BSLDaman.Controllers
         {
             var objResp = new List<clsQASubSection>();
             objResp = _MOBDALQuality.Fn_Get_QA_Order_SubSection(objReq);
+            return objResp;
+        }
+
+        [System.Web.Http.HttpPost]
+        [System.Web.Http.Route("api/MOBQuality/Fn_Insert_QA_Orderwise")]
+        public clsQAOrder Fn_Insert_QA_Orderwise(clsQAOrder objReq)
+        {
+            var objResp = new clsQAOrder();
+            objResp = _MOBDALQuality.Fn_Insert_QA_Orderwise(objReq);
             return objResp;
         }
     }
