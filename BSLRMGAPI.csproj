@@ -178,6 +178,7 @@
     </Compile>
     <Compile Include="Models\clsEmployee.cs" />
     <Compile Include="Models\clsMasterEntry.cs" />
+    <Compile Include="Models\clsQA.cs" />
     <Compile Include="Models\Generic.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

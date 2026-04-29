@@ -42,5 +42,22 @@ namespace BSLDaman.Controllers
             return objResp;
         }
 
+        [System.Web.Http.HttpGet]
+        [System.Web.Http.Route("api/MOBQuality/Fn_Get_QA_Order_Color")]
+        public List<clsQAColors> Fn_Get_QA_Order_Color(clsQAColors objReq)
+        {
+            var objResp = new List<clsQAColors>();
+            objResp = _MOBDALQuality.Fn_Get_QA_Order_Color(objReq);
+            return objResp;
+        }
+
+        [System.Web.Http.HttpGet]
+        [System.Web.Http.Route("api/MOBQuality/Fn_Get_QA_Order_Size")]
+        public List<clsQASize> Fn_Get_QA_Order_Size(clsQASize objReq)
+        {
+            var objResp = new List<clsQASize>();
+            objResp = _MOBDALQuality.Fn_Get_QA_Order_Size(objReq);
+            return objResp;
+        }
     }
 }
