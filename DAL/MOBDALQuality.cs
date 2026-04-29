@@ -15,12 +15,12 @@ namespace BSLDaman.DAL
     {
         
         SqlConnection Con = new SqlConnection(ConfigurationManager.ConnectionStrings["BSL"].ConnectionString);
+        DALOrder _DALOrder = new DALOrder(); 
 
-
-        public List<clsOrderMaster> Fn_Fetch_AllOrderNumbers(clsOrderMaster objReq)
+        public List<clsQAOrderList> Fn_Fetch_AllOrderNumbers(clsQAOrderList objReq)
         {
-            var objResp = new List<clsOrderMaster>();
-            var obj = new clsOrderMaster();
+            var objResp = new List<clsQAOrderList>();
+            var obj = new clsQAOrderList();
             try
             {
                 if (Con.State == ConnectionState.Broken)
@@ -30,6 +30,7 @@ namespace BSLDaman.DAL
 
                 SqlCommand cmd = new SqlCommand("USP_MobileQualityAnalysis", Con);
                 cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@QueryType", "GetAllOrderNumbers");
 
                 SqlDataAdapter da = new SqlDataAdapter(cmd);
                 DataSet ds = new DataSet();
@@ -40,9 +41,10 @@ namespace BSLDaman.DAL
                 {
                     while (ds.Tables[0].Rows.Count > i)
                     {
-                        obj = new clsOrderMaster();
+                        obj = new clsQAOrderList();
                         obj.OrderNo = Convert.ToString(ds.Tables[0].Rows[i]["OrderNo"]);
-
+                        obj.Product = Convert.ToString(ds.Tables[0].Rows[i]["Product"]);
+                        obj.Qty = Convert.ToInt64(ds.Tables[0].Rows[i]["Qty"]);
                         obj.vErrorCode = 200;
                         obj.vErrorMsg = "Success";
                         objResp.Add(obj);
@@ -453,6 +455,101 @@ namespace BSLDaman.DAL
                 Con.Close();
             }
             Logger.ErrorLog(JsonConvert.SerializeObject(objResp), "Response", "Fn_Get_QA_Order_SubSection");
+            return objResp;
+        }
+
+
+        public clsQAOrder Fn_Insert_QA_Orderwise(clsQAOrder objReq)
+        {
+            var objResp = new clsQAOrder();
+            Logger.ErrorLog(JsonConvert.SerializeObject(objReq), "Request", "Fn_Insert_QA_Orderwise");
+            try
+            {
+
+                if (Con.State == ConnectionState.Broken)
+                { Con.Close(); }
+                if (Con.State == ConnectionState.Closed)
+                { Con.Open(); }
+
+                if (objReq.ID == 0 || objReq.ID == null)
+                {
+                  Int64 mxID =  _DALOrder.Fn_Get_MXID("QA_OrderWise", "ID");
+                    objReq.ID = mxID;
+                }
+
+                if (String.IsNullOrWhiteSpace(objReq.OrderNo))
+                {
+                    objResp.vErrorCode = 400;
+                    objResp.vErrorMsg = "OrderNo is empty";
+                }
+                if (String.IsNullOrWhiteSpace(objReq.SizeName))
+                {
+                    objResp.vErrorCode = 400;
+                    objResp.vErrorMsg = "SizeName is empty";
+                }
+                if (String.IsNullOrWhiteSpace(objReq.SubSection))
+                {
+                    objResp.vErrorCode = 400;
+                    objResp.vErrorMsg = "SubSection is empty";
+                }
+                if (String.IsNullOrWhiteSpace(objReq.QAStatus))
+                {
+                    objResp.vErrorCode = 400;
+                    objResp.vErrorMsg = "QAStatus is empty";
+                }
+                if(objReq.Qty == 0)
+                {
+                    objResp.vErrorCode = 400;
+                    objResp.vErrorMsg = "Qty is zero";
+                }
+                if (objReq.CreatedBy == 0)
+                {
+                    objResp.vErrorCode = 400;
+                    objResp.vErrorMsg = "CreatedBy is empty";
+                }
+                else
+                {
+                    SqlCommand cmd = new SqlCommand("USP_MobileQualityAnalysis", Con);
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("@ID", objReq.ID);
+                    cmd.Parameters.AddWithValue("@OrderNo", objReq.OrderNo);
+                    cmd.Parameters.AddWithValue("@SizeName", objReq.SizeName);
+                    cmd.Parameters.AddWithValue("@SubSection", objReq.SubSection);
+                    cmd.Parameters.AddWithValue("@Qty", objReq.Qty);
+                    cmd.Parameters.AddWithValue("@QAStatus", objReq.QAStatus);
+                    cmd.Parameters.AddWithValue("@CreatedBy", objReq.CreatedBy);
+                    cmd.Parameters.AddWithValue("@QueryType", "InsertQAOrder");
+                    int i = 0;
+                    i = cmd.ExecuteNonQuery();
+                    if (i > 0)
+                    {
+                        objResp.ID = objReq.ID;
+                        objResp.OrderNo = objReq.OrderNo;
+                        objResp.SubSection = objReq.SubSection;
+                        objResp.SizeName = objReq.SizeName;
+                        objResp.Qty = objReq.Qty;
+                        objResp.QAStatus = objReq.QAStatus;
+                        objResp.vErrorCode = 200;
+                        objResp.vErrorMsg = "Success";
+                    }
+                    else
+                    {
+                        objResp.vErrorCode = 400;
+                        objResp.vErrorMsg = "QA inserting failed";
+                    }
+                }
+            }
+            catch (Exception exp)
+            {
+                objResp.vErrorCode = 500;
+                Logger.WriteLog("Function Name : Fn_Insert_QA_Orderwise", " " + "Error Msg : " + exp.Message.ToString(), new StackTrace(exp, true));
+                objResp.vErrorMsg = exp.Message.ToString();
+            }
+            finally
+            {
+                Con.Close();
+            }
+            Logger.ErrorLog(JsonConvert.SerializeObject(objResp), "Response", "Fn_Insert_QA_Orderwise");
             return objResp;
         }
 

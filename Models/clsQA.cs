@@ -47,4 +47,28 @@ namespace BSLDaman.Models
         public string vErrorMsg { get; set; }
         public int vErrorCode { get; set; }
     }
+
+    public class clsQAOrder
+    {
+        public Int64 ID { get; set; }
+        public string OrderNo { get; set; }
+        public string SizeName { get; set; }
+        public string SubSection { get; set; }
+        public Int64 Qty { get; set; }
+        public string QAStatus { get; set; }
+        public int CreatedBy { get; set; }
+        public string CreatedOn { get; set; }
+        public int ModifiedBy { get; set; }
+        public string ModifiedOn { get; set; }
+        public string vErrorMsg { get; set; }
+        public int vErrorCode { get; set; }
+    }
+    public class clsQAOrderList
+    {
+        public string OrderNo { get; set; }
+        public string Product { get; set; }
+        public Int64 Qty { get; set; }
+        public string vErrorMsg { get; set; }
+        public int vErrorCode { get; set; }
+    }
 }
