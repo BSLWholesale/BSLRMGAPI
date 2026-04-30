@@ -707,7 +707,7 @@ namespace BSLDaman.Controllers
 
         [System.Web.Http.HttpGet]
         [System.Web.Http.Route("api/MOBProduction/Fn_Fetch_OperatorAssignOpNumbers")]
-        public List<clsBundleCompile> Fn_Fetch_OperatorAssignOpNumbers(Int32? AppEmpID = null)
+        public List<clsBundleCompile> Fn_Fetch_OperatorAssignOpNumbers(Int32? AppEmpID = null, string BundleIDStatus = null)
         {
             clsBundleCompile objReq = new clsBundleCompile();
 
@@ -720,6 +720,15 @@ namespace BSLDaman.Controllers
                 objReq.AppEmpID = 0;
             }
 
+            if (!string.IsNullOrWhiteSpace(BundleIDStatus))
+            {
+                objReq.BundleIDStatus = BundleIDStatus;
+            }
+            else
+            {
+                objReq.BundleIDStatus = null;
+            }
+
             var objResp = _MOBDALProduction.Fn_Fetch_OperatorAssignOpNumbers(objReq);
             return objResp;
         }
@@ -727,7 +736,7 @@ namespace BSLDaman.Controllers
 
         [System.Web.Http.HttpGet]
         [System.Web.Http.Route("api/MOBProduction/Fn_Fetch_SupervisorAssignOpNoToOperators")]
-        public List<clsBundleCompile> Fn_Fetch_SupervisorAssignOpNoToOperators(Int32? SupervisorID = null)
+        public List<clsBundleCompile> Fn_Fetch_SupervisorAssignOpNoToOperators(Int32? SupervisorID = null, Int32? AppEmpID = null, string OrderNo = null, Int64? OperationNo = null)
         {
             clsBundleCompile objReq = new clsBundleCompile();
 
@@ -738,6 +747,33 @@ namespace BSLDaman.Controllers
             else
             {
                 objReq.SupervisorID = 0;
+            }
+
+            if (AppEmpID.HasValue)
+            {
+                objReq.AppEmpID = AppEmpID.Value;
+            }
+            else
+            {
+                objReq.AppEmpID = 0;
+            }
+
+            if (!string.IsNullOrWhiteSpace(OrderNo))
+            {
+                objReq.OrderNo = OrderNo;
+            }
+            else
+            {
+                objReq.OrderNo = null;
+            }
+
+            if (OperationNo.HasValue)
+            {
+                objReq.OperationNo = OperationNo.Value;
+            }
+            else
+            {
+                objReq.OperationNo = 0;
             }
 
             var objResp = _MOBDALProduction.Fn_Fetch_SupervisorAssignOpNoToOperators(objReq);
