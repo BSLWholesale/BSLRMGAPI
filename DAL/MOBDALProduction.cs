@@ -3196,16 +3196,28 @@ namespace BSLDaman.DAL
                 if (Con.State == ConnectionState.Closed)
                 { Con.Open(); }
 
-                string strSql = "SELECT BAD.OrderNo AS OrderNo, BAD.OperationNo AS OperationNo, BAD.SubSection AS SubSection,";
-                strSql = strSql + " BAD.SupervisorID AS SupervisorID, EM.EmpName AS SupervisorName,";
-                strSql = strSql + " FORMAT(BAD.SupAssignedDate, 'dd-MMM-yyyy HH:mm:ss') AS SupAssignedDate,";
-                strSql = strSql + " BAD.CreatedBy AS CreatedBy, FORMAT(BAD.CreatedOn, 'dd-MMM-yyyy HH:mm:ss') AS CreatedOn";
+                string strSql = "SELECT DISTINCT (BAD.OperationNo) AS OperationNo, BAD.OrderNo AS OrderNo, BAD.SubSection AS SubSection,";
+                strSql = strSql + " BAD.SupervisorID AS SupervisorID, EM.EmpName AS SupervisorName, FORMAT(BAD.SupAssignedDate, 'dd-MMM-yyyy HH:mm:ss') AS SupAssignedDate,";
+                strSql = strSql + " BD.BundleIDStatus AS BundleIDStatus, BD.BundleID AS BundleID, BAD.CreatedBy AS CreatedBy,";
+                strSql = strSql + " FORMAT(BAD.CreatedOn, 'dd-MMM-yyyy HH:mm:ss') AS CreatedOn";
                 strSql = strSql + " FROM BundleCompileAssignDetail AS BAD";
                 strSql = strSql + " INNER JOIN EmployeeMaster AS EM";
                 strSql = strSql + " ON BAD.SupervisorID = EM.EmpId";
                 strSql = strSql + " INNER JOIN EmployeeMaster AS EM1";
                 strSql = strSql + " ON BAD.AppEmpID = EM1.EmpId";
-                strSql = strSql + " WHERE EM1.EmpRole = 'Operator' AND BAD.AppEmpID = " + objReq.AppEmpID;
+                strSql = strSql + " INNER JOIN BundleCompileDetail AS BD";
+                strSql = strSql + " ON BD.AppEmpID = BAD.AppEmpID";
+                strSql = strSql + " WHERE EM1.EmpRole = 'Operator'";
+
+                if (objReq.AppEmpID > 0)
+                {
+                    strSql = strSql + " AND BAD.AppEmpID = " + objReq.AppEmpID;
+                }
+                if (!String.IsNullOrWhiteSpace(objReq.BundleIDStatus))
+                {
+                    strSql = strSql + " AND BD.BundleIDStatus = '" + objReq.BundleIDStatus + "'";
+                }
+
                 strSql = strSql + " ORDER BY BAD.OrderNo, BAD.OperationNo";
 
                 SqlCommand cmd = new SqlCommand(strSql, Con);
@@ -3281,7 +3293,25 @@ namespace BSLDaman.DAL
                 strSql = strSql + " ON BAD.SupervisorID = EM.EmpId";
                 strSql = strSql + " INNER JOIN EmployeeMaster AS EM1";
                 strSql = strSql + " ON BAD.AppEmpID = EM1.EmpId";
-                strSql = strSql + " WHERE EM.EmpRole = 'Supervisor' AND BAD.SupervisorID = " + objReq.SupervisorID;
+                strSql = strSql + " WHERE EM.EmpRole = 'Supervisor'";
+
+                if (objReq.SupervisorID > 0)
+                {
+                    strSql = strSql + " AND BAD.SupervisorID = " + objReq.SupervisorID;
+                }
+                if (objReq.AppEmpID > 0)
+                {
+                    strSql = strSql + " AND BAD.AppEmpID = " + objReq.AppEmpID;
+                }
+                if (!String.IsNullOrWhiteSpace(objReq.OrderNo))
+                {
+                    strSql = strSql + " AND BAD.OrderNo = '" + objReq.OrderNo + "'";
+                }
+                if (objReq.OperationNo > 0)
+                {
+                    strSql = strSql + " AND BAD.OperationNo = " + objReq.OperationNo;
+                }
+
                 strSql = strSql + " ORDER BY BAD.OrderNo, BAD.OperationNo";
 
                 SqlCommand cmd = new SqlCommand(strSql, Con);
