@@ -21,6 +21,7 @@ namespace BSLDaman.DAL
         {
             var objResp = new clsMOBEmployee();
             var objEmp = new clsMOBEmployee();
+            Logger.ErrorLog(JsonConvert.SerializeObject(objReq), "Request", "Fn_Login_Employee");
             try
             {
                 if (objReq.nEmpId == null || objReq.nEmpId == 0)
@@ -137,6 +138,7 @@ namespace BSLDaman.DAL
             {
                 Con.Close();
             }
+            Logger.ErrorLog(JsonConvert.SerializeObject(objResp), "Response", "Fn_Login_Employee");
             return objResp;
         }
 
@@ -144,6 +146,7 @@ namespace BSLDaman.DAL
         public clsMOBEmployee Fn_Fetch_EmployeeDetail_ById(clsMOBEmployee objReq, string tokenid)
         {
             var objResp = new clsMOBEmployee();
+            Logger.ErrorLog(JsonConvert.SerializeObject(objReq), "Request", "Fn_Fetch_EmployeeDetail_ById");
             try
             {
                 if (Con.State == ConnectionState.Broken)
@@ -294,6 +297,7 @@ namespace BSLDaman.DAL
             {
                 Con.Close();
             }
+            Logger.ErrorLog(JsonConvert.SerializeObject(objResp), "Response", "Fn_Fetch_EmployeeDetail_ById");
             return objResp;
         }
 
@@ -358,6 +362,7 @@ namespace BSLDaman.DAL
         public clsMOBEmployee Fn_LogOut_EmployeeSession(clsMOBEmployee objReq)
         {
             var objResp = new clsMOBEmployee();
+            Logger.ErrorLog(JsonConvert.SerializeObject(objReq), "Request", "Fn_LogOut_EmployeeSession");
             try
             {
                 if (objReq.nEmpId == null || objReq.nEmpId == 0)
@@ -401,6 +406,7 @@ namespace BSLDaman.DAL
             {
                 Con.Close();
             }
+            Logger.ErrorLog(JsonConvert.SerializeObject(objResp), "Response", "Fn_LogOut_EmployeeSession");
             return objResp;
         }
 
@@ -408,6 +414,7 @@ namespace BSLDaman.DAL
         public clsMOBEmployee Fn_Check_EmployeeTokenID(clsMOBEmployee objReq, string tokenid)
         {
             var objResp = new clsMOBEmployee();
+            Logger.ErrorLog(JsonConvert.SerializeObject(objReq), "Request", "Fn_Check_EmployeeTokenID");
             try
             {
                 if (Con.State == ConnectionState.Broken)
@@ -448,6 +455,7 @@ namespace BSLDaman.DAL
             {
                 Con.Close();
             }
+            Logger.ErrorLog(JsonConvert.SerializeObject(objResp), "Response", "Fn_Check_EmployeeTokenID");
             return objResp;
         }
 
@@ -504,6 +512,7 @@ namespace BSLDaman.DAL
         {
             var objRespList = new List<clsMOBEmployee>();
             var objResp = new clsMOBEmployee();
+            Logger.ErrorLog(JsonConvert.SerializeObject(objReq), "Request", "Fn_Get_All_EmployeeList");
             try
             {
                 if (Con.State == ConnectionState.Broken)
@@ -631,6 +640,7 @@ namespace BSLDaman.DAL
             {
                 Con.Close();
             }
+            Logger.ErrorLog(JsonConvert.SerializeObject(objRespList), "Response", "Fn_Get_All_EmployeeList");
             return objRespList;
         }
 
@@ -639,6 +649,7 @@ namespace BSLDaman.DAL
         {
             var objResp = new List<clsMOBEmployee>();
             var obj = new clsMOBEmployee();
+            Logger.ErrorLog(JsonConvert.SerializeObject(objReq), "Request", "Fn_Get_All_OperatorDetails");
             try
             {
                 if (Con.State == ConnectionState.Broken)
@@ -777,6 +788,7 @@ namespace BSLDaman.DAL
             {
                 Con.Close();
             }
+            Logger.ErrorLog(JsonConvert.SerializeObject(objResp), "Response", "Fn_Get_All_OperatorDetails");
             return objResp;
         }
 
@@ -784,6 +796,7 @@ namespace BSLDaman.DAL
         public List<clsMOBEmployee> Fn_Get_OperatorCount(clsMOBEmployee objReq)
         {
             var objResp = new List<clsMOBEmployee>();
+            Logger.ErrorLog(JsonConvert.SerializeObject(objReq), "Request", "Fn_Get_OperatorCount");
             try
             {
                 if (Con.State == ConnectionState.Broken)
@@ -831,6 +844,7 @@ namespace BSLDaman.DAL
             {
                 Con.Close();
             }
+            Logger.ErrorLog(JsonConvert.SerializeObject(objResp), "Response", "Fn_Get_OperatorCount");
             return objResp;
         }
 
@@ -839,6 +853,7 @@ namespace BSLDaman.DAL
         {
             var objResp = new List<clsMOBEmployee>();
             var obj = new clsMOBEmployee();
+            Logger.ErrorLog(JsonConvert.SerializeObject(objReq), "Request", "Fn_Get_All_SupervisorDetails");
             try
             {
                 if (Con.State == ConnectionState.Broken)
@@ -977,6 +992,7 @@ namespace BSLDaman.DAL
             {
                 Con.Close();
             }
+            Logger.ErrorLog(JsonConvert.SerializeObject(objResp), "Response", "Fn_Get_All_SupervisorDetails");
             return objResp;
         }
 
