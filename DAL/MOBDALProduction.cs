@@ -1,4 +1,5 @@
 ﻿using BSLDaman.Models;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
@@ -751,6 +752,7 @@ namespace BSLDaman.DAL
         public clsBundleCompile Fn_Update_SupervisorAssignedBundleIDEmp(clsBundleCompile objReq)
         {
             var objResp = new clsBundleCompile();
+            Logger.ErrorLog(JsonConvert.SerializeObject(objReq), "Request", "Fn_Update_SupervisorAssignedBundleIDEmp");
             try
             {
                 if (objReq.SupervisorID == null || objReq.SupervisorID == 0)
@@ -831,6 +833,7 @@ namespace BSLDaman.DAL
             {
                 Con.Close();
             }
+            Logger.ErrorLog(JsonConvert.SerializeObject(objResp), "Response", "Fn_Update_SupervisorAssignedBundleIDEmp");
             return objResp;
         }
 
@@ -839,6 +842,7 @@ namespace BSLDaman.DAL
         {
             Boolean ConfigField = Convert.ToBoolean(ConfigurationManager.AppSettings["BundleCompileValue"]);
             var objResp = new clsBundleCompile();
+            Logger.ErrorLog(JsonConvert.SerializeObject(objReq), "Request", "Fn_Update_AppEmpStartBundleIDStatus");
             try
             {
                 if (ConfigField)
@@ -914,6 +918,7 @@ namespace BSLDaman.DAL
             {
                 Con.Close();
             }
+            Logger.ErrorLog(JsonConvert.SerializeObject(objResp), "Response", "Fn_Update_AppEmpStartBundleIDStatus");
             return objResp;
         }
 
@@ -1308,6 +1313,7 @@ namespace BSLDaman.DAL
         public clsBundleCompile Fn_Update_AppEmpStartEndBundleIDStatus(clsBundleCompile objReq)
         {
             var objResp = new clsBundleCompile();
+            Logger.ErrorLog(JsonConvert.SerializeObject(objReq), "Request", "Fn_Update_AppEmpStartEndBundleIDStatus");
             try
             {
                 if (objReq.AppEmpID == null || objReq.AppEmpID == 0)
@@ -1358,6 +1364,7 @@ namespace BSLDaman.DAL
             {
                 Con.Close();
             }
+            Logger.ErrorLog(JsonConvert.SerializeObject(objResp), "Response", "Fn_Update_AppEmpStartEndBundleIDStatus");
             return objResp;
         }
 
@@ -3177,10 +3184,11 @@ namespace BSLDaman.DAL
 
 
 
-        public List<clsBundleCompile> Fn_Fetch_AssignOperationNumbers(clsBundleCompile objReq)
+        public List<clsBundleCompile> Fn_Fetch_OperatorAssignOpNumbers(clsBundleCompile objReq)
         {
             var objResp = new List<clsBundleCompile>();
             var obj = new clsBundleCompile();
+            Logger.ErrorLog(JsonConvert.SerializeObject(objReq), "Request", "Fn_Fetch_OperatorAssignOpNumbers");
             try
             {
                 if (Con.State == ConnectionState.Broken)
@@ -3188,9 +3196,17 @@ namespace BSLDaman.DAL
                 if (Con.State == ConnectionState.Closed)
                 { Con.Open(); }
 
-                string strSql = "SELECT OrderNo, OperationNo, SubSection, SupervisorID, FORMAT(SupAssignedDate, 'dd-MMM-yyyy HH:mm:ss') AS SupAssignedDate,";
-                strSql = strSql + " CreatedBy, FORMAT(CreatedOn, 'dd-MMM-yyyy HH:mm:ss') AS CreatedOn";
-                strSql = strSql + " FROM BundleCompileAssignDetail WHERE AppEmpID = " + objReq.AppEmpID;
+                string strSql = "SELECT BAD.OrderNo AS OrderNo, BAD.OperationNo AS OperationNo, BAD.SubSection AS SubSection,";
+                strSql = strSql + " BAD.SupervisorID AS SupervisorID, EM.EmpName AS SupervisorName,";
+                strSql = strSql + " FORMAT(BAD.SupAssignedDate, 'dd-MMM-yyyy HH:mm:ss') AS SupAssignedDate,";
+                strSql = strSql + " BAD.CreatedBy AS CreatedBy, FORMAT(BAD.CreatedOn, 'dd-MMM-yyyy HH:mm:ss') AS CreatedOn";
+                strSql = strSql + " FROM BundleCompileAssignDetail AS BAD";
+                strSql = strSql + " INNER JOIN EmployeeMaster AS EM";
+                strSql = strSql + " ON BAD.SupervisorID = EM.EmpId";
+                strSql = strSql + " INNER JOIN EmployeeMaster AS EM1";
+                strSql = strSql + " ON BAD.AppEmpID = EM1.EmpId";
+                strSql = strSql + " WHERE EM1.EmpRole = 'Operator' AND BAD.AppEmpID = " + objReq.AppEmpID;
+                strSql = strSql + " ORDER BY BAD.OrderNo, BAD.OperationNo";
 
                 SqlCommand cmd = new SqlCommand(strSql, Con);
                 cmd.CommandType = CommandType.Text;
@@ -3209,6 +3225,7 @@ namespace BSLDaman.DAL
                         obj.OperationNo = Convert.ToInt32(ds.Tables[0].Rows[i]["OperationNo"]);
                         obj.SubSection = Convert.ToString(ds.Tables[0].Rows[i]["SubSection"]);
                         obj.SupervisorID = Convert.ToInt32(ds.Tables[0].Rows[i]["SupervisorID"]);
+                        obj.SupervisorName = Convert.ToString(ds.Tables[0].Rows[i]["SupervisorName"]);
                         obj.SupervisorAssignedDate = Convert.ToString(ds.Tables[0].Rows[i]["SupAssignedDate"]);
                         obj.CreatedBy = Convert.ToInt32(ds.Tables[0].Rows[i]["CreatedBy"]);
                         obj.CreatedOn = Convert.ToString(ds.Tables[0].Rows[i]["CreatedOn"]);
@@ -3222,14 +3239,14 @@ namespace BSLDaman.DAL
                 else
                 {
                     obj.vErrorCode = 404;
-                    obj.vErrorMsg = "Fetch Operation Number details are not found.";
+                    obj.vErrorMsg = "No records found.";
                     objResp.Add(obj);
                 }
             }
             catch (Exception exp)
             {
                 obj.vErrorCode = 500;
-                Logger.WriteLog("Function Name : Fn_Fetch_AssignOperationNumbers", " " + "Error Msg : " + exp.Message.ToString(), new StackTrace(exp, true));
+                Logger.WriteLog("Function Name : Fn_Fetch_OperatorAssignOpNumbers", " " + "Error Msg : " + exp.Message.ToString(), new StackTrace(exp, true));
                 obj.vErrorMsg = exp.Message.ToString();
                 objResp.Add(obj);
             }
@@ -3237,8 +3254,88 @@ namespace BSLDaman.DAL
             {
                 Con.Close();
             }
+            Logger.ErrorLog(JsonConvert.SerializeObject(objResp), "Response", "Fn_Fetch_OperatorAssignOpNumbers");
             return objResp;
         }
+
+
+        public List<clsBundleCompile> Fn_Fetch_SupervisorAssignOpNoToOperators(clsBundleCompile objReq)
+        {
+            var objResp = new List<clsBundleCompile>();
+            var obj = new clsBundleCompile();
+            Logger.ErrorLog(JsonConvert.SerializeObject(objReq), "Request", "Fn_Fetch_SupervisorAssignOpNoToOperators");
+            try
+            {
+                if (Con.State == ConnectionState.Broken)
+                { Con.Close(); }
+                if (Con.State == ConnectionState.Closed)
+                { Con.Open(); }
+
+                string strSql = "SELECT BAD.OrderNo AS OrderNo, BAD.OperationNo AS OperationNo, BAD.SubSection AS SubSection,";
+                strSql = strSql + " BAD.SupervisorID AS SupervisorID, EM.EmpName AS SupervisorName,";
+                strSql = strSql + " FORMAT(BAD.SupAssignedDate, 'dd-MMM-yyyy HH:mm:ss') AS SupAssignedDate,";
+                strSql = strSql + " BAD.AppEmpID AS AppEmpID, EM1.EmpName AS AppEmpName, BAD.CreatedBy AS CreatedBy,";
+                strSql = strSql + " FORMAT(BAD.CreatedOn, 'dd-MMM-yyyy HH:mm:ss') AS CreatedOn";
+                strSql = strSql + " FROM BundleCompileAssignDetail AS BAD";
+                strSql = strSql + " INNER JOIN EmployeeMaster AS EM";
+                strSql = strSql + " ON BAD.SupervisorID = EM.EmpId";
+                strSql = strSql + " INNER JOIN EmployeeMaster AS EM1";
+                strSql = strSql + " ON BAD.AppEmpID = EM1.EmpId";
+                strSql = strSql + " WHERE EM.EmpRole = 'Supervisor' AND BAD.SupervisorID = " + objReq.SupervisorID;
+                strSql = strSql + " ORDER BY BAD.OrderNo, BAD.OperationNo";
+
+                SqlCommand cmd = new SqlCommand(strSql, Con);
+                cmd.CommandType = CommandType.Text;
+
+                SqlDataAdapter da = new SqlDataAdapter(cmd);
+                DataSet ds = new DataSet();
+                da.Fill(ds);
+                int i = 0;
+
+                if (ds.Tables[0].Rows.Count > 0)
+                {
+                    while (ds.Tables[0].Rows.Count > i)
+                    {
+                        obj = new clsBundleCompile();
+                        obj.OrderNo = Convert.ToString(ds.Tables[0].Rows[i]["OrderNo"]);
+                        obj.OperationNo = Convert.ToInt32(ds.Tables[0].Rows[i]["OperationNo"]);
+                        obj.SubSection = Convert.ToString(ds.Tables[0].Rows[i]["SubSection"]);
+                        obj.SupervisorID = Convert.ToInt32(ds.Tables[0].Rows[i]["SupervisorID"]);
+                        obj.SupervisorName = Convert.ToString(ds.Tables[0].Rows[i]["SupervisorName"]);
+                        obj.SupervisorAssignedDate = Convert.ToString(ds.Tables[0].Rows[i]["SupAssignedDate"]);
+                        obj.AppEmpID = Convert.ToInt32(ds.Tables[0].Rows[i]["AppEmpID"]);
+                        obj.AppEmpName = Convert.ToString(ds.Tables[0].Rows[i]["AppEmpName"]);
+                        obj.CreatedBy = Convert.ToInt32(ds.Tables[0].Rows[i]["CreatedBy"]);
+                        obj.CreatedOn = Convert.ToString(ds.Tables[0].Rows[i]["CreatedOn"]);
+
+                        obj.vErrorCode = 200;
+                        obj.vErrorMsg = "Success";
+                        objResp.Add(obj);
+                        i++;
+                    }
+                }
+                else
+                {
+                    obj.vErrorCode = 404;
+                    obj.vErrorMsg = "No records found.";
+                    objResp.Add(obj);
+                }
+            }
+            catch (Exception exp)
+            {
+                obj.vErrorCode = 500;
+                Logger.WriteLog("Function Name : Fn_Fetch_SupervisorAssignOpNoToOperators", " " + "Error Msg : " + exp.Message.ToString(), new StackTrace(exp, true));
+                obj.vErrorMsg = exp.Message.ToString();
+                objResp.Add(obj);
+            }
+            finally
+            {
+                Con.Close();
+            }
+            Logger.ErrorLog(JsonConvert.SerializeObject(objResp), "Response", "Fn_Fetch_SupervisorAssignOpNoToOperators");
+            return objResp;
+        }
+
 
 
 
