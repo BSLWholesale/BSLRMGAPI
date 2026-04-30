@@ -706,8 +706,8 @@ namespace BSLDaman.Controllers
 
 
         [System.Web.Http.HttpGet]
-        [System.Web.Http.Route("api/MOBProduction/Fn_Fetch_AssignOperationNumbers")]
-        public List<clsBundleCompile> Fn_Fetch_AssignOperationNumbers(Int32? AppEmpID = null)
+        [System.Web.Http.Route("api/MOBProduction/Fn_Fetch_OperatorAssignOpNumbers")]
+        public List<clsBundleCompile> Fn_Fetch_OperatorAssignOpNumbers(Int32? AppEmpID = null)
         {
             clsBundleCompile objReq = new clsBundleCompile();
 
@@ -720,10 +720,31 @@ namespace BSLDaman.Controllers
                 objReq.AppEmpID = 0;
             }
 
-            var objResp = _MOBDALProduction.Fn_Fetch_AssignOperationNumbers(objReq);
+            var objResp = _MOBDALProduction.Fn_Fetch_OperatorAssignOpNumbers(objReq);
             return objResp;
         }
-        
+
+
+        [System.Web.Http.HttpGet]
+        [System.Web.Http.Route("api/MOBProduction/Fn_Fetch_SupervisorAssignOpNoToOperators")]
+        public List<clsBundleCompile> Fn_Fetch_SupervisorAssignOpNoToOperators(Int32? SupervisorID = null)
+        {
+            clsBundleCompile objReq = new clsBundleCompile();
+
+            if (SupervisorID.HasValue)
+            {
+                objReq.SupervisorID = SupervisorID.Value;
+            }
+            else
+            {
+                objReq.SupervisorID = 0;
+            }
+
+            var objResp = _MOBDALProduction.Fn_Fetch_SupervisorAssignOpNoToOperators(objReq);
+            return objResp;
+        }
+
+
 
     }
 }
