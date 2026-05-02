@@ -3313,7 +3313,7 @@ namespace BSLDaman.DAL
                     strSql = strSql + " AND BAD.OperationNo = " + objReq.OperationNo;
                 }
 
-                strSql = strSql + " ORDER BY BAD.OrderNo, BAD.OperationNo";
+                strSql = strSql + " ORDER BY BAD.SupAssignedDate DESC, BAD.OrderNo, BAD.OperationNo";
 
                 SqlCommand cmd = new SqlCommand(strSql, Con);
                 cmd.CommandType = CommandType.Text;
