@@ -74,7 +74,25 @@ namespace BSLDaman.Controllers
         public clsQAOrder Fn_Insert_QA_Orderwise(clsQAOrder objReq)
         {
             var objResp = new clsQAOrder();
-            objResp = _MOBDALQuality.Fn_Insert_QA_Orderwise(objReq);
+            objResp = _MOBDALQuality.Fn_Insert_QA_Order_Defect(objReq);
+            return objResp;
+        }
+
+        [System.Web.Http.HttpGet]
+        [System.Web.Http.Route("api/MOBQuality/Fn_Get_QA_Order_Defect")]
+        public List<clsQAOrder> Fn_Get_QA_Order_Defect(clsQAOrder objReq)
+        {
+            var objResp = new List<clsQAOrder>();
+            objResp = _MOBDALQuality.Fn_Get_QA_Order_Defect(objReq);
+            return objResp;
+        }
+
+        [System.Web.Http.HttpGet]
+        [System.Web.Http.Route("api/MOBQuality/Fn_Get_QA_Order_DefectList")]
+        public List<clsQAOrderDefectList> Fn_Get_QA_Order_DefectList(clsQAOrderDefectList objReq)
+        {
+            var objResp = new List<clsQAOrderDefectList>();
+            objResp = _MOBDALQuality.Fn_Get_QA_Order_DefectList(objReq);
             return objResp;
         }
     }
