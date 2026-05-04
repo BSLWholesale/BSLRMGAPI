@@ -95,5 +95,23 @@ namespace BSLDaman.Controllers
             objResp = _MOBDALQuality.Fn_Get_QA_Order_DefectList(objReq);
             return objResp;
         }
+
+        [System.Web.Http.HttpPut]
+        [System.Web.Http.Route("api/MOBQuality/Fn_Update_QA_Order_Defect")]
+        public clsQAOrder Fn_Update_QA_Order_Defect(clsQAOrder objReq)
+        {
+            var objResp = new clsQAOrder();
+            objResp = _MOBDALQuality.Fn_Update_QA_Order_Defect(objReq);
+            return objResp;
+        }
+
+        [System.Web.Http.HttpDelete]
+        [System.Web.Http.Route("api/MOBQuality/Fn_Delete_QA_Order_Defect")]
+        public clsQAOrder Fn_Delete_QA_Order_Defect(clsQAOrder objReq)
+        {
+            var objResp = new clsQAOrder();
+            objResp = _MOBDALQuality.Fn_Delete_QA_Order_Defect(objReq);
+            return objResp;
+        }
     }
 }

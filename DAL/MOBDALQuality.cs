@@ -798,5 +798,147 @@ namespace BSLDaman.DAL
         }
 
         #endregion End Fn_Get_QA_Order_DefectList 30-APR-2026
+
+        #region Start Fn_Update_QA_Order_Defect 04-MAY-2026
+
+        public clsQAOrder Fn_Update_QA_Order_Defect(clsQAOrder objReq)
+        {
+            var objResp = new clsQAOrder();
+            var obj = new clsQAOrderDefectList();
+            var objList = new List<clsQAOrderDefectList>();
+            Logger.ErrorLog(JsonConvert.SerializeObject(objReq), "Request", "Fn_Update_QA_Order_Defect");
+            try
+            {
+
+                if (Con.State == ConnectionState.Broken)
+                { Con.Close(); }
+                if (Con.State == ConnectionState.Closed)
+                { Con.Open(); }
+
+                if (objReq.QAID == 0 || objReq.QAID == null)
+                {
+                    objResp.vErrorCode = 400;
+                    objResp.vErrorMsg = "QAID is empty";
+                }
+
+                if (String.IsNullOrWhiteSpace(objReq.OrderNo))
+                {
+                    objResp.vErrorCode = 400;
+                    objResp.vErrorMsg = "OrderNo is empty";
+                }
+                if (String.IsNullOrWhiteSpace(objReq.QAStatus))
+                {
+                    objResp.vErrorCode = 400;
+                    objResp.vErrorMsg = "QAStatus is empty";
+                }
+                
+                if (objReq.ModifiedBy == 0)
+                {
+                    objResp.vErrorCode = 400;
+                    objResp.vErrorMsg = "ModifiedBy is empty";
+                }
+                else
+                {
+                    SqlCommand cmd = new SqlCommand("USP_MobileQualityAnalysis", Con);
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("@QAID", objReq.QAID);
+                    cmd.Parameters.AddWithValue("@OrderNo", objReq.OrderNo);
+                    cmd.Parameters.AddWithValue("@QAStatus", objReq.QAStatus);
+                    cmd.Parameters.AddWithValue("@CreatedBy", objReq.ModifiedBy);
+                    cmd.Parameters.AddWithValue("@QueryType", "UpdateQAOrder");
+                    int i = 0;
+                    i = cmd.ExecuteNonQuery();
+                    if (i > 0)
+                    {                        
+                        objResp.QAID = objReq.QAID;
+                        objResp.OrderNo = objReq.OrderNo;
+                        objResp.QAStatus = objReq.QAStatus;
+                        objResp.vErrorCode = 200;
+                        objResp.vErrorMsg = "Success";
+                    }
+                    else
+                    {
+                        objResp.vErrorCode = 400;
+                        objResp.vErrorMsg = "QA Updating failed";
+                    }
+                }
+            }
+            catch (Exception exp)
+            {
+                objResp.vErrorCode = 500;
+                Logger.WriteLog("Function Name : Fn_Update_QA_Order_Defect", " " + "Error Msg : " + exp.Message.ToString(), new StackTrace(exp, true));
+                objResp.vErrorMsg = exp.Message.ToString();
+            }
+            finally
+            {
+                Con.Close();
+            }
+            Logger.ErrorLog(JsonConvert.SerializeObject(objResp), "Response", "Fn_Update_QA_Order_Defect");
+            return objResp;
+        }
+
+        public clsQAOrder Fn_Delete_QA_Order_Defect(clsQAOrder objReq)
+        {
+            var objResp = new clsQAOrder();
+            var obj = new clsQAOrderDefectList();
+            var objList = new List<clsQAOrderDefectList>();
+            Logger.ErrorLog(JsonConvert.SerializeObject(objReq), "Request", "Fn_Delete_QA_Order_Defect");
+            try
+            {
+
+                if (Con.State == ConnectionState.Broken)
+                { Con.Close(); }
+                if (Con.State == ConnectionState.Closed)
+                { Con.Open(); }
+
+                if (objReq.QAID == 0 || objReq.QAID == null)
+                {
+                    objResp.vErrorCode = 400;
+                    objResp.vErrorMsg = "QAID is empty";
+                }
+
+                if (String.IsNullOrWhiteSpace(objReq.OrderNo))
+                {
+                    objResp.vErrorCode = 400;
+                    objResp.vErrorMsg = "OrderNo is empty";
+                }
+                else
+                {
+                    SqlCommand cmd = new SqlCommand("USP_MobileQualityAnalysis", Con);
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("@QAID", objReq.QAID);
+                    cmd.Parameters.AddWithValue("@OrderNo", objReq.OrderNo);
+                    cmd.Parameters.AddWithValue("@QueryType", "DeleteQAOrder");
+                    int i = 0;
+                    i = cmd.ExecuteNonQuery();
+                    if (i > 0)
+                    {
+                        objResp.QAID = objReq.QAID;
+                        objResp.OrderNo = objReq.OrderNo;
+                        objResp.vErrorCode = 200;
+                        objResp.vErrorMsg = "Success";
+                    }
+                    else
+                    {
+                        objResp.vErrorCode = 400;
+                        objResp.vErrorMsg = "QA deleting failed";
+                    }
+                }
+            }
+            catch (Exception exp)
+            {
+                objResp.vErrorCode = 500;
+                Logger.WriteLog("Function Name : Fn_Delete_QA_Order_Defect", " " + "Error Msg : " + exp.Message.ToString(), new StackTrace(exp, true));
+                objResp.vErrorMsg = exp.Message.ToString();
+            }
+            finally
+            {
+                Con.Close();
+            }
+            Logger.ErrorLog(JsonConvert.SerializeObject(objResp), "Response", "Fn_Delete_QA_Order_Defect");
+            return objResp;
+        }
+
+        #endregion Start Fn_Update_QA_Order_Defect 04-MAY-2026
     }
 }
