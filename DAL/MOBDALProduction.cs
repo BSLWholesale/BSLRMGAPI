@@ -3218,7 +3218,7 @@ namespace BSLDaman.DAL
                     strSql = strSql + " AND BD.BundleIDStatus = '" + objReq.BundleIDStatus + "'";
                 }
 
-                strSql = strSql + " ORDER BY BAD.OrderNo, BAD.OperationNo";
+                strSql = strSql + " ORDER BY FORMAT(BAD.SupAssignedDate, 'dd-MMM-yyyy HH:mm:ss') DESC, BAD.OrderNo, BAD.OperationNo";
 
                 SqlCommand cmd = new SqlCommand(strSql, Con);
                 cmd.CommandType = CommandType.Text;
@@ -3313,7 +3313,7 @@ namespace BSLDaman.DAL
                     strSql = strSql + " AND BAD.OperationNo = " + objReq.OperationNo;
                 }
 
-                strSql = strSql + " ORDER BY BAD.SupAssignedDate DESC, BAD.OrderNo, BAD.OperationNo";
+                strSql = strSql + " ORDER BY FORMAT(BAD.SupAssignedDate, 'dd-MMM-yyyy HH:mm:ss') DESC, BAD.OrderNo, BAD.OperationNo";
 
                 SqlCommand cmd = new SqlCommand(strSql, Con);
                 cmd.CommandType = CommandType.Text;
@@ -3366,7 +3366,6 @@ namespace BSLDaman.DAL
             Logger.ErrorLog(JsonConvert.SerializeObject(objResp), "Response", "Fn_Fetch_SupervisorAssignOpNoToOperators");
             return objResp;
         }
-
 
 
 
