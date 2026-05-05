@@ -113,5 +113,14 @@ namespace BSLDaman.Controllers
             objResp = _MOBDALQuality.Fn_Delete_QA_Order_Defect(objReq);
             return objResp;
         }
+
+        [System.Web.Http.HttpGet]
+        [System.Web.Http.Route("api/MOBQuality/Fn_Get_QAReport")]
+        public List<clsQAReport> Fn_Get_QAReport(clsQAReport objReq)
+        {
+            var objResp = new List<clsQAReport>();
+            objResp = _MOBDALQuality.Fn_Get_QAReport(objReq);
+            return objResp;
+        }
     }
 }

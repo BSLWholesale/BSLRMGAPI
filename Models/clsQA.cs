@@ -90,4 +90,21 @@ namespace BSLDaman.Models
         public int vErrorCode { get; set; }
 
     }
+
+    public class clsQAReport
+    {
+        public string OrderNo { get; set; }
+        public string SizeName { get; set; }
+        public Int64 OrderQty { get; set; }
+        public string SubSection { get; set; }
+        public string ColorName { get; set; }
+        public string FTP { get; set; }
+        public string Reject { get; set; }
+        public string Repair { get; set; }
+        public string Altered { get; set; }
+        public string Pass { get; set; }
+        public string SendRepair { get; set; }
+        public string vErrorMsg { get; set; }
+        public int vErrorCode { get; set; }
+    }
 }

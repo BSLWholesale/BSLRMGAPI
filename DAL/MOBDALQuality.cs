@@ -14,9 +14,9 @@ namespace BSLDaman.DAL
 {
     public class MOBDALQuality
     {
-        
+
         SqlConnection Con = new SqlConnection(ConfigurationManager.ConnectionStrings["BSL"].ConnectionString);
-        DALOrder _DALOrder = new DALOrder(); 
+        DALOrder _DALOrder = new DALOrder();
 
         public List<clsQAOrderList> Fn_Fetch_AllOrderNumbers(clsQAOrderList objReq)
         {
@@ -109,7 +109,7 @@ namespace BSLDaman.DAL
                 {
                     cmd.Parameters.AddWithValue("@SubSection", objReq.SubSection);
                 }
-               
+
                 SqlDataAdapter da = new SqlDataAdapter(cmd);
                 DataSet ds = new DataSet();
                 da.Fill(ds);
@@ -204,7 +204,7 @@ namespace BSLDaman.DAL
                         {
                             obj.ImageName = strImgPath + Convert.ToString(ds.Tables[0].Rows[i]["ImageName"]);
                         }
-                        
+
                         obj.vErrorCode = 200;
                         obj.vErrorMsg = "Success";
                         objResp.Add(obj);
@@ -483,7 +483,7 @@ namespace BSLDaman.DAL
 
                 if (objReq.QAID == 0 || objReq.QAID == null)
                 {
-                  Int64 mxID =  _DALOrder.Fn_Get_MXID("QA_Order_CheckPoint", "QAID");
+                    Int64 mxID = _DALOrder.Fn_Get_MXID("QA_Order_CheckPoint", "QAID");
                     objReq.QAID = mxID;
                 }
 
@@ -539,8 +539,9 @@ namespace BSLDaman.DAL
                     i = cmd.ExecuteNonQuery();
                     if (i > 0)
                     {
-                        if (objReq.QAStatus == "FTP") { 
-                        
+                        if (objReq.QAStatus == "FTP")
+                        {
+
                         }
                         else
                         {
@@ -600,7 +601,7 @@ namespace BSLDaman.DAL
                         objResp.QAStatus = objReq.QAStatus;
                         objResp.vErrorCode = 200;
                         objResp.vErrorMsg = "Success";
-                       
+
                     }
                     else
                     {
@@ -747,12 +748,12 @@ namespace BSLDaman.DAL
                 string strSql = "Select DL.QADetailID, DL.QAID, DL.DefectID, CM.Defects,";
                 strSql = strSql + " DL.ImageName, DL.CreatedBy, FORMAT(DL.CreatedOn, 'dd-MMM-yyyy') AS CreatedOn from QA_Order_DefectList DL";
                 strSql = strSql + " INNER JOIN QACheckPointMaster CM ON DL.DefectID = CM.DefectsID WHERE 1=1 ";
-                
+
                 if (objReq.QAID != 0)
                 {
                     strSql = strSql + " AND DL.QAID = @QAID";
                 }
-                
+
                 strSql = strSql + " ORDER BY DL.QAID, CreatedOn ";
 
                 SqlCommand cmd = new SqlCommand(strSql, Con);
@@ -761,7 +762,7 @@ namespace BSLDaman.DAL
                 {
                     cmd.Parameters.AddWithValue("@QAID", objReq.QAID);
                 }
-                
+
                 SqlDataAdapter da = new SqlDataAdapter(cmd);
                 DataSet ds = new DataSet();
                 da.Fill(ds);
@@ -777,7 +778,7 @@ namespace BSLDaman.DAL
                         obj.DefectID = Convert.ToInt64(ds.Tables[0].Rows[i]["DefectID"]);
                         obj.Defect = Convert.ToString(ds.Tables[0].Rows[i]["Defects"]);
                         string strImageName = Convert.ToString(ds.Tables[0].Rows[i]["ImageName"]);
-                        if(strImageName != "")
+                        if (strImageName != "")
                         {
                             obj.ImageName = strImgPath + Convert.ToString(ds.Tables[0].Rows[i]["ImageName"]);
                         }
@@ -846,7 +847,7 @@ namespace BSLDaman.DAL
                     objResp.vErrorCode = 400;
                     objResp.vErrorMsg = "QAStatus is empty";
                 }
-                
+
                 if (objReq.ModifiedBy == 0)
                 {
                     objResp.vErrorCode = 400;
@@ -864,7 +865,7 @@ namespace BSLDaman.DAL
                     int i = 0;
                     i = cmd.ExecuteNonQuery();
                     if (i > 0)
-                    {                        
+                    {
                         objResp.QAID = objReq.QAID;
                         objResp.OrderNo = objReq.OrderNo;
                         objResp.QAStatus = objReq.QAStatus;
@@ -955,5 +956,82 @@ namespace BSLDaman.DAL
         }
 
         #endregion Start Fn_Update_QA_Order_Defect 04-MAY-2026
+
+        #region Start Fn_Get_QAReport 05-MAY-2026
+
+        public List<clsQAReport> Fn_Get_QAReport(clsQAReport objReq)
+        {
+            var objResp = new List<clsQAReport>();
+            var obj = new clsQAReport();
+            Logger.ErrorLog(JsonConvert.SerializeObject(objReq), "Request", "Fn_Get_QAReport");
+            try
+            {
+                if (String.IsNullOrWhiteSpace(objReq.OrderNo))
+                {
+                    objReq.vErrorCode = 400;
+                    objReq.vErrorMsg = "Please send order no";
+                }
+                else
+                {
+                    if (Con.State == ConnectionState.Broken)
+                    { Con.Close(); }
+                    if (Con.State == ConnectionState.Closed)
+                    { Con.Open(); }
+
+                    SqlCommand cmd = new SqlCommand("USP_MobileQualityAnalysis", Con);
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("@OrderNo", objReq.OrderNo);
+                    cmd.Parameters.AddWithValue("@QueryType", "QA_Report");
+
+                    SqlDataAdapter da = new SqlDataAdapter(cmd);
+                    DataSet ds = new DataSet();
+                    da.Fill(ds);
+                    int i = 0;
+                    if (ds.Tables[0].Rows.Count > 0)
+                    {
+                        while (ds.Tables[0].Rows.Count > i)
+                        {
+                            obj = new clsQAReport();
+                            obj.OrderNo = Convert.ToString(ds.Tables[0].Rows[i]["OrderNo"]);
+                            obj.SizeName = Convert.ToString(ds.Tables[0].Rows[i]["SizeName"]);
+                            obj.OrderQty = Convert.ToInt64(ds.Tables[0].Rows[i]["OrderQty"]);
+                            obj.ColorName = Convert.ToString(ds.Tables[0].Rows[i]["ColorName"]);
+                            obj.SubSection = Convert.ToString(ds.Tables[0].Rows[i]["SubSection"]);
+                            obj.FTP = Convert.ToString(ds.Tables[0].Rows[i]["FTP"]);
+                            obj.Reject = Convert.ToString(ds.Tables[0].Rows[i]["Reject"]);
+                            obj.Repair = Convert.ToString(ds.Tables[0].Rows[i]["Repair"]);
+                            obj.Altered = Convert.ToString(ds.Tables[0].Rows[i]["Altered"]);
+                            obj.Pass = Convert.ToString(ds.Tables[0].Rows[i]["Pass"]);
+                            obj.SendRepair = Convert.ToString(ds.Tables[0].Rows[i]["SendRepair"]);
+                            obj.vErrorCode = 200;
+                            obj.vErrorMsg = "Success";
+                            objResp.Add(obj);
+                            i++;
+                        }
+                    }
+                    else
+                    {
+                        obj.vErrorCode = 404;
+                        obj.vErrorMsg = "No Record found";
+                        objResp.Add(obj);
+                    }
+                }
+            }
+            catch (Exception exp)
+            {
+                obj.vErrorCode = 500;
+                Logger.WriteLog("Function Name : Fn_Get_QAReport", " " + "Error Msg : " + exp.Message.ToString(), new StackTrace(exp, true));
+                obj.vErrorMsg = exp.Message.ToString();
+                objResp.Add(obj);
+            }
+            finally
+            {
+                Con.Close();
+            }
+            Logger.ErrorLog(JsonConvert.SerializeObject(objResp), "Response", "Fn_Get_QAReport");
+            return objResp;
+        }
+
+        #endregion End Fn_Get_QAReport 05-MAY-2026
     }
 }
