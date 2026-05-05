@@ -3163,8 +3163,21 @@ namespace BSLDaman.DAL
                 if (Con.State == ConnectionState.Closed)
                 { Con.Open(); }
 
+                //string strSql = "SELECT DISTINCT (BAD.OperationNo) AS OperationNo, BAD.OrderNo AS OrderNo, BAD.SubSection AS SubSection,";
+                //strSql = strSql + " BAD.SupervisorID AS SupervisorID, EM.EmpName AS SupervisorName, FORMAT(BAD.SupAssignedDate, 'dd-MMM-yyyy HH:mm:ss') AS SupAssignedDate,";
+                //strSql = strSql + " BD.BundleIDStatus AS BundleIDStatus, BAD.CreatedBy AS CreatedBy,";
+                //strSql = strSql + " FORMAT(BAD.CreatedOn, 'dd-MMM-yyyy HH:mm:ss') AS CreatedOn";
+                //strSql = strSql + " FROM BundleCompileAssignDetail AS BAD";
+                //strSql = strSql + " INNER JOIN EmployeeMaster AS EM";
+                //strSql = strSql + " ON BAD.SupervisorID = EM.EmpId";
+                //strSql = strSql + " INNER JOIN EmployeeMaster AS EM1";
+                //strSql = strSql + " ON BAD.AppEmpID = EM1.EmpId";
+                //strSql = strSql + " INNER JOIN BundleCompileDetail AS BD";
+                //strSql = strSql + " ON BD.AppEmpID = BAD.AppEmpID";
+                //strSql = strSql + " WHERE EM1.EmpRole = 'Operator'";
+
                 string strSql = "SELECT DISTINCT (BAD.OperationNo) AS OperationNo, BAD.OrderNo AS OrderNo, BAD.SubSection AS SubSection,";
-                strSql = strSql + " BAD.SupervisorID AS SupervisorID, EM.EmpName AS SupervisorName, FORMAT(BAD.SupAssignedDate, 'dd-MMM-yyyy HH:mm:ss') AS SupAssignedDate,";
+                strSql = strSql + " BAD.SupervisorID AS SupervisorID, EM.EmpName AS SupervisorName, BAD.SupAssignedDate,";
                 strSql = strSql + " BD.BundleIDStatus AS BundleIDStatus, BAD.CreatedBy AS CreatedBy,";
                 strSql = strSql + " FORMAT(BAD.CreatedOn, 'dd-MMM-yyyy HH:mm:ss') AS CreatedOn";
                 strSql = strSql + " FROM BundleCompileAssignDetail AS BAD";
@@ -3185,7 +3198,8 @@ namespace BSLDaman.DAL
                     strSql = strSql + " AND BD.BundleIDStatus = '" + objReq.BundleIDStatus + "'";
                 }
 
-                strSql = strSql + " ORDER BY FORMAT(BAD.SupAssignedDate, 'dd-MMM-yyyy HH:mm:ss') DESC, BAD.OrderNo, BAD.OperationNo";
+                //strSql = strSql + " ORDER BY FORMAT(BAD.SupAssignedDate, 'dd-MMM-yyyy HH:mm:ss') DESC, BAD.OrderNo, BAD.OperationNo";
+                strSql = strSql + " ORDER BY BAD.SupAssignedDate DESC, BAD.OrderNo, BAD.OperationNo";
 
                 SqlCommand cmd = new SqlCommand(strSql, Con);
                 cmd.CommandType = CommandType.Text;
@@ -3251,9 +3265,20 @@ namespace BSLDaman.DAL
                 if (Con.State == ConnectionState.Closed)
                 { Con.Open(); }
 
+                //string strSql = "SELECT BAD.OrderNo AS OrderNo, BAD.OperationNo AS OperationNo, BAD.SubSection AS SubSection,";
+                //strSql = strSql + " BAD.SupervisorID AS SupervisorID, EM.EmpName AS SupervisorName,";
+                //strSql = strSql + " FORMAT(BAD.SupAssignedDate, 'dd-MMM-yyyy HH:mm:ss') AS SupAssignedDate,";
+                //strSql = strSql + " BAD.AppEmpID AS AppEmpID, EM1.EmpName AS AppEmpName, BAD.CreatedBy AS CreatedBy,";
+                //strSql = strSql + " FORMAT(BAD.CreatedOn, 'dd-MMM-yyyy HH:mm:ss') AS CreatedOn";
+                //strSql = strSql + " FROM BundleCompileAssignDetail AS BAD";
+                //strSql = strSql + " INNER JOIN EmployeeMaster AS EM";
+                //strSql = strSql + " ON BAD.SupervisorID = EM.EmpId";
+                //strSql = strSql + " INNER JOIN EmployeeMaster AS EM1";
+                //strSql = strSql + " ON BAD.AppEmpID = EM1.EmpId";
+                //strSql = strSql + " WHERE EM.EmpRole = 'Supervisor'";
+
                 string strSql = "SELECT BAD.OrderNo AS OrderNo, BAD.OperationNo AS OperationNo, BAD.SubSection AS SubSection,";
-                strSql = strSql + " BAD.SupervisorID AS SupervisorID, EM.EmpName AS SupervisorName,";
-                strSql = strSql + " FORMAT(BAD.SupAssignedDate, 'dd-MMM-yyyy HH:mm:ss') AS SupAssignedDate,";
+                strSql = strSql + " BAD.SupervisorID AS SupervisorID, EM.EmpName AS SupervisorName, BAD.SupAssignedDate AS SupAssignedDate,";
                 strSql = strSql + " BAD.AppEmpID AS AppEmpID, EM1.EmpName AS AppEmpName, BAD.CreatedBy AS CreatedBy,";
                 strSql = strSql + " FORMAT(BAD.CreatedOn, 'dd-MMM-yyyy HH:mm:ss') AS CreatedOn";
                 strSql = strSql + " FROM BundleCompileAssignDetail AS BAD";
@@ -3280,7 +3305,8 @@ namespace BSLDaman.DAL
                     strSql = strSql + " AND BAD.OperationNo = " + objReq.OperationNo;
                 }
 
-                strSql = strSql + " ORDER BY FORMAT(BAD.SupAssignedDate, 'dd-MMM-yyyy HH:mm:ss') DESC, BAD.OrderNo, BAD.OperationNo";
+                //strSql = strSql + " ORDER BY FORMAT(BAD.SupAssignedDate, 'dd-MMM-yyyy HH:mm:ss') DESC, BAD.OrderNo, BAD.OperationNo";
+                strSql = strSql + " ORDER BY BAD.SupAssignedDate DESC, BAD.OrderNo, BAD.OperationNo";
 
                 SqlCommand cmd = new SqlCommand(strSql, Con);
                 cmd.CommandType = CommandType.Text;
