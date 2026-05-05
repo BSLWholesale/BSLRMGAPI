@@ -1040,16 +1040,15 @@ namespace BSLDaman.DAL
                 if (Con.State == ConnectionState.Closed)
                 { Con.Open(); }
 
-                string strSql = "Select Format(Min(CreatedOn),'MMM') AS SMonth, Format(Max(CreatedOn),'MMM') AS EMonth,Sum(Qty) as Qty,OrderNo ";
-                strSql = strSql + " FROM  BundleCompile WHERE 1=1";
+                string strSql = "Select Format(Min(CreatedOn),'MMM') AS SMonth, Format(Max(CreatedOn),'MMM') AS EMonth, ";
+                strSql = strSql + " Sum(Qty) as Qty,OrderNo, LayID FROM  BundleCompile WHERE 1=1 ";
                
                 if (!String.IsNullOrWhiteSpace(objReq.OrderNo))
                 {
                     strSql = strSql + " AND OrderNo = @OrderNo";
                 }
 
-                strSql = strSql + " GROUP BY  CreatedOn,OrderNo ";
-                strSql = strSql + " Order by CreatedOn ";
+                strSql = strSql + " GROUP BY OrderNo, LayID ";
 
                 SqlCommand cmd = new SqlCommand(strSql, Con);
                 cmd.CommandType = CommandType.Text;
