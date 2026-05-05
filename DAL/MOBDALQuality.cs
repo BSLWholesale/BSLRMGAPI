@@ -517,6 +517,11 @@ namespace BSLDaman.DAL
                     objResp.vErrorCode = 400;
                     objResp.vErrorMsg = "CreatedBy is empty";
                 }
+                if (objReq.QAStatus != "FTP" && objReq._oList == null)
+                {
+                    objResp.vErrorCode = 400;
+                    objResp.vErrorMsg = "List is empty";
+                }
                 else
                 {
                     SqlCommand cmd = new SqlCommand("USP_MobileQualityAnalysis", Con);
@@ -534,47 +539,57 @@ namespace BSLDaman.DAL
                     i = cmd.ExecuteNonQuery();
                     if (i > 0)
                     {
-                        foreach(var oList in objReq._oList)
+                        if (objReq.QAStatus == "FTP") { 
+                        
+                        }
+                        else
                         {
-                          
-                            #region upload Image
-
-                            if (!String.IsNullOrWhiteSpace(oList.ImageName))
+                            if (objReq._oList != null)
                             {
-                                string fileName = objReq.SubSection + "-" + Convert.ToString(objReq.QAID + "-" + oList.DefectID);
-                                string imgFile = oList.ImageName;
+                                foreach (var oList in objReq._oList)
+                                {
 
-                                byte[] imageBytes = Convert.FromBase64String(imgFile.Split(',')[1]);
+                                    #region upload Image
 
-                                string filePath = HttpContext.Current.Server.MapPath(string.Format("~/Image/DefectImage/{0}.jpg", fileName));
-                                System.IO.File.WriteAllBytes(filePath, imageBytes);
-                                oList.ImageName = fileName + ".jpg";
-                                
-                            }
-                            #endregion upload Image
+                                    if (!String.IsNullOrWhiteSpace(oList.ImageName))
+                                    {
+                                        string fileName = objReq.SubSection + "-" + Convert.ToString(objReq.QAID + "-" + oList.DefectID);
+                                        string imgFile = oList.ImageName;
 
-                            SqlCommand cmd1 = new SqlCommand("USP_MobileQualityAnalysis", Con);
-                            cmd1.CommandType = CommandType.StoredProcedure;
+                                        byte[] imageBytes = Convert.FromBase64String(imgFile.Split(',')[1]);
 
-                            cmd1.Parameters.AddWithValue("@QAID", objReq.QAID);
-                            cmd1.Parameters.AddWithValue("@DefectID", oList.DefectID);
-                            cmd1.Parameters.AddWithValue("@ImageName", oList.ImageName);
-                            cmd1.Parameters.AddWithValue("@CreatedBy", objReq.CreatedBy);
-                            cmd1.Parameters.AddWithValue("@QueryType", "InsertQADefectList");
-                            int j = 0;
-                            j = cmd1.ExecuteNonQuery();
-                            if (j > 0)
-                            {
-                                obj = new clsQAOrderDefectList();
-                                obj.vErrorCode = 200;
-                                obj.vErrorMsg = "Success";
-                                objList.Add(obj);
-                            }
-                            else
-                            {
-                                obj.vErrorCode = 400;
-                                obj.vErrorMsg = "Error in defect inerting";
-                                objList.Add(obj);
+                                        string filePath = HttpContext.Current.Server.MapPath(string.Format("~/Image/DefectImage/{0}.jpg", fileName));
+                                        System.IO.File.WriteAllBytes(filePath, imageBytes);
+                                        oList.ImageName = fileName + ".jpg";
+
+                                    }
+                                    #endregion upload Image
+
+                                    SqlCommand cmd1 = new SqlCommand("USP_MobileQualityAnalysis", Con);
+                                    cmd1.CommandType = CommandType.StoredProcedure;
+
+                                    cmd1.Parameters.AddWithValue("@QAID", objReq.QAID);
+                                    cmd1.Parameters.AddWithValue("@DefectID", oList.DefectID);
+                                    cmd1.Parameters.AddWithValue("@ImageName", oList.ImageName);
+                                    cmd1.Parameters.AddWithValue("@CreatedBy", objReq.CreatedBy);
+                                    cmd1.Parameters.AddWithValue("@QueryType", "InsertQADefectList");
+                                    int j = 0;
+                                    j = cmd1.ExecuteNonQuery();
+                                    if (j > 0)
+                                    {
+                                        obj = new clsQAOrderDefectList();
+                                        obj.vErrorCode = 200;
+                                        obj.vErrorMsg = "Success";
+                                        objList.Add(obj);
+                                    }
+                                    else
+                                    {
+                                        obj.vErrorCode = 400;
+                                        obj.vErrorMsg = "Error in defect inerting";
+                                        objList.Add(obj);
+                                    }
+                                }
+                                objResp._oList = objList;
                             }
                         }
                         objResp.QAID = objReq.QAID;
@@ -585,7 +600,7 @@ namespace BSLDaman.DAL
                         objResp.QAStatus = objReq.QAStatus;
                         objResp.vErrorCode = 200;
                         objResp.vErrorMsg = "Success";
-                        objResp._oList = objList;
+                       
                     }
                     else
                     {
