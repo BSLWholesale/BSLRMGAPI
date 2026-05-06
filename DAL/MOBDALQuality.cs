@@ -200,11 +200,20 @@ namespace BSLDaman.DAL
                         obj.SubSection = Convert.ToString(ds.Tables[0].Rows[i]["SubSection"]);
                         obj.Defects = Convert.ToString(ds.Tables[0].Rows[i]["Defects"]);
                         string strImageName = Convert.ToString(ds.Tables[0].Rows[i]["ImageName"]);
-                        if (strImageName != "")
+                        if (strImageName.Contains(","))
+                        {
+                            string[] parts = strImageName.Split(',');
+                            string img = "";
+                            foreach (var item in parts)
+                            {
+                                img += strImgPath + item + ",";
+                            }
+                            obj.ImageName = img.Substring(0, img.Length - 1);
+                        }
+                        else
                         {
                             obj.ImageName = strImgPath + Convert.ToString(ds.Tables[0].Rows[i]["ImageName"]);
                         }
-
                         obj.vErrorCode = 200;
                         obj.vErrorMsg = "Success";
                         objResp.Add(obj);
@@ -532,7 +541,8 @@ namespace BSLDaman.DAL
                     cmd.Parameters.AddWithValue("@SubSection", objReq.SubSection);
                     cmd.Parameters.AddWithValue("@Qty", objReq.Qty);
                     cmd.Parameters.AddWithValue("@QAStatus", objReq.QAStatus);
-                    cmd.Parameters.AddWithValue("@PlyFrom", objReq.PlyFrom);
+                    cmd.Parameters.AddWithValue("@PlyNo", objReq.PlyNo);
+                    cmd.Parameters.AddWithValue("@Opr", objReq.Opr);
                     cmd.Parameters.AddWithValue("@CreatedBy", objReq.CreatedBy);
                     cmd.Parameters.AddWithValue("@QueryType", "InsertQAOrder");
                     int i = 0;
@@ -640,7 +650,7 @@ namespace BSLDaman.DAL
                 if (Con.State == ConnectionState.Closed)
                 { Con.Open(); }
 
-                string strSql = "SELECT QAID, OrderNo, SizeName, SubSection, Qty, QAStatus, PlyFrom, CreatedBy,";
+                string strSql = "SELECT QAID, OrderNo, SizeName, SubSection, Qty, QAStatus, PlyNo, Opr, CreatedBy,";
                 strSql = strSql + " FORMAT(CreatedOn, 'dd-MMM-yyyy') AS CreatedOn FROM QA_Order_CheckPoint WHERE 1=1";
                 if (!String.IsNullOrWhiteSpace(objReq.SubSection))
                 {
@@ -693,11 +703,8 @@ namespace BSLDaman.DAL
                         obj.SubSection = Convert.ToString(ds.Tables[0].Rows[i]["SubSection"]);
                         obj.Qty = Convert.ToInt64(ds.Tables[0].Rows[i]["Qty"]);
                         obj.QAStatus = Convert.ToString(ds.Tables[0].Rows[i]["QAStatus"]);
-                        string PlyFrom = Convert.ToString(ds.Tables[0].Rows[i]["PlyFrom"]);
-                        if (PlyFrom != "")
-                        {
-                            obj.PlyFrom = Convert.ToInt64(ds.Tables[0].Rows[i]["PlyFrom"]);
-                        }
+                        obj.PlyNo = Convert.ToString(ds.Tables[0].Rows[i]["PlyNo"]);
+                        obj.Opr = Convert.ToString(ds.Tables[0].Rows[i]["Opr"]);
                         obj.CreatedBy = Convert.ToInt32(ds.Tables[0].Rows[i]["CreatedBy"]);
                         obj.CreatedOn = Convert.ToString(ds.Tables[0].Rows[i]["CreatedOn"]);
                         obj.vErrorCode = 200;

@@ -114,7 +114,7 @@ namespace BSLDaman.Controllers
             return objResp;
         }
 
-        [System.Web.Http.HttpGet]
+        [System.Web.Http.HttpPost]
         [System.Web.Http.Route("api/MOBQuality/Fn_Get_QAReport")]
         public List<clsQAReport> Fn_Get_QAReport(clsQAReport objReq)
         {
