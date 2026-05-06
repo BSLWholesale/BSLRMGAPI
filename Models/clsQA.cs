@@ -57,7 +57,8 @@ namespace BSLDaman.Models
         public string SubSection { get; set; }
         public Int64 Qty { get; set; }
         public string QAStatus { get; set; }
-        public Int64 PlyFrom { get; set; }
+        public string PlyNo { get; set; }
+        public string Opr { get; set; }
         public int CreatedBy { get; set; }
         public string CreatedOn { get; set; }
         public int ModifiedBy { get; set; }
