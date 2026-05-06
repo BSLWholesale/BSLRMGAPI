@@ -247,6 +247,16 @@ namespace BSLDaman.Controllers
         }
 
 
+        [System.Web.Http.HttpGet]
+        [System.Web.Http.Route("api/MOBProduction/Fn_Fetch_MachineLogList")]
+        public List<clsMachineLogMaster> Fn_Fetch_MachineLogList(clsMachineLogMaster objReq)
+        {
+            var objResp = new List<clsMachineLogMaster>();
+            objResp = _MOBDALProduction.Fn_Fetch_MachineLogList(objReq);
+            return objResp;
+        }
+
+
         [System.Web.Http.HttpPut]
         [System.Web.Http.Route("api/MOBProduction/Fn_Update_SupervisorAssignedBundleIDEmp")]
         public clsBundleCompile Fn_Update_SupervisorAssignedBundleIDEmp(clsBundleCompile objReq)
