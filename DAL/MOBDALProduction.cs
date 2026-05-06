@@ -16,6 +16,8 @@ namespace BSLDaman.DAL
 
         SqlConnection Con = new SqlConnection(ConfigurationManager.ConnectionStrings["BSL"].ConnectionString);
 
+        Generic gn = new Generic();
+
         //public List<clsBundleCompile> Fn_Get_ActiveBundle(clsBundleCompile objReq)
         //{
         //    var objResp = new List<clsBundleCompile>();
@@ -468,14 +470,20 @@ namespace BSLDaman.DAL
         public clsMachineLogLostTimeTransactions Fn_Insert_MachineLogTransaction(clsMachineLogLostTimeTransactions objReq)
         {
             var objResp = new clsMachineLogLostTimeTransactions();
+            Logger.ErrorLog(JsonConvert.SerializeObject(objReq), "Request", "Fn_Insert_MachineLogTransaction");
             try
             {
-                if (objReq.EmpId == null || objReq.EmpId == 0)
+                if (objReq.AppEmpID == null || objReq.AppEmpID == 0)
                 {
-                    objResp.vErrorMsg = "Please Pass Employee Id";
+                    objResp.vErrorMsg = "Please Pass the App Employee/Operator ID";
                     objResp.vErrorCode = 300;
                 }
-                else if (objReq.MachineId == null || objReq.MachineId == 0)
+                else if (objReq.LineId == null || objReq.LineId == 0)
+                {
+                    objResp.vErrorMsg = "Please Pass Line Id.";
+                    objResp.vErrorCode = 300;
+                }
+                else if (String.IsNullOrWhiteSpace(objReq.MachineId))
                 {
                     objResp.vErrorMsg = "Please Pass Machine Id.";
                     objResp.vErrorCode = 300;
@@ -502,10 +510,8 @@ namespace BSLDaman.DAL
                     cmd.Parameters.AddWithValue("@LineId", objReq.LineId);
                     cmd.Parameters.AddWithValue("@MachineId", objReq.MachineId);
                     cmd.Parameters.AddWithValue("@MachineLogDescription", objReq.MachineLogDescription);
-                    cmd.Parameters.AddWithValue("@EmpId", objReq.EmpId);
+                    cmd.Parameters.AddWithValue("@AppEmpID", objReq.AppEmpID);
                     cmd.Parameters.AddWithValue("@MachineStatus", objReq.MachineStatus);
-                    cmd.Parameters.AddWithValue("@Needle", objReq.Needle);
-                    cmd.Parameters.AddWithValue("@Oiling", objReq.Oiling);
                     cmd.Parameters.AddWithValue("@CreatedBy", objReq.CreatedBy);
                     cmd.Parameters.AddWithValue("@QueryType", "InsertMachineLog");
 
@@ -515,6 +521,18 @@ namespace BSLDaman.DAL
                     {
                         objResp.vErrorMsg = "Success";
                         objResp.vErrorCode = 200;
+                        //var objMachineLog = new clsMachineLogLostTimeTransactions();
+                        ////objMachineLog = _DALEmp.Fn_Fetch_EmployeeEmailId(objEmp);
+                        //string strSubject = "Machine Id " + objReq.MachineId + " Send for repair purpose ";
+                        ////string strMSG = "Dear Hemant Ji" + objMachineLog.vEmpName + "<br><br> Machine Id <b>" + objReq.MachineId + "</b> is send for repaired purpose " + objEmp.vEmpName + "<br> Kindly repair the machine asap. <br><br>";
+                        //string strMSG = "Dear Hemant Ji," + "<br><br> Machine Id <b>" + objReq.MachineId + "</b> is send for repair purpose" + "<br> Kindly repair the machine asap. <br><br>";
+                        //strMSG += "<b>Machine Issue : </b>" + objReq.MachineLogDescription + "<br><br>";
+                        //strMSG += "Regards,</br>";
+                        //strMSG += "Banswara Syntex Ltd.";
+
+                        //string ToEmail = "hemantnaik@banswarasyntex.com";
+                        //string CcEmail = "kanchanparab@banswarasyntex.com";
+                        //gn.TriggerEmailOnly("", strSubject, ToEmail, CcEmail, strMSG);
                     }
                     else
                     {
@@ -533,6 +551,7 @@ namespace BSLDaman.DAL
             {
                 Con.Close();
             }
+            Logger.ErrorLog(JsonConvert.SerializeObject(objResp), "Response", "Fn_Insert_MachineLogTransaction");
             return objResp;
         }
 
@@ -626,7 +645,7 @@ namespace BSLDaman.DAL
                         obj = new clsMachineLogLostTimeTransactions();
                         obj.ID = Convert.ToInt64(ds.Tables[0].Rows[i]["ID"]);
                         obj.LineId = Convert.ToInt64(ds.Tables[0].Rows[i]["LineId"]);
-                        obj.MachineId = Convert.ToInt64(ds.Tables[0].Rows[i]["MachineId"]);
+                        obj.MachineId = Convert.ToString(ds.Tables[0].Rows[i]["MachineId"]);
                         obj.MachineLogDescription = Convert.ToString(ds.Tables[0].Rows[i]["MachineLogDescription"]);
                         obj.EmpId = Convert.ToInt32(ds.Tables[0].Rows[i]["EmpId"]);
                         obj.MachineStatus = Convert.ToString(ds.Tables[0].Rows[i]["MachineStatus"]);
@@ -708,7 +727,7 @@ namespace BSLDaman.DAL
                 {
                     objResp.ID = Convert.ToInt64(ds.Tables[0].Rows[i]["ID"]);
                     objResp.LineId = Convert.ToInt64(ds.Tables[0].Rows[i]["LineId"]);
-                    objResp.MachineId = Convert.ToInt64(ds.Tables[0].Rows[i]["MachineId"]);
+                    objResp.MachineId = Convert.ToString(ds.Tables[0].Rows[i]["MachineId"]);
                     objResp.MachineLogDescription = Convert.ToString(ds.Tables[0].Rows[i]["MachineLogDescription"]);
                     objResp.EmpId = Convert.ToInt32(ds.Tables[0].Rows[i]["EmpId"]);
                     objResp.Needle = Convert.ToBoolean(ds.Tables[0].Rows[i]["Needle"]);
@@ -747,6 +766,63 @@ namespace BSLDaman.DAL
             return objResp;
         }
 
+
+        public List<clsMachineLogMaster> Fn_Fetch_MachineLogList(clsMachineLogMaster objReq)
+        {
+            var objResp = new List<clsMachineLogMaster>();
+            var obj = new clsMachineLogMaster();
+            Logger.ErrorLog(JsonConvert.SerializeObject(objReq), "Request", "Fn_Fetch_MachineLogList");
+            try
+            {
+                if (Con.State == ConnectionState.Broken)
+                { Con.Close(); }
+                if (Con.State == ConnectionState.Closed)
+                { Con.Open(); }
+
+                SqlCommand cmd = new SqlCommand("USP_MobileMachineLogTransactions", Con);
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@QueryType", "FetchMachineLogList");
+
+                SqlDataAdapter da = new SqlDataAdapter(cmd);
+                DataSet ds = new DataSet();
+                da.Fill(ds);
+                int i = 0;
+
+                if (ds.Tables[0].Rows.Count > 0)
+                {
+                    while (ds.Tables[0].Rows.Count > i)
+                    {
+                        obj = new clsMachineLogMaster();
+                        obj.MachineLogId = Convert.ToInt32(ds.Tables[0].Rows[i]["MachineLogId"]);
+                        obj.MachineLogName = Convert.ToString(ds.Tables[0].Rows[i]["MachineLogName"]);
+
+                        obj.vErrorCode = 200;
+                        obj.vErrorMsg = "Success";
+                        objResp.Add(obj);
+                        i++;
+                    }
+                }
+                else
+                {
+                    obj.vErrorCode = 404;
+                    obj.vErrorMsg = "Machine Log list records not found.";
+                    objResp.Add(obj);
+                }
+            }
+            catch (Exception exp)
+            {
+                obj.vErrorCode = 500;
+                Logger.WriteLog("Function Name : Fn_Fetch_MachineLogList", " " + "Error Msg : " + exp.Message.ToString(), new StackTrace(exp, true));
+                obj.vErrorMsg = exp.Message.ToString();
+                objResp.Add(obj);
+            }
+            finally
+            {
+                Con.Close();
+            }
+            Logger.ErrorLog(JsonConvert.SerializeObject(objResp), "Response", "Fn_Fetch_MachineLogList");
+            return objResp;
+        }
 
 
         public clsBundleCompile Fn_Update_SupervisorAssignedBundleIDEmp(clsBundleCompile objReq)
