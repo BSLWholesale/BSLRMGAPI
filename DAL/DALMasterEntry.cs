@@ -1,4 +1,5 @@
 ﻿using BSLDaman.Models;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
@@ -3418,6 +3419,7 @@ namespace BSLDaman.DAL
             {
                 mxID = objReq.ID;
             }
+            Logger.ErrorLog(JsonConvert.SerializeObject(objReq), "Request", "Fn_Insert_New_Worker");
             try
             {
 
@@ -3438,7 +3440,8 @@ namespace BSLDaman.DAL
                 cmd.Parameters.AddWithValue("@Grade", objReq.Grade);
                 cmd.Parameters.AddWithValue("@Shift", objReq.Shift);
                 cmd.Parameters.AddWithValue("Pin", encriptPassword);
-                cmd.Parameters.AddWithValue("@OperatorType", objReq.OperatorType);
+                cmd.Parameters.AddWithValue("@EmpRole", objReq.OperatorType);
+                cmd.Parameters.AddWithValue("@LineName", objReq.LineName);
                 cmd.Parameters.AddWithValue("@Mobile", objReq.Mobile);
                 cmd.Parameters.AddWithValue("@Contractor", objReq.Contractor);
                 cmd.Parameters.AddWithValue("@PayRoll", objReq.PayRoll);
@@ -3471,6 +3474,7 @@ namespace BSLDaman.DAL
             {
                 Con.Close();
             }
+            Logger.ErrorLog(JsonConvert.SerializeObject(objReq), "Response", "Fn_Insert_New_Worker");
             return objResp;
         }
 
@@ -3478,6 +3482,7 @@ namespace BSLDaman.DAL
         {
             var objResp = new List<clsWorker>();
             var obj = new clsWorker();
+            Logger.ErrorLog(JsonConvert.SerializeObject(objReq), "Request", "Fn_Get_Worker");
             try
             {
                 if (Con.State == ConnectionState.Broken)
@@ -3485,17 +3490,17 @@ namespace BSLDaman.DAL
                 if (Con.State == ConnectionState.Closed)
                 { Con.Open(); }
 
-                string strSql = "SELECT ID, EmpId, EmpName, FatherName, EmpGender, EmpGrade, EmpShift, EmpPassword,";
-                strSql = strSql + " OperatorType, EmpMobile, Contractor, PayRoll, IsTrainee, IsTemporary,";
-                strSql = strSql + " PermanentSection, DOJ, CreatedBy, CreatedOn FROM EmployeeMaster WHERE 1=1";
+                string strSql = "SELECT EM.ID, EM.EmpId, EM.EmpName, EM.FatherName, EM.EmpGender, EM.EmpGrade, EM.EmpShift, EM.EmpPassword,";
+                strSql = strSql + " EM.EmpRole, EM.EmpMobile, EM.Contractor, EM.PayRoll, EM.IsTrainee, EM.IsTemporary, ED.LineName,";
+                strSql = strSql + " EM.PermanentSection, EM.DOJ, EM.CreatedBy, EM.CreatedOn FROM EmployeeMaster EM INNER JOIN EmployeeDetail ED ON EM.EmpId = ED.Code WHERE 1=1";
 
                 if (objReq.ID != 0 && objReq.ID != null)
                 {
-                    strSql = strSql + " AND ID = @ID";
+                    strSql = strSql + " AND EM.ID = @ID";
                 }
                 if (!String.IsNullOrWhiteSpace(objReq.Code))
                 {
-                    strSql = strSql + " AND Code = @Code";
+                    strSql = strSql + " AND EM.EmpId = @Code";
                 }
 
                 SqlCommand cmd = new SqlCommand(strSql, Con);
@@ -3531,7 +3536,8 @@ namespace BSLDaman.DAL
                         obj.Shift = Convert.ToString(ds.Tables[0].Rows[i]["EmpShift"]);
                         string strPin = Convert.ToString(ds.Tables[0].Rows[i]["EmpPassword"]);
                         obj.Pin = Generic.DecryptText(strPin);
-                        obj.OperatorType = Convert.ToString(ds.Tables[0].Rows[i]["OperatorType"]);
+                        obj.OperatorType = Convert.ToString(ds.Tables[0].Rows[i]["EmpRole"]);
+                        obj.LineName = Convert.ToString(ds.Tables[0].Rows[i]["LineName"]);
                         obj.Mobile = Convert.ToString(ds.Tables[0].Rows[i]["EmpMobile"]);
                         obj.Contractor = Convert.ToString(ds.Tables[0].Rows[i]["Contractor"]);
                         obj.PayRoll = Convert.ToString(ds.Tables[0].Rows[i]["PayRoll"]);
@@ -3563,6 +3569,7 @@ namespace BSLDaman.DAL
             {
                 Con.Close();
             }
+            Logger.ErrorLog(JsonConvert.SerializeObject(objReq), "Response", "Fn_Get_Worker");
             return objResp;
         }
 

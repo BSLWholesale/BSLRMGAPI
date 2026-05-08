@@ -367,6 +367,7 @@ namespace BSLDaman.Models
         public string Shift { get; set; }
         public string Pin { get; set; }
         public string OperatorType { get; set; }
+        public string LineName { get; set; }
         public string Mobile { get; set; }
         public string Contractor { get; set; }
         public string PayRoll { get; set; }
