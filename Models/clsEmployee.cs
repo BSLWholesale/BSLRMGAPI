@@ -425,6 +425,7 @@ namespace BSLDaman.Models
     {
         public Int64 ID { get; set; }
         public Int64 LineId { get; set; }
+        public string LineName { get; set; }
         public string MachineId { get; set; }
         public string MachineLogDescription { get; set; }
         public int EmpId { get; set; }
