@@ -218,7 +218,9 @@
     <Content Include="Image\QACheckPoint\SLEEVE 2.PNG" />
     <Content Include="Image\QACheckPoint\TROUSER-FORMAL.png" />
     <Content Include="Image\QACheckPoint\Trouser_BACK.PNG" />
+    <Content Include="Image\QACheckPoint\Trouser_FRNT_outer.PNG" />
     <Content Include="Image\QACheckPoint\Trouser_FRONT.JPG" />
+    <Content Include="Image\QACheckPoint\Trouser_Front_Iner_Side.PNG" />
     <Content Include="Image\QACheckPoint\WAIST BAND CHECK.PNG" />
     <Content Include="Image\QACheckPoint\WAIST COAT BACK 1.PNG" />
     <Content Include="Image\QACheckPoint\waist coat back.PNG" />
