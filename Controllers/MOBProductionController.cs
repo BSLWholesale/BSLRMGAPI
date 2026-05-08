@@ -176,63 +176,12 @@ namespace BSLDaman.Controllers
         }
 
 
-
-        [System.Web.Http.HttpGet]
-        [System.Web.Http.Route("api/MOBProduction/Fn_Get_MachineLogMaster")]
-        public List<clsMachineLogMaster> Fn_Get_MachineLogMaster(int? MachineLogId = null)
-        {
-            clsMachineLogMaster objReq = new clsMachineLogMaster();
-
-            if (MachineLogId.HasValue)
-            {
-                objReq.MachineLogId = MachineLogId.Value;
-            }
-            else
-            {
-                objReq.MachineLogId = 0;
-            }
-
-            var objResp = _MOBDALProduction.Fn_Get_MachineLogMaster(objReq);
-            return objResp;
-        }
-
-
         [System.Web.Http.HttpPost]
         [System.Web.Http.Route("api/MOBProduction/Fn_Insert_MachineLogTransaction")]
         public clsMachineLogLostTimeTransactions Fn_Insert_MachineLogTransaction(clsMachineLogLostTimeTransactions objReq)
         {
             var objResp = new clsMachineLogLostTimeTransactions();
             objResp = _MOBDALProduction.Fn_Insert_MachineLogTransaction(objReq);
-            return objResp;
-        }
-
-
-        [System.Web.Http.HttpPost]
-        [System.Web.Http.Route("api/MOBProduction/Fn_Update_MachineLogTransaction")]
-        public clsMachineLogLostTimeTransactions Fn_Update_MachineLogTransaction(clsMachineLogLostTimeTransactions objReq)
-        {
-            var objResp = new clsMachineLogLostTimeTransactions();
-            objResp = _MOBDALProduction.Fn_Update_MachineLogTransaction(objReq);
-            return objResp;
-        }
-
-
-        [System.Web.Http.HttpGet]
-        [System.Web.Http.Route("api/MOBProduction/Fn_Get_All_MachineLogTransactions")]
-        public List<clsMachineLogLostTimeTransactions> Fn_Get_All_MachineLogTransactions(Int64? ID = null)
-        {
-            clsMachineLogLostTimeTransactions objReq = new clsMachineLogLostTimeTransactions();
-
-            if (ID.HasValue)
-            {
-                objReq.ID = ID.Value;
-            }
-            else
-            {
-                objReq.ID = 0;
-            }
-
-            var objResp = _MOBDALProduction.Fn_Get_All_MachineLogTransactions(objReq);
             return objResp;
         }
 
@@ -255,6 +204,48 @@ namespace BSLDaman.Controllers
             objResp = _MOBDALProduction.Fn_Fetch_MachineLogList(objReq);
             return objResp;
         }
+
+
+        [System.Web.Http.HttpGet]
+        [System.Web.Http.Route("api/MOBProduction/Fn_Fetch_MachineLogStatusByOperatorID")]
+        public clsMachineLogLostTimeTransactions Fn_Fetch_MachineLogStatusByOperatorID(Int32? AppEmpID = null)
+        {
+            clsMachineLogLostTimeTransactions objReq = new clsMachineLogLostTimeTransactions();
+            
+            if (AppEmpID.HasValue)
+            {
+                objReq.AppEmpID = AppEmpID.Value;
+            }
+            else
+            {
+                objReq.AppEmpID = 0;
+            }
+
+            var objResp = _MOBDALProduction.Fn_Fetch_MachineLogStatusByOperatorID(objReq);
+            return objResp;
+        }
+
+
+
+        [System.Web.Http.HttpGet]
+        [System.Web.Http.Route("api/MOBProduction/Fn_Fetch_MachineLogLostTimeByOperatorID")]
+        public clsMachineLogLostTimeTransactions Fn_Fetch_MachineLogLostTimeByOperatorID(Int32? AppEmpID = null)
+        {
+            clsMachineLogLostTimeTransactions objReq = new clsMachineLogLostTimeTransactions();
+
+            if (AppEmpID.HasValue)
+            {
+                objReq.AppEmpID = AppEmpID.Value;
+            }
+            else
+            {
+                objReq.AppEmpID = 0;
+            }
+
+            var objResp = _MOBDALProduction.Fn_Fetch_MachineLogLostTimeByOperatorID(objReq);
+            return objResp;
+        }
+
 
 
         [System.Web.Http.HttpPut]
@@ -323,16 +314,6 @@ namespace BSLDaman.Controllers
         {
             var objResp = new List<clsBundleCompile>();
             objResp = _MOBDALProduction.Fn_Get_TotalBundleIdCount(objReq);
-            return objResp;
-        }
-
-
-        [System.Web.Http.HttpGet]
-        [System.Web.Http.Route("api/MOBProduction/Fn_Get_MachineLogLostTimeInDaysHrMin")]
-        public List<clsMachineLogLostTimeTransactions> Fn_Get_MachineLogLostTimeInDaysHrMin(clsMachineLogLostTimeTransactions objReq)
-        {
-            var objResp = new List<clsMachineLogLostTimeTransactions>();
-            objResp = _MOBDALProduction.Fn_Get_MachineLogLostTimeInDaysHrMin(objReq);
             return objResp;
         }
 
