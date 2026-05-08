@@ -387,85 +387,6 @@ namespace BSLDaman.DAL
         }
 
 
-
-
-        public List<clsMachineLogMaster> Fn_Get_MachineLogMaster(clsMachineLogMaster objReq)
-        {
-            var objResp = new List<clsMachineLogMaster>();
-            var obj = new clsMachineLogMaster();
-            try
-            {
-                if (Con.State == ConnectionState.Broken)
-                { Con.Close(); }
-                if (Con.State == ConnectionState.Closed)
-                { Con.Open(); }
-
-                string strSql = "SELECT MachineLogId, MachineLogName, CreatedBy, FORMAT(CreatedOn, 'dd-MMM-yyyy') AS CreatedOn";
-                strSql = strSql + " FROM MachineLogMaster WHERE 1=1";
-
-                if (objReq.MachineLogId > 0)
-                {
-                    strSql = strSql + " AND MachineLogId = @MachineLogId";
-                }
-                if (!String.IsNullOrWhiteSpace(objReq.MachineLogName))
-                {
-                    strSql = strSql + " AND MachineLogName LIKE '%@MachineLogName%'";
-                }
-
-                SqlCommand cmd = new SqlCommand(strSql, Con);
-                cmd.CommandType = CommandType.Text;
-
-                if (objReq.MachineLogId > 0)
-                {
-                    cmd.Parameters.AddWithValue("@MachineLogId", objReq.MachineLogId);
-                }
-                if (!String.IsNullOrWhiteSpace(objReq.MachineLogName))
-                {
-                    cmd.Parameters.AddWithValue("@MachineLogName", objReq.MachineLogName);
-                }
-
-                SqlDataAdapter da = new SqlDataAdapter(cmd);
-                DataSet ds = new DataSet();
-                da.Fill(ds);
-
-                int i = 0;
-                if (ds.Tables[0].Rows.Count > 0)
-                {
-                    while (ds.Tables[0].Rows.Count > i)
-                    {
-                        obj = new clsMachineLogMaster();
-                        obj.MachineLogId = Convert.ToInt32(ds.Tables[0].Rows[i]["MachineLogId"]);
-                        obj.MachineLogName = Convert.ToString(ds.Tables[0].Rows[i]["MachineLogName"]);
-                        obj.CreatedBy = Convert.ToInt32(ds.Tables[0].Rows[i]["CreatedBy"]);
-                        obj.CreatedOn = Convert.ToString(ds.Tables[0].Rows[i]["CreatedOn"]);
-
-                        obj.vErrorCode = 200;
-                        obj.vErrorMsg = "Success";
-                        objResp.Add(obj);
-                        i++;
-                    }
-                }
-                else
-                {
-                    obj.vErrorCode = 404;
-                    obj.vErrorMsg = "No Records found.";
-                    objResp.Add(obj);
-                }
-            }        
-            catch (Exception exp)
-            {
-                obj.vErrorCode = 500;
-                Logger.WriteLog("Function Name : Fn_Get_MachineLogMaster", " " + "Error Msg : " + exp.Message.ToString(), new StackTrace(exp, true));
-                obj.vErrorMsg = exp.Message.ToString();
-                objResp.Add(obj);
-            }
-            finally
-            {
-                Con.Close();
-            }
-            return objResp;
-        }
-
         
         public clsMachineLogLostTimeTransactions Fn_Insert_MachineLogTransaction(clsMachineLogLostTimeTransactions objReq)
         {
@@ -478,9 +399,14 @@ namespace BSLDaman.DAL
                     objResp.vErrorMsg = "Please Pass the App Employee/Operator ID";
                     objResp.vErrorCode = 300;
                 }
-                else if (objReq.LineId == null || objReq.LineId == 0)
+                //else if (objReq.LineId == null || objReq.LineId == 0)
+                //{
+                //    objResp.vErrorMsg = "Please Pass Line Id.";
+                //    objResp.vErrorCode = 300;
+                //}
+                else if (String.IsNullOrWhiteSpace(objReq.LineName))
                 {
-                    objResp.vErrorMsg = "Please Pass Line Id.";
+                    objResp.vErrorMsg = "Please Pass Line Name.";
                     objResp.vErrorCode = 300;
                 }
                 else if (String.IsNullOrWhiteSpace(objReq.MachineId))
@@ -507,7 +433,8 @@ namespace BSLDaman.DAL
 
                     SqlCommand cmd = new SqlCommand("USP_MobileMachineLogTransactions", Con);
                     cmd.CommandType = CommandType.StoredProcedure;
-                    cmd.Parameters.AddWithValue("@LineId", objReq.LineId);
+                    //cmd.Parameters.AddWithValue("@LineId", objReq.LineId);
+                    cmd.Parameters.AddWithValue("@LineName", objReq.LineName);
                     cmd.Parameters.AddWithValue("@MachineId", objReq.MachineId);
                     cmd.Parameters.AddWithValue("@MachineLogDescription", objReq.MachineLogDescription);
                     cmd.Parameters.AddWithValue("@AppEmpID", objReq.AppEmpID);
@@ -552,150 +479,6 @@ namespace BSLDaman.DAL
                 Con.Close();
             }
             Logger.ErrorLog(JsonConvert.SerializeObject(objResp), "Response", "Fn_Insert_MachineLogTransaction");
-            return objResp;
-        }
-
-
-        public clsMachineLogLostTimeTransactions Fn_Update_MachineLogTransaction(clsMachineLogLostTimeTransactions objReq)
-        {
-            var objResp = new clsMachineLogLostTimeTransactions();
-            try
-            {
-                if (Con.State == ConnectionState.Broken)
-                { Con.Close(); }
-                if (Con.State == ConnectionState.Closed)
-                { Con.Open(); }
-
-                SqlCommand cmd = new SqlCommand("USP_MobileMachineLogTransactions", Con);
-                cmd.CommandType = CommandType.StoredProcedure;
-                cmd.Parameters.AddWithValue("@LineId", objReq.LineId);
-                cmd.Parameters.AddWithValue("@MachineId", objReq.MachineId);
-                cmd.Parameters.AddWithValue("@EmpId", objReq.EmpId);
-                cmd.Parameters.AddWithValue("@RepairedDate", objReq.RepairDate);
-                cmd.Parameters.AddWithValue("@RepairRemark", objReq.RepairRemark);
-                cmd.Parameters.AddWithValue("@MachineStatus", objReq.MachineStatus);
-                cmd.Parameters.AddWithValue("@ModifiedBy", objReq.ModifiedBy);
-                cmd.Parameters.AddWithValue("@QueryType", "UpdateMachineLog");
-
-                int i = 0;
-                i = cmd.ExecuteNonQuery();
-                if (i > 0)
-                {
-                    objResp.vErrorCode = 200;
-                    objResp.vErrorMsg = "Success";
-                }
-                else
-                {
-                    objResp.vErrorCode = 400;
-                    objResp.vErrorMsg = "Updating the Machine Log Transactions failed.";
-                }
-            }
-            catch (Exception exp)
-            {
-                objResp.vErrorCode = 500;
-                Logger.WriteLog("Function Name : Fn_Update_MachineLogTransaction", " " + "Error Msg : " + exp.Message.ToString(), new StackTrace(exp, true));
-                objResp.vErrorMsg = exp.Message.ToString();
-            }
-            finally
-            {
-                Con.Close();
-            }
-            return objResp;
-        }
-
-
-        public List<clsMachineLogLostTimeTransactions> Fn_Get_All_MachineLogTransactions(clsMachineLogLostTimeTransactions objReq)
-        {
-            var objResp = new List<clsMachineLogLostTimeTransactions>();
-            var obj = new clsMachineLogLostTimeTransactions();
-            try
-            {
-                if (Con.State == ConnectionState.Broken)
-                { Con.Close(); }
-                if (Con.State == ConnectionState.Closed)
-                { Con.Open(); }
-
-                string strSql = "SELECT ID, LineId, MachineId, MachineLogDescription, EmpId,";
-                strSql = strSql + " MachineStatus, Needle, Oiling, CreatedBy, FORMAT(CreatedOn, 'dd-MMM-yyyy HH:mm:ss') AS CreatedOn,";
-                strSql = strSql + " ModifiedBy, FORMAT(ModifiedOn, 'dd-MMM-yyyy HH:mm:ss') AS ModifiedOn";
-                strSql = strSql + " FROM MachineLogLostTimeTransactions WHERE 1=1";
-
-                if (objReq.ID > 0)
-                {
-                    strSql = strSql + " AND ID = @ID";
-                }
-
-                SqlCommand cmd = new SqlCommand(strSql, Con);
-                cmd.CommandType = CommandType.Text;
-
-                if (objReq.ID > 0)
-                {
-                    cmd.Parameters.AddWithValue("@ID", objReq.ID);
-                }
-
-                SqlDataAdapter da = new SqlDataAdapter(cmd);
-                DataSet ds = new DataSet();
-                da.Fill(ds);
-                int i = 0;
-
-                if (ds.Tables[0].Rows.Count > 0)
-                {
-                    while (ds.Tables[0].Rows.Count > i)
-                    {
-                        obj = new clsMachineLogLostTimeTransactions();
-                        obj.ID = Convert.ToInt64(ds.Tables[0].Rows[i]["ID"]);
-                        obj.LineId = Convert.ToInt64(ds.Tables[0].Rows[i]["LineId"]);
-                        obj.MachineId = Convert.ToString(ds.Tables[0].Rows[i]["MachineId"]);
-                        obj.MachineLogDescription = Convert.ToString(ds.Tables[0].Rows[i]["MachineLogDescription"]);
-                        obj.EmpId = Convert.ToInt32(ds.Tables[0].Rows[i]["EmpId"]);
-                        obj.MachineStatus = Convert.ToString(ds.Tables[0].Rows[i]["MachineStatus"]);
-                        obj.Needle = Convert.ToBoolean(ds.Tables[0].Rows[i]["Needle"]);
-                        obj.Oiling = Convert.ToBoolean(ds.Tables[0].Rows[i]["Oiling"]);
-                        obj.CreatedBy = Convert.ToInt32(ds.Tables[0].Rows[i]["CreatedBy"]);
-                        obj.CreatedOn = Convert.ToString(ds.Tables[0].Rows[i]["CreatedOn"]);
-
-                        if (ds.Tables[0].Rows[i]["ModifiedBy"] == DBNull.Value)
-                        {
-                            obj.ModifiedBy = 0;
-                        }
-                        else
-                        {
-                            obj.ModifiedBy = Convert.ToInt32(ds.Tables[0].Rows[i]["ModifiedBy"]);
-                        }
-
-                        if (ds.Tables[0].Rows[i]["ModifiedOn"] == null)
-                        {
-                            obj.ModifiedOn = string.Empty;
-                        }
-                        else
-                        {
-                            obj.ModifiedOn = Convert.ToString(ds.Tables[0].Rows[i]["ModifiedOn"]);
-                        }
-
-                        obj.vErrorCode = 200;
-                        obj.vErrorMsg = "Success";
-                        objResp.Add(obj);
-                        i++;
-                    }
-                }
-                else
-                {
-                    obj.vErrorCode = 404;
-                    obj.vErrorMsg = "No Records found.";
-                    objResp.Add(obj);
-                }
-            }
-            catch (Exception exp)
-            {
-                obj.vErrorCode = 500;
-                Logger.WriteLog("Function Name : Fn_Get_All_MachineLogTransactions", " " + "Error Msg : " + exp.Message.ToString(), new StackTrace(exp, true));
-                obj.vErrorMsg = exp.Message.ToString();
-                objResp.Add(obj);
-            }
-            finally
-            {
-                Con.Close();
-            }
             return objResp;
         }
 
@@ -821,6 +604,122 @@ namespace BSLDaman.DAL
                 Con.Close();
             }
             Logger.ErrorLog(JsonConvert.SerializeObject(objResp), "Response", "Fn_Fetch_MachineLogList");
+            return objResp;
+        }
+
+
+        public clsMachineLogLostTimeTransactions Fn_Fetch_MachineLogStatusByOperatorID(clsMachineLogLostTimeTransactions objReq)
+        {
+            var objResp = new clsMachineLogLostTimeTransactions();
+            Logger.ErrorLog(JsonConvert.SerializeObject(objReq), "Request", "Fn_Fetch_MachineLogStatusByOperatorID");
+            try
+            {
+                if (objReq.AppEmpID == null || objReq.AppEmpID == 0)
+                {
+                    objResp.vErrorMsg = "Please Pass the Valid App Employee/Operator ID";
+                    objResp.vErrorCode = 300;
+                }
+                else
+                {
+                    if (Con.State == ConnectionState.Broken)
+                    { Con.Close(); }
+                    if (Con.State == ConnectionState.Closed)
+                    { Con.Open(); }
+
+                    SqlCommand cmd = new SqlCommand("USP_MobileMachineLogTransactions", Con);
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("@AppEmpID", objReq.AppEmpID);
+                    cmd.Parameters.AddWithValue("@QueryType", "FetchMachineLogStatusByOperatorID");
+
+                    SqlDataAdapter da = new SqlDataAdapter(cmd);
+                    DataSet ds = new DataSet();
+                    da.Fill(ds);
+
+                    int i = 0;
+                    if (ds.Tables[0].Rows.Count > 0)
+                    {
+                        objResp.AppEmpID = Convert.ToInt32(ds.Tables[0].Rows[i]["AppEmpID"]);
+                        objResp.MachineStatus = Convert.ToString(ds.Tables[0].Rows[i]["MachineStatus"]);
+
+                        objResp.vErrorCode = 200;
+                        objResp.vErrorMsg = "Success";
+                    }
+                    else
+                    {
+                        objResp.vErrorCode = 404;
+                        objResp.vErrorMsg = "Machine Log Status is not found.";
+                    }
+                }
+            }
+            catch (Exception exp)
+            {
+                Logger.WriteLog("Function Name : Fn_Fetch_MachineLogStatusByOperatorID", " " + exp.Message.ToString(), new StackTrace(exp, true));
+                objResp.vErrorMsg = exp.Message.ToString();
+                objResp.vErrorCode = 500;
+            }
+            finally
+            {
+                Con.Close();
+            }
+            Logger.ErrorLog(JsonConvert.SerializeObject(objResp), "Response", "Fn_Fetch_MachineLogStatusByOperatorID");
+            return objResp;
+        }
+
+
+        public clsMachineLogLostTimeTransactions Fn_Fetch_MachineLogLostTimeByOperatorID(clsMachineLogLostTimeTransactions objReq)
+        {
+            var objResp = new clsMachineLogLostTimeTransactions();
+            Logger.ErrorLog(JsonConvert.SerializeObject(objReq), "Request", "Fn_Fetch_MachineLogLostTimeByOperatorID");
+            try
+            {
+                if (objReq.AppEmpID == null || objReq.AppEmpID == 0)
+                {
+                    objResp.vErrorMsg = "Please Pass the Valid App Employee/Operator ID";
+                    objResp.vErrorCode = 300;
+                }
+                else
+                {
+                    if (Con.State == ConnectionState.Broken)
+                    { Con.Close(); }
+                    if (Con.State == ConnectionState.Closed)
+                    { Con.Open(); }
+
+                    SqlCommand cmd = new SqlCommand("USP_MobileMachineLogTransactions", Con);
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("@AppEmpID", objReq.AppEmpID);
+                    cmd.Parameters.AddWithValue("@QueryType", "FetchMachineBreakdownLostTime");
+
+                    SqlDataAdapter da = new SqlDataAdapter(cmd);
+                    DataSet ds = new DataSet();
+                    da.Fill(ds);
+
+                    int i = 0;
+                    if (ds.Tables[0].Rows.Count > 0)
+                    {
+                        objResp.AppEmpID = Convert.ToInt32(ds.Tables[0].Rows[i][""]);
+                        objResp.TotalMachineLogLostTime = Convert.ToString(ds.Tables[0].Rows[i][""]);
+
+                        objResp.vErrorCode = 200;
+                        objResp.vErrorMsg = "Success";
+                    }
+                    else
+                    {
+                        objResp.vErrorCode = 404;
+                        objResp.vErrorMsg = "Machine Breakdown Lost time is not found.";
+                    }
+                }
+            }
+            catch (Exception exp)
+            {
+                Logger.WriteLog("Function Name : Fn_Fetch_MachineLogLostTimeByOperatorID", " " + exp.Message.ToString(), new StackTrace(exp, true));
+                objResp.vErrorMsg = exp.Message.ToString();
+                objResp.vErrorCode = 500;
+            }
+            finally
+            {
+                Con.Close();
+            }
+            Logger.ErrorLog(JsonConvert.SerializeObject(objResp), "Response", "Fn_Fetch_MachineLogLostTimeByOperatorID");
             return objResp;
         }
 
@@ -1321,60 +1220,6 @@ namespace BSLDaman.DAL
                 var objItem = new clsBundleCompile();
                 objItem.vErrorCode = 500;
                 Logger.WriteLog("Function Name : Fn_Get_TotalBundleIdCount", " " + "Error Msg : " + exp.Message.ToString(), new StackTrace(exp, true));
-                objItem.vErrorMsg = exp.Message.ToString();
-                objResp.Add(objItem);
-            }
-            finally
-            {
-                Con.Close();
-            }
-            return objResp;
-        }
-
-
-
-        public List<clsMachineLogLostTimeTransactions> Fn_Get_MachineLogLostTimeInDaysHrMin(clsMachineLogLostTimeTransactions objReq)
-        {
-            var objResp = new List<clsMachineLogLostTimeTransactions>();
-            try
-            {
-                if (Con.State == ConnectionState.Broken)
-                { Con.Close(); }
-                if (Con.State == ConnectionState.Closed)
-                { Con.Open(); }
-
-                SqlCommand cmd = new SqlCommand("USP_MobileMachineLogTransactions", Con);
-                cmd.CommandType = CommandType.StoredProcedure;
-                cmd.Parameters.AddWithValue("@QueryType", "GetMachineLogLostTotalTime");
-                SqlDataAdapter da = new SqlDataAdapter(cmd);
-                DataSet ds = new DataSet();
-                da.Fill(ds);
-
-                int i = 0;
-                if (ds.Tables[0].Rows.Count > 0)
-                {
-                    while (ds.Tables[0].Rows.Count > i)
-                    {
-                        var objItem = new clsMachineLogLostTimeTransactions();
-                        objItem.TotalMachineLogLostTime = Convert.ToString(ds.Tables[0].Rows[i]["TotalMachineLogLostTime"]);
-                        objItem.vErrorMsg = "Success";
-                        objItem.vErrorCode = 200;
-                        objResp.Add(objItem);
-                        i++;
-                    }
-                }
-                else
-                {
-                    var objItem = new clsMachineLogLostTimeTransactions();
-                    objItem.vErrorMsg = "No Machine Log Lost time count not found.";
-                    objResp.Add(objItem);
-                }
-            }
-            catch (Exception exp)
-            {
-                var objItem = new clsMachineLogLostTimeTransactions();
-                objItem.vErrorCode = 500;
-                Logger.WriteLog("Function Name : Fn_Get_MachineLogLostTimeInDaysHrMin", " " + "Error Msg : " + exp.Message.ToString(), new StackTrace(exp, true));
                 objItem.vErrorMsg = exp.Message.ToString();
                 objResp.Add(objItem);
             }
