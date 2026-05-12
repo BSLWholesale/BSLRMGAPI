@@ -3084,19 +3084,6 @@ namespace BSLDaman.DAL
                 if (Con.State == ConnectionState.Closed)
                 { Con.Open(); }
 
-                //string strSql = "SELECT DISTINCT (BAD.OperationNo) AS OperationNo, BAD.OrderNo AS OrderNo, BAD.SubSection AS SubSection,";
-                //strSql = strSql + " BAD.SupervisorID AS SupervisorID, EM.EmpName AS SupervisorName, FORMAT(BAD.SupAssignedDate, 'dd-MMM-yyyy HH:mm:ss') AS SupAssignedDate,";
-                //strSql = strSql + " BD.BundleIDStatus AS BundleIDStatus, BAD.CreatedBy AS CreatedBy,";
-                //strSql = strSql + " FORMAT(BAD.CreatedOn, 'dd-MMM-yyyy HH:mm:ss') AS CreatedOn";
-                //strSql = strSql + " FROM BundleCompileAssignDetail AS BAD";
-                //strSql = strSql + " INNER JOIN EmployeeMaster AS EM";
-                //strSql = strSql + " ON BAD.SupervisorID = EM.EmpId";
-                //strSql = strSql + " INNER JOIN EmployeeMaster AS EM1";
-                //strSql = strSql + " ON BAD.AppEmpID = EM1.EmpId";
-                //strSql = strSql + " INNER JOIN BundleCompileDetail AS BD";
-                //strSql = strSql + " ON BD.AppEmpID = BAD.AppEmpID";
-                //strSql = strSql + " WHERE EM1.EmpRole = 'Operator'";
-
                 string strSql = "SELECT DISTINCT (BAD.OperationNo) AS OperationNo, BAD.OrderNo AS OrderNo, BAD.SubSection AS SubSection,";
                 strSql = strSql + " BAD.SupervisorID AS SupervisorID, EM.EmpName AS SupervisorName, BAD.SupAssignedDate,";
                 strSql = strSql + " BD.BundleIDStatus AS BundleIDStatus, BAD.CreatedBy AS CreatedBy,";
@@ -3114,14 +3101,9 @@ namespace BSLDaman.DAL
                 {
                     strSql = strSql + " AND BAD.AppEmpID = " + objReq.AppEmpID;
                 }
-                if (!String.IsNullOrWhiteSpace(objReq.BundleIDStatus) != null)
+                if (!String.IsNullOrWhiteSpace(objReq.BundleIDStatus))
                 {
-                    //strSql = strSql + " AND BD.BundleIDStatus = '" + objReq.BundleIDStatus + "'";
-                    strSql = strSql + " AND BD.BundleIDStatus = 'Assigned'";
-                }
-                else
-                {
-                    strSql = strSql + " AND BD.BundleIDStatus = 'Finished'";
+                    strSql = strSql + " AND BD.BundleIDStatus = '" + objReq.BundleIDStatus + "'";
                 }
 
                 //strSql = strSql + " ORDER BY FORMAT(BAD.SupAssignedDate, 'dd-MMM-yyyy HH:mm:ss') DESC, BAD.OrderNo, BAD.OperationNo";
