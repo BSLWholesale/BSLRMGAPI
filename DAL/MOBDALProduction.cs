@@ -3114,9 +3114,14 @@ namespace BSLDaman.DAL
                 {
                     strSql = strSql + " AND BAD.AppEmpID = " + objReq.AppEmpID;
                 }
-                if (!String.IsNullOrWhiteSpace(objReq.BundleIDStatus))
+                if (!String.IsNullOrWhiteSpace(objReq.BundleIDStatus) != null)
                 {
-                    strSql = strSql + " AND BD.BundleIDStatus = '" + objReq.BundleIDStatus + "'";
+                    //strSql = strSql + " AND BD.BundleIDStatus = '" + objReq.BundleIDStatus + "'";
+                    strSql = strSql + " AND BD.BundleIDStatus = 'Assigned'";
+                }
+                else
+                {
+                    strSql = strSql + " AND BD.BundleIDStatus = 'Finished'";
                 }
 
                 //strSql = strSql + " ORDER BY FORMAT(BAD.SupAssignedDate, 'dd-MMM-yyyy HH:mm:ss') DESC, BAD.OrderNo, BAD.OperationNo";
