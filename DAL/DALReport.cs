@@ -263,7 +263,7 @@ namespace BSLDaman.DAL
                 { Con.Open(); }
 
                 string strSql = "Select BC.OrderNo, BD.BundleID, BD.OperationNo, BD.SubSection, ED.LineName, BD.AppEmpID, ED.EmpName, FORMAT(BD.AppStartTime, 'dd-MMM-yyyy hh:mm:ss:tt') AS AppStartTime,";
-                strSql = strSql + " FORMAT(BD.AppEndTime, 'dd-MMM-yyyy hh:mm:ss:tt') AS AppEndTime, '1' As Qty, BD.StdRate, BD.StdMin, BC.UpdateType from BundleCompileDetail BD";
+                strSql = strSql + " FORMAT(BD.AppEndTime, 'dd-MMM-yyyy hh:mm:ss:tt') AS AppEndTime, BC.Qty As Qty, BD.StdRate, BD.StdMin, BC.UpdateType from BundleCompileDetail BD";
                 strSql = strSql + " INNER JOIN EmployeeDetail ED ON BD.AppEmpID = ED.Code";
                 strSql = strSql + " INNER JOIN BundleCompile BC ON BC.BundleID = BD.BundleID WHERE 1=1 AND BD.BundleIDStatus = 'Finished'  ";
                 if (!String.IsNullOrWhiteSpace(objReq.OrderNo))

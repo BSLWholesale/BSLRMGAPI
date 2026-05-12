@@ -1040,7 +1040,7 @@ namespace BSLDaman.DAL
                 if (Con.State == ConnectionState.Closed)
                 { Con.Open(); }
 
-                string strSql = "Select Count(*) AS Qty, Format(BD.AppStartTime,'MMM') AS SMonth, BC.OrderNo from BundleCompileDetail BD";
+                string strSql = "Select SUM(BC.Qty) AS Qty, Format(BD.AppStartTime,'MMM') AS SMonth, BC.OrderNo from BundleCompileDetail BD";
                 strSql = strSql + " INNER JOIN BundleCompile BC ON BC.BundleID = BD.BundleID where 1=1 AND BD.BundleIDStatus = 'Finished'";
                
                 if (!String.IsNullOrWhiteSpace(objReq.OrderNo))
