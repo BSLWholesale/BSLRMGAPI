@@ -772,6 +772,34 @@ namespace BSLDaman.Controllers
         }
 
 
+        [System.Web.Http.HttpGet]
+        [System.Web.Http.Route("api/MOBProduction/Fn_Fetch_OperatorFinishedOpNumbers")]
+        public List<clsBundleCompile> Fn_Fetch_OperatorFinishedOpNumbers(Int32? AppEmpID = null)
+        {
+            clsBundleCompile objReq = new clsBundleCompile();
+
+            if (AppEmpID.HasValue)
+            {
+                objReq.AppEmpID = AppEmpID.Value;
+            }
+            else
+            {
+                objReq.AppEmpID = 0;
+            }
+
+            //if (!string.IsNullOrWhiteSpace(BundleIDStatus))
+            //{
+            //    objReq.BundleIDStatus = BundleIDStatus;
+            //}
+            //else
+            //{
+            //    objReq.BundleIDStatus = null;
+            //}
+
+            var objResp = _MOBDALProduction.Fn_Fetch_OperatorFinishedOpNumbers(objReq);
+            return objResp;
+        }
+
 
     }
 }
