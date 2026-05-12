@@ -3269,6 +3269,90 @@ namespace BSLDaman.DAL
         }
 
 
+        public List<clsBundleCompile> Fn_Fetch_OperatorFinishedOpNumbers(clsBundleCompile objReq)
+        {
+            var objResp = new List<clsBundleCompile>();
+            var obj = new clsBundleCompile();
+            Logger.ErrorLog(JsonConvert.SerializeObject(objReq), "Request", "Fn_Fetch_OperatorFinishedOpNumbers");
+            try
+            {
+                if (Con.State == ConnectionState.Broken)
+                { Con.Close(); }
+                if (Con.State == ConnectionState.Closed)
+                { Con.Open(); }
+
+                string strSql = "SELECT DISTINCT (BD.BundleID) AS BundleID, BAD.OperationNo AS OperationNo, BAD.OrderNo AS OrderNo,";
+                strSql = strSql + " BD.SubSection AS SubSection, BAD.SupervisorID AS SupervisorID, EM.EmpName AS SupervisorName,";
+                strSql = strSql + " BAD.SupAssignedDate, BD.BundleIDStatus AS BundleIDStatus, BAD.CreatedBy AS CreatedBy,";
+                strSql = strSql + " FORMAT(BAD.CreatedOn, 'dd-MMM-yyyy HH:mm:ss') AS CreatedOn";
+                strSql = strSql + " FROM BundleCompileDetail AS BD";
+                strSql = strSql + " INNER JOIN BundleCompileAssignDetail AS BAD";
+                strSql = strSql + " ON BD.AppEmpID = BAD.AppEmpID AND BD.OperationNo = BAD.OperationNo";
+                strSql = strSql + " INNER JOIN EmployeeMaster AS EM";
+                strSql = strSql + " ON BAD.SupervisorID = EM.EmpId";
+                strSql = strSql + " INNER JOIN EmployeeMaster AS EM1";
+                strSql = strSql + " ON BAD.AppEmpID = EM1.EmpId";
+
+                if (objReq.AppEmpID > 0)
+                {
+                    strSql = strSql + " WHERE BAD.AppEmpID = " + objReq.AppEmpID;
+                }
+
+                strSql = strSql + " AND BD.BundleIDStatus = 'Finished'";
+                strSql = strSql + " ORDER BY BAD.SupAssignedDate DESC, BAD.OrderNo, BAD.OperationNo";
+
+                SqlCommand cmd = new SqlCommand(strSql, Con);
+                cmd.CommandType = CommandType.Text;
+
+                SqlDataAdapter da = new SqlDataAdapter(cmd);
+                DataSet ds = new DataSet();
+                da.Fill(ds);
+                int i = 0;
+
+                if (ds.Tables[0].Rows.Count > 0)
+                {
+                    while (ds.Tables[0].Rows.Count > i)
+                    {
+                        obj = new clsBundleCompile();
+                        obj.BundleID = Convert.ToInt64(ds.Tables[0].Rows[i]["BundleID"]);
+                        obj.OperationNo = Convert.ToInt32(ds.Tables[0].Rows[i]["OperationNo"]);
+                        obj.OrderNo = Convert.ToString(ds.Tables[0].Rows[i]["OrderNo"]);
+                        obj.SubSection = Convert.ToString(ds.Tables[0].Rows[i]["SubSection"]);
+                        obj.SupervisorID = Convert.ToInt32(ds.Tables[0].Rows[i]["SupervisorID"]);
+                        obj.SupervisorName = Convert.ToString(ds.Tables[0].Rows[i]["SupervisorName"]);
+                        obj.SupervisorAssignedDate = Convert.ToString(ds.Tables[0].Rows[i]["SupAssignedDate"]);
+                        obj.BundleIDStatus = Convert.ToString(ds.Tables[0].Rows[i]["BundleIDStatus"]);
+                        obj.CreatedBy = Convert.ToInt32(ds.Tables[0].Rows[i]["CreatedBy"]);
+                        obj.CreatedOn = Convert.ToString(ds.Tables[0].Rows[i]["CreatedOn"]);
+
+                        obj.vErrorCode = 200;
+                        obj.vErrorMsg = "Success";
+                        objResp.Add(obj);
+                        i++;
+                    }
+                }
+                else
+                {
+                    obj.vErrorCode = 404;
+                    obj.vErrorMsg = "No records found.";
+                    objResp.Add(obj);
+                }
+            }
+            catch (Exception exp)
+            {
+                obj.vErrorCode = 500;
+                Logger.WriteLog("Function Name : Fn_Fetch_OperatorFinishedOpNumbers", " " + "Error Msg : " + exp.Message.ToString(), new StackTrace(exp, true));
+                obj.vErrorMsg = exp.Message.ToString();
+                objResp.Add(obj);
+            }
+            finally
+            {
+                Con.Close();
+            }
+            Logger.ErrorLog(JsonConvert.SerializeObject(objResp), "Response", "Fn_Fetch_OperatorFinishedOpNumbers");
+            return objResp;
+        }
+
 
     }
 }
