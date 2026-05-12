@@ -263,7 +263,7 @@ namespace BSLDaman.DAL
                 { Con.Open(); }
 
                 string strSql = "Select BC.OrderNo, BD.BundleID, BD.OperationNo, BD.SubSection, ED.LineName, BD.AppEmpID, ED.EmpName, FORMAT(BD.AppStartTime, 'dd-MMM-yyyy hh:mm:ss:tt') AS AppStartTime,";
-                strSql = strSql + " FORMAT(BD.AppEndTime, 'dd-MMM-yyyy hh:mm:ss:tt') AS AppEndTime, '1' As Qty, BD.StdRate, BD.StdMin, BC.UpdateType from BundleCompileDetail BD";
+                strSql = strSql + " FORMAT(BD.AppEndTime, 'dd-MMM-yyyy hh:mm:ss:tt') AS AppEndTime, BC.Qty As Qty, BD.StdRate, BD.StdMin, BC.UpdateType from BundleCompileDetail BD";
                 strSql = strSql + " INNER JOIN EmployeeDetail ED ON BD.AppEmpID = ED.Code";
                 strSql = strSql + " INNER JOIN BundleCompile BC ON BC.BundleID = BD.BundleID WHERE 1=1 AND BD.BundleIDStatus = 'Finished'  ";
                 if (!String.IsNullOrWhiteSpace(objReq.OrderNo))
@@ -370,5 +370,94 @@ namespace BSLDaman.DAL
         }
 
         #endregion End Fn_Get_OperationWise_Earning_Report 17-APR-2026
+
+        #region Start Fn_Get_EfficiencyReport 11-MAY-2026
+
+        public List<clsEfficiencyReportResp> Fn_Get_EfficiencyReport(clsEfficiencyReportReq objReq)
+        {
+            var objResp = new List<clsEfficiencyReportResp>();
+            var obj = new clsEfficiencyReportResp();
+            Logger.ErrorLog(JsonConvert.SerializeObject(objReq), "Request", "Fn_Get_EfficiencyReport");
+            try
+            {
+                if (objReq.Month == 0)
+                {
+                    obj.vErrorCode = 400;
+                    obj.vErrorMsg = "Please send Month";
+                    objResp.Add(obj);
+                }
+                else if (objReq.Year == 0)
+                {
+                    obj.vErrorCode = 400;
+                    obj.vErrorMsg = "Please send Year";
+                    objResp.Add(obj);
+                }
+                else
+                {
+                    if (Con.State == ConnectionState.Broken)
+                    { Con.Close(); }
+                    if (Con.State == ConnectionState.Closed)
+                    { Con.Open(); }
+
+                    SqlCommand cmd = new SqlCommand("USP_Effiency_Report", Con);
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("@Month", objReq.Month);
+                    cmd.Parameters.AddWithValue("@Year", objReq.Year);
+
+                    SqlDataAdapter da = new SqlDataAdapter(cmd);
+                    DataSet ds = new DataSet();
+                    da.Fill(ds);
+                    int i = 0;
+                    if (ds.Tables[0].Rows.Count > 0)
+                    {
+                        DataTable dt = ds.Tables[0];
+
+                        while (dt.Rows.Count > i)
+                        {
+                            obj = new clsEfficiencyReportResp();
+
+                            obj.Code = Convert.ToString(dt.Rows[i]["AppEmpID"]);
+                            obj.EmpName = Convert.ToString(dt.Rows[i]["EmpName"]);
+
+                            for (int col = 2; col < dt.Columns.Count; col++)
+                            {
+                                string columnName = dt.Columns[col].ColumnName;
+                                string value = Convert.ToString(dt.Rows[i][col]);
+
+                                obj.DynamicColumns.Add(columnName, value);
+                            }
+
+                            obj.vErrorCode = 200;
+                            obj.vErrorMsg = "Success";
+
+                            objResp.Add(obj);
+
+                            i++;
+                        }
+                    }
+                    else
+                    {
+                        obj.vErrorCode = 404;
+                        obj.vErrorMsg = "No Record found";
+                        objResp.Add(obj);
+                    }
+                }
+            }
+            catch (Exception exp)
+            {
+                obj.vErrorCode = 500;
+                Logger.WriteLog("Function Name : Fn_Get_EfficiencyReport", " " + "Error Msg : " + exp.Message.ToString(), new StackTrace(exp, true));
+                obj.vErrorMsg = exp.Message.ToString();
+                objResp.Add(obj);
+            }
+            finally
+            {
+                Con.Close();
+            }
+            Logger.ErrorLog(JsonConvert.SerializeObject(objResp), "Response", "Fn_Get_EfficiencyReport");
+            return objResp;
+        }
+
+        #endregion End Fn_Get_EfficiencyReport 11-MAY-2026
     }
 }

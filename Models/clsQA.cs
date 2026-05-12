@@ -108,4 +108,22 @@ namespace BSLDaman.Models
         public string vErrorMsg { get; set; }
         public int vErrorCode { get; set; }
     }
+
+    public class clsEfficiencyReportReq
+    {
+        public int Month { get; set; }
+        public int Year { get; set; }
+    }
+
+    public class clsEfficiencyReportResp
+    {
+        public string Code { get; set; }
+        public string EmpName { get; set; }
+        // Dynamic columns
+        public Dictionary<string, string> DynamicColumns { get; set; }
+        = new Dictionary<string, string>();
+
+        public int vErrorCode { get; set; }
+        public string vErrorMsg { get; set; }
+    }
 }
