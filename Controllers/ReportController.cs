@@ -48,5 +48,14 @@ namespace BSLDaman.Controllers
         }
 
         #endregion End Fn_Get_Earning_Report 17-APR-2026
+
+        [System.Web.Http.HttpPost]
+        [System.Web.Http.Route("api/Report/Fn_Get_EfficiencyReport")]
+        public List<clsEfficiencyReportResp> Fn_Get_EfficiencyReport(clsEfficiencyReportReq objReq)
+        {
+            var objResp = new List<clsEfficiencyReportResp>();
+            objResp = _DALReport.Fn_Get_EfficiencyReport(objReq);
+            return objResp;
+        }
     }
 }
