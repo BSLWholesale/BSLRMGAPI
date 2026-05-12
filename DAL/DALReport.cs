@@ -161,7 +161,7 @@ namespace BSLDaman.DAL
                 { Con.Open(); }
 
                 string strSql = "SELECT FORMAT(BD.AppStartTime, 'dd-MMM-yyyy') AS WorkDate, BC.OrderNo, ED.LineName,";
-                strSql = strSql + " BD.AppEmpID AS Code, ED.EmpName, SUM(1) AS TotalQty, BC.UpdateType FROM BundleCompile BC";
+                strSql = strSql + " BD.AppEmpID AS Code, ED.EmpName, SUM(BC.Qty) AS TotalQty, BC.UpdateType FROM BundleCompile BC";
                 strSql = strSql + " INNER JOIN BundleCompileDetail BD ON BC.BundleID = BD.BundleID";
                 strSql = strSql + " INNER JOIN EmployeeDetail ED ON ED.Code = BD.AppEmpID WHERE 1=1 AND BD.BundleIDStatus = 'Finished' AND BC.UpdateType <>'NULL' ";
                 if (!String.IsNullOrWhiteSpace(objReq.OrderNo))
