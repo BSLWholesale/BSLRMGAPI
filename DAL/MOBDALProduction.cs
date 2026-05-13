@@ -3084,30 +3084,43 @@ namespace BSLDaman.DAL
                 if (Con.State == ConnectionState.Closed)
                 { Con.Open(); }
 
-                string strSql = "SELECT DISTINCT (BAD.OperationNo) AS OperationNo, BAD.OrderNo AS OrderNo, BAD.SubSection AS SubSection,";
-                strSql = strSql + " BAD.SupervisorID AS SupervisorID, EM.EmpName AS SupervisorName, BAD.SupAssignedDate,";
-                strSql = strSql + " BD.BundleIDStatus AS BundleIDStatus, BAD.CreatedBy AS CreatedBy,";
+                //string strSql = "SELECT DISTINCT (BAD.OperationNo) AS OperationNo, BAD.OrderNo AS OrderNo, BAD.SubSection AS SubSection,";
+                //strSql = strSql + " BAD.SupervisorID AS SupervisorID, EM.EmpName AS SupervisorName, BAD.SupAssignedDate,";
+                //strSql = strSql + " BD.BundleIDStatus AS BundleIDStatus, BAD.CreatedBy AS CreatedBy,";
+                //strSql = strSql + " FORMAT(BAD.CreatedOn, 'dd-MMM-yyyy HH:mm:ss') AS CreatedOn";
+                //strSql = strSql + " FROM BundleCompileAssignDetail AS BAD";
+                //strSql = strSql + " INNER JOIN EmployeeMaster AS EM";
+                //strSql = strSql + " ON BAD.SupervisorID = EM.EmpId";
+                //strSql = strSql + " INNER JOIN EmployeeMaster AS EM1";
+                //strSql = strSql + " ON BAD.AppEmpID = EM1.EmpId";
+                //strSql = strSql + " INNER JOIN BundleCompileDetail AS BD";
+                //strSql = strSql + " ON BD.AppEmpID = BAD.AppEmpID";
+                //strSql = strSql + " WHERE EM1.EmpRole = 'Operator'";
+
+                string strSql = "SELECT DISTINCT (BAD.OperationNo) AS OperationNo, BAD.OrderNo AS OrderNo, BAD.SubSection AS SubSection,";
+                strSql = strSql + " BAD.SupervisorID AS SupervisorID, EM.EmpName AS SupervisorName, BAD.SupAssignedDate AS SupAssignedDate,";
+                strSql = strSql + " BD.Descriptions AS OperationName, BAD.CreatedBy AS CreatedBy,";
                 strSql = strSql + " FORMAT(BAD.CreatedOn, 'dd-MMM-yyyy HH:mm:ss') AS CreatedOn";
                 strSql = strSql + " FROM BundleCompileAssignDetail AS BAD";
                 strSql = strSql + " INNER JOIN EmployeeMaster AS EM";
                 strSql = strSql + " ON BAD.SupervisorID = EM.EmpId";
                 strSql = strSql + " INNER JOIN EmployeeMaster AS EM1";
                 strSql = strSql + " ON BAD.AppEmpID = EM1.EmpId";
-                strSql = strSql + " INNER JOIN BundleCompileDetail AS BD";
-                strSql = strSql + " ON BD.AppEmpID = BAD.AppEmpID";
-                strSql = strSql + " WHERE EM1.EmpRole = 'Operator'";
-
-                if (objReq.AppEmpID > 0)
-                {
-                    strSql = strSql + " AND BAD.AppEmpID = " + objReq.AppEmpID;
-                }
-                if (!String.IsNullOrWhiteSpace(objReq.BundleIDStatus))
-                {
-                    strSql = strSql + " AND BD.BundleIDStatus = '" + objReq.BundleIDStatus + "'";
-                }
-
-                //strSql = strSql + " ORDER BY FORMAT(BAD.SupAssignedDate, 'dd-MMM-yyyy HH:mm:ss') DESC, BAD.OrderNo, BAD.OperationNo";
+                strSql = strSql + " INNER JOIN OperationBreackDownDetail AS BD";
+                strSql = strSql + " ON BAD.OperationNo = BD.OpNo";
+                strSql = strSql + " WHERE BAD.AppEmpID = " + objReq.AppEmpID;
                 strSql = strSql + " ORDER BY BAD.SupAssignedDate DESC, BAD.OrderNo, BAD.OperationNo";
+
+                //if (objReq.AppEmpID > 0)
+                //{
+                //    strSql = strSql + " WHERE BAD.AppEmpID = " + objReq.AppEmpID;
+                //}
+                //if (!String.IsNullOrWhiteSpace(objReq.BundleIDStatus))
+                //{
+                //    strSql = strSql + " AND BD.BundleIDStatus = '" + objReq.BundleIDStatus + "'";
+                //}
+
+                //strSql = strSql + " ORDER BY BAD.SupAssignedDate DESC, BAD.OrderNo, BAD.OperationNo";
 
                 SqlCommand cmd = new SqlCommand(strSql, Con);
                 cmd.CommandType = CommandType.Text;
@@ -3128,7 +3141,8 @@ namespace BSLDaman.DAL
                         obj.SupervisorID = Convert.ToInt32(ds.Tables[0].Rows[i]["SupervisorID"]);
                         obj.SupervisorName = Convert.ToString(ds.Tables[0].Rows[i]["SupervisorName"]);
                         obj.SupervisorAssignedDate = Convert.ToString(ds.Tables[0].Rows[i]["SupAssignedDate"]);
-                        obj.BundleIDStatus = Convert.ToString(ds.Tables[0].Rows[i]["BundleIDStatus"]);
+                        obj.OperationName = Convert.ToString(ds.Tables[0].Rows[i]["OperationName"]);
+                        //obj.BundleIDStatus = Convert.ToString(ds.Tables[0].Rows[i]["BundleIDStatus"]);
                         obj.CreatedBy = Convert.ToInt32(ds.Tables[0].Rows[i]["CreatedBy"]);
                         obj.CreatedOn = Convert.ToString(ds.Tables[0].Rows[i]["CreatedOn"]);
 
