@@ -229,7 +229,7 @@ namespace BSLDaman.Controllers
 
         [System.Web.Http.HttpGet]
         [System.Web.Http.Route("api/MOBProduction/Fn_Fetch_MachineLogLostTimeByOperatorID")]
-        public clsMachineLogLostTimeTransactions Fn_Fetch_MachineLogLostTimeByOperatorID(Int32? AppEmpID = null)
+        public clsMachineLogLostTimeTransactions Fn_Fetch_MachineLogLostTimeByOperatorID(Int32? AppEmpID = null, string CurrentDate = null)
         {
             clsMachineLogLostTimeTransactions objReq = new clsMachineLogLostTimeTransactions();
 
@@ -240,6 +240,15 @@ namespace BSLDaman.Controllers
             else
             {
                 objReq.AppEmpID = 0;
+            }
+
+            if (!string.IsNullOrWhiteSpace(CurrentDate))
+            {
+                objReq.CurrentDate = CurrentDate;
+            }
+            else
+            {
+                objReq.CurrentDate = null;
             }
 
             var objResp = _MOBDALProduction.Fn_Fetch_MachineLogLostTimeByOperatorID(objReq);
