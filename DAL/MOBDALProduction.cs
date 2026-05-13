@@ -687,6 +687,7 @@ namespace BSLDaman.DAL
                     SqlCommand cmd = new SqlCommand("USP_MobileMachineLogTransactions", Con);
                     cmd.CommandType = CommandType.StoredProcedure;
                     cmd.Parameters.AddWithValue("@AppEmpID", objReq.AppEmpID);
+                    cmd.Parameters.AddWithValue("@CurrentDate", objReq.CurrentDate);
                     cmd.Parameters.AddWithValue("@QueryType", "FetchMachineBreakdownLostTime");
 
                     SqlDataAdapter da = new SqlDataAdapter(cmd);
@@ -696,8 +697,7 @@ namespace BSLDaman.DAL
                     int i = 0;
                     if (ds.Tables[0].Rows.Count > 0)
                     {
-                        objResp.AppEmpID = Convert.ToInt32(ds.Tables[0].Rows[i][""]);
-                        objResp.TotalMachineLogLostTime = Convert.ToString(ds.Tables[0].Rows[i][""]);
+                        objResp.LostTimeInMinutes = Convert.ToString(ds.Tables[0].Rows[i]["LostTimeInMinutes"]);
 
                         objResp.vErrorCode = 200;
                         objResp.vErrorMsg = "Success";
