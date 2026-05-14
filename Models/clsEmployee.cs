@@ -341,6 +341,7 @@ namespace BSLDaman.Models
         public int Qty { get; set; }
         public int PlyFrom { get; set; }
         public int PlyTo { get; set; }
+        public string Ply { get; set; }
         public int LotNo { get; set; }
         public int BunleQty { get; set; }
         public int CompileQty { get; set; }
