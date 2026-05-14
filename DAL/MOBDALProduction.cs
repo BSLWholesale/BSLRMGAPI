@@ -3395,5 +3395,69 @@ namespace BSLDaman.DAL
         }
 
 
+
+        public clsBundleCompile Fn_Remove_OperationNumberBySupervisor(clsBundleCompile objReq)
+        {
+            var objResp = new clsBundleCompile();
+            Logger.ErrorLog(JsonConvert.SerializeObject(objReq), "Request", "Fn_Remove_OperationNumberBySupervisor");
+            try
+            {
+                if (String.IsNullOrWhiteSpace(objReq.OrderNo))
+                {
+                    objResp.vErrorMsg = "Pass the Valid Order Number";
+                    objResp.vErrorCode = 300;
+                }
+                else if (objReq.AppEmpID == null || objReq.AppEmpID == 0)
+                {
+                    objResp.vErrorMsg = "Please Pass the Valid Employee/Operator ID";
+                    objResp.vErrorCode = 300;
+                }
+                else if (objReq.OperationNo == null || objReq.OperationNo == 0)
+                {
+                    objResp.vErrorMsg = "Please Pass the Valid Operation Number";
+                    objResp.vErrorCode = 300;
+                }
+                else
+                {
+                    if (Con.State == ConnectionState.Broken)
+                    { Con.Close(); }
+                    if (Con.State == ConnectionState.Closed)
+                    { Con.Open(); }
+
+                    SqlCommand cmd = new SqlCommand("USP_MobileBundleApp", Con);
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("@OrderNo", objReq.OrderNo);
+                    cmd.Parameters.AddWithValue("@AppEmpID", objReq.AppEmpID);
+                    cmd.Parameters.AddWithValue("@OperationNo", objReq.OperationNo);
+                    cmd.Parameters.AddWithValue("@QueryType", "RemoveOpNumber");
+                    int i = 0;
+                    i = cmd.ExecuteNonQuery();
+                    if (i > 0)
+                    {
+                        objResp.vErrorMsg = "The Operation Number has been remove";
+                        objResp.vErrorCode = 200;
+                    }
+                    else
+                    {
+                        objResp.vErrorMsg = "Operation Number remove failed";
+                        objResp.vErrorCode = 404;
+                    }
+                }
+            }
+            catch (Exception exp)
+            {
+                Logger.WriteLog("Function Name : Fn_Remove_OperationNumberBySupervisor", " " + "Error Msg : " + exp.Message.ToString(), new StackTrace(exp, true));
+                objResp.vErrorMsg = exp.Message.ToString();
+                objResp.vErrorCode = 500;
+            }
+            finally
+            {
+                Con.Close();
+            }
+            Logger.ErrorLog(JsonConvert.SerializeObject(objResp), "Response", "Fn_Remove_OperationNumberBySupervisor");
+            return objResp;
+        }
+
+
     }
 }
