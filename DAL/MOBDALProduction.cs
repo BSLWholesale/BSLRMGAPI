@@ -3318,7 +3318,9 @@ namespace BSLDaman.DAL
                 string strSql = "SELECT DISTINCT (BD.BundleID) AS BundleID, BAD.OperationNo AS OperationNo, BAD.OrderNo AS OrderNo,";
                 strSql = strSql + " BD.SubSection AS SubSection, BAD.SupervisorID AS SupervisorID, EM.EmpName AS SupervisorName,";
                 strSql = strSql + " BAD.SupAssignedDate AS SupAssignedDate, BD.BundleIDStatus AS BundleIDStatus, BAD.CreatedBy AS CreatedBy,";
-                strSql = strSql + " FORMAT(BAD.CreatedOn, 'dd-MMM-yyyy HH:mm:ss') AS CreatedOn, OBD.Descriptions AS OperationName";
+                strSql = strSql + " FORMAT(BAD.CreatedOn, 'dd-MMM-yyyy HH:mm:ss') AS CreatedOn, OBD.Descriptions AS OperationName,";
+                strSql = strSql + " BC.ColorName AS ColorName, BC.Qty AS Qty, BC.SizeName AS SizeName, BC.BundleNo AS BundleNo,";
+                strSql = strSql + " CONCAT(BC.PlyFrom,'-',BC.PlyTo) AS Ply";
                 strSql = strSql + " FROM BundleCompileDetail AS BD";
                 strSql = strSql + " INNER JOIN BundleCompileAssignDetail AS BAD";
                 strSql = strSql + " ON BD.AppEmpID = BAD.AppEmpID AND BD.OperationNo = BAD.OperationNo";
@@ -3328,6 +3330,8 @@ namespace BSLDaman.DAL
                 strSql = strSql + " ON BAD.AppEmpID = EM1.EmpId";
                 strSql = strSql + " INNER JOIN OperationBreackDownDetail AS OBD";
                 strSql = strSql + " ON OBD.OpNo = BAD.OperationNo";
+                strSql = strSql + " INNER JOIN BundleCompile AS BC";
+                strSql = strSql + " ON BC.BundleID = BD.BundleID";
                 strSql = strSql + " WHERE BAD.AppEmpID = " + objReq.AppEmpID;
                 strSql = strSql + " AND BD.BundleIDStatus = 'Finished'";
                 strSql = strSql + " ORDER BY BAD.SupAssignedDate DESC, BAD.OrderNo, BAD.OperationNo";
@@ -3356,6 +3360,11 @@ namespace BSLDaman.DAL
                         obj.CreatedBy = Convert.ToInt32(ds.Tables[0].Rows[i]["CreatedBy"]);
                         obj.CreatedOn = Convert.ToString(ds.Tables[0].Rows[i]["CreatedOn"]);
                         obj.OperationName = Convert.ToString(ds.Tables[0].Rows[i]["OperationName"]);
+                        obj.ColorName = Convert.ToString(ds.Tables[0].Rows[i]["ColorName"]);
+                        obj.Qty = Convert.ToInt32(ds.Tables[0].Rows[i]["Qty"]);
+                        obj.SizeName = Convert.ToString(ds.Tables[0].Rows[i]["SizeName"]);
+                        obj.BundleNo = Convert.ToInt32(ds.Tables[0].Rows[i]["BundleNo"]);
+                        obj.Ply = Convert.ToString(ds.Tables[0].Rows[i]["Ply"]);
 
                         obj.vErrorCode = 200;
                         obj.vErrorMsg = "Success";
