@@ -229,7 +229,7 @@ namespace BSLDaman.Controllers
 
         [System.Web.Http.HttpGet]
         [System.Web.Http.Route("api/MOBProduction/Fn_Fetch_MachineLogLostTimeByOperatorID")]
-        public clsMachineLogLostTimeTransactions Fn_Fetch_MachineLogLostTimeByOperatorID(Int32? AppEmpID = null)
+        public clsMachineLogLostTimeTransactions Fn_Fetch_MachineLogLostTimeByOperatorID(Int32? AppEmpID = null, string CurrentDate = null)
         {
             clsMachineLogLostTimeTransactions objReq = new clsMachineLogLostTimeTransactions();
 
@@ -240,6 +240,15 @@ namespace BSLDaman.Controllers
             else
             {
                 objReq.AppEmpID = 0;
+            }
+
+            if (!string.IsNullOrWhiteSpace(CurrentDate))
+            {
+                objReq.CurrentDate = CurrentDate;
+            }
+            else
+            {
+                objReq.CurrentDate = null;
             }
 
             var objResp = _MOBDALProduction.Fn_Fetch_MachineLogLostTimeByOperatorID(objReq);
@@ -698,7 +707,7 @@ namespace BSLDaman.Controllers
 
         [System.Web.Http.HttpGet]
         [System.Web.Http.Route("api/MOBProduction/Fn_Fetch_OperatorAssignOpNumbers")]
-        public List<clsBundleCompile> Fn_Fetch_OperatorAssignOpNumbers(Int32? AppEmpID = null, string BundleIDStatus = null)
+        public List<clsBundleCompile> Fn_Fetch_OperatorAssignOpNumbers(Int32? AppEmpID = null)
         {
             clsBundleCompile objReq = new clsBundleCompile();
 
@@ -711,14 +720,14 @@ namespace BSLDaman.Controllers
                 objReq.AppEmpID = 0;
             }
 
-            if (!string.IsNullOrWhiteSpace(BundleIDStatus))
-            {
-                objReq.BundleIDStatus = BundleIDStatus;
-            }
-            else
-            {
-                objReq.BundleIDStatus = null;
-            }
+            //if (!string.IsNullOrWhiteSpace(BundleIDStatus))
+            //{
+            //    objReq.BundleIDStatus = BundleIDStatus;
+            //}
+            //else
+            //{
+            //    objReq.BundleIDStatus = null;
+            //}
 
             var objResp = _MOBDALProduction.Fn_Fetch_OperatorAssignOpNumbers(objReq);
             return objResp;
@@ -771,6 +780,35 @@ namespace BSLDaman.Controllers
             return objResp;
         }
 
+
+        [System.Web.Http.HttpGet]
+        [System.Web.Http.Route("api/MOBProduction/Fn_Fetch_OperatorFinishedOpNumbers")]
+        public List<clsBundleCompile> Fn_Fetch_OperatorFinishedOpNumbers(Int32? AppEmpID = null)
+        {
+            clsBundleCompile objReq = new clsBundleCompile();
+
+            if (AppEmpID.HasValue)
+            {
+                objReq.AppEmpID = AppEmpID.Value;
+            }
+            else
+            {
+                objReq.AppEmpID = 0;
+            }
+
+            var objResp = _MOBDALProduction.Fn_Fetch_OperatorFinishedOpNumbers(objReq);
+            return objResp;
+        }
+
+
+        [System.Web.Http.HttpPost]
+        [System.Web.Http.Route("api/MOBProduction/Fn_Remove_OperationNumberBySupervisor")]
+        public clsBundleCompile Fn_Remove_OperationNumberBySupervisor(clsBundleCompile objReq)
+        {
+            var objResp = new clsBundleCompile();
+            objResp = _MOBDALProduction.Fn_Remove_OperationNumberBySupervisor(objReq);
+            return objResp;
+        }
 
 
     }

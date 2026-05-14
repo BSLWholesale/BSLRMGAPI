@@ -997,5 +997,66 @@ namespace BSLDaman.DAL
         }
 
 
+
+        public clsMOBEmployee Fn_Forgot_Password(clsMOBEmployee objReq)
+        {
+            var objResp = new clsMOBEmployee();
+            Logger.ErrorLog(JsonConvert.SerializeObject(objReq), "Request", "Fn_Forgot_Password");
+            try
+            {
+                if (objReq.nEmpId == null || objReq.nEmpId == 0)
+                {
+                    objResp.vErrorMsg = "Please Pass the Valid Operator ID";
+                    objResp.vErrorCode = 300;
+                }
+                else if (String.IsNullOrWhiteSpace(objReq.vEmpPassword))
+                {
+                    objResp.vErrorMsg = "Please Enter Operator/Employee Password.";
+                    objResp.vErrorCode = 300;
+                }
+                else
+                {
+                    if (Con.State == ConnectionState.Broken)
+                    { Con.Close(); }
+                    if (Con.State == ConnectionState.Closed)
+                    { Con.Open(); }
+
+                    string encryptPassword = Generic.EncryptText(objReq.vEmpPassword);
+                    SqlCommand cmd = new SqlCommand("USP_EmployeeMob", Con);
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("@EmpId", objReq.nEmpId);
+                    cmd.Parameters.AddWithValue("@EmpPassword", encryptPassword);
+                    cmd.Parameters.AddWithValue("@QueryType", "ForgotPassword");
+
+                    int i = 0;
+                    i = cmd.ExecuteNonQuery();
+                    if (i > 0)
+                    {
+                        objResp.vErrorMsg = "Your Password has been change";
+                        objResp.vErrorCode = 200;
+                    }
+                    else
+                    {
+                        objResp.vErrorMsg = "Failed";
+                        objResp.vErrorCode = 400;
+                    }
+                }
+            }
+            catch (Exception exp)
+            {
+                Logger.WriteLog("Function Name : Fn_Forgot_Password", " " + "Error Msg : " + exp.Message.ToString(), new StackTrace(exp, true));
+                objResp.vErrorMsg = exp.Message.ToString();
+                objResp.vErrorCode = 500;
+            }
+            finally
+            {
+                Con.Close();
+            }
+            Logger.ErrorLog(JsonConvert.SerializeObject(objResp), "Response", "Fn_Forgot_Password");
+            return objResp;
+        }
+
+
+
     }
 }

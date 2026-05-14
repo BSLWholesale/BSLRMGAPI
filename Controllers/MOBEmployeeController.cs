@@ -154,6 +154,15 @@ namespace BSLDaman.Controllers
         }
 
 
+        [System.Web.Http.HttpPut]
+        [System.Web.Http.Route("api/MOBEmployee/Fn_Forgot_Password")]
+        public clsMOBEmployee Fn_Forgot_Password(clsMOBEmployee objReq)
+        {
+            var objResp = new clsMOBEmployee();
+            objResp = _MOBDALEmployee.Fn_Forgot_Password(objReq);
+            return objResp;
+        }
+
 
     }
 }

@@ -687,6 +687,7 @@ namespace BSLDaman.DAL
                     SqlCommand cmd = new SqlCommand("USP_MobileMachineLogTransactions", Con);
                     cmd.CommandType = CommandType.StoredProcedure;
                     cmd.Parameters.AddWithValue("@AppEmpID", objReq.AppEmpID);
+                    cmd.Parameters.AddWithValue("@CurrentDate", objReq.CurrentDate);
                     cmd.Parameters.AddWithValue("@QueryType", "FetchMachineBreakdownLostTime");
 
                     SqlDataAdapter da = new SqlDataAdapter(cmd);
@@ -696,8 +697,7 @@ namespace BSLDaman.DAL
                     int i = 0;
                     if (ds.Tables[0].Rows.Count > 0)
                     {
-                        objResp.AppEmpID = Convert.ToInt32(ds.Tables[0].Rows[i][""]);
-                        objResp.TotalMachineLogLostTime = Convert.ToString(ds.Tables[0].Rows[i][""]);
+                        objResp.LostTimeInMinutes = Convert.ToString(ds.Tables[0].Rows[i]["LostTimeInMinutes"]);
 
                         objResp.vErrorCode = 200;
                         objResp.vErrorMsg = "Success";
@@ -3084,30 +3084,43 @@ namespace BSLDaman.DAL
                 if (Con.State == ConnectionState.Closed)
                 { Con.Open(); }
 
-                string strSql = "SELECT DISTINCT (BAD.OperationNo) AS OperationNo, BAD.OrderNo AS OrderNo, BAD.SubSection AS SubSection,";
-                strSql = strSql + " BAD.SupervisorID AS SupervisorID, EM.EmpName AS SupervisorName, BAD.SupAssignedDate,";
-                strSql = strSql + " BD.BundleIDStatus AS BundleIDStatus, BAD.CreatedBy AS CreatedBy,";
+                //string strSql = "SELECT DISTINCT (BAD.OperationNo) AS OperationNo, BAD.OrderNo AS OrderNo, BAD.SubSection AS SubSection,";
+                //strSql = strSql + " BAD.SupervisorID AS SupervisorID, EM.EmpName AS SupervisorName, BAD.SupAssignedDate,";
+                //strSql = strSql + " BD.BundleIDStatus AS BundleIDStatus, BAD.CreatedBy AS CreatedBy,";
+                //strSql = strSql + " FORMAT(BAD.CreatedOn, 'dd-MMM-yyyy HH:mm:ss') AS CreatedOn";
+                //strSql = strSql + " FROM BundleCompileAssignDetail AS BAD";
+                //strSql = strSql + " INNER JOIN EmployeeMaster AS EM";
+                //strSql = strSql + " ON BAD.SupervisorID = EM.EmpId";
+                //strSql = strSql + " INNER JOIN EmployeeMaster AS EM1";
+                //strSql = strSql + " ON BAD.AppEmpID = EM1.EmpId";
+                //strSql = strSql + " INNER JOIN BundleCompileDetail AS BD";
+                //strSql = strSql + " ON BD.AppEmpID = BAD.AppEmpID";
+                //strSql = strSql + " WHERE EM1.EmpRole = 'Operator'";
+
+                string strSql = "SELECT DISTINCT (BAD.OperationNo) AS OperationNo, BAD.OrderNo AS OrderNo, BAD.SubSection AS SubSection,";
+                strSql = strSql + " BAD.SupervisorID AS SupervisorID, EM.EmpName AS SupervisorName, BAD.SupAssignedDate AS SupAssignedDate,";
+                strSql = strSql + " BD.Descriptions AS OperationName, BAD.CreatedBy AS CreatedBy,";
                 strSql = strSql + " FORMAT(BAD.CreatedOn, 'dd-MMM-yyyy HH:mm:ss') AS CreatedOn";
                 strSql = strSql + " FROM BundleCompileAssignDetail AS BAD";
                 strSql = strSql + " INNER JOIN EmployeeMaster AS EM";
                 strSql = strSql + " ON BAD.SupervisorID = EM.EmpId";
                 strSql = strSql + " INNER JOIN EmployeeMaster AS EM1";
                 strSql = strSql + " ON BAD.AppEmpID = EM1.EmpId";
-                strSql = strSql + " INNER JOIN BundleCompileDetail AS BD";
-                strSql = strSql + " ON BD.AppEmpID = BAD.AppEmpID";
-                strSql = strSql + " WHERE EM1.EmpRole = 'Operator'";
-
-                if (objReq.AppEmpID > 0)
-                {
-                    strSql = strSql + " AND BAD.AppEmpID = " + objReq.AppEmpID;
-                }
-                if (!String.IsNullOrWhiteSpace(objReq.BundleIDStatus))
-                {
-                    strSql = strSql + " AND BD.BundleIDStatus = '" + objReq.BundleIDStatus + "'";
-                }
-
-                //strSql = strSql + " ORDER BY FORMAT(BAD.SupAssignedDate, 'dd-MMM-yyyy HH:mm:ss') DESC, BAD.OrderNo, BAD.OperationNo";
+                strSql = strSql + " INNER JOIN OperationBreackDownDetail AS BD";
+                strSql = strSql + " ON BAD.OperationNo = BD.OpNo";
+                strSql = strSql + " WHERE BAD.AppEmpID = " + objReq.AppEmpID;
                 strSql = strSql + " ORDER BY BAD.SupAssignedDate DESC, BAD.OrderNo, BAD.OperationNo";
+
+                //if (objReq.AppEmpID > 0)
+                //{
+                //    strSql = strSql + " WHERE BAD.AppEmpID = " + objReq.AppEmpID;
+                //}
+                //if (!String.IsNullOrWhiteSpace(objReq.BundleIDStatus))
+                //{
+                //    strSql = strSql + " AND BD.BundleIDStatus = '" + objReq.BundleIDStatus + "'";
+                //}
+
+                //strSql = strSql + " ORDER BY BAD.SupAssignedDate DESC, BAD.OrderNo, BAD.OperationNo";
 
                 SqlCommand cmd = new SqlCommand(strSql, Con);
                 cmd.CommandType = CommandType.Text;
@@ -3128,7 +3141,8 @@ namespace BSLDaman.DAL
                         obj.SupervisorID = Convert.ToInt32(ds.Tables[0].Rows[i]["SupervisorID"]);
                         obj.SupervisorName = Convert.ToString(ds.Tables[0].Rows[i]["SupervisorName"]);
                         obj.SupervisorAssignedDate = Convert.ToString(ds.Tables[0].Rows[i]["SupAssignedDate"]);
-                        obj.BundleIDStatus = Convert.ToString(ds.Tables[0].Rows[i]["BundleIDStatus"]);
+                        obj.OperationName = Convert.ToString(ds.Tables[0].Rows[i]["OperationName"]);
+                        //obj.BundleIDStatus = Convert.ToString(ds.Tables[0].Rows[i]["BundleIDStatus"]);
                         obj.CreatedBy = Convert.ToInt32(ds.Tables[0].Rows[i]["CreatedBy"]);
                         obj.CreatedOn = Convert.ToString(ds.Tables[0].Rows[i]["CreatedOn"]);
 
@@ -3268,6 +3282,181 @@ namespace BSLDaman.DAL
             return objResp;
         }
 
+
+        public List<clsBundleCompile> Fn_Fetch_OperatorFinishedOpNumbers(clsBundleCompile objReq)
+        {
+            var objResp = new List<clsBundleCompile>();
+            var obj = new clsBundleCompile();
+            Logger.ErrorLog(JsonConvert.SerializeObject(objReq), "Request", "Fn_Fetch_OperatorFinishedOpNumbers");
+            try
+            {
+                if (Con.State == ConnectionState.Broken)
+                { Con.Close(); }
+                if (Con.State == ConnectionState.Closed)
+                { Con.Open(); }
+
+                //string strSql = "SELECT DISTINCT (BD.BundleID) AS BundleID, BAD.OperationNo AS OperationNo, BAD.OrderNo AS OrderNo,";
+                //strSql = strSql + " BD.SubSection AS SubSection, BAD.SupervisorID AS SupervisorID, EM.EmpName AS SupervisorName,";
+                //strSql = strSql + " BAD.SupAssignedDate, BD.BundleIDStatus AS BundleIDStatus, BAD.CreatedBy AS CreatedBy,";
+                //strSql = strSql + " FORMAT(BAD.CreatedOn, 'dd-MMM-yyyy HH:mm:ss') AS CreatedOn";
+                //strSql = strSql + " FROM BundleCompileDetail AS BD";
+                //strSql = strSql + " INNER JOIN BundleCompileAssignDetail AS BAD";
+                //strSql = strSql + " ON BD.AppEmpID = BAD.AppEmpID AND BD.OperationNo = BAD.OperationNo";
+                //strSql = strSql + " INNER JOIN EmployeeMaster AS EM";
+                //strSql = strSql + " ON BAD.SupervisorID = EM.EmpId";
+                //strSql = strSql + " INNER JOIN EmployeeMaster AS EM1";
+                //strSql = strSql + " ON BAD.AppEmpID = EM1.EmpId";
+
+                //if (objReq.AppEmpID > 0)
+                //{
+                //    strSql = strSql + " WHERE BAD.AppEmpID = " + objReq.AppEmpID;
+                //}
+
+                //strSql = strSql + " AND BD.BundleIDStatus = 'Finished'";
+                //strSql = strSql + " ORDER BY BAD.SupAssignedDate DESC, BAD.OrderNo, BAD.OperationNo";
+
+                string strSql = "SELECT DISTINCT (BD.BundleID) AS BundleID, BAD.OperationNo AS OperationNo, BAD.OrderNo AS OrderNo,";
+                strSql = strSql + " BD.SubSection AS SubSection, BAD.SupervisorID AS SupervisorID, EM.EmpName AS SupervisorName,";
+                strSql = strSql + " BAD.SupAssignedDate AS SupAssignedDate, BD.BundleIDStatus AS BundleIDStatus, BAD.CreatedBy AS CreatedBy,";
+                strSql = strSql + " FORMAT(BAD.CreatedOn, 'dd-MMM-yyyy HH:mm:ss') AS CreatedOn, OBD.Descriptions AS OperationName,";
+                strSql = strSql + " BC.ColorName AS ColorName, BC.Qty AS Qty, BC.SizeName AS SizeName, BC.BundleNo AS BundleNo,";
+                strSql = strSql + " CONCAT(BC.PlyFrom,'-',BC.PlyTo) AS Ply";
+                strSql = strSql + " FROM BundleCompileDetail AS BD";
+                strSql = strSql + " INNER JOIN BundleCompileAssignDetail AS BAD";
+                strSql = strSql + " ON BD.AppEmpID = BAD.AppEmpID AND BD.OperationNo = BAD.OperationNo";
+                strSql = strSql + " INNER JOIN EmployeeMaster AS EM";
+                strSql = strSql + " ON BAD.SupervisorID = EM.EmpId";
+                strSql = strSql + " INNER JOIN EmployeeMaster AS EM1";
+                strSql = strSql + " ON BAD.AppEmpID = EM1.EmpId";
+                strSql = strSql + " INNER JOIN OperationBreackDownDetail AS OBD";
+                strSql = strSql + " ON OBD.OpNo = BAD.OperationNo";
+                strSql = strSql + " INNER JOIN BundleCompile AS BC";
+                strSql = strSql + " ON BC.BundleID = BD.BundleID";
+                strSql = strSql + " WHERE BAD.AppEmpID = " + objReq.AppEmpID;
+                strSql = strSql + " AND BD.BundleIDStatus = 'Finished'";
+                strSql = strSql + " ORDER BY BAD.SupAssignedDate DESC, BAD.OrderNo, BAD.OperationNo";
+
+                SqlCommand cmd = new SqlCommand(strSql, Con);
+                cmd.CommandType = CommandType.Text;
+
+                SqlDataAdapter da = new SqlDataAdapter(cmd);
+                DataSet ds = new DataSet();
+                da.Fill(ds);
+                int i = 0;
+
+                if (ds.Tables[0].Rows.Count > 0)
+                {
+                    while (ds.Tables[0].Rows.Count > i)
+                    {
+                        obj = new clsBundleCompile();
+                        obj.BundleID = Convert.ToInt64(ds.Tables[0].Rows[i]["BundleID"]);
+                        obj.OperationNo = Convert.ToInt32(ds.Tables[0].Rows[i]["OperationNo"]);
+                        obj.OrderNo = Convert.ToString(ds.Tables[0].Rows[i]["OrderNo"]);
+                        obj.SubSection = Convert.ToString(ds.Tables[0].Rows[i]["SubSection"]);
+                        obj.SupervisorID = Convert.ToInt32(ds.Tables[0].Rows[i]["SupervisorID"]);
+                        obj.SupervisorName = Convert.ToString(ds.Tables[0].Rows[i]["SupervisorName"]);
+                        obj.SupervisorAssignedDate = Convert.ToString(ds.Tables[0].Rows[i]["SupAssignedDate"]);
+                        obj.BundleIDStatus = Convert.ToString(ds.Tables[0].Rows[i]["BundleIDStatus"]);
+                        obj.CreatedBy = Convert.ToInt32(ds.Tables[0].Rows[i]["CreatedBy"]);
+                        obj.CreatedOn = Convert.ToString(ds.Tables[0].Rows[i]["CreatedOn"]);
+                        obj.OperationName = Convert.ToString(ds.Tables[0].Rows[i]["OperationName"]);
+                        obj.ColorName = Convert.ToString(ds.Tables[0].Rows[i]["ColorName"]);
+                        obj.Qty = Convert.ToInt32(ds.Tables[0].Rows[i]["Qty"]);
+                        obj.SizeName = Convert.ToString(ds.Tables[0].Rows[i]["SizeName"]);
+                        obj.BundleNo = Convert.ToInt32(ds.Tables[0].Rows[i]["BundleNo"]);
+                        obj.Ply = Convert.ToString(ds.Tables[0].Rows[i]["Ply"]);
+
+                        obj.vErrorCode = 200;
+                        obj.vErrorMsg = "Success";
+                        objResp.Add(obj);
+                        i++;
+                    }
+                }
+                else
+                {
+                    obj.vErrorCode = 404;
+                    obj.vErrorMsg = "No records found.";
+                    objResp.Add(obj);
+                }
+            }
+            catch (Exception exp)
+            {
+                obj.vErrorCode = 500;
+                Logger.WriteLog("Function Name : Fn_Fetch_OperatorFinishedOpNumbers", " " + "Error Msg : " + exp.Message.ToString(), new StackTrace(exp, true));
+                obj.vErrorMsg = exp.Message.ToString();
+                objResp.Add(obj);
+            }
+            finally
+            {
+                Con.Close();
+            }
+            Logger.ErrorLog(JsonConvert.SerializeObject(objResp), "Response", "Fn_Fetch_OperatorFinishedOpNumbers");
+            return objResp;
+        }
+
+
+
+        public clsBundleCompile Fn_Remove_OperationNumberBySupervisor(clsBundleCompile objReq)
+        {
+            var objResp = new clsBundleCompile();
+            Logger.ErrorLog(JsonConvert.SerializeObject(objReq), "Request", "Fn_Remove_OperationNumberBySupervisor");
+            try
+            {
+                if (String.IsNullOrWhiteSpace(objReq.OrderNo))
+                {
+                    objResp.vErrorMsg = "Pass the Valid Order Number";
+                    objResp.vErrorCode = 300;
+                }
+                else if (objReq.AppEmpID == null || objReq.AppEmpID == 0)
+                {
+                    objResp.vErrorMsg = "Please Pass the Valid Employee/Operator ID";
+                    objResp.vErrorCode = 300;
+                }
+                else if (objReq.OperationNo == null || objReq.OperationNo == 0)
+                {
+                    objResp.vErrorMsg = "Please Pass the Valid Operation Number";
+                    objResp.vErrorCode = 300;
+                }
+                else
+                {
+                    if (Con.State == ConnectionState.Broken)
+                    { Con.Close(); }
+                    if (Con.State == ConnectionState.Closed)
+                    { Con.Open(); }
+
+                    SqlCommand cmd = new SqlCommand("USP_MobileBundleApp", Con);
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("@OrderNo", objReq.OrderNo);
+                    cmd.Parameters.AddWithValue("@AppEmpID", objReq.AppEmpID);
+                    cmd.Parameters.AddWithValue("@OperationNo", objReq.OperationNo);
+                    cmd.Parameters.AddWithValue("@QueryType", "RemoveOpNumber");
+                    int i = 0;
+                    i = cmd.ExecuteNonQuery();
+                    if (i > 0)
+                    {
+                        objResp.vErrorMsg = "The Operation Number has been remove";
+                        objResp.vErrorCode = 200;
+                    }
+                    else
+                    {
+                        objResp.vErrorMsg = "Operation Number remove failed";
+                        objResp.vErrorCode = 404;
+                    }
+                }
+            }
+            catch (Exception exp)
+            {
+                Logger.WriteLog("Function Name : Fn_Remove_OperationNumberBySupervisor", " " + "Error Msg : " + exp.Message.ToString(), new StackTrace(exp, true));
+                objResp.vErrorMsg = exp.Message.ToString();
+                objResp.vErrorCode = 500;
+            }
+            finally
+            {
+                Con.Close();
+            }
+            Logger.ErrorLog(JsonConvert.SerializeObject(objResp), "Response", "Fn_Remove_OperationNumberBySupervisor");
+            return objResp;
+        }
 
 
     }

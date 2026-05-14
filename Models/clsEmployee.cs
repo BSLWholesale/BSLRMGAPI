@@ -343,6 +343,7 @@ namespace BSLDaman.Models
         public int Qty { get; set; }
         public int PlyFrom { get; set; }
         public int PlyTo { get; set; }
+        public string Ply { get; set; }
         public int LotNo { get; set; }
         public int BunleQty { get; set; }
         public int CompileQty { get; set; }
@@ -444,6 +445,8 @@ namespace BSLDaman.Models
         public string ModifiedOn { get; set; }
         public string TimeSpentDifference { get; set; }
         public string TotalMachineLogLostTime { get; set; }
+        public string LostTimeInMinutes { get; set; }
+        public string CurrentDate { get; set; }
         public string vErrorMsg { get; set; }
         public int vErrorCode { get; set; }
 
