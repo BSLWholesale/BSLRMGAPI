@@ -353,6 +353,8 @@ namespace BSLDaman.DAL
                                 var obj = new clsBundleCompile
                                 {
                                     OperationNo = Convert.ToInt64(row["OperationNo"]),
+                                    OperationName = Convert.ToString(row["OperationName"]),
+                                    StdMin = Convert.ToDecimal(row["StdMin"]),
                                     SubSection = Convert.ToString(row["SubSection"]),
                                     OrderNo = Convert.ToString(row["OrderNo"]),
                                 };
