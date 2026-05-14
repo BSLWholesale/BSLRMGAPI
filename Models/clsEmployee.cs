@@ -336,6 +336,8 @@ namespace BSLDaman.Models
         public string BundleIDs { get; set; }
         public int BundleNo { get; set; }
         public string SizeName { get; set; }
+        public string Freq { get; set; }
+        public List<clsBundleSizeList> _oSizeList { get; set; }
         public string ColorName { get; set; }
         public string ShadeName { get; set; }
         public int Qty { get; set; }
@@ -553,4 +555,9 @@ namespace BSLDaman.Models
         public int vErrorCode { get; set; }
     }
 
+    public class clsBundleSizeList
+    {
+        public string SizeName { get; set; }
+        public Int32 Freq { get; set; }
+    }
 }
