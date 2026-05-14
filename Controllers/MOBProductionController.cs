@@ -801,5 +801,15 @@ namespace BSLDaman.Controllers
         }
 
 
+        [System.Web.Http.HttpPost]
+        [System.Web.Http.Route("api/MOBProduction/Fn_Remove_OperationNumberBySupervisor")]
+        public clsBundleCompile Fn_Remove_OperationNumberBySupervisor(clsBundleCompile objReq)
+        {
+            var objResp = new clsBundleCompile();
+            objResp = _MOBDALProduction.Fn_Remove_OperationNumberBySupervisor(objReq);
+            return objResp;
+        }
+
+
     }
 }
