@@ -104,7 +104,7 @@ namespace BSLDaman.Controllers
             objResp = _DALMasterEntry.Fn_Add_New_Line(objReq);
             return objResp;
         }
-        
+
         [System.Web.Http.HttpPost]
         [System.Web.Http.Route("api/MasterEntry/Fn_Update_LineDetails_By_LineID")]
         public clsLine Fn_Update_LineDetails_By_LineID(clsLine objReq)
@@ -661,7 +661,7 @@ namespace BSLDaman.Controllers
             return objResp;
         }
         //endRegion End Designation
-        
+
 
         [System.Web.Http.HttpPost]
         [System.Web.Http.Route("api/MasterEntry/Fn_Insert_New_Color")]
@@ -692,7 +692,35 @@ namespace BSLDaman.Controllers
             return objResp;
         }
 
+        #region Start Fn_Update_GridName 14-MAY-2026 
 
+        [System.Web.Http.HttpPost]
+        [System.Web.Http.Route("api/MasterEntry/Fn_Update_GridName")]
+        public clsSizeMaster Fn_Update_GridName(clsSizeMaster objReq)
+        {
+            var objResp = new clsSizeMaster();
+            objResp = _DALMasterEntry.Fn_Update_GridName(objReq);
+            return objResp;
+        }
 
+        [System.Web.Http.HttpPost]
+        [System.Web.Http.Route("api/MasterEntry/Fn_Get_All_GridName")]
+        public List<clsSizeMaster> Fn_Get_All_GridName(clsSizeMaster objReq)
+        {
+            var objResp = new List<clsSizeMaster>();
+            objResp = _DALMasterEntry.Fn_Get_All_GridName(objReq);
+            return objResp;
+        }
+
+        [System.Web.Http.HttpPost]
+        [System.Web.Http.Route("api/MasterEntry/Fn_Delete_Grid")]
+        public clsSizeMaster Fn_Delete_Grid(clsSizeMaster objReq)
+        {
+            var objResp = new clsSizeMaster();
+            objResp = _DALMasterEntry.Fn_Delete_Grid(objReq);
+            return objResp;
+        }
+
+        #endregion End Fn_Update_GridName 14-MAY-2026 
     }
 }

@@ -1211,20 +1211,10 @@ namespace BSLDaman.DAL
                     objResp.vErrorCode = 400;
                     objResp.vErrorMsg = "SizeId not supply.";
                 }
-                else if (objReq.SeqNo == 0 || objReq.SeqNo == null)
-                {
-                    objResp.vErrorCode = 400;
-                    objResp.vErrorMsg = "Please enter SeqNo";
-                }
                 else if (String.IsNullOrWhiteSpace(objReq.Grid))
                 {
                     objResp.vErrorCode = 400;
                     objResp.vErrorMsg = "Please enter Grid";
-                }
-                else if (String.IsNullOrWhiteSpace(objReq.SizeName))
-                {
-                    objResp.vErrorCode = 400;
-                    objResp.vErrorMsg = "Please enter SizeName";
                 }
                 else
                 {
@@ -1386,7 +1376,8 @@ namespace BSLDaman.DAL
                 {
                     strSql = strSql + " AND Grid = @Grid";
                 }
-                strSql = strSql + " ORDER BY CreatedOn DESC ";
+                strSql = strSql + " ORDER BY SizeName, SeqNo ASC ";
+                //strSql = strSql + " ORDER BY CreatedOn DESC ";
 
                 SqlCommand cmd = new SqlCommand(strSql, Con);
                 cmd.CommandType = CommandType.Text;
@@ -3904,7 +3895,170 @@ namespace BSLDaman.DAL
             return objResp;
         }
 
+        #region Start Fn_Update_GridName 14-MAY_2026
 
+        public clsSizeMaster Fn_Update_GridName(clsSizeMaster objReq)
+        {
+            var objResp = new clsSizeMaster();
+            Logger.ErrorLog(JsonConvert.SerializeObject(objReq), "Request", "Fn_Update_GridName");
+            try
+            {
+
+                if (Con.State == ConnectionState.Broken)
+                { Con.Close(); }
+                if (Con.State == ConnectionState.Closed)
+                { Con.Open(); }
+
+                SqlCommand cmd = new SqlCommand("USP_MASTERENTRY", Con);
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@Grid", objReq.Grid); // NewGrid
+                cmd.Parameters.AddWithValue("@SizeName", objReq.SizeName); // OdlGrid
+                cmd.Parameters.AddWithValue("@ModifiedBy", objReq.ModifiedBy);
+                cmd.Parameters.AddWithValue("@QueryType", "UpdateGridName");
+                int i = 0;
+                i = cmd.ExecuteNonQuery();
+                if (i > 0)
+                {
+                    objResp.vErrorCode = 200;
+                    objResp.vErrorMsg = "Success";
+                }
+                else
+                {
+                    objResp.vErrorCode = 400;
+                    objResp.vErrorMsg = "Grid Updating Failed";
+                }
+            }
+            catch (Exception exp)
+            {
+                objResp.vErrorCode = 500;
+                Logger.WriteLog("Function Name : Fn_Update_GridName", " " + "Error Msg : " + exp.Message.ToString(), new StackTrace(exp, true));
+                objResp.vErrorMsg = exp.Message.ToString();
+            }
+            finally
+            {
+                Con.Close();
+            }
+            Logger.ErrorLog(JsonConvert.SerializeObject(objResp), "Response", "Fn_Update_GridName");
+            return objResp;
+        }
+
+        public List<clsSizeMaster> Fn_Get_All_GridName(clsSizeMaster objReq)
+        {
+            var objResp = new List<clsSizeMaster>();
+            var obj = new clsSizeMaster();
+            Logger.ErrorLog(JsonConvert.SerializeObject(objReq), "Request", "Fn_Get_All_GridName");
+            try
+            {
+
+                if (Con.State == ConnectionState.Broken)
+                { Con.Close(); }
+                if (Con.State == ConnectionState.Closed)
+                { Con.Open(); }
+
+                string strSql = "SELECT DISTINCT Grid FROM SizeMaster WHERE 1=1";
+                if (objReq.ID != 0)
+                {
+                    strSql = strSql + " AND Grid = @Grid";
+                }
+                strSql = strSql + " ORDER BY Grid ASC ";
+
+                SqlCommand cmd = new SqlCommand(strSql, Con);
+                cmd.CommandType = CommandType.Text;
+                if (!String.IsNullOrWhiteSpace(objReq.Grid))
+                {
+                    cmd.Parameters.AddWithValue("@Grid", objReq.Grid);
+                }
+                SqlDataAdapter da = new SqlDataAdapter(cmd);
+                DataSet ds = new DataSet();
+                da.Fill(ds);
+                int i = 0;
+                if (ds.Tables[0].Rows.Count > 0)
+                {
+                    while (ds.Tables[0].Rows.Count > i)
+                    {
+                        obj = new clsSizeMaster();
+                        obj.Grid = Convert.ToString(ds.Tables[0].Rows[i]["Grid"]);
+
+                        obj.vErrorCode = 200;
+                        obj.vErrorMsg = "Success";
+                        objResp.Add(obj);
+                        i++;
+                    }
+                }
+                else
+                {
+                    obj.vErrorCode = 404;
+                    obj.vErrorMsg = "No Record found";
+                    objResp.Add(obj);
+                }
+            }
+            catch (Exception exp)
+            {
+                obj.vErrorCode = 500;
+                Logger.WriteLog("Function Name : Fn_Get_All_GridName", " " + "Error Msg : " + exp.Message.ToString(), new StackTrace(exp, true));
+                obj.vErrorMsg = exp.Message.ToString();
+                objResp.Add(obj);
+            }
+            finally
+            {
+                Con.Close();
+            }
+            Logger.ErrorLog(JsonConvert.SerializeObject(objResp), "Response", "Fn_Get_All_GridName");
+            return objResp;
+        }
+
+        public clsSizeMaster Fn_Delete_Grid(clsSizeMaster objReq)
+        {
+            var objResp = new clsSizeMaster();
+            Logger.ErrorLog(JsonConvert.SerializeObject(objReq), "Response", "Fn_Delete_Grid");
+            try
+            {
+                if (String.IsNullOrWhiteSpace(objReq.Grid))
+                {
+                    objResp.vErrorCode = 400;
+                    objResp.vErrorMsg = "Please send grid";
+                }
+                else
+                {
+                    if (Con.State == ConnectionState.Broken)
+                    { Con.Close(); }
+                    if (Con.State == ConnectionState.Closed)
+                    { Con.Open(); }
+
+                    SqlCommand cmd = new SqlCommand("USP_MASTERENTRY", Con);
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("@ID", objReq.ID);
+                    cmd.Parameters.AddWithValue("@Grid", objReq.Grid);
+                    cmd.Parameters.AddWithValue("@QueryType", "DeleteGrid");
+                    int i = 0;
+                    i = cmd.ExecuteNonQuery();
+                    if (i > 0)
+                    {
+                        objResp.vErrorCode = 200;
+                        objResp.vErrorMsg = "Success";
+                    }
+                    else
+                    {
+                        objResp.vErrorCode = 400;
+                        objResp.vErrorMsg = "Grid Deleting Failed";
+                    }
+                }
+            }
+            catch (Exception exp)
+            {
+                objResp.vErrorCode = 500;
+                Logger.WriteLog("Function Name : Fn_Delete_Grid", " " + "Error Msg : " + exp.Message.ToString(), new StackTrace(exp, true));
+                objResp.vErrorMsg = exp.Message.ToString();
+            }
+            finally
+            {
+                Con.Close();
+            }
+            Logger.ErrorLog(JsonConvert.SerializeObject(objResp), "Response", "Fn_Delete_Grid");
+            return objResp;
+        }
+
+        #endregion End Fn_Update_GridName 14-MAY-2026 
 
     }
 }
