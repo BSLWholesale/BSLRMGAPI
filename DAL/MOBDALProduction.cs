@@ -336,10 +336,6 @@ namespace BSLDaman.DAL
                     cmd.CommandType = CommandType.StoredProcedure;
 
                     cmd.Parameters.AddWithValue("@OrderNo", string.IsNullOrWhiteSpace(objReq.OrderNo) ? (object)DBNull.Value : objReq.OrderNo);
-                    //cmd.Parameters.AddWithValue("@PageNumber", objReq.PageNumber > 0 ? objReq.PageNumber : 1);
-                    //cmd.Parameters.AddWithValue("@PageSize", objReq.PageSize > 0 ? objReq.PageSize : 10);
-                    //cmd.Parameters.AddWithValue("@SortBy", string.IsNullOrWhiteSpace(objReq.SortBy) ? "BundleID" : objReq.SortBy);
-                    //cmd.Parameters.AddWithValue("@SortDirection", string.IsNullOrWhiteSpace(objReq.SortDirection) ? "ASC" : objReq.SortDirection.ToUpper());
 
                     using (SqlDataAdapter da = new SqlDataAdapter(cmd))
                     {
@@ -370,7 +366,6 @@ namespace BSLDaman.DAL
                             obj.vErrorMsg = "No Records Found";
                             objResp.Add(obj);
                         }
-                        //response.Data = objResp;
                     }
                 }
             }
@@ -3297,26 +3292,6 @@ namespace BSLDaman.DAL
                 if (Con.State == ConnectionState.Closed)
                 { Con.Open(); }
 
-                //string strSql = "SELECT DISTINCT (BD.BundleID) AS BundleID, BAD.OperationNo AS OperationNo, BAD.OrderNo AS OrderNo,";
-                //strSql = strSql + " BD.SubSection AS SubSection, BAD.SupervisorID AS SupervisorID, EM.EmpName AS SupervisorName,";
-                //strSql = strSql + " BAD.SupAssignedDate, BD.BundleIDStatus AS BundleIDStatus, BAD.CreatedBy AS CreatedBy,";
-                //strSql = strSql + " FORMAT(BAD.CreatedOn, 'dd-MMM-yyyy HH:mm:ss') AS CreatedOn";
-                //strSql = strSql + " FROM BundleCompileDetail AS BD";
-                //strSql = strSql + " INNER JOIN BundleCompileAssignDetail AS BAD";
-                //strSql = strSql + " ON BD.AppEmpID = BAD.AppEmpID AND BD.OperationNo = BAD.OperationNo";
-                //strSql = strSql + " INNER JOIN EmployeeMaster AS EM";
-                //strSql = strSql + " ON BAD.SupervisorID = EM.EmpId";
-                //strSql = strSql + " INNER JOIN EmployeeMaster AS EM1";
-                //strSql = strSql + " ON BAD.AppEmpID = EM1.EmpId";
-
-                //if (objReq.AppEmpID > 0)
-                //{
-                //    strSql = strSql + " WHERE BAD.AppEmpID = " + objReq.AppEmpID;
-                //}
-
-                //strSql = strSql + " AND BD.BundleIDStatus = 'Finished'";
-                //strSql = strSql + " ORDER BY BAD.SupAssignedDate DESC, BAD.OrderNo, BAD.OperationNo";
-
                 string strSql = "SELECT DISTINCT (BD.BundleID) AS BundleID, BAD.OperationNo AS OperationNo, BAD.OrderNo AS OrderNo,";
                 strSql = strSql + " BD.SubSection AS SubSection, BAD.SupervisorID AS SupervisorID, EM.EmpName AS SupervisorName,";
                 strSql = strSql + " BAD.SupAssignedDate AS SupAssignedDate, BD.BundleIDStatus AS BundleIDStatus, BAD.CreatedBy AS CreatedBy,";
@@ -3459,6 +3434,101 @@ namespace BSLDaman.DAL
             Logger.ErrorLog(JsonConvert.SerializeObject(objResp), "Response", "Fn_Remove_OperationNumberBySupervisor");
             return objResp;
         }
+
+
+        public List<clsBundleCompile> Fn_Fetch_BundleIDHistoryDetails(clsBundleCompile objReq)
+        {
+            var objResp = new List<clsBundleCompile>();
+            var obj = new clsBundleCompile();
+            Logger.ErrorLog(JsonConvert.SerializeObject(objReq), "Request", "Fn_Fetch_BundleIDHistoryDetails");
+            try
+            {
+                if (objReq.BundleID == null || objReq.BundleID == 0)
+                {
+                    obj.vErrorMsg = "Pass the Valid Bundle ID";
+                    obj.vErrorCode = 300;
+                }
+                else
+                {
+                    if (Con.State == ConnectionState.Broken)
+                    { Con.Close(); }
+                    if (Con.State == ConnectionState.Closed)
+                    { Con.Open(); }
+
+                    SqlCommand cmd = new SqlCommand("USP_MobileFetchBundleIDHistoryDetails", Con);
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("@BundleID", objReq.BundleID);
+
+                    SqlDataAdapter da = new SqlDataAdapter(cmd);
+                    DataSet ds = new DataSet();
+                    da.Fill(ds);
+                    int i = 0;
+
+                    if (ds.Tables[0].Rows.Count > 0)
+                    {
+                        while (ds.Tables[0].Rows.Count > i)
+                        {
+                            obj = new clsBundleCompile();
+
+                            obj.OrderNo = Convert.ToString(ds.Tables[0].Rows[i]["OrderNo"]);
+                            obj.StyleCode = Convert.ToString(ds.Tables[0].Rows[i]["StyleCode"]);
+                            obj.LayID = Convert.ToInt64(ds.Tables[0].Rows[i]["LayID"]);
+                            obj.SubSection = Convert.ToString(ds.Tables[0].Rows[i]["SubSection"]);
+                            obj.ColorName = Convert.ToString(ds.Tables[0].Rows[i]["ColorName"]);
+                            obj.SizeName = Convert.ToString(ds.Tables[0].Rows[i]["SizeName"]);
+                            obj.BundleNo = Convert.ToInt32(ds.Tables[0].Rows[i]["BundleNo"]);
+                            obj.Qty = Convert.ToInt32(ds.Tables[0].Rows[i]["Qty"]);
+                            obj.BundleID = Convert.ToInt64(ds.Tables[0].Rows[i]["BundleID"]);
+
+                            obj.vErrorCode = 200;
+                            obj.vErrorMsg = "Success";
+                            objResp.Add(obj);
+                            i++;
+                        }
+                    }
+                    if (ds.Tables[1].Rows.Count > 0)
+                    {
+                        while (ds.Tables[1].Rows.Count > i)
+                        {
+                            obj = new clsBundleCompile();
+
+                            obj.LineName = Convert.ToString(ds.Tables[1].Rows[i]["LineName"]);
+                            obj.AppEmpID = Convert.ToInt32(ds.Tables[1].Rows[i]["AppEmpID"]);
+                            obj.AppEmpName = Convert.ToString(ds.Tables[1].Rows[i]["AppEmpName"]);
+                            obj.OperationNo = Convert.ToInt32(ds.Tables[1].Rows[i]["OperationNo"]);
+                            obj.OperationName = Convert.ToString(ds.Tables[1].Rows[i]["OperationName"]);
+                            obj.AppStartTime = Convert.ToString(ds.Tables[1].Rows[i]["AppStartTime"]);
+                            obj.AppEndTime = Convert.ToString(ds.Tables[1].Rows[i]["AppEndTime"]);
+
+                            obj.vErrorCode = 200;
+                            obj.vErrorMsg = "Success";
+                            objResp.Add(obj);
+                            i++;
+                        }
+                    }
+                    else
+                    {
+                        obj.vErrorCode = 404;
+                        obj.vErrorMsg = "Bundle ID history records are not found.";
+                        objResp.Add(obj);
+                    }
+                }
+            }
+            catch (Exception exp)
+            {
+                obj.vErrorCode = 500;
+                Logger.WriteLog("Function Name : Fn_Fetch_BundleIDHistoryDetails", " " + "Error Msg : " + exp.Message.ToString(), new StackTrace(exp, true));
+                obj.vErrorMsg = exp.Message.ToString();
+                objResp.Add(obj);
+            }
+            finally
+            {
+                Con.Close();
+            }
+            Logger.ErrorLog(JsonConvert.SerializeObject(objResp), "Response", "Fn_Fetch_BundleIDHistoryDetails");
+            return objResp;
+        }
+
 
 
     }
