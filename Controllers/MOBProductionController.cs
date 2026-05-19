@@ -795,6 +795,26 @@ namespace BSLDaman.Controllers
         }
 
 
+        [System.Web.Http.HttpGet]
+        [System.Web.Http.Route("api/MOBProduction/Fn_Fetch_BundleIDBasicDetails")]
+        public List<clsBundleCompile> Fn_Fetch_BundleIDBasicDetails(Int64? BundleID = null)
+        {
+            clsBundleCompile objReq = new clsBundleCompile();
+
+            if (BundleID.HasValue)
+            {
+                objReq.BundleID = BundleID.Value;
+            }
+            else
+            {
+                objReq.BundleID = 0;
+            }
+
+            var objResp = _MOBDALProduction.Fn_Fetch_BundleIDBasicDetails(objReq);
+            return objResp;
+        }
+
+
 
     }
 }
