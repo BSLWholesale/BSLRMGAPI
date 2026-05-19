@@ -135,42 +135,6 @@ namespace BSLDaman.Controllers
                 objReq.OrderNo = null;
             }
 
-            //if (PageNumber.HasValue)
-            //{
-            //    objReq.PageNumber = PageNumber.Value;
-            //}
-            //else
-            //{
-            //    objReq.PageNumber = 0;
-            //}
-
-            //if (PageSize.HasValue)
-            //{
-            //    objReq.PageSize = PageSize.Value;
-            //}
-            //else
-            //{
-            //    objReq.PageSize = 0;
-            //}
-
-            //if (!string.IsNullOrWhiteSpace(SortBy))
-            //{
-            //    objReq.SortBy = SortBy;
-            //}
-            //else
-            //{
-            //    objReq.SortBy = null;
-            //}
-
-            //if (!string.IsNullOrWhiteSpace(SortDirection))
-            //{
-            //    objReq.SortDirection = SortDirection;
-            //}
-            //else
-            //{
-            //    objReq.SortDirection = null;
-            //}
-
             var objResp = _MOBDALProduction.Fn_Get_ActiveBundle(objReq);
             return objResp;
         }
@@ -809,6 +773,27 @@ namespace BSLDaman.Controllers
             objResp = _MOBDALProduction.Fn_Remove_OperationNumberBySupervisor(objReq);
             return objResp;
         }
+
+
+        [System.Web.Http.HttpGet]
+        [System.Web.Http.Route("api/MOBProduction/Fn_Fetch_BundleIDHistoryDetails")]
+        public List<clsBundleCompile> Fn_Fetch_BundleIDHistoryDetails(Int64? BundleID = null)
+        {
+            clsBundleCompile objReq = new clsBundleCompile();
+
+            if (BundleID.HasValue)
+            {
+                objReq.BundleID = BundleID.Value;
+            }
+            else
+            {
+                objReq.BundleID = 0;
+            }
+
+            var objResp = _MOBDALProduction.Fn_Fetch_BundleIDHistoryDetails(objReq);
+            return objResp;
+        }
+
 
 
     }
