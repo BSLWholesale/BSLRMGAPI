@@ -29,9 +29,11 @@ namespace BSLDaman.DAL
                 if (Con.State == ConnectionState.Closed)
                 { Con.Open(); }
 
-                string strSql = "SELECT BundleID, LayID, BundleNo, SizeName, ColorName, ShadeName,";
-                strSql = strSql + " Qty, PlyFrom, PlyTo, LotNo, SubSection, Dispatch, StyleCode, OrderNo, BundleQty,";
-                strSql = strSql + " CreatedBy, FORMAT(CreatedOn, 'dd-MMM-yyy') AS CreatedOn FROM BundleCompile WHERE 1=1";
+                
+                string strSql = "SELECT BundleID, LayID, BundleNo, SizeName, ColorName, ShadeName, Qty, PlyFrom, PlyTo, LotNo,";
+                strSql = strSql + " SubSection, Dispatch, StyleCode, OrderNo, BundleQty, CreatedBy,";
+                strSql = strSql + " FORMAT(CreatedOn, 'dd-MMM-yyyy') AS CreatedOn FROM BundleCompile WHERE 1 = 1";
+               
                 if (!String.IsNullOrWhiteSpace(objReq.StyleCode))
                 {
                     strSql = strSql + " AND StyleCode = @StyleCode";
@@ -56,8 +58,7 @@ namespace BSLDaman.DAL
                 {
                     strSql = strSql + " AND SubSection = @SubSection ";
                 }
-                strSql = strSql + " ORDER BY SubSection, BundleNo ASC ";
-
+                strSql = strSql + " ORDER BY LayID ASC, SubSection ASC, BundleNo ASC ";
 
                 SqlCommand cmd = new SqlCommand(strSql, Con);
                 cmd.CommandType = CommandType.Text;
