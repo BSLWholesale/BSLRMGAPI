@@ -1557,19 +1557,32 @@ namespace BSLDaman.DAL
                             int lastQty = Plies % objReq.BunleQty;
                             float TotalBundle = Plies / objReq.BunleQty;
                             int secondLastBundle = 0;
-                            TotalBundle = TotalBundle + mxBundleNo;
+
+                            if (lastQty > 0)
+                            {
+                                TotalBundle = TotalBundle + mxBundleNo;
+                            }
+                            else
+                            {
+                                TotalBundle = TotalBundle + mxBundleNo;
+                                TotalBundle = TotalBundle - 1;
+                            }
                             int bundleStart = 0;
                             bundleStart = bundleStart + Convert.ToInt32(mxBundleNo);
 
                             while (bundleStart <= TotalBundle)
                             {
                                 secondLastBundle = Convert.ToInt32(TotalBundle) - 1;
-                                if (bundleStart == TotalBundle)
+                                if (bundleStart == TotalBundle && lastQty == 0)
+                                {
+                                    objReq.Qty = objReq.BunleQty;
+                                }
+                                else if (bundleStart == TotalBundle && lastQty > 0)
                                 {
                                     objReq.Qty = lastQty;
                                     objReq.BunleQty = lastQty;
                                 }
-                                if (bundleStart == secondLastBundle && lastQty <= 5)
+                                else if (bundleStart == secondLastBundle && lastQty > 0 && lastQty <= 5)
                                 {
                                     float remainingQty = objReq.BunleQty + lastQty;
 
@@ -2586,7 +2599,7 @@ namespace BSLDaman.DAL
             Logger.ErrorLog(JsonConvert.SerializeObject(objResp), "Response", "Fn_Get_Color_With_Shade");
             return objResp;
         }
-       
+
 
     }
 }
