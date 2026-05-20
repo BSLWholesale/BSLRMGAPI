@@ -797,7 +797,7 @@ namespace BSLDaman.Controllers
 
         [System.Web.Http.HttpGet]
         [System.Web.Http.Route("api/MOBProduction/Fn_Fetch_BundleIDBasicDetails")]
-        public List<clsBundleCompile> Fn_Fetch_BundleIDBasicDetails(Int64? BundleID = null)
+        public clsBundleCompile Fn_Fetch_BundleIDBasicDetails(Int64? BundleID = null)
         {
             clsBundleCompile objReq = new clsBundleCompile();
 
