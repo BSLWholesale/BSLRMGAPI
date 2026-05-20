@@ -3488,7 +3488,7 @@ namespace BSLDaman.DAL
                     else
                     {
                         obj.vErrorCode = 404;
-                        obj.vErrorMsg = "Bundle ID history records are not found.";
+                        obj.vErrorMsg = "Bundle ID scanning history details are not found.";
                         objResp.Add(obj);
                     }
                 }
@@ -3509,17 +3509,17 @@ namespace BSLDaman.DAL
         }
 
 
-        public List<clsBundleCompile> Fn_Fetch_BundleIDBasicDetails(clsBundleCompile objReq)
+
+        public clsBundleCompile Fn_Fetch_BundleIDBasicDetails(clsBundleCompile objReq)
         {
-            var objResp = new List<clsBundleCompile>();
-            var obj = new clsBundleCompile();
+            var objResp = new clsBundleCompile();
             Logger.ErrorLog(JsonConvert.SerializeObject(objReq), "Request", "Fn_Fetch_BundleIDBasicDetails");
             try
             {
                 if (objReq.BundleID == null || objReq.BundleID == 0)
                 {
-                    obj.vErrorMsg = "Pass the Valid Bundle ID";
-                    obj.vErrorCode = 300;
+                    objResp.vErrorMsg = "Pass the Valid Bundle ID";
+                    objResp.vErrorCode = 300;
                 }
                 else
                 {
@@ -3540,40 +3540,31 @@ namespace BSLDaman.DAL
 
                     if (ds.Tables[0].Rows.Count > 0)
                     {
-                        while (ds.Tables[0].Rows.Count > i)
-                        {
-                            obj = new clsBundleCompile();
+                        objResp.OrderNo = Convert.ToString(ds.Tables[0].Rows[i]["OrderNo"]);
+                        objResp.StyleCode = Convert.ToString(ds.Tables[0].Rows[i]["StyleCode"]);
+                        objResp.LayID = Convert.ToInt64(ds.Tables[0].Rows[i]["LayID"]);
+                        objResp.SubSection = Convert.ToString(ds.Tables[0].Rows[i]["SubSection"]);
+                        objResp.ColorName = Convert.ToString(ds.Tables[0].Rows[i]["ColorName"]);
+                        objResp.SizeName = Convert.ToString(ds.Tables[0].Rows[i]["SizeName"]);
+                        objResp.BundleNo = Convert.ToInt32(ds.Tables[0].Rows[i]["BundleNo"]);
+                        objResp.Qty = Convert.ToInt32(ds.Tables[0].Rows[i]["Qty"]);
+                        objResp.BundleID = Convert.ToInt64(ds.Tables[0].Rows[i]["BundleID"]);
 
-                            obj.OrderNo = Convert.ToString(ds.Tables[0].Rows[i]["OrderNo"]);
-                            obj.StyleCode = Convert.ToString(ds.Tables[0].Rows[i]["StyleCode"]);
-                            obj.LayID = Convert.ToInt64(ds.Tables[0].Rows[i]["LayID"]);
-                            obj.SubSection = Convert.ToString(ds.Tables[0].Rows[i]["SubSection"]);
-                            obj.ColorName = Convert.ToString(ds.Tables[0].Rows[i]["ColorName"]);
-                            obj.SizeName = Convert.ToString(ds.Tables[0].Rows[i]["SizeName"]);
-                            obj.BundleNo = Convert.ToInt32(ds.Tables[0].Rows[i]["BundleNo"]);
-                            obj.Qty = Convert.ToInt32(ds.Tables[0].Rows[i]["Qty"]);
-                            obj.BundleID = Convert.ToInt64(ds.Tables[0].Rows[i]["BundleID"]);
-
-                            obj.vErrorCode = 200;
-                            obj.vErrorMsg = "Success";
-                            objResp.Add(obj);
-                            i++;
-                        }
+                        objResp.vErrorCode = 200;
+                        objResp.vErrorMsg = "Success";
                     }
                     else
                     {
-                        obj.vErrorCode = 404;
-                        obj.vErrorMsg = "Bundle ID basic details record are not found.";
-                        objResp.Add(obj);
+                        objResp.vErrorCode = 404;
+                        objResp.vErrorMsg = "Bundle ID basic details are not found.";
                     }
                 }
             }
             catch (Exception exp)
             {
-                obj.vErrorCode = 500;
+                objResp.vErrorCode = 500;
                 Logger.WriteLog("Function Name : Fn_Fetch_BundleIDBasicDetails", " " + "Error Msg : " + exp.Message.ToString(), new StackTrace(exp, true));
-                obj.vErrorMsg = exp.Message.ToString();
-                objResp.Add(obj);
+                objResp.vErrorMsg = exp.Message.ToString();
             }
             finally
             {
@@ -3582,6 +3573,7 @@ namespace BSLDaman.DAL
             Logger.ErrorLog(JsonConvert.SerializeObject(objResp), "Response", "Fn_Fetch_BundleIDBasicDetails");
             return objResp;
         }
+
 
 
     }
