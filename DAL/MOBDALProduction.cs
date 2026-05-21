@@ -3418,7 +3418,7 @@ namespace BSLDaman.DAL
                     }
                     else
                     {
-                        objResp.vErrorMsg = "Operation Number remove failed";
+                        objResp.vErrorMsg = "Operation Number can not be remove";
                         objResp.vErrorCode = 404;
                     }
                 }
