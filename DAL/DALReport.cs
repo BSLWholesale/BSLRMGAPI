@@ -29,11 +29,11 @@ namespace BSLDaman.DAL
                 if (Con.State == ConnectionState.Closed)
                 { Con.Open(); }
 
-                
+
                 string strSql = "SELECT BundleID, LayID, BundleNo, SizeName, ColorName, ShadeName, Qty, PlyFrom, PlyTo, LotNo,";
                 strSql = strSql + " SubSection, Dispatch, StyleCode, OrderNo, BundleQty, CreatedBy,";
                 strSql = strSql + " FORMAT(CreatedOn, 'dd-MMM-yyyy') AS CreatedOn FROM BundleCompile WHERE 1 = 1";
-               
+
                 if (!String.IsNullOrWhiteSpace(objReq.StyleCode))
                 {
                     strSql = strSql + " AND StyleCode = @StyleCode";
@@ -186,7 +186,7 @@ namespace BSLDaman.DAL
 
                 SqlCommand cmd = new SqlCommand(strSql, Con);
                 cmd.CommandType = CommandType.Text;
-                
+
                 if (!String.IsNullOrWhiteSpace(objReq.OrderNo))
                 {
                     cmd.Parameters.AddWithValue("@OrderNo", objReq.OrderNo);
@@ -308,7 +308,7 @@ namespace BSLDaman.DAL
                 {
                     cmd.Parameters.AddWithValue("@StartDate", objReq.StartDate);
                 }
-                
+
 
                 SqlDataAdapter da = new SqlDataAdapter(cmd);
                 DataSet ds = new DataSet();
@@ -460,5 +460,225 @@ namespace BSLDaman.DAL
         }
 
         #endregion End Fn_Get_EfficiencyReport 11-MAY-2026
+
+        #region Start Fn_Get_Piece_Rate_Report 20-May-2026
+
+        public List<clsPieceRateReportResp> Fn_Get_Piece_Rate_Report(clsPieceRateReportReq objReq)
+        {
+            var objResp = new List<clsPieceRateReportResp>();
+            var obj = new clsPieceRateReportResp();
+            Logger.ErrorLog(JsonConvert.SerializeObject(objReq), "Request", "Fn_Get_Piece_Rate_Report");
+            try
+            {
+                if (Con.State == ConnectionState.Broken)
+                { Con.Close(); }
+                if (Con.State == ConnectionState.Closed)
+                { Con.Open(); }
+
+                string strSql = "SELECT LineName, StyleCode, OrderNo, Code, EmpName, OperationNo, Descriptions, WorkDate,";
+                strSql = strSql + "  Qty , StdRate, (Qty * StdRate) AS Amount, UpdateType, BundleIDStatus FROM vPieceRateReport WHERE 1=1 ";
+
+                if (!String.IsNullOrWhiteSpace(objReq.StyleCode))
+                {
+                    strSql = strSql + " AND StyleCode = @StyleCode ";
+                }
+                if (!String.IsNullOrWhiteSpace(objReq.Code))
+                {
+                    strSql = strSql + " AND Code = @Code ";
+                }
+                if (!String.IsNullOrWhiteSpace(objReq.LineName))
+                {
+                    strSql = strSql + " AND LineName = @LineName ";
+                }
+                if (!String.IsNullOrWhiteSpace(objReq.StartDate) && String.IsNullOrWhiteSpace(objReq.EndDate))
+                {
+                    strSql = strSql + " AND WorkDate = @StartDate ";
+                }
+                if (!String.IsNullOrWhiteSpace(objReq.StartDate) && !String.IsNullOrWhiteSpace(objReq.EndDate))
+                {
+                    strSql = strSql + " AND WorkDate BETWEEN '" + objReq.StartDate + "' AND '" + objReq.EndDate + "'";
+                }
+                strSql = strSql + " ORDER BY " + objReq.OrderBy;
+
+                SqlCommand cmd = new SqlCommand(strSql, Con);
+                cmd.CommandType = CommandType.Text;
+
+                if (!String.IsNullOrWhiteSpace(objReq.StyleCode))
+                {
+                    cmd.Parameters.AddWithValue("@StyleCode", objReq.StyleCode);
+                }
+                if (!String.IsNullOrWhiteSpace(objReq.Code))
+                {
+                    cmd.Parameters.AddWithValue("@Code", objReq.Code);
+                }
+                if (!String.IsNullOrWhiteSpace(objReq.LineName))
+                {
+                    cmd.Parameters.AddWithValue("@LineName", objReq.LineName);
+                }
+                if (!String.IsNullOrWhiteSpace(objReq.StartDate) && String.IsNullOrWhiteSpace(objReq.EndDate))
+                {
+                    cmd.Parameters.AddWithValue("@StartDate", objReq.StartDate);
+                }
+
+
+                SqlDataAdapter da = new SqlDataAdapter(cmd);
+                DataSet ds = new DataSet();
+                da.Fill(ds);
+                int i = 0;
+                if (ds.Tables[0].Rows.Count > 0)
+                {
+                    while (ds.Tables[0].Rows.Count > i)
+                    {
+                        obj = new clsPieceRateReportResp();
+                        obj.LineName = Convert.ToString(ds.Tables[0].Rows[i]["LineName"]);
+                        obj.StyleCode = Convert.ToString(ds.Tables[0].Rows[i]["StyleCode"]);
+                        obj.Code = Convert.ToString(ds.Tables[0].Rows[i]["Code"]);
+                        obj.EmpName = Convert.ToString(ds.Tables[0].Rows[i]["EmpName"]);
+                        obj.OpNo = Convert.ToInt32(ds.Tables[0].Rows[i]["OperationNo"]);
+                        obj.OpName = Convert.ToString(ds.Tables[0].Rows[i]["Descriptions"]);
+                        obj.WorkDate = Convert.ToString(ds.Tables[0].Rows[i]["WorkDate"]);
+                        obj.Qty = Convert.ToDouble(ds.Tables[0].Rows[i]["Qty"]);
+                        obj.Rate = Convert.ToDouble(ds.Tables[0].Rows[i]["StdRate"]);
+                        obj.Amount = Convert.ToDouble(ds.Tables[0].Rows[i]["Amount"]);
+                        obj.UpdateType = Convert.ToString(ds.Tables[0].Rows[i]["UpdateType"]);
+                        obj.vErrorCode = 200;
+                        obj.vErrorMsg = "Success";
+                        objResp.Add(obj);
+                        i++;
+                    }
+                }
+                else
+                {
+                    obj.vErrorCode = 404;
+                    obj.vErrorMsg = "No Record found";
+                    objResp.Add(obj);
+                }
+
+            }
+            catch (Exception exp)
+            {
+                obj.vErrorCode = 500;
+                Logger.WriteLog("Function Name : Fn_Get_Piece_Rate_Report", " " + "Error Msg : " + exp.Message.ToString(), new StackTrace(exp, true));
+                obj.vErrorMsg = exp.Message.ToString();
+                objResp.Add(obj);
+            }
+            finally
+            {
+                Con.Close();
+            }
+            Logger.ErrorLog(JsonConvert.SerializeObject(objResp), "Response", "Fn_Get_Piece_Rate_Report");
+            return objResp;
+        }
+
+        #endregion End Fn_Get_Piece_Rate_Report 20-May-2026
+
+        #region Start Fn_Get_Peice_Rate_Incentive 21-May-2026
+
+        public List<clsPieceRateIncentive> Fn_Get_Peice_Rate_Incentive(clsPieceRateReportReq objReq)
+        {
+            var objResp = new List<clsPieceRateIncentive>();
+            var obj = new clsPieceRateIncentive();
+            Logger.ErrorLog(JsonConvert.SerializeObject(objReq), "Request", "Fn_Get_Peice_Rate_Incentive");
+            try
+            {
+                if (Con.State == ConnectionState.Broken)
+                { Con.Close(); }
+                if (Con.State == ConnectionState.Closed)
+                { Con.Open(); }
+
+                string strSql = "SELECT LineName, Code, EmpName, StyleCode, COUNT(DISTINCT WorkDate) AS WorkingDays,";
+                strSql = strSql + " SUM(Qty * StdRate) / COUNT(DISTINCT WorkDate) AS EarningPerDay, SUM(Qty * StdRate) AS TotalEarning ";
+                strSql = strSql + " FROM vPieceRateReport WHERE 1=1 ";
+
+                if (!String.IsNullOrWhiteSpace(objReq.StyleCode))
+                {
+                    strSql = strSql + " AND StyleCode = @StyleCode ";
+                }
+                if (!String.IsNullOrWhiteSpace(objReq.Code))
+                {
+                    strSql = strSql + " AND Code = @Code ";
+                }
+                if (!String.IsNullOrWhiteSpace(objReq.LineName))
+                {
+                    strSql = strSql + " AND LineName = @LineName ";
+                }
+                if (!String.IsNullOrWhiteSpace(objReq.StartDate) && String.IsNullOrWhiteSpace(objReq.EndDate))
+                {
+                    strSql = strSql + " AND WorkDate = @StartDate ";
+                }
+                if (!String.IsNullOrWhiteSpace(objReq.StartDate) && !String.IsNullOrWhiteSpace(objReq.EndDate))
+                {
+                    strSql = strSql + " AND WorkDate BETWEEN '" + objReq.StartDate + "' AND '" + objReq.EndDate + "'";
+                }
+                strSql = strSql + " GROUP BY LineName, Code, EmpName, StyleCode ";
+                strSql = strSql + " ORDER BY " + objReq.OrderBy;
+
+                SqlCommand cmd = new SqlCommand(strSql, Con);
+                cmd.CommandType = CommandType.Text;
+
+                if (!String.IsNullOrWhiteSpace(objReq.StyleCode))
+                {
+                    cmd.Parameters.AddWithValue("@StyleCode", objReq.StyleCode);
+                }
+                if (!String.IsNullOrWhiteSpace(objReq.Code))
+                {
+                    cmd.Parameters.AddWithValue("@Code", objReq.Code);
+                }
+                if (!String.IsNullOrWhiteSpace(objReq.LineName))
+                {
+                    cmd.Parameters.AddWithValue("@LineName", objReq.LineName);
+                }
+                if (!String.IsNullOrWhiteSpace(objReq.StartDate) && String.IsNullOrWhiteSpace(objReq.EndDate))
+                {
+                    cmd.Parameters.AddWithValue("@StartDate", objReq.StartDate);
+                }
+
+
+                SqlDataAdapter da = new SqlDataAdapter(cmd);
+                DataSet ds = new DataSet();
+                da.Fill(ds);
+                int i = 0;
+                if (ds.Tables[0].Rows.Count > 0)
+                {
+                    while (ds.Tables[0].Rows.Count > i)
+                    {
+                        obj = new clsPieceRateIncentive();
+                        obj.LineName = Convert.ToString(ds.Tables[0].Rows[i]["LineName"]);
+                        obj.StyleCode = Convert.ToString(ds.Tables[0].Rows[i]["StyleCode"]);
+                        obj.Code = Convert.ToString(ds.Tables[0].Rows[i]["Code"]);
+                        obj.EmpName = Convert.ToString(ds.Tables[0].Rows[i]["EmpName"]);
+                        obj.WorkingDays = Convert.ToInt32(ds.Tables[0].Rows[i]["WorkingDays"]);
+                        obj.EarningPerDay = Convert.ToDouble(ds.Tables[0].Rows[i]["EarningPerDay"]);
+                        obj.TotalEarning = Convert.ToDouble(ds.Tables[0].Rows[i]["TotalEarning"]);
+                        obj.vErrorCode = 200;
+                        obj.vErrorMsg = "Success";
+                        objResp.Add(obj);
+                        i++;
+                    }
+                }
+                else
+                {
+                    obj.vErrorCode = 404;
+                    obj.vErrorMsg = "No Record found";
+                    objResp.Add(obj);
+                }
+
+            }
+            catch (Exception exp)
+            {
+                obj.vErrorCode = 500;
+                Logger.WriteLog("Function Name : Fn_Get_Peice_Rate_Incentive", " " + "Error Msg : " + exp.Message.ToString(), new StackTrace(exp, true));
+                obj.vErrorMsg = exp.Message.ToString();
+                objResp.Add(obj);
+            }
+            finally
+            {
+                Con.Close();
+            }
+            Logger.ErrorLog(JsonConvert.SerializeObject(objResp), "Response", "Fn_Get_Peice_Rate_Incentive");
+            return objResp;
+        }
+
+        #endregion End Fn_Get_Peice_Rate_Incentive 21-May-2026
     }
 }
