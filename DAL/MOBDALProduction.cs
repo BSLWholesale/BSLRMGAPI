@@ -3298,7 +3298,7 @@ namespace BSLDaman.DAL
                 strSql = strSql + " BAD.SupAssignedDate AS SupAssignedDate, BD.BundleIDStatus AS BundleIDStatus, BAD.CreatedBy AS CreatedBy,";
                 strSql = strSql + " FORMAT(BAD.CreatedOn, 'dd-MMM-yyyy HH:mm:ss') AS CreatedOn, OBD.Descriptions AS OperationName,";
                 strSql = strSql + " BC.ColorName AS ColorName, BC.Qty AS Qty, BC.SizeName AS SizeName, BC.BundleNo AS BundleNo,";
-                strSql = strSql + " CONCAT(BC.PlyFrom,'-',BC.PlyTo) AS Ply, BD.AppStartTime AS AppStartTime";
+                strSql = strSql + " CONCAT(BC.PlyFrom,'-',BC.PlyTo) AS Ply, BD.AppStartTime AS AppStartTime, BD.AppEndTime AS AppEndTime";
                 strSql = strSql + " FROM BundleCompileDetail AS BD";
                 strSql = strSql + " INNER JOIN BundleCompileAssignDetail AS BAD";
                 strSql = strSql + " ON BD.AppEmpID = BAD.AppEmpID AND BD.OperationNo = BAD.OperationNo";
@@ -3344,6 +3344,7 @@ namespace BSLDaman.DAL
                         obj.BundleNo = Convert.ToInt32(ds.Tables[0].Rows[i]["BundleNo"]);
                         obj.Ply = Convert.ToString(ds.Tables[0].Rows[i]["Ply"]);
                         obj.AppStartTime = Convert.ToString(ds.Tables[0].Rows[i]["AppStartTime"]);
+                        obj.AppEndTime = Convert.ToString(ds.Tables[0].Rows[i]["AppEndTime"]);
 
                         obj.vErrorCode = 200;
                         obj.vErrorMsg = "Success";
