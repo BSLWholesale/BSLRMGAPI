@@ -24,7 +24,7 @@ namespace BSLDaman.DAL
             Logger.ErrorLog(JsonConvert.SerializeObject(objReq), "Request", "Fn_Login_Employee");
             try
             {
-                if (objReq.nEmpId == null || objReq.nEmpId == 0)
+                if (objReq.nEmpId == null)
                 {
                     objResp.vErrorMsg = "Please Enter an Employee ID";
                     objResp.vErrorCode = 300;
