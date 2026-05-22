@@ -598,7 +598,11 @@ namespace BSLDaman.Models
         public string StyleCode { get; set; }
         public string Code { get; set; }
         public string EmpName { get; set; }
-        public int WorkingDays { get; set; }
+        public string FromDate { get; set; }
+        public string ToDate { get; set; }
+        public Int64 WorkingDays { get; set; }
+        public Int64 TotalQty { get; set; }
+        public double StdRate { get; set; }
         public double EarningPerDay { get; set; }
         public double TotalEarning { get; set; }
         public string vErrorMsg { get; set; }

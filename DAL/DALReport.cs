@@ -586,10 +586,10 @@ namespace BSLDaman.DAL
                 if (Con.State == ConnectionState.Closed)
                 { Con.Open(); }
 
-                string strSql = "SELECT LineName, Code, EmpName, StyleCode, COUNT(DISTINCT WorkDate) AS WorkingDays,";
-                strSql = strSql + " SUM(Qty * StdRate) / COUNT(DISTINCT WorkDate) AS EarningPerDay, SUM(Qty * StdRate) AS TotalEarning ";
-                strSql = strSql + " FROM vPieceRateReport WHERE 1=1 ";
-
+                string strSql = "SELECT LineName, Code, EmpName, StyleCode, MIN(WorkDate) AS FromDate, MAX(WorkDate) AS ToDate,";
+                strSql = strSql + " DATEDIFF(DAY, MIN(WorkDate), MAX(WorkDate)) + 1 AS WorkingDays, SUM(Qty) AS TotalQty, ";
+                strSql = strSql + " (SUM(Qty * StdRate)  / (DATEDIFF(DAY, MIN(WorkDate), MAX(WorkDate)) + 1)) AS EarningPerDay, ";
+                strSql = strSql + " SUM(Qty * StdRate) AS TotalEarning FROM vIncentive WHERE 1=1 ";
                 if (!String.IsNullOrWhiteSpace(objReq.StyleCode))
                 {
                     strSql = strSql + " AND StyleCode = @StyleCode ";
@@ -647,7 +647,11 @@ namespace BSLDaman.DAL
                         obj.StyleCode = Convert.ToString(ds.Tables[0].Rows[i]["StyleCode"]);
                         obj.Code = Convert.ToString(ds.Tables[0].Rows[i]["Code"]);
                         obj.EmpName = Convert.ToString(ds.Tables[0].Rows[i]["EmpName"]);
-                        obj.WorkingDays = Convert.ToInt32(ds.Tables[0].Rows[i]["WorkingDays"]);
+                        obj.FromDate = Convert.ToString(ds.Tables[0].Rows[i]["FromDate"]);
+                        obj.ToDate = Convert.ToString(ds.Tables[0].Rows[i]["ToDate"]);
+                        obj.WorkingDays = Convert.ToInt64(ds.Tables[0].Rows[i]["WorkingDays"]);
+                        obj.TotalQty = Convert.ToInt64(ds.Tables[0].Rows[i]["TotalQty"]);
+                       // obj.StdRate = Convert.ToDouble(ds.Tables[0].Rows[i]["StdRate"]);
                         obj.EarningPerDay = Convert.ToDouble(ds.Tables[0].Rows[i]["EarningPerDay"]);
                         obj.TotalEarning = Convert.ToDouble(ds.Tables[0].Rows[i]["TotalEarning"]);
                         obj.vErrorCode = 200;
