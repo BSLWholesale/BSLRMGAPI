@@ -3423,25 +3423,58 @@ namespace BSLDaman.DAL
 
                 SqlCommand cmd = new SqlCommand("USP_WORKER", Con);
                 cmd.CommandType = CommandType.StoredProcedure;
-                cmd.Parameters.AddWithValue("@ID", mxID);
+                //cmd.Parameters.AddWithValue("@ID", mxID);
                 cmd.Parameters.AddWithValue("@Code", objReq.Code);
                 cmd.Parameters.AddWithValue("@Name", objReq.Name);
-                cmd.Parameters.AddWithValue("@FatherName", objReq.FatherName);
-                cmd.Parameters.AddWithValue("@Gender", objReq.Gender);
-                cmd.Parameters.AddWithValue("@Grade", objReq.Grade);
-                cmd.Parameters.AddWithValue("@Shift", objReq.Shift);
-                cmd.Parameters.AddWithValue("Pin", encriptPassword);
-                cmd.Parameters.AddWithValue("@EmpRole", objReq.OperatorType);
-                cmd.Parameters.AddWithValue("@LineName", objReq.LineName);
+                cmd.Parameters.AddWithValue("@EmpDesignation", objReq.EmpDesignation);
+                cmd.Parameters.AddWithValue("@EmpRole", objReq.EmpUser);
+                cmd.Parameters.AddWithValue("@Unit", objReq.Unit);
+                cmd.Parameters.AddWithValue("@Grouping", objReq.Grouping);
+                cmd.Parameters.AddWithValue("@ProductSection", objReq.ProductSection);
+                cmd.Parameters.AddWithValue("@Section", objReq.Section);
+                cmd.Parameters.AddWithValue("@SubSection", objReq.SubSection);
                 cmd.Parameters.AddWithValue("@Mobile", objReq.Mobile);
-                cmd.Parameters.AddWithValue("@Contractor", objReq.Contractor);
+                cmd.Parameters.AddWithValue("@Address", objReq.Address);
+                cmd.Parameters.AddWithValue("@NativeAddress", objReq.NativeAddress);
+                cmd.Parameters.AddWithValue("@MainOperation", objReq.MainOperation);
+                cmd.Parameters.AddWithValue("@MainOpCapHr", objReq.MainOpCapHr);
+                cmd.Parameters.AddWithValue("@SecondOperation", objReq.SecondOperation);
+                cmd.Parameters.AddWithValue("@SecondOpCapHr", objReq.SecondOpCapHr);
+                cmd.Parameters.AddWithValue("@ThirdOperation", objReq.ThirdOperation);
+                cmd.Parameters.AddWithValue("@ThirdOpCapHr", objReq.ThirdOpCapHr);
+                cmd.Parameters.AddWithValue("@FourthOperation", objReq.FourthOperation);
+                cmd.Parameters.AddWithValue("@FourthOpCapHr", objReq.FourthOpCapHr);
+                cmd.Parameters.AddWithValue("@FifthOperation", objReq.FifthOperation);
+                cmd.Parameters.AddWithValue("@FifthOpCapHr", objReq.FifthOpCapHr);
+                cmd.Parameters.AddWithValue("@SixthOperation", objReq.SixthOperation);
+                cmd.Parameters.AddWithValue("@SixthOpCapHr", objReq.SixthOpCapHr);
+                cmd.Parameters.AddWithValue("@SeventhOperation", objReq.SeventhOperation);
+                cmd.Parameters.AddWithValue("@SeventhOpCapHr", objReq.SeventhOpCapHr);
+                cmd.Parameters.AddWithValue("@Gender", objReq.Gender);
+                cmd.Parameters.AddWithValue("@Shift", objReq.Shift);
+                cmd.Parameters.AddWithValue("@Pin", encriptPassword);
                 cmd.Parameters.AddWithValue("@PayRoll", objReq.PayRoll);
-                cmd.Parameters.AddWithValue("@IsTrainee", objReq.IsTrainee);
-                cmd.Parameters.AddWithValue("@IsTemporary", objReq.IsTemporary);
-                cmd.Parameters.AddWithValue("@PermanentSection", objReq.PermanentSection);
                 cmd.Parameters.AddWithValue("@DOJ", objReq.DOJ);
+                cmd.Parameters.AddWithValue("@EmpImageFile", objReq.EmpImageFile);
                 cmd.Parameters.AddWithValue("@CreatedBy", objReq.CreatedBy);
                 cmd.Parameters.AddWithValue("@QueryType", "InsertWorker");
+
+                //cmd.Parameters.AddWithValue("@FatherName", objReq.FatherName);
+                //cmd.Parameters.AddWithValue("@Gender", objReq.Gender);
+                //cmd.Parameters.AddWithValue("@Grade", objReq.Grade);
+                //cmd.Parameters.AddWithValue("@Shift", objReq.Shift);
+                //cmd.Parameters.AddWithValue("Pin", encriptPassword);
+                //cmd.Parameters.AddWithValue("@EmpRole", objReq.OperatorType);
+                //cmd.Parameters.AddWithValue("@LineName", objReq.LineName);
+                //cmd.Parameters.AddWithValue("@Mobile", objReq.Mobile);
+                //cmd.Parameters.AddWithValue("@Contractor", objReq.Contractor);
+                //cmd.Parameters.AddWithValue("@PayRoll", objReq.PayRoll);
+                //cmd.Parameters.AddWithValue("@IsTrainee", objReq.IsTrainee);
+                //cmd.Parameters.AddWithValue("@IsTemporary", objReq.IsTemporary);
+                //cmd.Parameters.AddWithValue("@PermanentSection", objReq.PermanentSection);
+                //cmd.Parameters.AddWithValue("@DOJ", objReq.DOJ);
+                //cmd.Parameters.AddWithValue("@CreatedBy", objReq.CreatedBy);
+                //cmd.Parameters.AddWithValue("@QueryType", "InsertWorker");
                 int i = 0;
                 i = cmd.ExecuteNonQuery();
                 if (i > 0)
@@ -3452,7 +3485,7 @@ namespace BSLDaman.DAL
                 else
                 {
                     objResp.vErrorCode = 400;
-                    objResp.vErrorMsg = "Worker inserting failed";
+                    objResp.vErrorMsg = "Worker Insertion Failed";
                 }
             }
             catch (Exception exp)
