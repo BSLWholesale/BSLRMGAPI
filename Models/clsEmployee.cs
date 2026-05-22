@@ -563,4 +563,49 @@ namespace BSLDaman.Models
         public string SizeName { get; set; }
         public Int32 Freq { get; set; }
     }
+
+    public class clsPieceRateReportReq
+    {
+        public string LineName { get; set; }
+        public string StyleCode { get; set; }
+        public string Code { get; set; }
+        public string StartDate { get; set; }
+        public string EndDate { get; set; }
+        public string OrderBy { get; set; }
+        public string QueryType { get; set; }
+
+    }
+    public class clsPieceRateReportResp
+    {
+        public string LineName { get; set; }
+        public string StyleCode { get; set; }
+        public string Code { get; set; }
+        public string EmpName { get; set; }
+        public int OpNo { get; set; }
+        public string OpName { get; set; }
+        public string WorkDate { get; set; }
+        public double Qty { get; set; }
+        public double Rate { get; set; }
+        public double Amount { get; set; }
+        public string UpdateType { get; set; }
+        public string vErrorMsg { get; set; }
+        public int vErrorCode { get; set; }
+    }
+
+    public class clsPieceRateIncentive
+    {
+        public string LineName { get; set; }
+        public string StyleCode { get; set; }
+        public string Code { get; set; }
+        public string EmpName { get; set; }
+        public string FromDate { get; set; }
+        public string ToDate { get; set; }
+        public Int64 WorkingDays { get; set; }
+        public Int64 TotalQty { get; set; }
+        public double StdRate { get; set; }
+        public double EarningPerDay { get; set; }
+        public double TotalEarning { get; set; }
+        public string vErrorMsg { get; set; }
+        public int vErrorCode { get; set; }
+    }
 }

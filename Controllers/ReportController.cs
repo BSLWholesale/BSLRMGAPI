@@ -57,5 +57,32 @@ namespace BSLDaman.Controllers
             objResp = _DALReport.Fn_Get_EfficiencyReport(objReq);
             return objResp;
         }
+
+        #region Start Fn_Get_Piece_Rate_Report 20-May-2026
+
+        [System.Web.Http.HttpPost]
+        [System.Web.Http.Route("api/Report/Fn_Get_Piece_Rate_Report")]
+        public List<clsPieceRateReportResp> Fn_Get_Piece_Rate_Report(clsPieceRateReportReq objReq)
+        {
+            var objResp = new List<clsPieceRateReportResp>();
+            objResp = _DALReport.Fn_Get_Piece_Rate_Report(objReq);
+            return objResp;
+        }
+
+        #endregion End Fn_Get_Piece_Rate_Report 20-May-2026
+
+        #region Start Fn_Get_Peice_Rate_Incentive 21-May-2026
+
+        [System.Web.Http.HttpPost]
+        [System.Web.Http.Route("api/Report/Fn_Get_Peice_Rate_Incentive")]
+        public List<clsPieceRateIncentive> Fn_Get_Peice_Rate_Incentive(clsPieceRateReportReq objReq)
+        {
+            var objResp = new List<clsPieceRateIncentive>();
+            objResp = _DALReport.Fn_Get_Peice_Rate_Incentive(objReq);
+            return objResp;
+        }
+
+        #endregion End Fn_Get_Peice_Rate_Incentive 21-May-2026
+
     }
 }
