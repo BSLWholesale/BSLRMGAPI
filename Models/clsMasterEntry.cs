@@ -379,6 +379,30 @@ namespace BSLDaman.Models
         public string CreatedOn { get; set; }
         public int ModifiedBy { get; set; }
         public string ModifiedOn { get; set; }
+        public string EmpDesignation { get; set; }
+        public string EmpUser { get; set; }
+        public string Unit { get; set; }
+        public string Grouping { get; set; }
+        public string ProductSection { get; set; }
+        public string Section { get; set; }
+        public string SubSection { get; set; }
+        public string Address { get; set; }
+        public string NativeAddress { get; set; }
+        public string MainOperation { get; set; }
+        public string MainOpCapHr { get; set; }
+        public string SecondOperation { get; set; }
+        public string SecondOpCapHr { get; set; }
+        public string ThirdOperation { get; set; }
+        public string ThirdOpCapHr { get; set; }
+        public string FourthOperation { get; set; }
+        public string FourthOpCapHr { get; set; }
+        public string FifthOperation { get; set; }
+        public string FifthOpCapHr { get; set; }
+        public string SixthOperation { get; set; }
+        public string SixthOpCapHr { get; set; }
+        public string SeventhOperation { get; set; }
+        public string SeventhOpCapHr { get; set; }
+        public string EmpImageFile { get; set; }
         public string vErrorMsg { get; set; }
         public int vErrorCode { get; set; }
     }
