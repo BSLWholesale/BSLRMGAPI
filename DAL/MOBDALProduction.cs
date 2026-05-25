@@ -3310,7 +3310,7 @@ namespace BSLDaman.DAL
                 strSql = strSql + " INNER JOIN BundleCompile AS BC";
                 strSql = strSql + " ON BC.BundleID = BD.BundleID";
                 strSql = strSql + " WHERE BAD.AppEmpID = " + objReq.AppEmpID;
-                strSql = strSql + " AND BD.BundleIDStatus = 'Finished' AND CONVERT(DATE, BD.AppEndTime) = GETDATE()";
+                strSql = strSql + " AND BD.BundleIDStatus = 'Finished' AND CONVERT(DATE, BD.AppEndTime) = CONVERT(DATE, GETDATE())";
                 strSql = strSql + " ORDER BY BD.AppEndTime DESC, BAD.OrderNo, BAD.OperationNo";
 
                 SqlCommand cmd = new SqlCommand(strSql, Con);
