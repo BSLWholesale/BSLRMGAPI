@@ -84,5 +84,17 @@ namespace BSLDaman.Controllers
 
         #endregion End Fn_Get_Peice_Rate_Incentive 21-May-2026
 
+        #region Start Fn_Get_BundleStatus_Report 26-May-2026
+
+        [System.Web.Http.HttpPost]
+        [System.Web.Http.Route("api/Report/Fn_Get_BundleStatus_Report")]
+        public List<clsBundleStatusReportResp> Fn_Get_BundleStatus_Report(clsBundleStatusReportReq objReq)
+        {
+            var objResp = new List<clsBundleStatusReportResp>();
+            objResp = _DALReport.Fn_Get_BundleStatus_Report(objReq);
+            return objResp;
+        }
+
+        #endregion End Fn_Get_BundleStatus_Report 26-May-2026
     }
 }

@@ -608,4 +608,35 @@ namespace BSLDaman.Models
         public string vErrorMsg { get; set; }
         public int vErrorCode { get; set; }
     }
+
+    public class clsBundleStatusReportReq
+    {
+        public string StyleCode { get; set; }
+        public string OrderNo { get; set; }
+        public string SizeName { get; set; }
+        public string SubSection { get; set; }
+        public string BundleIDStatus { get; set; }
+        public int AppEmpID { get; set; }
+    }
+    public class clsBundleStatusReportResp
+    {
+        public Int64 BundleID { get; set; }
+        public int BundleNo { get; set; }
+        public string SizeName { get; set; }
+        public string ColorName { get; set; }
+        public string ShadeName { get; set; }
+        public int Qty { get; set; }
+        public int PlyFrom { get; set; }
+        public int PlyTo { get; set; }
+        public int LotNo { get; set; }
+        public string SubSection { get; set; }
+        public string StyleCode { get; set; }
+        public string OrderNo { get; set; }
+        public int AppEmpID { get; set; }
+        public string AppStartTime { get; set; }
+        public string AppEndTime { get; set; }
+        public string BundleIDStatus { get; set; }
+        public string vErrorMsg { get; set; }
+        public int vErrorCode { get; set; }
+    }
 }
