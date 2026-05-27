@@ -4036,7 +4036,7 @@ namespace BSLDaman.DAL
                     }
                     else
                     {
-                        objResp.DOJ = Convert.ToString(ds.Tables[0].Rows[i]["DOJ"]);
+                        objResp.DOJ = Convert.ToDateTime(ds.Tables[0].Rows[i]["DOJ"]).ToString("dd-MMM-yyyy");
                     }
 
                     if (ds.Tables[0].Rows[i]["EmpImageFile"] == null)
