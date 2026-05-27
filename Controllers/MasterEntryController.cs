@@ -629,6 +629,25 @@ namespace BSLDaman.Controllers
             return objResp;
         }
 
+
+        [System.Web.Http.HttpPost]
+        [System.Web.Http.Route("api/MasterEntry/Fn_Update_WorkerDetails")]
+        public clsWorker Fn_Update_WorkerDetails(clsWorker objReq)
+        {
+            var objResp = new clsWorker();
+            objResp = _DALMasterEntry.Fn_Update_WorkerDetails(objReq);
+            return objResp;
+        }
+
+        [System.Web.Http.HttpPost]
+        [System.Web.Http.Route("api/MasterEntry/Fn_Fetch_WorkerDetails_ByID")]
+        public clsWorker Fn_Fetch_WorkerDetails_ByID(clsWorker objReq)
+        {
+            var objResp = new clsWorker();
+            objResp = _DALMasterEntry.Fn_Fetch_WorkerDetails_ByID(objReq);
+            return objResp;
+        }
+
         #endregion End Worker 27-Jan-2026
 
 
