@@ -3514,29 +3514,39 @@ namespace BSLDaman.DAL
                 if (Con.State == ConnectionState.Closed)
                 { Con.Open(); }
 
-                string strSql = "SELECT EM.ID, EM.EmpId, EM.EmpName, EM.FatherName, EM.EmpGender, EM.EmpGrade, EM.EmpShift, EM.EmpPassword,";
-                strSql = strSql + " EM.EmpRole, EM.EmpMobile, EM.Contractor, EM.PayRoll, EM.IsTrainee, EM.IsTemporary, ED.LineName,";
-                strSql = strSql + " EM.PermanentSection, EM.DOJ, EM.CreatedBy, EM.CreatedOn FROM EmployeeMaster EM INNER JOIN EmployeeDetail ED ON EM.EmpId = ED.Code WHERE 1=1";
+                //string strSql = "SELECT EM.ID, EM.EmpId, EM.EmpName, EM.FatherName, EM.EmpGender, EM.EmpGrade, EM.EmpShift, EM.EmpPassword,";
+                //strSql = strSql + " EM.EmpRole, EM.EmpMobile, EM.Contractor, EM.PayRoll, EM.IsTrainee, EM.IsTemporary, ED.LineName,";
+                //strSql = strSql + " EM.PermanentSection, EM.DOJ, EM.CreatedBy, EM.CreatedOn FROM EmployeeMaster EM INNER JOIN EmployeeDetail ED ON EM.EmpId = ED.Code WHERE 1=1";
 
-                if (objReq.ID != 0 && objReq.ID != null)
-                {
-                    strSql = strSql + " AND EM.ID = @ID";
-                }
+                string strSql = "SELECT TOP 1000 EmpId, EmpName, EmpGrade, EmpShift, EmpRole, Section,";
+                strSql = strSql + " EmpPassword, EmpMobile, PayRoll FROM EmployeeMaster WHERE IsActive = 1";
+
+                //if (objReq.ID != 0 && objReq.ID != null)
+                //{
+                //    strSql = strSql + " AND EM.ID = @ID";
+                //}
+                //if (!String.IsNullOrWhiteSpace(objReq.Code))
+                //{
+                //    strSql = strSql + " AND EM.EmpId = @Code";
+                //}
+
                 if (!String.IsNullOrWhiteSpace(objReq.Code))
                 {
-                    strSql = strSql + " AND EM.EmpId = @Code";
+                    strSql = strSql + " AND EmpId = " + objReq.Code;
                 }
+
+                strSql = strSql + " ORDER BY CreatedOn DESC";
 
                 SqlCommand cmd = new SqlCommand(strSql, Con);
                 cmd.CommandType = CommandType.Text;
-                if (objReq.ID != 0 && objReq.ID != null)
-                {
-                    cmd.Parameters.AddWithValue("@ID", objReq.ID);
-                }
-                if (!String.IsNullOrWhiteSpace(objReq.Code))
-                {
-                    cmd.Parameters.AddWithValue("@Code", objReq.Code);
-                }
+                //if (objReq.ID != 0 && objReq.ID != null)
+                //{
+                //    cmd.Parameters.AddWithValue("@ID", objReq.ID);
+                //}
+                //if (!String.IsNullOrWhiteSpace(objReq.Code))
+                //{
+                //    cmd.Parameters.AddWithValue("@Code", objReq.Code);
+                //}
 
                 SqlDataAdapter da = new SqlDataAdapter(cmd);
                 DataSet ds = new DataSet();
@@ -3547,31 +3557,101 @@ namespace BSLDaman.DAL
                     while (ds.Tables[0].Rows.Count > i)
                     {
                         obj = new clsWorker();
-                        string strID = Convert.ToString(ds.Tables[0].Rows[i]["ID"]);
-                       if(strID != "") {
-                            obj.ID = Convert.ToInt64(ds.Tables[0].Rows[i]["ID"]);
-                        }
+                        // string strID = Convert.ToString(ds.Tables[0].Rows[i]["ID"]);
+                        //if(strID != "") {
+                        //     obj.ID = Convert.ToInt64(ds.Tables[0].Rows[i]["ID"]);
+                        // }
+                        // obj.Code = Convert.ToString(ds.Tables[0].Rows[i]["EmpId"]);
+                        // obj.Name = Convert.ToString(ds.Tables[0].Rows[i]["EmpName"]);
+                        // obj.FatherName = Convert.ToString(ds.Tables[0].Rows[i]["FatherName"]);
+
+                        // obj.Gender = Convert.ToString(ds.Tables[0].Rows[i]["EmpGender"]);
+                        // obj.Grade = Convert.ToString(ds.Tables[0].Rows[i]["EmpGrade"]);
+                        // obj.Shift = Convert.ToString(ds.Tables[0].Rows[i]["EmpShift"]);
+                        // string strPin = Convert.ToString(ds.Tables[0].Rows[i]["EmpPassword"]);
+                        // obj.Pin = Generic.DecryptText(strPin);
+                        // obj.OperatorType = Convert.ToString(ds.Tables[0].Rows[i]["EmpRole"]);
+                        // obj.LineName = Convert.ToString(ds.Tables[0].Rows[i]["LineName"]);
+                        // obj.Mobile = Convert.ToString(ds.Tables[0].Rows[i]["EmpMobile"]);
+                        // obj.Contractor = Convert.ToString(ds.Tables[0].Rows[i]["Contractor"]);
+                        // obj.PayRoll = Convert.ToString(ds.Tables[0].Rows[i]["PayRoll"]);
+                        // //obj.IsTrainee = Convert.ToBoolean(ds.Tables[0].Rows[i]["IsTrainee"]);
+                        // // obj.IsTemporary = Convert.ToBoolean(ds.Tables[0].Rows[i]["IsTemporary"]);
+                        // obj.PermanentSection = Convert.ToString(ds.Tables[0].Rows[i]["PermanentSection"]);
+                        // obj.DOJ = Convert.ToString(ds.Tables[0].Rows[i]["DOJ"]);
+                        // obj.vErrorMsg = "Success";
+                        // objResp.Add(obj);
+                        // i++;
+
+
+                        //string strID = Convert.ToString(ds.Tables[0].Rows[i]["ID"]);
+                        //if (strID != "")
+                        //{
+                        //    obj.ID = Convert.ToInt64(ds.Tables[0].Rows[i]["ID"]);
+                        //}
                         obj.Code = Convert.ToString(ds.Tables[0].Rows[i]["EmpId"]);
                         obj.Name = Convert.ToString(ds.Tables[0].Rows[i]["EmpName"]);
-                        obj.FatherName = Convert.ToString(ds.Tables[0].Rows[i]["FatherName"]);
+                        if (ds.Tables[0].Rows[i]["EmpGrade"] == null)
+                        {
+                            obj.Grade = string.Empty;
+                        }
+                        else
+                        {
+                            obj.Grade = Convert.ToString(ds.Tables[0].Rows[i]["EmpGrade"]);
+                        }
 
-                        obj.Gender = Convert.ToString(ds.Tables[0].Rows[i]["EmpGender"]);
-                        obj.Grade = Convert.ToString(ds.Tables[0].Rows[i]["EmpGrade"]);
-                        obj.Shift = Convert.ToString(ds.Tables[0].Rows[i]["EmpShift"]);
+                        if (ds.Tables[0].Rows[i]["EmpShift"] == null)
+                        {
+                            obj.Shift = string.Empty;
+                        }
+                        else
+                        {
+                            obj.Shift = Convert.ToString(ds.Tables[0].Rows[i]["EmpShift"]);
+                        }
+
+                        if (ds.Tables[0].Rows[i]["EmpRole"] == null)
+                        {
+                            obj.OperatorType = string.Empty;
+                        }
+                        else
+                        {
+                            obj.OperatorType = Convert.ToString(ds.Tables[0].Rows[i]["EmpRole"]);
+                        }
+
+                        if (ds.Tables[0].Rows[i]["Section"] == null)
+                        {
+                            obj.Section = string.Empty;
+                        }
+                        else
+                        {
+                            obj.Section = Convert.ToString(ds.Tables[0].Rows[i]["Section"]);
+                        }
+
                         string strPin = Convert.ToString(ds.Tables[0].Rows[i]["EmpPassword"]);
                         obj.Pin = Generic.DecryptText(strPin);
-                        obj.OperatorType = Convert.ToString(ds.Tables[0].Rows[i]["EmpRole"]);
-                        obj.LineName = Convert.ToString(ds.Tables[0].Rows[i]["LineName"]);
-                        obj.Mobile = Convert.ToString(ds.Tables[0].Rows[i]["EmpMobile"]);
-                        obj.Contractor = Convert.ToString(ds.Tables[0].Rows[i]["Contractor"]);
-                        obj.PayRoll = Convert.ToString(ds.Tables[0].Rows[i]["PayRoll"]);
-                        //obj.IsTrainee = Convert.ToBoolean(ds.Tables[0].Rows[i]["IsTrainee"]);
-                        // obj.IsTemporary = Convert.ToBoolean(ds.Tables[0].Rows[i]["IsTemporary"]);
-                        obj.PermanentSection = Convert.ToString(ds.Tables[0].Rows[i]["PermanentSection"]);
-                        obj.DOJ = Convert.ToString(ds.Tables[0].Rows[i]["DOJ"]);
+
+                        if (ds.Tables[0].Rows[i]["EmpMobile"] == null)
+                        {
+                            obj.Mobile = string.Empty;
+                        }
+                        else
+                        {
+                            obj.Mobile = Convert.ToString(ds.Tables[0].Rows[i]["EmpMobile"]);
+                        }
+
+                        if (ds.Tables[0].Rows[i]["PayRoll"] == null)
+                        {
+                            obj.PayRoll = string.Empty;
+                        }
+                        else
+                        {
+                            obj.PayRoll = Convert.ToString(ds.Tables[0].Rows[i]["PayRoll"]);
+                        }
+
                         obj.vErrorMsg = "Success";
                         objResp.Add(obj);
                         i++;
+
                     }
                 }
                 else
@@ -3597,7 +3677,404 @@ namespace BSLDaman.DAL
             return objResp;
         }
 
+
+        public clsWorker Fn_Update_WorkerDetails(clsWorker objReq)
+        {
+            var objResp = new clsWorker();
+            Logger.ErrorLog(JsonConvert.SerializeObject(objReq), "Request", "Fn_Update_WorkerDetails");
+            try
+            {
+                if (Con.State == ConnectionState.Broken)
+                { Con.Close(); }
+                if (Con.State == ConnectionState.Closed)
+                { Con.Open(); }
+
+                string encryptPassword = Generic.EncryptText(objReq.Pin);
+
+                SqlCommand cmd = new SqlCommand("USP_WORKER", Con);
+                cmd.CommandType = CommandType.StoredProcedure;
+
+                cmd.Parameters.AddWithValue("@Code", objReq.Code);
+                cmd.Parameters.AddWithValue("@Name", objReq.Name);
+                cmd.Parameters.AddWithValue("@EmpDesignation", objReq.EmpDesignation);
+                cmd.Parameters.AddWithValue("@EmpRole", objReq.EmpUser);
+                cmd.Parameters.AddWithValue("@Unit", objReq.Unit);
+                cmd.Parameters.AddWithValue("@Grouping", objReq.Grouping);
+                cmd.Parameters.AddWithValue("@ProductSection", objReq.ProductSection);
+                cmd.Parameters.AddWithValue("@Section", objReq.Section);
+                cmd.Parameters.AddWithValue("@SubSection", objReq.SubSection);
+                cmd.Parameters.AddWithValue("@Mobile", objReq.Mobile);
+                cmd.Parameters.AddWithValue("@Address", objReq.Address);
+                cmd.Parameters.AddWithValue("@NativeAddress", objReq.NativeAddress);
+                cmd.Parameters.AddWithValue("@MainOperation", objReq.MainOperation);
+                cmd.Parameters.AddWithValue("@MainOpCapHr", objReq.MainOpCapHr);
+                cmd.Parameters.AddWithValue("@SecondOperation", objReq.SecondOperation);
+                cmd.Parameters.AddWithValue("@SecondOpCapHr", objReq.SecondOpCapHr);
+                cmd.Parameters.AddWithValue("@ThirdOperation", objReq.ThirdOperation);
+                cmd.Parameters.AddWithValue("@ThirdOpCapHr", objReq.ThirdOpCapHr);
+                cmd.Parameters.AddWithValue("@FourthOperation", objReq.FourthOperation);
+                cmd.Parameters.AddWithValue("@FourthOpCapHr", objReq.FourthOpCapHr);
+                cmd.Parameters.AddWithValue("@FifthOperation", objReq.FifthOperation);
+                cmd.Parameters.AddWithValue("@FifthOpCapHr", objReq.FifthOpCapHr);
+                cmd.Parameters.AddWithValue("@SixthOperation", objReq.SixthOperation);
+                cmd.Parameters.AddWithValue("@SixthOpCapHr", objReq.SixthOpCapHr);
+                cmd.Parameters.AddWithValue("@SeventhOperation", objReq.SeventhOperation);
+                cmd.Parameters.AddWithValue("@SeventhOpCapHr", objReq.SeventhOpCapHr);
+                cmd.Parameters.AddWithValue("@Gender", objReq.Gender);
+                cmd.Parameters.AddWithValue("@Shift", objReq.Shift);
+                cmd.Parameters.AddWithValue("@Pin", encryptPassword);
+                cmd.Parameters.AddWithValue("@PayRoll", objReq.PayRoll);
+                cmd.Parameters.AddWithValue("@DOJ", objReq.DOJ);
+                cmd.Parameters.AddWithValue("@EmpImageFile", objReq.EmpImageFile);
+                cmd.Parameters.AddWithValue("@IsActive", objReq.IsActive);
+                cmd.Parameters.AddWithValue("@ModifiedBy", objReq.ModifiedBy);
+                cmd.Parameters.AddWithValue("@QueryType", "UpdateWorkerDetails");
+
+                int i = 0;
+                i = cmd.ExecuteNonQuery();
+                if (i > 0)
+                {
+                    objResp.vErrorCode = 200;
+                    objResp.vErrorMsg = "Success";
+                }
+                else
+                {
+                    objResp.vErrorCode = 400;
+                    objResp.vErrorMsg = "Worker Updation Failed";
+                }
+            }
+            catch (Exception exp)
+            {
+                objResp.vErrorCode = 500;
+                Logger.WriteLog("Function Name : Fn_Update_WorkerDetails", " " + "Error Msg : " + exp.Message.ToString(), new StackTrace(exp, true));
+                objResp.vErrorMsg = exp.Message.ToString();
+            }
+            finally
+            {
+                Con.Close();
+            }
+            Logger.ErrorLog(JsonConvert.SerializeObject(objReq), "Response", "Fn_Update_WorkerDetails");
+            return objResp;
+        }
+
+
+        public clsWorker Fn_Fetch_WorkerDetails_ByID(clsWorker objReq)
+        {
+            var objResp = new clsWorker();
+            Logger.ErrorLog(JsonConvert.SerializeObject(objReq), "Request", "Fn_Fetch_WorkerDetails_ByID");
+            try
+            {
+                if (Con.State == ConnectionState.Broken)
+                { Con.Close(); }
+                if (Con.State == ConnectionState.Closed)
+                { Con.Open(); }
+
+                SqlCommand cmd = new SqlCommand("USP_WORKER", Con);
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@Code", objReq.Code);
+                cmd.Parameters.AddWithValue("@QueryType", "FetchDetailsByID");
+
+                SqlDataAdapter da = new SqlDataAdapter(cmd);
+                DataSet ds = new DataSet();
+                da.Fill(ds);
+                int i = 0;
+
+                if (ds.Tables[0].Rows.Count > 0)
+                {
+                    objResp.Code = Convert.ToString(ds.Tables[0].Rows[i]["EmpId"]);
+                    objResp.Name = Convert.ToString(ds.Tables[0].Rows[i]["EmpName"]);
+                    
+                    if (ds.Tables[0].Rows[i]["EmpDesignation"] == null)
+                    {
+                        objResp.EmpDesignation = string.Empty;
+                    }
+                    else
+                    {
+                        objResp.EmpDesignation = Convert.ToString(ds.Tables[0].Rows[i]["EmpDesignation"]);
+                    }
+
+                    if (ds.Tables[0].Rows[i]["EmpRole"] == null)
+                    {
+                        objResp.EmpUser = string.Empty;
+                    }
+                    else
+                    {
+                        objResp.EmpUser = Convert.ToString(ds.Tables[0].Rows[i]["EmpRole"]);
+                    }
+
+                    if (ds.Tables[0].Rows[i]["Unit"] == null)
+                    {
+                        objResp.Unit = string.Empty;
+                    }
+                    else
+                    {
+                        objResp.Unit = Convert.ToString(ds.Tables[0].Rows[i]["Unit"]);
+                    }
+
+                    if (ds.Tables[0].Rows[i]["Grouping"] == null)
+                    {
+                        objResp.Grouping = string.Empty;
+                    }
+                    else
+                    {
+                        objResp.Grouping = Convert.ToString(ds.Tables[0].Rows[i]["Grouping"]);
+                    }
+
+                    if (ds.Tables[0].Rows[i]["ProductSection"] == null)
+                    {
+                        objResp.ProductSection = string.Empty;
+                    }
+                    else
+                    {
+                        objResp.ProductSection = Convert.ToString(ds.Tables[0].Rows[i]["ProductSection"]);
+                    }
+
+                    if (ds.Tables[0].Rows[i]["Section"] == null)
+                    {
+                        objResp.Section = string.Empty;
+                    }
+                    else
+                    {
+                        objResp.Section = Convert.ToString(ds.Tables[0].Rows[i]["Section"]);
+                    }
+
+                    if (ds.Tables[0].Rows[i]["SubSection"] == null)
+                    {
+                        objResp.SubSection = string.Empty;
+                    }
+                    else
+                    {
+                        objResp.SubSection = Convert.ToString(ds.Tables[0].Rows[i]["SubSection"]);
+                    }
+
+                    if (ds.Tables[0].Rows[i]["EmpMobile"] == null)
+                    {
+                        objResp.Mobile = string.Empty;
+                    }
+                    else
+                    {
+                        objResp.Mobile = Convert.ToString(ds.Tables[0].Rows[i]["EmpMobile"]);
+                    }
+
+                    if (ds.Tables[0].Rows[i]["Address"] == null)
+                    {
+                        objResp.Address = string.Empty;
+                    }
+                    else
+                    {
+                        objResp.Address = Convert.ToString(ds.Tables[0].Rows[i]["Address"]);
+                    }
+
+                    if (ds.Tables[0].Rows[i]["NativeAddress"] == null)
+                    {
+                        objResp.NativeAddress = string.Empty;
+                    }
+                    else
+                    {
+                        objResp.NativeAddress = Convert.ToString(ds.Tables[0].Rows[i]["NativeAddress"]);
+                    }
+
+                    if (ds.Tables[0].Rows[i]["MainOperation"] == null)
+                    {
+                        objResp.MainOperation = string.Empty;
+                    }
+                    else
+                    {
+                        objResp.MainOperation = Convert.ToString(ds.Tables[0].Rows[i]["MainOperation"]);
+                    }
+
+                    if (ds.Tables[0].Rows[i]["MainOpCapHr"] == null)
+                    {
+                        objResp.MainOpCapHr = string.Empty;
+                    }
+                    else
+                    {
+                        objResp.MainOpCapHr = Convert.ToString(ds.Tables[0].Rows[i]["MainOpCapHr"]);
+                    }
+
+                    if (ds.Tables[0].Rows[i]["SecondOperation"] == null)
+                    {
+                        objResp.SecondOperation = string.Empty;
+                    }
+                    else
+                    {
+                        objResp.SecondOperation = Convert.ToString(ds.Tables[0].Rows[i]["SecondOperation"]);
+                    }
+
+                    if (ds.Tables[0].Rows[i]["SecondOpCapHr"] == null)
+                    {
+                        objResp.SecondOpCapHr = string.Empty;
+                    }
+                    else
+                    {
+                        objResp.SecondOpCapHr = Convert.ToString(ds.Tables[0].Rows[i]["SecondOpCapHr"]);
+                    }
+
+                    if (ds.Tables[0].Rows[i]["ThirdOperation"] == null)
+                    {
+                        objResp.ThirdOperation = string.Empty;
+                    }
+                    else
+                    {
+                        objResp.ThirdOperation = Convert.ToString(ds.Tables[0].Rows[i]["ThirdOperation"]);
+                    }
+
+                    if (ds.Tables[0].Rows[i]["ThirdOpCapHr"] == null)
+                    {
+                        objResp.ThirdOpCapHr = string.Empty;
+                    }
+                    else
+                    {
+                        objResp.ThirdOpCapHr = Convert.ToString(ds.Tables[0].Rows[i]["ThirdOpCapHr"]);
+                    }
+
+                    if (ds.Tables[0].Rows[i]["FourthOperation"] == null)
+                    {
+                        objResp.FourthOperation = string.Empty;
+                    }
+                    else
+                    {
+                        objResp.FourthOperation = Convert.ToString(ds.Tables[0].Rows[i]["FourthOperation"]);
+                    }
+
+                    if (ds.Tables[0].Rows[i]["FourthOpCapHr"] == null)
+                    {
+                        objResp.FourthOpCapHr = string.Empty;
+                    }
+                    else
+                    {
+                        objResp.FourthOpCapHr = Convert.ToString(ds.Tables[0].Rows[i]["FourthOpCapHr"]);
+                    }
+
+                    if (ds.Tables[0].Rows[i]["FifthOperation"] == null)
+                    {
+                        objResp.FifthOperation = string.Empty;
+                    }
+                    else
+                    {
+                        objResp.FifthOperation = Convert.ToString(ds.Tables[0].Rows[i]["FifthOperation"]);
+                    }
+
+                    if (ds.Tables[0].Rows[i]["FifthOpCapHr"] == null)
+                    {
+                        objResp.FifthOpCapHr = string.Empty;
+                    }
+                    else
+                    {
+                        objResp.FifthOpCapHr = Convert.ToString(ds.Tables[0].Rows[i]["FifthOpCapHr"]);
+                    }
+
+                    if (ds.Tables[0].Rows[i]["SixthOperation"] == null)
+                    {
+                        objResp.SixthOperation = string.Empty;
+                    }
+                    else
+                    {
+                        objResp.SixthOperation = Convert.ToString(ds.Tables[0].Rows[i]["SixthOperation"]);
+                    }
+
+                    if (ds.Tables[0].Rows[i]["SixthOpCapHr"] == null)
+                    {
+                        objResp.SixthOpCapHr = string.Empty;
+                    }
+                    else
+                    {
+                        objResp.SixthOpCapHr = Convert.ToString(ds.Tables[0].Rows[i]["SixthOpCapHr"]);
+                    }
+
+                    if (ds.Tables[0].Rows[i]["SeventhOperation"] == null)
+                    {
+                        objResp.SeventhOperation = string.Empty;
+                    }
+                    else
+                    {
+                        objResp.SeventhOperation = Convert.ToString(ds.Tables[0].Rows[i]["SeventhOperation"]);
+                    }
+
+                    if (ds.Tables[0].Rows[i]["SeventhOpCapHr"] == null)
+                    {
+                        objResp.SeventhOpCapHr = string.Empty;
+                    }
+                    else
+                    {
+                        objResp.SeventhOpCapHr = Convert.ToString(ds.Tables[0].Rows[i]["SeventhOpCapHr"]);
+                    }
+
+                    if (ds.Tables[0].Rows[i]["EmpGender"] == null)
+                    {
+                        objResp.Gender = string.Empty;
+                    }
+                    else
+                    {
+                        objResp.Gender = Convert.ToString(ds.Tables[0].Rows[i]["EmpGender"]);
+                    }
+
+                    if (ds.Tables[0].Rows[i]["EmpShift"] == null)
+                    {
+                        objResp.Shift = string.Empty;
+                    }
+                    else
+                    {
+                        objResp.Shift = Convert.ToString(ds.Tables[0].Rows[i]["EmpShift"]);
+                    }
+
+                    string strPassword = Convert.ToString(ds.Tables[0].Rows[i]["EmpPassword"]);
+                    objResp.Pin = Generic.DecryptText(strPassword);
+
+                    if (ds.Tables[0].Rows[i]["PayRoll"] == null)
+                    {
+                        objResp.PayRoll = string.Empty;
+                    }
+                    else
+                    {
+                        objResp.PayRoll = Convert.ToString(ds.Tables[0].Rows[i]["PayRoll"]);
+                    }
+
+                    if (ds.Tables[0].Rows[i]["DOJ"] == null)
+                    {
+                        objResp.DOJ = string.Empty;
+                    }
+                    else
+                    {
+                        objResp.DOJ = Convert.ToString(ds.Tables[0].Rows[i]["DOJ"]);
+                    }
+
+                    if (ds.Tables[0].Rows[i]["EmpImageFile"] == null)
+                    {
+                        objResp.EmpImageFile = string.Empty;
+                    }
+                    else
+                    {
+                        objResp.EmpImageFile = Convert.ToString(ds.Tables[0].Rows[i]["EmpImageFile"]);
+                    }
+
+                    objResp.IsActive = Convert.ToBoolean(ds.Tables[0].Rows[i]["IsActive"]);
+
+                    objResp.vErrorMsg = "Success";
+                    objResp.vErrorCode = 200;
+                }
+                else
+                {
+                    objResp.vErrorCode = 404;
+                    objResp.vErrorMsg = "Worker details are not found.";
+                }
+            }
+            catch (Exception exp)
+            {
+                objResp.vErrorCode = 500;
+                Logger.WriteLog("Function Name : Fn_Fetch_WorkerDetails_ByID", " " + "Error Msg : " + exp.Message.ToString(), new StackTrace(exp, true));
+                objResp.vErrorMsg = exp.Message.ToString();
+            }
+            finally
+            {
+                Con.Close();
+            }
+            Logger.ErrorLog(JsonConvert.SerializeObject(objResp), "Response", "Fn_Fetch_WorkerDetails_ByID");
+            return objResp;
+        }
+
         #endregion End Worker
+
 
 
         public clsDesignation Fn_Insert_New_Designation(clsDesignation objReq)
