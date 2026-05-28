@@ -3784,7 +3784,7 @@ namespace BSLDaman.DAL
                     objResp.Code = Convert.ToString(ds.Tables[0].Rows[i]["EmpId"]);
                     objResp.Name = Convert.ToString(ds.Tables[0].Rows[i]["EmpName"]);
                     
-                    if (ds.Tables[0].Rows[i]["EmpDesignation"] == null)
+                    if (ds.Tables[0].Rows[i]["EmpDesignation"] == DBNull.Value)
                     {
                         objResp.EmpDesignation = string.Empty;
                     }
@@ -3793,7 +3793,7 @@ namespace BSLDaman.DAL
                         objResp.EmpDesignation = Convert.ToString(ds.Tables[0].Rows[i]["EmpDesignation"]);
                     }
 
-                    if (ds.Tables[0].Rows[i]["EmpRole"] == null)
+                    if (ds.Tables[0].Rows[i]["EmpRole"] == DBNull.Value)
                     {
                         objResp.EmpUser = string.Empty;
                     }
@@ -3802,7 +3802,7 @@ namespace BSLDaman.DAL
                         objResp.EmpUser = Convert.ToString(ds.Tables[0].Rows[i]["EmpRole"]);
                     }
 
-                    if (ds.Tables[0].Rows[i]["Unit"] == null)
+                    if (ds.Tables[0].Rows[i]["Unit"] == DBNull.Value)
                     {
                         objResp.Unit = string.Empty;
                     }
@@ -3811,7 +3811,7 @@ namespace BSLDaman.DAL
                         objResp.Unit = Convert.ToString(ds.Tables[0].Rows[i]["Unit"]);
                     }
 
-                    if (ds.Tables[0].Rows[i]["Grouping"] == null)
+                    if (ds.Tables[0].Rows[i]["Grouping"] == DBNull.Value)
                     {
                         objResp.Grouping = string.Empty;
                     }
@@ -3820,7 +3820,7 @@ namespace BSLDaman.DAL
                         objResp.Grouping = Convert.ToString(ds.Tables[0].Rows[i]["Grouping"]);
                     }
 
-                    if (ds.Tables[0].Rows[i]["ProductSection"] == null)
+                    if (ds.Tables[0].Rows[i]["ProductSection"] == DBNull.Value)
                     {
                         objResp.ProductSection = string.Empty;
                     }
@@ -3829,7 +3829,7 @@ namespace BSLDaman.DAL
                         objResp.ProductSection = Convert.ToString(ds.Tables[0].Rows[i]["ProductSection"]);
                     }
 
-                    if (ds.Tables[0].Rows[i]["Section"] == null)
+                    if (ds.Tables[0].Rows[i]["Section"] == DBNull.Value)
                     {
                         objResp.Section = string.Empty;
                     }
@@ -3838,7 +3838,7 @@ namespace BSLDaman.DAL
                         objResp.Section = Convert.ToString(ds.Tables[0].Rows[i]["Section"]);
                     }
 
-                    if (ds.Tables[0].Rows[i]["SubSection"] == null)
+                    if (ds.Tables[0].Rows[i]["SubSection"] == DBNull.Value)
                     {
                         objResp.SubSection = string.Empty;
                     }
@@ -3847,7 +3847,7 @@ namespace BSLDaman.DAL
                         objResp.SubSection = Convert.ToString(ds.Tables[0].Rows[i]["SubSection"]);
                     }
 
-                    if (ds.Tables[0].Rows[i]["EmpMobile"] == null)
+                    if (ds.Tables[0].Rows[i]["EmpMobile"] == DBNull.Value)
                     {
                         objResp.Mobile = string.Empty;
                     }
@@ -3856,7 +3856,7 @@ namespace BSLDaman.DAL
                         objResp.Mobile = Convert.ToString(ds.Tables[0].Rows[i]["EmpMobile"]);
                     }
 
-                    if (ds.Tables[0].Rows[i]["Address"] == null)
+                    if (ds.Tables[0].Rows[i]["Address"] == DBNull.Value)
                     {
                         objResp.Address = string.Empty;
                     }
@@ -3865,7 +3865,7 @@ namespace BSLDaman.DAL
                         objResp.Address = Convert.ToString(ds.Tables[0].Rows[i]["Address"]);
                     }
 
-                    if (ds.Tables[0].Rows[i]["NativeAddress"] == null)
+                    if (ds.Tables[0].Rows[i]["NativeAddress"] == DBNull.Value)
                     {
                         objResp.NativeAddress = string.Empty;
                     }
@@ -3874,7 +3874,7 @@ namespace BSLDaman.DAL
                         objResp.NativeAddress = Convert.ToString(ds.Tables[0].Rows[i]["NativeAddress"]);
                     }
 
-                    if (ds.Tables[0].Rows[i]["MainOperation"] == null)
+                    if (ds.Tables[0].Rows[i]["MainOperation"] == DBNull.Value)
                     {
                         objResp.MainOperation = string.Empty;
                     }
@@ -3883,7 +3883,7 @@ namespace BSLDaman.DAL
                         objResp.MainOperation = Convert.ToString(ds.Tables[0].Rows[i]["MainOperation"]);
                     }
 
-                    if (ds.Tables[0].Rows[i]["MainOpCapHr"] == null)
+                    if (ds.Tables[0].Rows[i]["MainOpCapHr"] == DBNull.Value)
                     {
                         objResp.MainOpCapHr = string.Empty;
                     }
@@ -3892,7 +3892,7 @@ namespace BSLDaman.DAL
                         objResp.MainOpCapHr = Convert.ToString(ds.Tables[0].Rows[i]["MainOpCapHr"]);
                     }
 
-                    if (ds.Tables[0].Rows[i]["SecondOperation"] == null)
+                    if (ds.Tables[0].Rows[i]["SecondOperation"] == DBNull.Value)
                     {
                         objResp.SecondOperation = string.Empty;
                     }
@@ -3901,7 +3901,7 @@ namespace BSLDaman.DAL
                         objResp.SecondOperation = Convert.ToString(ds.Tables[0].Rows[i]["SecondOperation"]);
                     }
 
-                    if (ds.Tables[0].Rows[i]["SecondOpCapHr"] == null)
+                    if (ds.Tables[0].Rows[i]["SecondOpCapHr"] == DBNull.Value)
                     {
                         objResp.SecondOpCapHr = string.Empty;
                     }
@@ -3910,7 +3910,7 @@ namespace BSLDaman.DAL
                         objResp.SecondOpCapHr = Convert.ToString(ds.Tables[0].Rows[i]["SecondOpCapHr"]);
                     }
 
-                    if (ds.Tables[0].Rows[i]["ThirdOperation"] == null)
+                    if (ds.Tables[0].Rows[i]["ThirdOperation"] == DBNull.Value)
                     {
                         objResp.ThirdOperation = string.Empty;
                     }
@@ -3919,7 +3919,7 @@ namespace BSLDaman.DAL
                         objResp.ThirdOperation = Convert.ToString(ds.Tables[0].Rows[i]["ThirdOperation"]);
                     }
 
-                    if (ds.Tables[0].Rows[i]["ThirdOpCapHr"] == null)
+                    if (ds.Tables[0].Rows[i]["ThirdOpCapHr"] == DBNull.Value)
                     {
                         objResp.ThirdOpCapHr = string.Empty;
                     }
@@ -3928,7 +3928,7 @@ namespace BSLDaman.DAL
                         objResp.ThirdOpCapHr = Convert.ToString(ds.Tables[0].Rows[i]["ThirdOpCapHr"]);
                     }
 
-                    if (ds.Tables[0].Rows[i]["FourthOperation"] == null)
+                    if (ds.Tables[0].Rows[i]["FourthOperation"] == DBNull.Value)
                     {
                         objResp.FourthOperation = string.Empty;
                     }
@@ -3937,7 +3937,7 @@ namespace BSLDaman.DAL
                         objResp.FourthOperation = Convert.ToString(ds.Tables[0].Rows[i]["FourthOperation"]);
                     }
 
-                    if (ds.Tables[0].Rows[i]["FourthOpCapHr"] == null)
+                    if (ds.Tables[0].Rows[i]["FourthOpCapHr"] == DBNull.Value)
                     {
                         objResp.FourthOpCapHr = string.Empty;
                     }
@@ -3946,7 +3946,7 @@ namespace BSLDaman.DAL
                         objResp.FourthOpCapHr = Convert.ToString(ds.Tables[0].Rows[i]["FourthOpCapHr"]);
                     }
 
-                    if (ds.Tables[0].Rows[i]["FifthOperation"] == null)
+                    if (ds.Tables[0].Rows[i]["FifthOperation"] == DBNull.Value)
                     {
                         objResp.FifthOperation = string.Empty;
                     }
@@ -3955,7 +3955,7 @@ namespace BSLDaman.DAL
                         objResp.FifthOperation = Convert.ToString(ds.Tables[0].Rows[i]["FifthOperation"]);
                     }
 
-                    if (ds.Tables[0].Rows[i]["FifthOpCapHr"] == null)
+                    if (ds.Tables[0].Rows[i]["FifthOpCapHr"] == DBNull.Value)
                     {
                         objResp.FifthOpCapHr = string.Empty;
                     }
@@ -3964,7 +3964,7 @@ namespace BSLDaman.DAL
                         objResp.FifthOpCapHr = Convert.ToString(ds.Tables[0].Rows[i]["FifthOpCapHr"]);
                     }
 
-                    if (ds.Tables[0].Rows[i]["SixthOperation"] == null)
+                    if (ds.Tables[0].Rows[i]["SixthOperation"] == DBNull.Value)
                     {
                         objResp.SixthOperation = string.Empty;
                     }
@@ -3973,7 +3973,7 @@ namespace BSLDaman.DAL
                         objResp.SixthOperation = Convert.ToString(ds.Tables[0].Rows[i]["SixthOperation"]);
                     }
 
-                    if (ds.Tables[0].Rows[i]["SixthOpCapHr"] == null)
+                    if (ds.Tables[0].Rows[i]["SixthOpCapHr"] == DBNull.Value)
                     {
                         objResp.SixthOpCapHr = string.Empty;
                     }
@@ -3982,7 +3982,7 @@ namespace BSLDaman.DAL
                         objResp.SixthOpCapHr = Convert.ToString(ds.Tables[0].Rows[i]["SixthOpCapHr"]);
                     }
 
-                    if (ds.Tables[0].Rows[i]["SeventhOperation"] == null)
+                    if (ds.Tables[0].Rows[i]["SeventhOperation"] == DBNull.Value)
                     {
                         objResp.SeventhOperation = string.Empty;
                     }
@@ -3991,7 +3991,7 @@ namespace BSLDaman.DAL
                         objResp.SeventhOperation = Convert.ToString(ds.Tables[0].Rows[i]["SeventhOperation"]);
                     }
 
-                    if (ds.Tables[0].Rows[i]["SeventhOpCapHr"] == null)
+                    if (ds.Tables[0].Rows[i]["SeventhOpCapHr"] == DBNull.Value)
                     {
                         objResp.SeventhOpCapHr = string.Empty;
                     }
@@ -4000,7 +4000,7 @@ namespace BSLDaman.DAL
                         objResp.SeventhOpCapHr = Convert.ToString(ds.Tables[0].Rows[i]["SeventhOpCapHr"]);
                     }
 
-                    if (ds.Tables[0].Rows[i]["EmpGender"] == null)
+                    if (ds.Tables[0].Rows[i]["EmpGender"] == DBNull.Value)
                     {
                         objResp.Gender = string.Empty;
                     }
@@ -4009,7 +4009,7 @@ namespace BSLDaman.DAL
                         objResp.Gender = Convert.ToString(ds.Tables[0].Rows[i]["EmpGender"]);
                     }
 
-                    if (ds.Tables[0].Rows[i]["EmpShift"] == null)
+                    if (ds.Tables[0].Rows[i]["EmpShift"] == DBNull.Value)
                     {
                         objResp.Shift = string.Empty;
                     }
@@ -4021,7 +4021,7 @@ namespace BSLDaman.DAL
                     string strPassword = Convert.ToString(ds.Tables[0].Rows[i]["EmpPassword"]);
                     objResp.Pin = Generic.DecryptText(strPassword);
 
-                    if (ds.Tables[0].Rows[i]["PayRoll"] == null)
+                    if (ds.Tables[0].Rows[i]["PayRoll"] == DBNull.Value)
                     {
                         objResp.PayRoll = string.Empty;
                     }
@@ -4030,16 +4030,16 @@ namespace BSLDaman.DAL
                         objResp.PayRoll = Convert.ToString(ds.Tables[0].Rows[i]["PayRoll"]);
                     }
 
-                    if (ds.Tables[0].Rows[i]["DOJ"] == null)
+                    if (ds.Tables[0].Rows[i]["DOJ"] == DBNull.Value)
                     {
-                        objResp.DOJ = string.Empty;
+                        objResp.DOJ = string.Empty;                        
                     }
                     else
                     {
                         objResp.DOJ = Convert.ToDateTime(ds.Tables[0].Rows[i]["DOJ"]).ToString("dd-MMM-yyyy");
                     }
 
-                    if (ds.Tables[0].Rows[i]["EmpImageFile"] == null)
+                    if (ds.Tables[0].Rows[i]["EmpImageFile"] == DBNull.Value)
                     {
                         objResp.EmpImageFile = string.Empty;
                     }
