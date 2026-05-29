@@ -700,8 +700,29 @@ namespace BSLDaman.DAL
                 { Con.Open(); }
 
                 string strSql = "SELECT OpNo, OpName, BundleID, BundleNo, SizeName, ColorName, ShadeName, Qty, PlyFrom, PlyTo,";
-                strSql = strSql + " LotNo, SubSection, StyleCode, OrderNo, AppEmpID, EmpName, AppStartTime, AppEndTime,";
-                strSql = strSql + " BundleStatus FROM vPending_Finish_BundleStatus WHERE 1=1 ";
+                strSql = strSql + " LotNo, SubSection, StyleCode, OrderNo, AppEmpID, EmpName, AppStartTime, AppEndTime, BundleStatus,";
+                strSql = strSql + " (SELECT COUNT(*) FROM vPending_Finish_BundleStatus WHERE 1=1";
+                if (!String.IsNullOrWhiteSpace(objReq.OrderNo))
+                {
+                    strSql = strSql + " AND OrderNo = @OrderNo ";
+                }
+                if (objReq.AppEmpID != 0)
+                {
+                    strSql = strSql + " AND AppEmpID = @AppEmpID ";
+                }
+                if (!String.IsNullOrWhiteSpace(objReq.SizeName))
+                {
+                    strSql = strSql + " AND SizeName = @SizeName ";
+                }
+                if (!String.IsNullOrWhiteSpace(objReq.SubSection))
+                {
+                    strSql = strSql + " AND SubSection = @SubSection ";
+                }
+                if (!String.IsNullOrWhiteSpace(objReq.BundleIDStatus))
+                {
+                    strSql = strSql + " AND BundleStatus IS NULL ";
+                }
+                strSql = strSql + " ) AS TotalRows FROM vPending_Finish_BundleStatus WHERE 1=1 ";
                 
                 if (!String.IsNullOrWhiteSpace(objReq.OrderNo))
                 {
@@ -721,19 +742,7 @@ namespace BSLDaman.DAL
                 }
                 if (!String.IsNullOrWhiteSpace(objReq.BundleIDStatus))
                 {
-                    if(objReq.BundleIDStatus == "Finished")
-                    {
-                        strSql = strSql + " AND BundleStatus = 'Finished' ";
-                    }
-                    if (objReq.BundleIDStatus == "Assigned")
-                    {
-                        strSql = strSql + " AND BundleStatus = 'Assigned' ";
-                    }
-                    else
-                    {
-                        strSql = strSql + " AND BundleStatus IS NULL ";
-                    }
-                    
+                     strSql = strSql + " AND BundleStatus IS NULL ";                    
                 }
                 strSql = strSql + " ORDER BY BundleID ASC ";
                 //strSql = strSql + " ORDER BY BundleID, BundleNo, SizeName, ColorName ";
@@ -797,6 +806,7 @@ namespace BSLDaman.DAL
                         obj.AppStartTime = Convert.ToString(ds.Tables[0].Rows[i]["AppStartTime"]);
                         obj.AppEndTime = Convert.ToString(ds.Tables[0].Rows[i]["AppEndTime"]);
                         obj.BundleStatus = Convert.ToString(ds.Tables[0].Rows[i]["BundleStatus"]);
+                        obj.TotalRows = Convert.ToInt64(ds.Tables[0].Rows[i]["TotalRows"]);
                         obj.vErrorCode = 200;
                         obj.vErrorMsg = "Success";
                         objResp.Add(obj);
@@ -844,7 +854,30 @@ namespace BSLDaman.DAL
 
                 string strSql = "SELECT OpNo, OpName, BundleID, BundleNo, SizeName, ColorName, ShadeName, Qty, PlyFrom, PlyTo,";
                 strSql = strSql + " LotNo, SubSection, StyleCode, OrderNo, AppEmpID, EmpName, AppStartTime, AppEndTime,";
-                strSql = strSql + " BundleStatus, SupervisorID, SupervisorName, AssignedDate FROM vPending_Finish_BundleStatus WHERE 1=1 ";
+                strSql = strSql + " BundleStatus, SupervisorID, SupervisorName, AssignedDate,";
+                strSql = strSql + " (SELECT COUNT(*) FROM vPending_Finish_BundleStatus WHERE 1=1";
+                if (!String.IsNullOrWhiteSpace(objReq.OrderNo))
+                {
+                    strSql = strSql + " AND OrderNo = @OrderNo ";
+                }
+                if (objReq.AppEmpID != 0)
+                {
+                    strSql = strSql + " AND AppEmpID = @AppEmpID ";
+                }
+                if (!String.IsNullOrWhiteSpace(objReq.SizeName))
+                {
+                    strSql = strSql + " AND SizeName = @SizeName ";
+                }
+                if (!String.IsNullOrWhiteSpace(objReq.SubSection))
+                {
+                    strSql = strSql + " AND SubSection = @SubSection ";
+                }
+                if (!String.IsNullOrWhiteSpace(objReq.BundleIDStatus))
+                {
+                    strSql = strSql + " AND BundleStatus = @BundleStatus ";
+                }
+                strSql = strSql + " ) AS TotalRows FROM vPending_Finish_BundleStatus WHERE 1=1 ";
+                
 
                 if (!String.IsNullOrWhiteSpace(objReq.OrderNo))
                 {
@@ -939,6 +972,7 @@ namespace BSLDaman.DAL
                         }
                         obj.SupervisorName = Convert.ToString(ds.Tables[0].Rows[i]["SupervisorName"]);
                         obj.AssignedDate = Convert.ToString(ds.Tables[0].Rows[i]["AssignedDate"]);
+                        obj.TotalRows = Convert.ToInt64(ds.Tables[0].Rows[i]["TotalRows"]);
                         obj.vErrorCode = 200;
                         obj.vErrorMsg = "Success";
                         objResp.Add(obj);

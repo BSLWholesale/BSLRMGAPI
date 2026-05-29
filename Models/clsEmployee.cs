@@ -643,6 +643,7 @@ namespace BSLDaman.Models
         public int SupervisorID { get; set; }
         public string SupervisorName { get; set; }
         public string AssignedDate { get; set; }
+        public Int64 TotalRows { get; set; }
         public string vErrorMsg { get; set; }
         public int vErrorCode { get; set; }
     }
