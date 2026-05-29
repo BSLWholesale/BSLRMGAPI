@@ -685,13 +685,13 @@ namespace BSLDaman.DAL
 
         #endregion End Fn_Get_Peice_Rate_Incentive 21-May-2026
 
-        #region Start Fn_Get_BundleStatus_Report 26-May-2026
+        #region Start Fn_Get_Pending_BundleStatus 26-May-2026
 
-        public List<clsBundleStatusReportResp> Fn_Get_BundleStatus_Report(clsBundleStatusReportReq objReq)
+        public List<clsBundleStatusReportResp> Fn_Get_Pending_BundleStatus(clsBundleStatusReportReq objReq)
         {
             var objResp = new List<clsBundleStatusReportResp>();
             var obj = new clsBundleStatusReportResp();
-            Logger.ErrorLog(JsonConvert.SerializeObject(objReq), "Request", "Fn_Get_BundleStatus_Report");
+            Logger.ErrorLog(JsonConvert.SerializeObject(objReq), "Request", "Fn_Get_Pending_BundleStatus");
             try
             {
                 if (Con.State == ConnectionState.Broken)
@@ -699,13 +699,10 @@ namespace BSLDaman.DAL
                 if (Con.State == ConnectionState.Closed)
                 { Con.Open(); }
 
-                string strSql = "SELECT BundleID, BundleNo, SizeName, ColorName, ShadeName, Qty, PlyFrom, PlyTo,";
-                strSql = strSql + " LotNo, SubSection, StyleCode, OrderNo, AppEmpID, AppStartTime, AppEndTime,";
-                strSql = strSql + " BundleIDStatus FROM vBundleStatusReport WHERE 1=1 ";
-                if (!String.IsNullOrWhiteSpace(objReq.StyleCode))
-                {
-                    strSql = strSql + " AND StyleCode = @StyleCode ";
-                }
+                string strSql = "SELECT OpNo, OpName, BundleID, BundleNo, SizeName, ColorName, ShadeName, Qty, PlyFrom, PlyTo,";
+                strSql = strSql + " LotNo, SubSection, StyleCode, OrderNo, AppEmpID, EmpName, AppStartTime, AppEndTime,";
+                strSql = strSql + " BundleStatus FROM vPending_Finish_BundleStatus WHERE 1=1 ";
+                
                 if (!String.IsNullOrWhiteSpace(objReq.OrderNo))
                 {
                     strSql = strSql + " AND OrderNo = @OrderNo ";
@@ -724,17 +721,162 @@ namespace BSLDaman.DAL
                 }
                 if (!String.IsNullOrWhiteSpace(objReq.BundleIDStatus))
                 {
-                    strSql = strSql + " AND BundleIDStatus = @BundleIDStatus ";
+                    if(objReq.BundleIDStatus == "Finished")
+                    {
+                        strSql = strSql + " AND BundleStatus = 'Finished' ";
+                    }
+                    if (objReq.BundleIDStatus == "Assigned")
+                    {
+                        strSql = strSql + " AND BundleStatus = 'Assigned' ";
+                    }
+                    else
+                    {
+                        strSql = strSql + " AND BundleStatus IS NULL ";
+                    }
+                    
                 }
-                strSql = strSql + " ORDER BY BundleID, BundleNo, SizeName, ColorName ";
+                strSql = strSql + " ORDER BY BundleID ASC ";
+                //strSql = strSql + " ORDER BY BundleID, BundleNo, SizeName, ColorName ";
+                strSql = strSql + " OFFSET (@PageNumber - 1) * @PageSize ROWS ";
+                strSql = strSql + " FETCH NEXT @PageSize ROWS ONLY ";
 
                 SqlCommand cmd = new SqlCommand(strSql, Con);
                 cmd.CommandType = CommandType.Text;
-
-                if (!String.IsNullOrWhiteSpace(objReq.StyleCode))
+                cmd.Parameters.AddWithValue("@PageNumber", objReq.PageNumber);
+                cmd.Parameters.AddWithValue("@PageSize", objReq.PageSize);
+                
+                if (!String.IsNullOrWhiteSpace(objReq.OrderNo))
                 {
-                    cmd.Parameters.AddWithValue("@StyleCode", objReq.StyleCode);
+                    cmd.Parameters.AddWithValue("@OrderNo", objReq.OrderNo);
                 }
+                if (objReq.AppEmpID != 0)
+                {
+                    cmd.Parameters.AddWithValue("@AppEmpID", objReq.AppEmpID);
+                }
+                if (!String.IsNullOrWhiteSpace(objReq.SizeName))
+                {
+                    cmd.Parameters.AddWithValue("@SizeName", objReq.SizeName);
+                }
+                if (!String.IsNullOrWhiteSpace(objReq.SubSection))
+                {
+                    cmd.Parameters.AddWithValue("@SubSection", objReq.SubSection);
+                }
+                
+
+
+                SqlDataAdapter da = new SqlDataAdapter(cmd);
+                DataSet ds = new DataSet();
+                da.Fill(ds);
+                int i = 0;
+                if (ds.Tables[0].Rows.Count > 0)
+                {
+                    while (ds.Tables[0].Rows.Count > i)
+                    {
+                        obj = new clsBundleStatusReportResp();
+                        obj.OpNo = Convert.ToInt32(ds.Tables[0].Rows[i]["OpNo"]);
+                        obj.OpName = Convert.ToString(ds.Tables[0].Rows[i]["OpName"]);
+                        obj.BundleID = Convert.ToInt64(ds.Tables[0].Rows[i]["BundleID"]);
+                        obj.BundleNo = Convert.ToInt32(ds.Tables[0].Rows[i]["BundleNo"]);
+                        obj.SizeName = Convert.ToString(ds.Tables[0].Rows[i]["SizeName"]);
+                        obj.ColorName = Convert.ToString(ds.Tables[0].Rows[i]["ColorName"]);
+                        obj.ShadeName = Convert.ToString(ds.Tables[0].Rows[i]["ShadeName"]);
+                        obj.Qty = Convert.ToInt32(ds.Tables[0].Rows[i]["Qty"]);
+                        obj.PlyFrom = Convert.ToInt32(ds.Tables[0].Rows[i]["PlyFrom"]);
+                        obj.PlyTo = Convert.ToInt32(ds.Tables[0].Rows[i]["PlyTo"]);
+                        obj.LotNo = Convert.ToInt32(ds.Tables[0].Rows[i]["LotNo"]);
+                        obj.SubSection = Convert.ToString(ds.Tables[0].Rows[i]["SubSection"]);
+                        obj.StyleCode = Convert.ToString(ds.Tables[0].Rows[i]["StyleCode"]);
+                        obj.OrderNo = Convert.ToString(ds.Tables[0].Rows[i]["OrderNo"]);
+                        obj.EmpName = Convert.ToString(ds.Tables[0].Rows[i]["EmpName"]);
+                        string strAppEmpID = Convert.ToString(ds.Tables[0].Rows[i]["AppEmpID"]);
+                        if(strAppEmpID != "")
+                        {
+                            obj.AppEmpID = Convert.ToInt32(ds.Tables[0].Rows[i]["AppEmpID"]);
+                        }
+                       
+                        obj.AppStartTime = Convert.ToString(ds.Tables[0].Rows[i]["AppStartTime"]);
+                        obj.AppEndTime = Convert.ToString(ds.Tables[0].Rows[i]["AppEndTime"]);
+                        obj.BundleStatus = Convert.ToString(ds.Tables[0].Rows[i]["BundleStatus"]);
+                        obj.vErrorCode = 200;
+                        obj.vErrorMsg = "Success";
+                        objResp.Add(obj);
+                        i++;
+                    }
+                }
+                else
+                {
+                    obj.vErrorCode = 404;
+                    obj.vErrorMsg = "No Record found";
+                    objResp.Add(obj);
+                }
+
+            }
+            catch (Exception exp)
+            {
+                obj.vErrorCode = 500;
+                Logger.WriteLog("Function Name : Fn_Get_Pending_BundleStatus", " " + "Error Msg : " + exp.Message.ToString(), new StackTrace(exp, true));
+                obj.vErrorMsg = exp.Message.ToString();
+                objResp.Add(obj);
+            }
+            finally
+            {
+                Con.Close();
+            }
+            Logger.ErrorLog(JsonConvert.SerializeObject(objResp), "Response", "Fn_Get_Pending_BundleStatus");
+            return objResp;
+        }
+
+        #endregion End Fn_Get_Pending_BundleStatus 26-May-2026
+
+        #region Start Fn_Get_Assign_Finish_BundleStatus 26-May-2026
+
+        public List<clsBundleStatusReportResp> Fn_Get_Assign_Finish_BundleStatus(clsBundleStatusReportReq objReq)
+        {
+            var objResp = new List<clsBundleStatusReportResp>();
+            var obj = new clsBundleStatusReportResp();
+            Logger.ErrorLog(JsonConvert.SerializeObject(objReq), "Request", "Fn_Get_Assign_Finish_BundleStatus");
+            try
+            {
+                if (Con.State == ConnectionState.Broken)
+                { Con.Close(); }
+                if (Con.State == ConnectionState.Closed)
+                { Con.Open(); }
+
+                string strSql = "SELECT OpNo, OpName, BundleID, BundleNo, SizeName, ColorName, ShadeName, Qty, PlyFrom, PlyTo,";
+                strSql = strSql + " LotNo, SubSection, StyleCode, OrderNo, AppEmpID, EmpName, AppStartTime, AppEndTime,";
+                strSql = strSql + " BundleStatus, SupervisorID, SupervisorName, AssignedDate FROM vPending_Finish_BundleStatus WHERE 1=1 ";
+
+                if (!String.IsNullOrWhiteSpace(objReq.OrderNo))
+                {
+                    strSql = strSql + " AND OrderNo = @OrderNo ";
+                }
+                if (objReq.AppEmpID != 0)
+                {
+                    strSql = strSql + " AND AppEmpID = @AppEmpID ";
+                }
+                if (!String.IsNullOrWhiteSpace(objReq.SizeName))
+                {
+                    strSql = strSql + " AND SizeName = @SizeName ";
+                }
+                if (!String.IsNullOrWhiteSpace(objReq.SubSection))
+                {
+                    strSql = strSql + " AND SubSection = @SubSection ";
+                }
+                if (!String.IsNullOrWhiteSpace(objReq.BundleIDStatus))
+                {
+                    strSql = strSql + " AND BundleStatus = @BundleStatus ";
+
+                }
+                strSql = strSql + " ORDER BY BundleID ASC ";
+                // strSql = strSql + " ORDER BY BundleID, BundleNo, SizeName, ColorName ";
+                strSql = strSql + " OFFSET (@PageNumber - 1) * @PageSize ROWS ";
+                strSql = strSql + " FETCH NEXT @PageSize ROWS ONLY ";
+
+                SqlCommand cmd = new SqlCommand(strSql, Con);
+                cmd.CommandType = CommandType.Text;
+                cmd.Parameters.AddWithValue("@PageNumber", objReq.PageNumber);
+                cmd.Parameters.AddWithValue("@PageSize", objReq.PageSize);
+
                 if (!String.IsNullOrWhiteSpace(objReq.OrderNo))
                 {
                     cmd.Parameters.AddWithValue("@OrderNo", objReq.OrderNo);
@@ -753,7 +895,7 @@ namespace BSLDaman.DAL
                 }
                 if (!String.IsNullOrWhiteSpace(objReq.BundleIDStatus))
                 {
-                    cmd.Parameters.AddWithValue("@BundleIDStatus", objReq.BundleIDStatus);
+                    cmd.Parameters.AddWithValue("@BundleStatus", objReq.BundleIDStatus);
                 }
 
 
@@ -766,6 +908,8 @@ namespace BSLDaman.DAL
                     while (ds.Tables[0].Rows.Count > i)
                     {
                         obj = new clsBundleStatusReportResp();
+                        obj.OpNo = Convert.ToInt32(ds.Tables[0].Rows[i]["OpNo"]);
+                        obj.OpName = Convert.ToString(ds.Tables[0].Rows[i]["OpName"]);
                         obj.BundleID = Convert.ToInt64(ds.Tables[0].Rows[i]["BundleID"]);
                         obj.BundleNo = Convert.ToInt32(ds.Tables[0].Rows[i]["BundleNo"]);
                         obj.SizeName = Convert.ToString(ds.Tables[0].Rows[i]["SizeName"]);
@@ -778,14 +922,23 @@ namespace BSLDaman.DAL
                         obj.SubSection = Convert.ToString(ds.Tables[0].Rows[i]["SubSection"]);
                         obj.StyleCode = Convert.ToString(ds.Tables[0].Rows[i]["StyleCode"]);
                         obj.OrderNo = Convert.ToString(ds.Tables[0].Rows[i]["OrderNo"]);
-                        string strAppEmpID = Convert.ToString(ds.Tables[0].Rows[i]["strAppEmpID"]);
-                        if(strAppEmpID != "")
+                        obj.EmpName = Convert.ToString(ds.Tables[0].Rows[i]["EmpName"]);
+                        string strAppEmpID = Convert.ToString(ds.Tables[0].Rows[i]["AppEmpID"]);
+                        if (strAppEmpID != "")
                         {
                             obj.AppEmpID = Convert.ToInt32(ds.Tables[0].Rows[i]["AppEmpID"]);
                         }
-                       
+
                         obj.AppStartTime = Convert.ToString(ds.Tables[0].Rows[i]["AppStartTime"]);
                         obj.AppEndTime = Convert.ToString(ds.Tables[0].Rows[i]["AppEndTime"]);
+                        obj.BundleStatus = Convert.ToString(ds.Tables[0].Rows[i]["BundleStatus"]);
+                        string strSupervisorID = Convert.ToString(ds.Tables[0].Rows[i]["SupervisorID"]);
+                        if (strSupervisorID != "")
+                        {
+                            obj.SupervisorID = Convert.ToInt32(ds.Tables[0].Rows[i]["SupervisorID"]);
+                        }
+                        obj.SupervisorName = Convert.ToString(ds.Tables[0].Rows[i]["SupervisorName"]);
+                        obj.AssignedDate = Convert.ToString(ds.Tables[0].Rows[i]["AssignedDate"]);
                         obj.vErrorCode = 200;
                         obj.vErrorMsg = "Success";
                         objResp.Add(obj);
@@ -803,7 +956,7 @@ namespace BSLDaman.DAL
             catch (Exception exp)
             {
                 obj.vErrorCode = 500;
-                Logger.WriteLog("Function Name : Fn_Get_BundleStatus_Report", " " + "Error Msg : " + exp.Message.ToString(), new StackTrace(exp, true));
+                Logger.WriteLog("Function Name : Fn_Get_Assign_Finish_BundleStatus", " " + "Error Msg : " + exp.Message.ToString(), new StackTrace(exp, true));
                 obj.vErrorMsg = exp.Message.ToString();
                 objResp.Add(obj);
             }
@@ -811,10 +964,10 @@ namespace BSLDaman.DAL
             {
                 Con.Close();
             }
-            Logger.ErrorLog(JsonConvert.SerializeObject(objResp), "Response", "Fn_Get_BundleStatus_Report");
+            Logger.ErrorLog(JsonConvert.SerializeObject(objResp), "Response", "Fn_Get_Assign_Finish_BundleStatus");
             return objResp;
         }
 
-        #endregion End Fn_Get_BundleStatus_Report 26-May-2026
+        #endregion End Fn_Get_Assign_Finish_BundleStatus 26-May-2026
     }
 }
