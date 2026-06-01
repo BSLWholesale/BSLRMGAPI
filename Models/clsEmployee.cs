@@ -611,15 +611,18 @@ namespace BSLDaman.Models
 
     public class clsBundleStatusReportReq
     {
-        public string StyleCode { get; set; }
         public string OrderNo { get; set; }
         public string SizeName { get; set; }
         public string SubSection { get; set; }
         public string BundleIDStatus { get; set; }
         public int AppEmpID { get; set; }
+        public int PageNumber { get; set; }
+        public int PageSize { get; set; }
     }
     public class clsBundleStatusReportResp
     {
+        public int OpNo { get; set; }
+        public string OpName { get; set; }
         public Int64 BundleID { get; set; }
         public int BundleNo { get; set; }
         public string SizeName { get; set; }
@@ -633,9 +636,14 @@ namespace BSLDaman.Models
         public string StyleCode { get; set; }
         public string OrderNo { get; set; }
         public int AppEmpID { get; set; }
+        public string EmpName { get; set; }
         public string AppStartTime { get; set; }
         public string AppEndTime { get; set; }
-        public string BundleIDStatus { get; set; }
+        public string BundleStatus { get; set; }
+        public int SupervisorID { get; set; }
+        public string SupervisorName { get; set; }
+        public string AssignedDate { get; set; }
+        public Int64 TotalRows { get; set; }
         public string vErrorMsg { get; set; }
         public int vErrorCode { get; set; }
     }
