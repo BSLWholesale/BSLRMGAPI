@@ -164,5 +164,15 @@ namespace BSLDaman.Controllers
         }
 
 
+        [System.Web.Http.HttpGet]
+        [System.Web.Http.Route("api/MOBEmployee/Fn_Fetch_WorkerDetailsByID")]
+        public clsWorker Fn_Fetch_WorkerDetailsByID(clsWorker objReq)
+        {
+            var objResp = new clsWorker();
+            objResp = _MOBDALEmployee.Fn_Fetch_WorkerDetailsByID(objReq);
+            return objResp;
+        }
+
+
     }
 }
