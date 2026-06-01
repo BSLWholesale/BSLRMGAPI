@@ -388,6 +388,8 @@ namespace BSLDaman.DAL
         public clsMachineLogLostTimeTransactions Fn_Insert_MachineLogTransaction(clsMachineLogLostTimeTransactions objReq)
         {
             var objResp = new clsMachineLogLostTimeTransactions();
+            var objWorker = new clsWorker();
+            objWorker.AppEmpID = objReq.AppEmpID;
             Logger.ErrorLog(JsonConvert.SerializeObject(objReq), "Request", "Fn_Insert_MachineLogTransaction");
             try
             {
@@ -445,18 +447,32 @@ namespace BSLDaman.DAL
                     {
                         objResp.vErrorMsg = "Success";
                         objResp.vErrorCode = 200;
-                        //var objMachineLog = new clsMachineLogLostTimeTransactions();
-                        ////objMachineLog = _DALEmp.Fn_Fetch_EmployeeEmailId(objEmp);
-                        //string strSubject = "Machine Id " + objReq.MachineId + " Send for repair purpose ";
-                        ////string strMSG = "Dear Hemant Ji" + objMachineLog.vEmpName + "<br><br> Machine Id <b>" + objReq.MachineId + "</b> is send for repaired purpose " + objEmp.vEmpName + "<br> Kindly repair the machine asap. <br><br>";
-                        //string strMSG = "Dear Hemant Ji," + "<br><br> Machine Id <b>" + objReq.MachineId + "</b> is send for repair purpose" + "<br> Kindly repair the machine asap. <br><br>";
-                        //strMSG += "<b>Machine Issue : </b>" + objReq.MachineLogDescription + "<br><br>";
-                        //strMSG += "Regards,</br>";
-                        //strMSG += "Banswara Syntex Ltd.";
 
-                        //string ToEmail = "hemantnaik@banswarasyntex.com";
-                        //string CcEmail = "kanchanparab@banswarasyntex.com";
-                        //gn.TriggerEmailOnly("", strSubject, ToEmail, CcEmail, strMSG);
+                        objResp.MachineStatus = objReq.MachineStatus;
+                        if (objReq.MachineStatus == "Pause")
+                        {
+                            var objMachineLog = new clsMachineLogLostTimeTransactions();
+
+                            var objWorkerDetails = new clsWorker();
+                            MOBDALEmployee _MOBDALEmployee = new MOBDALEmployee();
+                            objWorkerDetails = _MOBDALEmployee.Fn_Fetch_WorkerDetailsByID(objWorker);
+
+                            string strSubject = "Machine Id " + objReq.MachineId + " Send for repair purpose.";
+                            string strMsg = "Dear Hemant Ji," + "<br><br> Machine Id <b>" + objReq.MachineId + "</b> is send for repair purpose" + "<br>";
+                            strMsg += "Kindly repair the machine asap. <br><br>";
+                            strMsg += "Machine Issue and Employee Details :- <br>";
+                            strMsg += "<b>Employee ID : </b>" + objWorkerDetails.AppEmpID + "<br>";
+                            strMsg += "<b>Name : </b>" + objWorkerDetails.Name + "<br>";
+                            strMsg += "<b>Unit : </b>" + objWorkerDetails.Unit + "<br>";
+                            strMsg += "<b>Line Name : </b>" + objWorkerDetails.LineName + "<br>";
+                            strMsg += "<b>Machine Issue : </b>" + objReq.MachineLogDescription + "<br><br>";
+                            strMsg += "Thanks & Regards,<br>";
+                            strMsg += "Banswara Syntex Ltd.";
+
+                            string ToEmail = "hemantnaik@banswarasyntex.com";
+                            string CcEmail = "kanchanparab@banswarasyntex.com";
+                            gn.TriggerEmailOnly("", strSubject, ToEmail, CcEmail, strMsg);
+                        }
                     }
                     else
                     {
