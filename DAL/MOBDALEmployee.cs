@@ -1057,6 +1057,62 @@ namespace BSLDaman.DAL
         }
 
 
+        public clsWorker Fn_Fetch_WorkerDetailsByID(clsWorker objReq)
+        {
+            var objResp = new clsWorker();
+            try
+            {
+                if (objReq.AppEmpID == 0)
+                {
+                    objResp.vErrorMsg = "Please Pass the Valid Employee/Worker ID";
+                }
+                else
+                {
+                    if (Con.State == ConnectionState.Broken)
+                    { Con.Close(); }
+                    if (Con.State == ConnectionState.Closed)
+                    { Con.Open(); }
+
+                    SqlCommand cmd = new SqlCommand("USP_EmployeeMob", Con);
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("@EmpId", objReq.AppEmpID);
+                    cmd.Parameters.AddWithValue("@QueryType", "FetchWorkerDetails");
+
+                    SqlDataAdapter da = new SqlDataAdapter(cmd);
+                    DataSet ds = new DataSet();
+                    da.Fill(ds);
+                    int i = 0;
+                    if (ds.Tables[0].Rows.Count > 0)
+                    {
+                        objResp.AppEmpID = Convert.ToInt32(ds.Tables[0].Rows[i]["EmpId"]);
+                        objResp.Name = Convert.ToString(ds.Tables[0].Rows[i]["EmpName"]);
+                        objResp.Unit = Convert.ToString(ds.Tables[0].Rows[i]["Units"]);
+                        objResp.LineName = Convert.ToString(ds.Tables[0].Rows[i]["LineName"]);
+
+                        objResp.vErrorMsg = "Success";
+                        objResp.vErrorCode = 200;
+                    }
+                    else
+                    {
+                        objResp.vErrorMsg = "Employee/Worker details are not found.";
+                        objResp.vErrorCode = 404;
+                    }
+                }
+            }
+            catch (Exception exp)
+            {
+                Logger.WriteLog("Function Name : Fn_Fetch_WorkerDetailsByID", " " + exp.Message.ToString(), new StackTrace(exp, true));
+                objResp.vErrorMsg = exp.Message.ToString();
+                objResp.vErrorCode = 500;
+            }
+            finally
+            {
+                Con.Close();
+            }
+            return objResp;
+        }
+
+
 
     }
 }
