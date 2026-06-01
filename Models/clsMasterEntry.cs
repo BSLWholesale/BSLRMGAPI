@@ -404,6 +404,7 @@ namespace BSLDaman.Models
         public string SeventhOpCapHr { get; set; }
         public string EmpImageFile { get; set; }
         public bool IsActive { get; set; }
+        public Int32 AppEmpID { get; set; }
         public string vErrorMsg { get; set; }
         public int vErrorCode { get; set; }
     }
