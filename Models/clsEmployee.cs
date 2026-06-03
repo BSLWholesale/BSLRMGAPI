@@ -481,6 +481,10 @@ namespace BSLDaman.Models
         public string ModifiedOn { get; set; }
         public Int32 ModifiedBy { get; set; }
         public string Units { get; set; }
+        public string DOJ { get; set; }
+        public string DOB { get; set; }
+        public bool IsBirthdayWishes { get; set; }
+        public bool IsWorkAnniversaryWishes { get; set; }
         public string vErrorMsg { get; set; }
         public int vErrorCode { get; set; }
 
