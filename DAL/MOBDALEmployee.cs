@@ -119,8 +119,10 @@ namespace BSLDaman.DAL
                         else
                         {
                             objResp.DOB = Convert.ToString(ds.Tables[0].Rows[i]["DOB"]);
-                            objResp.IsBirthdayWishes = true;
-
+                            objResp.IsBirthdayWishes =
+                                ds.Tables[0].Rows[i]["IsBirthdayWishes"] != DBNull.Value
+                                    ? Convert.ToBoolean(ds.Tables[0].Rows[i]["IsBirthdayWishes"])
+                                    : false;
                         }
 
                         if (ds.Tables[0].Rows[i]["DOJ"] == DBNull.Value)
@@ -131,7 +133,10 @@ namespace BSLDaman.DAL
                         else
                         {
                             objResp.DOJ = Convert.ToString(ds.Tables[0].Rows[i]["DOJ"]);
-                            objResp.IsWorkAnniversaryWishes = true;
+                            objResp.IsWorkAnniversaryWishes =
+                                ds.Tables[0].Rows[i]["IsWorkAnniversaryWishes"] != DBNull.Value
+                                    ? Convert.ToBoolean(ds.Tables[0].Rows[i]["IsWorkAnniversaryWishes"])
+                                    : false;
                         }
 
                         if (objResp.IsActive == true)
