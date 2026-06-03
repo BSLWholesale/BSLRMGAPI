@@ -110,6 +110,30 @@ namespace BSLDaman.DAL
                         }
 
                         objResp.IsActive = Convert.ToBoolean(ds.Tables[0].Rows[i]["IsActive"]);
+
+                        if (ds.Tables[0].Rows[i]["DOB"] == DBNull.Value)
+                        {
+                            objResp.DOB = string.Empty;
+                            objResp.IsBirthdayWishes = false;
+                        }
+                        else
+                        {
+                            objResp.DOB = Convert.ToString(ds.Tables[0].Rows[i]["DOB"]);
+                            objResp.IsBirthdayWishes = true;
+
+                        }
+
+                        if (ds.Tables[0].Rows[i]["DOJ"] == DBNull.Value)
+                        {
+                            objResp.DOJ = string.Empty;
+                            objResp.IsWorkAnniversaryWishes = false;
+                        }
+                        else
+                        {
+                            objResp.DOJ = Convert.ToString(ds.Tables[0].Rows[i]["DOJ"]);
+                            objResp.IsWorkAnniversaryWishes = true;
+                        }
+
                         if (objResp.IsActive == true)
                         {
                             objResp.vErrorMsg = "Success";
@@ -1111,7 +1135,6 @@ namespace BSLDaman.DAL
             }
             return objResp;
         }
-
 
 
     }
