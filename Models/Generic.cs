@@ -61,11 +61,8 @@ namespace BSLDaman.Models
             {
                 MailMessage mailMessage = new MailMessage();
                 mailMessage.To.Add(toEmail);
+                mailMessage.CC.Add(ccEmail);
                 mailMessage.From = new MailAddress(ConfigurationManager.AppSettings["Email"]);
-                if (!String.IsNullOrWhiteSpace(ccEmail))
-                {
-                    mailMessage.CC.Add(ccEmail);
-                }
                 mailMessage.Subject = subject;
                 mailMessage.Body = html + "<br/>" + strEC;
                 mailMessage.BodyEncoding = Encoding.GetEncoding("utf-8");
@@ -77,14 +74,13 @@ namespace BSLDaman.Models
                 NetworkCredential credential = new NetworkCredential();
                 credential.UserName = ConfigurationManager.AppSettings["Email"];
                 credential.Password = ConfigurationManager.AppSettings["EPwd"];
-                smtpClient.UseDefaultCredentials = true;
+                smtpClient.UseDefaultCredentials = false;
                 smtpClient.Credentials = credential;
                 smtpClient.Port = Convert.ToInt32(ConfigurationManager.AppSettings["Port"]);
 
                 smtpClient.Send(mailMessage);
 
                 return true;
-
             }
             catch (Exception ex)
             {
