@@ -405,6 +405,9 @@ namespace BSLDaman.Models
         public string EmpImageFile { get; set; }
         public bool IsActive { get; set; }
         public Int32 AppEmpID { get; set; }
+        public string DOB { get; set; }
+        public bool IsBirthdayWishes { get; set; }
+        public bool IsWorkAnniversaryWishes { get; set; }
         public string vErrorMsg { get; set; }
         public int vErrorCode { get; set; }
     }
