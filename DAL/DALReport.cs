@@ -263,8 +263,8 @@ namespace BSLDaman.DAL
                 if (Con.State == ConnectionState.Closed)
                 { Con.Open(); }
 
-                string strSql = "Select BC.OrderNo, BD.BundleID, BD.OperationNo, BD.SubSection, ED.LineName, BD.AppEmpID, ED.EmpName, FORMAT(BD.AppStartTime, 'dd-MMM-yyyy hh:mm:ss:tt') AS AppStartTime,";
-                strSql = strSql + " FORMAT(BD.AppEndTime, 'dd-MMM-yyyy hh:mm:ss:tt') AS AppEndTime, BC.Qty As Qty, BD.StdRate, BD.StdMin, BC.UpdateType from BundleCompileDetail BD";
+                string strSql = "Select BC.OrderNo, BD.BundleID, BD.OperationNo, BD.SubSection, ED.LineName, BD.AppEmpID, ED.EmpName, FORMAT(BD.AppStartTime, 'dd-MMM-yyyy') AS AppStartTime,";
+                strSql = strSql + " FORMAT(BD.AppEndTime, 'dd-MMM-yyyy') AS AppEndTime, BC.Qty As Qty, BD.StdRate, BD.StdMin, BC.UpdateType from BundleCompileDetail BD";
                 strSql = strSql + " INNER JOIN EmployeeDetail ED ON BD.AppEmpID = ED.Code";
                 strSql = strSql + " INNER JOIN BundleCompile BC ON BC.BundleID = BD.BundleID WHERE 1=1 AND BD.BundleIDStatus = 'Finished'  ";
                 if (!String.IsNullOrWhiteSpace(objReq.OrderNo))
@@ -281,11 +281,11 @@ namespace BSLDaman.DAL
                 }
                 if (!String.IsNullOrWhiteSpace(objReq.StartDate) && String.IsNullOrWhiteSpace(objReq.EndDate))
                 {
-                    strSql = strSql + " AND FORMAT(BD.AppStartTime, 'dd-MMM-yyyy') = @StartDate ";
+                    strSql = strSql + " AND BD.AppStartTime = @StartDate ";
                 }
                 if (!String.IsNullOrWhiteSpace(objReq.StartDate) && !String.IsNullOrWhiteSpace(objReq.EndDate))
                 {
-                    strSql = strSql + " AND FORMAT(BD.AppStartTime, 'dd-MMM-yyyy') BETWEEN '" + objReq.StartDate + "' AND '" + objReq.EndDate + "'";
+                    strSql = strSql + " AND BD.AppStartTime BETWEEN '" + objReq.StartDate + "' AND '" + objReq.EndDate + "'";
                 }
 
 
@@ -475,8 +475,30 @@ namespace BSLDaman.DAL
                 if (Con.State == ConnectionState.Closed)
                 { Con.Open(); }
 
-                string strSql = "SELECT LineName, StyleCode, OrderNo, Code, EmpName, OperationNo, Descriptions, WorkDate,";
-                strSql = strSql + "  Qty , StdRate, (Qty * StdRate) AS Amount, UpdateType, BundleIDStatus FROM vPieceRateReport WHERE 1=1 ";
+                string strSql = "SELECT LineName, StyleCode, OrderNo, Code, EmpName, OperationNo, Descriptions, FORMAT(WorkDate, 'dd-MMM-yyyy') AS WorkDate, ";
+                strSql = strSql + "  Qty , StdRate, (Qty * StdRate) AS Amount, UpdateType, BundleIDStatus,";
+                strSql = strSql + " (SELECT COUNT(*) FROM vPieceRateReport WHERE 1=1";
+                if (!String.IsNullOrWhiteSpace(objReq.StyleCode))
+                {
+                    strSql = strSql + " AND StyleCode = @StyleCode ";
+                }
+                if (!String.IsNullOrWhiteSpace(objReq.Code))
+                {
+                    strSql = strSql + " AND Code = @Code ";
+                }
+                if (!String.IsNullOrWhiteSpace(objReq.LineName))
+                {
+                    strSql = strSql + " AND LineName = @LineName ";
+                }
+                if (!String.IsNullOrWhiteSpace(objReq.StartDate) && String.IsNullOrWhiteSpace(objReq.EndDate))
+                {
+                    strSql = strSql + " AND WorkDate = @StartDate ";
+                }
+                if (!String.IsNullOrWhiteSpace(objReq.StartDate) && !String.IsNullOrWhiteSpace(objReq.EndDate))
+                {
+                    strSql = strSql + " AND WorkDate BETWEEN '" + objReq.StartDate + "' AND '" + objReq.EndDate + "'";
+                }
+                strSql = strSql + " ) AS TotalRows FROM vPieceRateReport WHERE 1=1 ";
 
                 if (!String.IsNullOrWhiteSpace(objReq.StyleCode))
                 {
@@ -499,9 +521,13 @@ namespace BSLDaman.DAL
                     strSql = strSql + " AND WorkDate BETWEEN '" + objReq.StartDate + "' AND '" + objReq.EndDate + "'";
                 }
                 strSql = strSql + " ORDER BY " + objReq.OrderBy;
+                strSql = strSql + " OFFSET (@PageNumber - 1) * @PageSize ROWS ";
+                strSql = strSql + " FETCH NEXT @PageSize ROWS ONLY ";
 
                 SqlCommand cmd = new SqlCommand(strSql, Con);
                 cmd.CommandType = CommandType.Text;
+                cmd.Parameters.AddWithValue("@PageNumber", objReq.PageNumber);
+                cmd.Parameters.AddWithValue("@PageSize", objReq.PageSize);
 
                 if (!String.IsNullOrWhiteSpace(objReq.StyleCode))
                 {
@@ -541,6 +567,7 @@ namespace BSLDaman.DAL
                         obj.Rate = Convert.ToDouble(ds.Tables[0].Rows[i]["StdRate"]);
                         obj.Amount = Convert.ToDouble(ds.Tables[0].Rows[i]["Amount"]);
                         obj.UpdateType = Convert.ToString(ds.Tables[0].Rows[i]["UpdateType"]);
+                        obj.TotalRows = Convert.ToInt64(ds.Tables[0].Rows[i]["TotalRows"]);
                         obj.vErrorCode = 200;
                         obj.vErrorMsg = "Success";
                         objResp.Add(obj);
@@ -701,7 +728,7 @@ namespace BSLDaman.DAL
 
                 string strSql = "SELECT OpNo, OpName, BundleID, BundleNo, SizeName, ColorName, ShadeName, Qty, PlyFrom, PlyTo,";
                 strSql = strSql + " LotNo, SubSection, StyleCode, OrderNo, AppEmpID, EmpName, AppStartTime, AppEndTime, BundleStatus,";
-                strSql = strSql + " (SELECT COUNT(*) FROM vPending_Finish_BundleStatus WHERE 1=1";
+                strSql = strSql + " (SELECT COUNT(*) FROM vPending_BundleStatus WHERE 1=1";
                 if (!String.IsNullOrWhiteSpace(objReq.OrderNo))
                 {
                     strSql = strSql + " AND OrderNo = @OrderNo ";
@@ -722,7 +749,7 @@ namespace BSLDaman.DAL
                 {
                     strSql = strSql + " AND BundleStatus IS NULL ";
                 }
-                strSql = strSql + " ) AS TotalRows FROM vPending_Finish_BundleStatus WHERE 1=1 ";
+                strSql = strSql + " ) AS TotalRows FROM vPending_BundleStatus WHERE 1=1 ";
                 
                 if (!String.IsNullOrWhiteSpace(objReq.OrderNo))
                 {
@@ -855,7 +882,7 @@ namespace BSLDaman.DAL
                 string strSql = "SELECT OpNo, OpName, BundleID, BundleNo, SizeName, ColorName, ShadeName, Qty, PlyFrom, PlyTo,";
                 strSql = strSql + " LotNo, SubSection, StyleCode, OrderNo, AppEmpID, EmpName, AppStartTime, AppEndTime,";
                 strSql = strSql + " BundleStatus, SupervisorID, SupervisorName, AssignedDate,";
-                strSql = strSql + " (SELECT COUNT(*) FROM vPending_Finish_BundleStatus WHERE 1=1";
+                strSql = strSql + " (SELECT COUNT(*) FROM vFinish_BundleStatus WHERE 1=1";
                 if (!String.IsNullOrWhiteSpace(objReq.OrderNo))
                 {
                     strSql = strSql + " AND OrderNo = @OrderNo ";
@@ -876,7 +903,7 @@ namespace BSLDaman.DAL
                 {
                     strSql = strSql + " AND BundleStatus = @BundleStatus ";
                 }
-                strSql = strSql + " ) AS TotalRows FROM vPending_Finish_BundleStatus WHERE 1=1 ";
+                strSql = strSql + " ) AS TotalRows FROM vFinish_BundleStatus WHERE 1=1 ";
                 
 
                 if (!String.IsNullOrWhiteSpace(objReq.OrderNo))
