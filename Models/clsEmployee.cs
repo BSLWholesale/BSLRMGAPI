@@ -595,6 +595,8 @@ namespace BSLDaman.Models
         public double Amount { get; set; }
         public string UpdateType { get; set; }
         public Int64 TotalRows { get; set; }
+        public int TotalEmp { get; set; }
+        public double TotalAmount { get; set; }
         public string vErrorMsg { get; set; }
         public int vErrorCode { get; set; }
     }
@@ -624,6 +626,7 @@ namespace BSLDaman.Models
         public string SubSection { get; set; }
         public string BundleIDStatus { get; set; }
         public int AppEmpID { get; set; }
+        public bool IsPilot { get; set; }
         public int PageNumber { get; set; }
         public int PageSize { get; set; }
     }
@@ -652,6 +655,24 @@ namespace BSLDaman.Models
         public string SupervisorName { get; set; }
         public string AssignedDate { get; set; }
         public Int64 TotalRows { get; set; }
+        public bool IsPilot { get; set; }
+        public string vErrorMsg { get; set; }
+        public int vErrorCode { get; set; }
+    }
+
+    public class clsPilot
+    {
+        public string BundleList { get; set; }
+        public int CreatedBy { get; set; }
+        public string vErrorMsg { get; set; }
+        public int vErrorCode { get; set; }
+    }
+
+    public class clsManualEntry
+    {
+        public string BundleList { get; set; }
+        public int AppEmpID { get; set; }
+        public int CreatedBy { get; set; }
         public string vErrorMsg { get; set; }
         public int vErrorCode { get; set; }
     }
