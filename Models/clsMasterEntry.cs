@@ -408,6 +408,16 @@ namespace BSLDaman.Models
         public string DOB { get; set; }
         public bool IsBirthdayWishes { get; set; }
         public bool IsWorkAnniversaryWishes { get; set; }
+        public string MonthName { get; set; }
+        public string MonthNumber { get; set; }
+        public string YearValue { get; set; }
+        public string AttendenceDate { get; set; }
+        public string StartTime { get; set; }
+        public string EndTime { get; set; }
+        public string IsOvertime { get; set; }
+        public Int32 OTNoOfHrs { get; set; }
+        public string DayName { get; set; }
+        public string AttendanceStatus { get; set; }
         public string vErrorMsg { get; set; }
         public int vErrorCode { get; set; }
     }
