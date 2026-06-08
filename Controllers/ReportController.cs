@@ -104,10 +104,36 @@ namespace BSLDaman.Controllers
         public List<clsBundleStatusReportResp> Fn_Get_Assign_Finish_BundleStatus(clsBundleStatusReportReq objReq)
         {
             var objResp = new List<clsBundleStatusReportResp>();
-            objResp = _DALReport.Fn_Get_Assign_Finish_BundleStatus(objReq);
+            objResp = _DALReport.Fn_Get_Finish_BundleStatus(objReq);
             return objResp;
         }
 
         #endregion End Fn_Get_Assign_Finish_BundleStatus 26-May-2026
+
+        #region Start Fn_Set_AS_Pilot 02-Jun-2026
+
+        [System.Web.Http.HttpPost]
+        [System.Web.Http.Route("api/Report/Fn_Set_AS_Pilot")]
+        public clsPilot Fn_Set_AS_Pilot(clsPilot objReq)
+        {
+            var objResp = new clsPilot();
+            objResp = _DALReport.Fn_Set_AS_Pilot(objReq);
+            return objResp;
+        }
+
+        #endregion End Fn_Set_AS_Pilot 02-Jun-2026
+
+        #region Start Fn_Add_Multiple_Manual_Entry 04-JUN-2026
+
+        [System.Web.Http.HttpPost]
+        [System.Web.Http.Route("api/Report/Fn_Add_Multiple_Manual_Entry")]
+        public clsManualEntry Fn_Add_Multiple_Manual_Entry(clsManualEntry objReq)
+        {
+            var objResp = new clsManualEntry();
+            objResp = _DALReport.Fn_Add_Multiple_Manual_Entry(objReq);
+            return objResp;
+        }
+
+        #endregion End Fn_Add_Multiple_Manual_Entry 04-JUN-2026
     }
 }
