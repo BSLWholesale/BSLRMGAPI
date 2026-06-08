@@ -740,6 +740,30 @@ namespace BSLDaman.Controllers
             return objResp;
         }
 
-        #endregion End Fn_Update_GridName 14-MAY-2026 
+        #endregion End Fn_Update_GridName 14-MAY-2026
+
+
+
+        [System.Web.Http.HttpPost]
+        [System.Web.Http.Route("api/MasterEntry/Fn_Fill_AttendanceMonthYear")]
+        public List<clsWorker> Fn_Fill_AttendanceMonthYear(clsWorker objReq)
+        {
+            var objResp = new List<clsWorker>();
+            objResp = _DALMasterEntry.Fn_Fill_AttendanceMonthYear(objReq);
+            return objResp;
+        }
+
+
+        [System.Web.Http.HttpPost]
+        [System.Web.Http.Route("api/MasterEntry/Fn_Fetch_AttendanceDetailsByID")]
+        public List<clsWorker> Fn_Fetch_AttendanceDetailsByID(clsWorker objReq)
+        {
+            var objResp = new List<clsWorker>();
+            objResp = _DALMasterEntry.Fn_Fetch_AttendanceDetailsByID(objReq);
+            return objResp;
+        }
+
+
+
     }
 }
