@@ -4570,5 +4570,144 @@ namespace BSLDaman.DAL
 
         #endregion End Fn_Update_GridName 14-MAY-2026 
 
+
+
+
+        public List<clsWorker> Fn_Fill_AttendanceMonthYear(clsWorker objReq)
+        {
+            var objResp = new List<clsWorker>();
+            try
+            {
+                if (Con.State == ConnectionState.Broken)
+                { Con.Close(); }
+                if (Con.State == ConnectionState.Closed)
+                { Con.Open(); }
+
+                SqlCommand cmd = new SqlCommand("USP_WORKER", Con);
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@QueryType", "FillMonthYear");
+
+                SqlDataAdapter da = new SqlDataAdapter(cmd);
+                DataSet ds = new DataSet();
+                da.Fill(ds);
+
+                int i = 0;
+                if (ds.Tables[0].Rows.Count > 0)
+                {
+                    while (ds.Tables[0].Rows.Count > i)
+                    {
+                        var objItem = new clsWorker();
+                        objItem.MonthName = Convert.ToString(ds.Tables[0].Rows[i]["MonthName"]);
+                        objItem.MonthNumber = Convert.ToString(ds.Tables[0].Rows[i]["MonthNumber"]);
+                        objItem.YearValue = Convert.ToString(ds.Tables[0].Rows[i]["YearValue"]);
+
+                        objItem.vErrorMsg = "Success";
+                        objResp.Add(objItem);
+                        i++;
+                    }
+                }
+                else
+                {
+                    var objItem = new clsWorker();
+                    objItem.vErrorMsg = "Month Year not found.";
+                    objResp.Add(objItem);
+                }
+            }
+            catch (Exception exp)
+            {
+                Logger.WriteLog("Function Name : Fn_Fill_AttendanceMonthYear", " " + "Error Msg : " + exp.Message.ToString(), new StackTrace(exp, true));
+                var objItem = new clsWorker();
+                objItem.vErrorMsg = exp.Message.ToString();
+                objResp.Add(objItem);
+            }
+            finally
+            {
+                Con.Close();
+            }
+            return objResp;
+        }
+
+
+        public List<clsWorker> Fn_Fetch_AttendanceDetailsByID(clsWorker objReq)
+        {
+            var objResp = new List<clsWorker>();
+            try
+            {
+                if (Con.State == ConnectionState.Broken)
+                { Con.Close(); }
+                if (Con.State == ConnectionState.Closed)
+                { Con.Open(); }
+
+                SqlCommand cmd = new SqlCommand("USP_WORKER", Con);
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@Code", objReq.Code);
+                cmd.Parameters.AddWithValue("@MonthNumber", objReq.MonthNumber);
+                cmd.Parameters.AddWithValue("@YearValue", objReq.YearValue);
+                cmd.Parameters.AddWithValue("@QueryType", "FetchAttendance");
+
+                SqlDataAdapter da = new SqlDataAdapter(cmd);
+                DataSet ds = new DataSet();
+                da.Fill(ds);
+
+                int i = 0;
+                if (ds.Tables[0].Rows.Count > 0)
+                {
+                    while (ds.Tables[0].Rows.Count > i)
+                    {
+                        var objItem = new clsWorker();
+                        objItem.Code = Convert.ToString(ds.Tables[0].Rows[i]["EmpCode"]);
+                        objItem.AttendenceDate = Convert.ToString(ds.Tables[0].Rows[i]["AttDate"]);
+
+                        if (ds.Tables[0].Rows[i]["StartTime"] == DBNull.Value)
+                        {
+                            objItem.StartTime = string.Empty;
+                        }
+                        else
+                        {
+                            objItem.StartTime = Convert.ToString(ds.Tables[0].Rows[i]["StartTime"]);
+                        }
+
+                        if (ds.Tables[0].Rows[i]["EndTime"] == DBNull.Value)
+                        {
+                            objItem.EndTime = string.Empty;
+                        }
+                        else
+                        {
+                            objItem.EndTime = Convert.ToString(ds.Tables[0].Rows[i]["EndTime"]);
+                        }
+
+                        objItem.OTNoOfHrs = Convert.ToInt32(ds.Tables[0].Rows[i]["OTNoOfHrs"]);
+                        objItem.DayName = Convert.ToString(ds.Tables[0].Rows[i]["DayName"]);
+                        //objItem.AttendanceStatus = Convert.ToString(ds.Tables[0].Rows[i]["AttendanceStatus"]);
+                        //objItem.IsOvertime = Convert.ToString(ds.Tables[0].Rows[i]["IsOvertime"]);
+                        //objItem.Unit = Convert.ToString(ds.Tables[0].Rows[i]["Division"]);
+
+                        objItem.vErrorMsg = "Success";
+                        objResp.Add(objItem);
+                        i++;
+                    }
+                }
+                else
+                {
+                    var objItem = new clsWorker();
+                    objItem.vErrorMsg = "Attendance data not found.";
+                    objResp.Add(objItem);
+                }
+            }
+            catch (Exception exp)
+            {
+                Logger.WriteLog("Function Name : Fn_Fetch_AttendanceDetailsByID", " " + "Error Msg : " + exp.Message.ToString(), new StackTrace(exp, true));
+                var objItem = new clsWorker();
+                objItem.vErrorMsg = exp.Message.ToString();
+                objResp.Add(objItem);
+            }
+            finally
+            {
+                Con.Close();
+            }
+            return objResp;
+        }
+
+
     }
 }
