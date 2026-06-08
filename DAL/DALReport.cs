@@ -285,7 +285,7 @@ namespace BSLDaman.DAL
                 }
                 if (!String.IsNullOrWhiteSpace(objReq.StartDate) && !String.IsNullOrWhiteSpace(objReq.EndDate))
                 {
-                    strSql = strSql + " AND BD.AppStartTime BETWEEN '" + objReq.StartDate + "' AND '" + objReq.EndDate + "'";
+                    strSql = strSql + " AND FORMAT(BD.AppStartTime, 'dd-MMM-yyyy') BETWEEN '" + objReq.StartDate + "' AND '" + objReq.EndDate + "'";
                 }
 
 
@@ -497,7 +497,7 @@ namespace BSLDaman.DAL
                 }
                 if (!String.IsNullOrWhiteSpace(objReq.StartDate) && !String.IsNullOrWhiteSpace(objReq.EndDate))
                 {
-                    strSql = strSql + " AND WorkDate BETWEEN '" + objReq.StartDate + "' AND '" + objReq.EndDate + "'";
+                    strSql = strSql + " AND FORMAT(WorkDate, 'dd-MMM-yyyy') BETWEEN '" + objReq.StartDate + "' AND '" + objReq.EndDate + "'";
                 }
                 strSql = strSql + " ) AS TotalEmp FROM vPieceRateReport WHERE 1=1";             
 
@@ -519,10 +519,10 @@ namespace BSLDaman.DAL
                 }
                 if (!String.IsNullOrWhiteSpace(objReq.StartDate) && !String.IsNullOrWhiteSpace(objReq.EndDate))
                 {
-                    strSql = strSql + " AND WorkDate BETWEEN '" + objReq.StartDate + "' AND '" + objReq.EndDate + "'";
+                    strSql = strSql + " AND FORMAT(WorkDate, 'dd-MMM-yyyy') BETWEEN '" + objReq.StartDate + "' AND '" + objReq.EndDate + "'";
                 }
                 strSql = strSql + " GROUP BY LineName, StyleCode, OrderNo, Code, EmpName, OperationNo, Descriptions,";
-                strSql = strSql + " FORMAT(WorkDate, 'dd-MMM-yyyy'), StdRate,  UpdateType, BundleIDStatus ";
+                strSql = strSql + " WorkDate, StdRate,  UpdateType, BundleIDStatus ";
                 strSql = strSql + " ORDER BY " + objReq.OrderBy;
                 strSql = strSql + " OFFSET (@PageNumber - 1) * @PageSize ROWS ";
                 strSql = strSql + " FETCH NEXT @PageSize ROWS ONLY ";
@@ -640,7 +640,7 @@ namespace BSLDaman.DAL
                 }
                 if (!String.IsNullOrWhiteSpace(objReq.StartDate) && !String.IsNullOrWhiteSpace(objReq.EndDate))
                 {
-                    strSql = strSql + " AND WorkDate BETWEEN '" + objReq.StartDate + "' AND '" + objReq.EndDate + "'";
+                    strSql = strSql + " AND FORMAT(WorkDate, 'dd-MMM-yyyy') BETWEEN '" + objReq.StartDate + "' AND '" + objReq.EndDate + "'";
                 }
                 strSql = strSql + " GROUP BY LineName, Code, EmpName, StyleCode ";
                 strSql = strSql + " ORDER BY " + objReq.OrderBy;
@@ -1083,6 +1083,8 @@ namespace BSLDaman.DAL
                     cmd.Parameters.AddWithValue("@BundleID", BundleId);
                     cmd.Parameters.AddWithValue("@AppEmpID", objReq.AppEmpID);
                     cmd.Parameters.AddWithValue("@OpNo", OPNo);
+                    cmd.Parameters.AddWithValue("@AppStartTime", objReq.AppStartTime);
+                    cmd.Parameters.AddWithValue("@AppEndTime", objReq.AppEndTime);
                     cmd.Parameters.AddWithValue("@CreatedBy", objReq.CreatedBy);
                     cmd.Parameters.AddWithValue("@QueryType", "Update_AppEmpId");
                     int i = 0;
