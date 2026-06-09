@@ -1116,5 +1116,138 @@ namespace BSLDaman.DAL
         }
 
         #endregion End Fn_Add_Multiple_Manual_Entry 04-JUN-2026
+
+        #region Start Fn_Get_Pilot_Report 08-JUN_2026
+        public List<clsBundleStatusReportResp> Fn_Get_Pilot_Report(clsBundleStatusReportReq objReq)
+        {
+            var objResp = new List<clsBundleStatusReportResp>();
+            var obj = new clsBundleStatusReportResp();
+            Logger.ErrorLog(JsonConvert.SerializeObject(objReq), "Request", "Fn_Get_Pilot_Report");
+            try
+            {
+                if (Con.State == ConnectionState.Broken)
+                { Con.Close(); }
+                if (Con.State == ConnectionState.Closed)
+                { Con.Open(); }
+
+                string strSql = "Select BundleID, OpNo, OpName, BundleNo, SizeName, ColorName, ShadeName, Qty, PlyFrom, PlyTo, LotNo,";
+                strSql = strSql + " SubSection, StyleCode, OrderNo, AppEmpID, EmpName, AppStartTime, AppEndTime, BundleStatus,";
+                strSql = strSql + " SupervisorID, SupervisorName, AssignedDate, IsPilot, COUNT(*) OVER() AS TotalRows From vPilotReport WHERE 1=1";
+
+                if (!String.IsNullOrWhiteSpace(objReq.OrderNo))
+                {
+                    strSql = strSql + " AND OrderNo = @OrderNo ";
+                }
+                if (objReq.AppEmpID != 0)
+                {
+                    strSql = strSql + " AND AppEmpID = @AppEmpID ";
+                }
+                if (!String.IsNullOrWhiteSpace(objReq.SizeName))
+                {
+                    strSql = strSql + " AND SizeName = @SizeName ";
+                }
+                if (!String.IsNullOrWhiteSpace(objReq.SubSection))
+                {
+                    strSql = strSql + " AND SubSection = @SubSection ";
+                }
+                
+                strSql = strSql + " ORDER BY BundleID ASC ";
+                strSql = strSql + " OFFSET (@PageNumber - 1) * @PageSize ROWS ";
+                strSql = strSql + " FETCH NEXT @PageSize ROWS ONLY ";
+
+                SqlCommand cmd = new SqlCommand(strSql, Con);
+                cmd.CommandType = CommandType.Text;
+                cmd.Parameters.AddWithValue("@PageNumber", objReq.PageNumber);
+                cmd.Parameters.AddWithValue("@PageSize", objReq.PageSize);
+
+                if (!String.IsNullOrWhiteSpace(objReq.OrderNo))
+                {
+                    cmd.Parameters.AddWithValue("@OrderNo", objReq.OrderNo);
+                }
+                if (objReq.AppEmpID != 0)
+                {
+                    cmd.Parameters.AddWithValue("@AppEmpID", objReq.AppEmpID);
+                }
+                if (!String.IsNullOrWhiteSpace(objReq.SizeName))
+                {
+                    cmd.Parameters.AddWithValue("@SizeName", objReq.SizeName);
+                }
+                if (!String.IsNullOrWhiteSpace(objReq.SubSection))
+                {
+                    cmd.Parameters.AddWithValue("@SubSection", objReq.SubSection);
+                }
+
+                SqlDataAdapter da = new SqlDataAdapter(cmd);
+                DataSet ds = new DataSet();
+                da.Fill(ds);
+                int i = 0;
+                if (ds.Tables[0].Rows.Count > 0)
+                {
+                    while (ds.Tables[0].Rows.Count > i)
+                    {
+                        obj = new clsBundleStatusReportResp();
+                        obj.OpNo = Convert.ToInt32(ds.Tables[0].Rows[i]["OpNo"]);
+                        obj.OpName = Convert.ToString(ds.Tables[0].Rows[i]["OpName"]);
+                        obj.BundleID = Convert.ToInt64(ds.Tables[0].Rows[i]["BundleID"]);
+                        obj.BundleNo = Convert.ToInt32(ds.Tables[0].Rows[i]["BundleNo"]);
+                        obj.SizeName = Convert.ToString(ds.Tables[0].Rows[i]["SizeName"]);
+                        obj.ColorName = Convert.ToString(ds.Tables[0].Rows[i]["ColorName"]);
+                        obj.ShadeName = Convert.ToString(ds.Tables[0].Rows[i]["ShadeName"]);
+                        obj.Qty = Convert.ToInt32(ds.Tables[0].Rows[i]["Qty"]);
+                        obj.PlyFrom = Convert.ToInt32(ds.Tables[0].Rows[i]["PlyFrom"]);
+                        obj.PlyTo = Convert.ToInt32(ds.Tables[0].Rows[i]["PlyTo"]);
+                        obj.LotNo = Convert.ToInt32(ds.Tables[0].Rows[i]["LotNo"]);
+                        obj.SubSection = Convert.ToString(ds.Tables[0].Rows[i]["SubSection"]);
+                        obj.StyleCode = Convert.ToString(ds.Tables[0].Rows[i]["StyleCode"]);
+                        obj.OrderNo = Convert.ToString(ds.Tables[0].Rows[i]["OrderNo"]);
+                        obj.EmpName = Convert.ToString(ds.Tables[0].Rows[i]["EmpName"]);
+                        string strAppEmpID = Convert.ToString(ds.Tables[0].Rows[i]["AppEmpID"]);
+                        if (strAppEmpID != "")
+                        {
+                            obj.AppEmpID = Convert.ToInt32(ds.Tables[0].Rows[i]["AppEmpID"]);
+                        }
+
+                        obj.AppStartTime = Convert.ToString(ds.Tables[0].Rows[i]["AppStartTime"]);
+                        obj.AppEndTime = Convert.ToString(ds.Tables[0].Rows[i]["AppEndTime"]);
+                        obj.BundleStatus = Convert.ToString(ds.Tables[0].Rows[i]["BundleStatus"]);
+                        string strSupervisorID = Convert.ToString(ds.Tables[0].Rows[i]["SupervisorID"]);
+                        if (strSupervisorID != "")
+                        {
+                            obj.SupervisorID = Convert.ToInt32(ds.Tables[0].Rows[i]["SupervisorID"]);
+                        }
+                        obj.SupervisorName = Convert.ToString(ds.Tables[0].Rows[i]["SupervisorName"]);
+                        obj.AssignedDate = Convert.ToString(ds.Tables[0].Rows[i]["AssignedDate"]);
+                        obj.TotalRows = Convert.ToInt64(ds.Tables[0].Rows[i]["TotalRows"]);
+                        obj.IsPilot = Convert.ToBoolean(ds.Tables[0].Rows[i]["IsPilot"]);
+                        obj.vErrorCode = 200;
+                        obj.vErrorMsg = "Success";
+                        objResp.Add(obj);
+                        i++;
+                    }
+                }
+                else
+                {
+                    obj.vErrorCode = 404;
+                    obj.vErrorMsg = "No Record found";
+                    objResp.Add(obj);
+                }
+
+            }
+            catch (Exception exp)
+            {
+                obj.vErrorCode = 500;
+                Logger.WriteLog("Function Name : Fn_Get_Pilot_Report", " " + "Error Msg : " + exp.Message.ToString(), new StackTrace(exp, true));
+                obj.vErrorMsg = exp.Message.ToString();
+                objResp.Add(obj);
+            }
+            finally
+            {
+                Con.Close();
+            }
+            Logger.ErrorLog(JsonConvert.SerializeObject(objResp), "Response", "Fn_Get_Pilot_Report");
+            return objResp;
+        }
+
+        #endregion End Fn_Get_Pilot_Report 08-JUN_2026
     }
 }
