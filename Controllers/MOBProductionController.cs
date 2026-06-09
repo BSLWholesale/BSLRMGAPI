@@ -700,18 +700,19 @@ namespace BSLDaman.Controllers
 
         [System.Web.Http.HttpGet]
         [System.Web.Http.Route("api/MOBProduction/Fn_Fetch_SupervisorAssignOpNoToOperators")]
-        public List<clsBundleCompile> Fn_Fetch_SupervisorAssignOpNoToOperators(Int32? SupervisorID = null, Int32? AppEmpID = null, string OrderNo = null, Int64? OperationNo = null)
+        public List<clsBundleCompile> Fn_Fetch_SupervisorAssignOpNoToOperators(Int32? AppEmpID = null, string OrderNo = null, Int64? OperationNo = null)
         {
             clsBundleCompile objReq = new clsBundleCompile();
+            //Int32? SupervisorID = null,
 
-            if (SupervisorID.HasValue)
-            {
-                objReq.SupervisorID = SupervisorID.Value;
-            }
-            else
-            {
-                objReq.SupervisorID = 0;
-            }
+            //if (SupervisorID.HasValue)
+            //{
+            //    objReq.SupervisorID = SupervisorID.Value;
+            //}
+            //else
+            //{
+            //    objReq.SupervisorID = 0;
+            //}
 
             if (AppEmpID.HasValue)
             {
