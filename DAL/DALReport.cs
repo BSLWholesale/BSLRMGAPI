@@ -475,10 +475,10 @@ namespace BSLDaman.DAL
                 if (Con.State == ConnectionState.Closed)
                 { Con.Open(); }
 
-                string strSql = "SELECT LineName, StyleCode, OrderNo, Code, EmpName, OperationNo, Descriptions, ";
-                strSql = strSql + " FORMAT(WorkDate, 'dd-MMM-yyyy') AS WorkDate, SUM(Qty) AS Qty, StdRate, (SUM(Qty) * StdRate) AS Amount,";
-                strSql = strSql + " UpdateType, BundleIDStatus, COUNT(*) OVER() AS TotalRows, SUM(SUM(Qty) * StdRate) OVER() AS TotalAMT,";
-                strSql = strSql + " ( SELECT COUNT(DISTINCT Code)  FROM vPieceRateReport WHERE 1=1";
+                string strSql = "SELECT LineName, StyleCode, OrderNo, Code, EmpName, OperationNo, Descriptions, FORMAT(WorkDate, 'dd-MMM-yyyy') AS WorkDate,";
+                strSql = strSql + " SUM(Qty) AS Qty, StdRate, SUM(Qty) * StdRate AS Amount,  UpdateType, BundleIDStatus, COUNT(*) OVER() AS TotalRows,";
+                strSql = strSql + " SUM(SUM(Qty) * StdRate) OVER() AS TotalAMT,";
+                strSql = strSql + " ( SELECT COUNT(DISTINCT Code) FROM vPieceRateReport WHERE 1=1";
                 if (!String.IsNullOrWhiteSpace(objReq.StyleCode))
                 {
                     strSql = strSql + " AND StyleCode = @StyleCode ";
@@ -521,8 +521,8 @@ namespace BSLDaman.DAL
                 {
                     strSql = strSql + " AND FORMAT(WorkDate, 'dd-MMM-yyyy') BETWEEN '" + objReq.StartDate + "' AND '" + objReq.EndDate + "'";
                 }
-                strSql = strSql + " GROUP BY LineName, StyleCode, OrderNo, Code, EmpName, OperationNo, Descriptions,";
-                strSql = strSql + " WorkDate, StdRate,  UpdateType, BundleIDStatus ";
+                strSql = strSql + " GROUP BY LineName, StyleCode,  OrderNo, Code, EmpName, OperationNo,  Descriptions,";
+                strSql = strSql + " FORMAT(WorkDate, 'dd-MMM-yyyy'), StdRate, UpdateType, BundleIDStatus ";
                 strSql = strSql + " ORDER BY " + objReq.OrderBy;
                 strSql = strSql + " OFFSET (@PageNumber - 1) * @PageSize ROWS ";
                 strSql = strSql + " FETCH NEXT @PageSize ROWS ONLY ";
