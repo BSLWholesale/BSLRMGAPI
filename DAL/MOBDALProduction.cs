@@ -3198,10 +3198,10 @@ namespace BSLDaman.DAL
                 strSql = strSql + " ON BAD.AppEmpID = EM1.EmpId";
                 strSql = strSql + " WHERE EM.EmpRole = 'Supervisor'";
 
-                if (objReq.SupervisorID > 0)
-                {
-                    strSql = strSql + " AND BAD.SupervisorID = " + objReq.SupervisorID;
-                }
+                //if (objReq.SupervisorID > 0)
+                //{
+                //    strSql = strSql + " AND BAD.SupervisorID = " + objReq.SupervisorID;
+                //}
                 if (objReq.AppEmpID > 0)
                 {
                     strSql = strSql + " AND BAD.AppEmpID = " + objReq.AppEmpID;
@@ -3406,6 +3406,11 @@ namespace BSLDaman.DAL
                     objResp.vErrorMsg = "Please Pass the Valid Operation Number";
                     objResp.vErrorCode = 300;
                 }
+                else if (objReq.SupervisorID == null || objReq.SupervisorID == 0)
+                {
+                    objResp.vErrorMsg = "Please Pass the Valid Supervisore ID";
+                    objResp.vErrorCode = 300;
+                }
                 else
                 {
                     if (Con.State == ConnectionState.Broken)
@@ -3418,6 +3423,7 @@ namespace BSLDaman.DAL
                     cmd.Parameters.AddWithValue("@OrderNo", objReq.OrderNo);
                     cmd.Parameters.AddWithValue("@AppEmpID", objReq.AppEmpID);
                     cmd.Parameters.AddWithValue("@OperationNo", objReq.OperationNo);
+                    cmd.Parameters.AddWithValue("@SupervisorID", objReq.SupervisorID);
                     cmd.Parameters.AddWithValue("@QueryType", "RemoveOpNumber");
                     int i = 0;
                     i = cmd.ExecuteNonQuery();
