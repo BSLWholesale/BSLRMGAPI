@@ -135,5 +135,18 @@ namespace BSLDaman.Controllers
         }
 
         #endregion End Fn_Add_Multiple_Manual_Entry 04-JUN-2026
+
+        #region End Fn_Get_Pilot_Report 08-JUN_2026
+
+        [System.Web.Http.HttpPost]
+        [System.Web.Http.Route("api/Report/Fn_Get_Pilot_Report")]
+        public List<clsBundleStatusReportResp> Fn_Get_Pilot_Report(clsBundleStatusReportReq objReq)
+        {
+            var objResp = new List<clsBundleStatusReportResp>();
+            objResp = _DALReport.Fn_Get_Pilot_Report(objReq);
+            return objResp;
+        }
+
+        #endregion End Fn_Get_Pilot_Report 08-JUN_2026
     }
 }
