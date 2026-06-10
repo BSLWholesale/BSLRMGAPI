@@ -3455,6 +3455,7 @@ namespace BSLDaman.DAL
                 cmd.Parameters.AddWithValue("@Pin", encriptPassword);
                 cmd.Parameters.AddWithValue("@PayRoll", objReq.PayRoll);
                 cmd.Parameters.AddWithValue("@DOJ", objReq.DOJ);
+                cmd.Parameters.AddWithValue("@DOB", objReq.DOB);
                 cmd.Parameters.AddWithValue("@EmpImageFile", objReq.EmpImageFile);
                 cmd.Parameters.AddWithValue("@CreatedBy", objReq.CreatedBy);
                 cmd.Parameters.AddWithValue("@QueryType", "InsertWorker");
@@ -3725,6 +3726,7 @@ namespace BSLDaman.DAL
                 cmd.Parameters.AddWithValue("@Pin", encryptPassword);
                 cmd.Parameters.AddWithValue("@PayRoll", objReq.PayRoll);
                 cmd.Parameters.AddWithValue("@DOJ", objReq.DOJ);
+                cmd.Parameters.AddWithValue("@DOB", objReq.DOB);
                 cmd.Parameters.AddWithValue("@EmpImageFile", objReq.EmpImageFile);
                 cmd.Parameters.AddWithValue("@IsActive", objReq.IsActive);
                 cmd.Parameters.AddWithValue("@ModifiedBy", objReq.ModifiedBy);
@@ -4037,6 +4039,15 @@ namespace BSLDaman.DAL
                     else
                     {
                         objResp.DOJ = Convert.ToDateTime(ds.Tables[0].Rows[i]["DOJ"]).ToString("dd-MMM-yyyy");
+                    }
+
+                    if (ds.Tables[0].Rows[i]["DOB"] == DBNull.Value)
+                    {
+                        objResp.DOB = string.Empty;
+                    }
+                    else
+                    {
+                        objResp.DOB = Convert.ToDateTime(ds.Tables[0].Rows[i]["DOB"]).ToString("dd-MMM-yyyy");
                     }
 
                     if (ds.Tables[0].Rows[i]["EmpImageFile"] == DBNull.Value)
