@@ -1100,5 +1100,202 @@ namespace BSLDaman.DAL
         }
 
         #endregion End Fn_Get_Order_Chart 13-APR-2026
+
+        #region Start Fn_Filter_OP_Detail 10-JUN-2026
+        public List<clsOPBreackDownDetail> Fn_Filter_OP_Detail(clsOPBreackDownDetail objReq)
+        {
+            var objResp = new List<clsOPBreackDownDetail>();
+            var obj = new clsOPBreackDownDetail();
+            Logger.ErrorLog(JsonConvert.SerializeObject(objReq), "Request", "Fn_Filter_OP_Detail");
+            try
+            {
+                if (Con.State == ConnectionState.Broken)
+                { Con.Close(); }
+                if (Con.State == ConnectionState.Closed)
+                { Con.Open(); }
+
+                string strSql = "SELECT DISTINCT OpNo,Descriptions,Machine,SubSection,StdMin,Rate,Product,Skill,Grade,Folder,Seamlength,";
+                strSql = strSql + " IsDirect,ProgressPoint,IsDispatch,DependOPNO,IsDS, MID FROM OperationBreackDownDetail WHERE 1=1";
+                if (objReq.OpNo != 0 && objReq.OpNo != null)
+                {
+                    strSql = strSql + " AND OpNo = @OpNo ";
+                }
+                if (!String.IsNullOrWhiteSpace(objReq.Descriptions))
+                {
+                    strSql = strSql + " AND Descriptions = @Descriptions";
+                }
+                if (!String.IsNullOrWhiteSpace(objReq.Machine))
+                {
+                    strSql = strSql + " AND Machine = @Machine";
+                }
+                if (!String.IsNullOrWhiteSpace(objReq.SubSection))
+                {
+                    strSql = strSql + " AND SubSection = @SubSection";
+                }
+                if (!String.IsNullOrWhiteSpace(objReq.Product))
+                {
+                    strSql = strSql + " AND Product = @Product";
+                }
+                if (!String.IsNullOrWhiteSpace(objReq.Skill))
+                {
+                    strSql = strSql + " AND Skill = @Skill";
+                }
+                if (!String.IsNullOrWhiteSpace(objReq.Grade))
+                {
+                    strSql = strSql + " AND Grade = @Grade";
+                }
+
+                strSql = strSql + " ORDER BY OpNo ASC ";
+
+                SqlCommand cmd = new SqlCommand(strSql, Con);
+                cmd.CommandType = CommandType.Text;
+              
+                if (objReq.OpNo != 0 && objReq.OpNo != null)
+                {
+                    cmd.Parameters.AddWithValue("@OpNo", objReq.OpNo);
+                }
+                if (!String.IsNullOrWhiteSpace(objReq.Descriptions))
+                {
+                    cmd.Parameters.AddWithValue("@Descriptions", objReq.Descriptions);
+                }
+                if (!String.IsNullOrWhiteSpace(objReq.Machine))
+                {
+                    cmd.Parameters.AddWithValue("@Machine", objReq.Machine);
+                }
+                if (!String.IsNullOrWhiteSpace(objReq.SubSection))
+                {
+                    cmd.Parameters.AddWithValue("@SubSection", objReq.SubSection);
+                }
+                if (!String.IsNullOrWhiteSpace(objReq.Product))
+                {
+                    cmd.Parameters.AddWithValue("@Product", objReq.Product);
+                }
+                if (!String.IsNullOrWhiteSpace(objReq.Skill))
+                {
+                    cmd.Parameters.AddWithValue("@Skill", objReq.Skill);
+                }
+                if (!String.IsNullOrWhiteSpace(objReq.Grade))
+                {
+                    cmd.Parameters.AddWithValue("@Grade", objReq.Grade);
+                }
+
+                SqlDataAdapter da = new SqlDataAdapter(cmd);
+                DataSet ds = new DataSet();
+                da.Fill(ds);
+                int i = 0;
+                if (ds.Tables[0].Rows.Count > 0)
+                {
+                    while (ds.Tables[0].Rows.Count > i)
+                    {
+                        obj = new clsOPBreackDownDetail();
+                        obj.MID = Convert.ToInt32(ds.Tables[0].Rows[i]["MID"]);
+                        obj.OpNo = Convert.ToInt32(ds.Tables[0].Rows[i]["OpNo"]);
+                        obj.Descriptions = Convert.ToString(ds.Tables[0].Rows[i]["Descriptions"]);
+                        obj.Machine = Convert.ToString(ds.Tables[0].Rows[i]["Machine"]);
+                        obj.SubSection = Convert.ToString(ds.Tables[0].Rows[i]["SubSection"]);
+                        obj.StdMin = Convert.ToDecimal(ds.Tables[0].Rows[i]["StdMin"]);
+                        obj.Rate = Convert.ToDecimal(ds.Tables[0].Rows[i]["Rate"]);
+                        obj.Product = Convert.ToString(ds.Tables[0].Rows[i]["Product"]);
+                        obj.Skill = Convert.ToString(ds.Tables[0].Rows[i]["Skill"]);
+                        obj.Grade = Convert.ToString(ds.Tables[0].Rows[i]["Grade"]);
+                        obj.Folder = Convert.ToString(ds.Tables[0].Rows[i]["Folder"]);
+                        obj.Seamlength = Convert.ToString(ds.Tables[0].Rows[i]["Seamlength"]);
+                        obj.IsDirect = Convert.ToBoolean(ds.Tables[0].Rows[i]["IsDirect"]);
+                        obj.ProgressPoint = Convert.ToString(ds.Tables[0].Rows[i]["ProgressPoint"]);
+                        obj.IsDispatch = Convert.ToBoolean(ds.Tables[0].Rows[i]["IsDispatch"]);
+                        obj.DependOPNO = Convert.ToString(ds.Tables[0].Rows[i]["DependOPNO"]);
+                        obj.IsDS = Convert.ToBoolean(ds.Tables[0].Rows[i]["IsDS"]);
+
+                        obj.vErrorCode = 200;
+                        obj.vErrorMsg = "Success";
+                        objResp.Add(obj);
+                        i++;
+                    }
+                }
+                else
+                {
+                    obj.vErrorCode = 404;
+                    obj.vErrorMsg = "No Record found";
+                    objResp.Add(obj);
+                }
+
+            }
+            catch (Exception exp)
+            {
+                obj.vErrorCode = 500;
+                Logger.WriteLog("Function Name : Fn_Filter_OP_Detail", " " + "Error Msg : " + exp.Message.ToString(), new StackTrace(exp, true));
+                obj.vErrorMsg = exp.Message.ToString();
+                objResp.Add(obj);
+            }
+            finally
+            {
+                Con.Close();
+            }
+            Logger.ErrorLog(JsonConvert.SerializeObject(objResp), "Response", "Fn_Filter_OP_Detail");
+            return objResp;
+        }
+
+        #endregion End Fn_Filter_OP_Detail 10-JUN-2026
+
+        #region Start Fn_Append_New_OpNo 11-JUN-2026
+        public clsOPBreackDownDetail Fn_Append_New_OpNo(clsOPBreackDownDetail objReq)
+        {
+            var objResp = new clsOPBreackDownDetail();
+            Logger.ErrorLog(JsonConvert.SerializeObject(objReq), "Request", "Fn_Append_New_OpNo");
+            try
+            {
+
+                if (objReq.OpNo != 0 && objReq.OpNo != null)
+                {
+                    objResp.vErrorCode = 400;
+                    objResp.vErrorMsg = "Please Enter OpNo";
+                }
+                else if (objReq.MID != 0 && objReq.MID != null)
+                {
+                    objResp.vErrorCode = 400;
+                    objResp.vErrorMsg = "Please Enter OpNo";
+                }
+                else
+                {
+                    if (Con.State == ConnectionState.Broken)
+                    { Con.Close(); }
+                    if (Con.State == ConnectionState.Closed)
+                    { Con.Open(); }
+
+                    SqlCommand cmd = new SqlCommand("USP_OPEARTION_BREACK_DOWN", Con);
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("@OpNo", objReq.OpNo);
+                    cmd.Parameters.AddWithValue("@MID", objReq.MID);
+                    cmd.Parameters.AddWithValue("@CreatedBy", objReq.CreatedBy);
+                    cmd.Parameters.AddWithValue("@QueryType", "Append_New_Opno");
+                    int j = cmd.ExecuteNonQuery();
+                    if (j > 0)
+                    {
+                        objResp.vErrorCode = 200;
+                        objResp.vErrorMsg = "Success";
+                    }
+                    else
+                    {
+                        objResp.vErrorCode = 400;
+                        objResp.vErrorMsg = "Operation inserting failed ";
+                        return objResp;
+                    }
+                }
+            }
+            catch (Exception exp)
+            {               
+                Logger.WriteLog("Function Name : Fn_Append_New_OpNo", " " + "Error Msg : " + exp.Message.ToString(), new StackTrace(exp, true));
+                objResp.vErrorMsg = exp.Message.ToString();
+                objResp.vErrorCode = 500;
+            }
+            finally
+            {
+                Con.Close();
+            }
+            Logger.ErrorLog(JsonConvert.SerializeObject(objResp), "Response", "Fn_Append_New_OpNo");
+            return objResp;
+        }
+
+        #endregion End Fn_Append_New_OpNo 11-JUN-2026
     }
 }
