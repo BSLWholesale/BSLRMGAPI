@@ -155,5 +155,30 @@ namespace BSLDaman.Controllers
         }
 
         #endregion End Fn_Get_Order_Chart 13-APR-2026
+
+        #region Start Fn_Filter_OP_Detail 10-JUN-2026
+
+        [System.Web.Http.HttpPost]
+        [System.Web.Http.Route("api/Order/Fn_Filter_OP_Detail")]
+        public List<clsOPBreackDownDetail> Fn_Filter_OP_Detail(clsOPBreackDownDetail objReq)
+        {
+            var objResp = new List<clsOPBreackDownDetail>();
+            objResp = _DALOrder.Fn_Filter_OP_Detail(objReq);
+            return objResp;
+        }
+
+        #endregion End Fn_Filter_OP_Detail 10-JUN-2026
+
+        #region Start Fn_Append_New_OpNo 11-JUN-2026
+
+        [System.Web.Http.HttpPost]
+        [System.Web.Http.Route("api/Order/Fn_Append_New_OpNo")]
+        public clsOPBreackDownDetail Fn_Append_New_OpNo(clsOPBreackDownDetail objReq)
+        {
+            var objResp = new clsOPBreackDownDetail();
+            objResp = _DALOrder.Fn_Append_New_OpNo(objReq);
+            return objResp;
+        }
+        #endregion End Fn_Append_New_OpNo 11-JUN-2026
     }
 }
