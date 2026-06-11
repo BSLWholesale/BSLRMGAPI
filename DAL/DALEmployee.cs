@@ -447,7 +447,15 @@ namespace BSLDaman.DAL
                         objResp.vEmpPassword = decryptTextPassword;
                         objResp.EmpRole = Convert.ToString(ds.Tables[0].Rows[i]["EmpRole"]);
 
-                        objResp.vErrorMsg = "Success";
+                        if (objResp.EmpRole == "Admin" || objResp.EmpRole == "Supervisor")
+                        {
+                            objResp.vErrorMsg = "Success";
+                        }
+                        else
+                        {
+                            objResp.vErrorMsg = "Only an Admin/Supervisor level can login on this System";
+                        }
+                        //objResp.vErrorMsg = "Success";
                     }
                     else
                     {
@@ -594,6 +602,48 @@ namespace BSLDaman.DAL
             }
             return objResp;
         }
+
+
+        public clsEmployee Fn_Employee_BirthdayWishes(clsEmployee objReq)
+        {
+            var objResp = new clsEmployee();
+            try
+            {
+                if (Con.State == ConnectionState.Broken)
+                { Con.Close(); }
+                if (Con.State == ConnectionState.Closed)
+                { Con.Open(); }
+
+                SqlCommand cmd = new SqlCommand("USP_Employee", Con);
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@EmpId", objReq.nEmpId);
+                cmd.Parameters.AddWithValue("@QueryType", "BirthdayWishes");
+                SqlDataReader dr = cmd.ExecuteReader();
+
+                if (dr.HasRows)
+                {
+                    dr.Read();
+                    objResp.vEmpName = Convert.ToString(dr["Name"].ToString());
+                    objResp.DOB = Convert.ToString(dr["DOB"].ToString());
+                    objResp.vErrorMsg = "Success";
+                }
+                else
+                {
+                    objResp.vErrorMsg = "Failed";
+                }
+            }
+            catch (Exception exp)
+            {
+                Logger.WriteLog("Function Name : Fn_Employee_BirthdayWishes", " " + "Error Msg : " + exp.Message.ToString(), new StackTrace(exp, true));
+                objResp.vErrorMsg = exp.Message.ToString();
+            }
+            finally
+            {
+                Con.Close();
+            }
+            return objResp;
+        }
+
 
 
     }
