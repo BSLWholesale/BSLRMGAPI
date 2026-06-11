@@ -118,5 +118,18 @@ namespace BSLDaman.Controllers
             return objResp;
         }
 
+
+        [System.Web.Http.HttpPost]
+        [System.Web.Http.Route("api/Employee/Fn_Employee_BirthdayWishes")]
+        public clsEmployee Fn_Employee_BirthdayWishes(clsEmployee objReq)
+        {
+            var objResp = new clsEmployee();
+            objResp = _DALEmployee.Fn_Employee_BirthdayWishes(objReq);
+            return objResp;
+        }
+
+
+
+
     }
 }
