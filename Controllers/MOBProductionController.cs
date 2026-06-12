@@ -703,7 +703,6 @@ namespace BSLDaman.Controllers
         public List<clsBundleCompile> Fn_Fetch_SupervisorAssignOpNoToOperators(Int32? AppEmpID = null, string OrderNo = null, Int64? OperationNo = null)
         {
             clsBundleCompile objReq = new clsBundleCompile();
-            //Int32? SupervisorID = null,
 
             //if (SupervisorID.HasValue)
             //{
