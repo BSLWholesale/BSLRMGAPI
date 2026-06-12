@@ -3190,7 +3190,8 @@ namespace BSLDaman.DAL
                 string strSql = "SELECT BAD.OrderNo AS OrderNo, BAD.OperationNo AS OperationNo, BAD.SubSection AS SubSection,";
                 strSql = strSql + " BAD.SupervisorID AS SupervisorID, EM.EmpName AS SupervisorName, BAD.SupAssignedDate AS SupAssignedDate,";
                 strSql = strSql + " BAD.AppEmpID AS AppEmpID, EM1.EmpName AS AppEmpName, BAD.CreatedBy AS CreatedBy,";
-                strSql = strSql + " FORMAT(BAD.CreatedOn, 'dd-MMM-yyyy HH:mm:ss') AS CreatedOn";
+                strSql = strSql + " FORMAT(BAD.CreatedOn, 'dd-MMM-yyyy HH:mm:ss') AS CreatedOn,";
+                strSql = strSql + " (SELECT DISTINCT(Descriptions) FROM OperationBreackDownDetail WHERE OpNo = BAD.OperationNo) AS Descriptions";
                 strSql = strSql + " FROM BundleCompileAssignDetail AS BAD";
                 strSql = strSql + " INNER JOIN EmployeeMaster AS EM";
                 strSql = strSql + " ON BAD.SupervisorID = EM.EmpId";
@@ -3233,6 +3234,7 @@ namespace BSLDaman.DAL
                         obj = new clsBundleCompile();
                         obj.OrderNo = Convert.ToString(ds.Tables[0].Rows[i]["OrderNo"]);
                         obj.OperationNo = Convert.ToInt32(ds.Tables[0].Rows[i]["OperationNo"]);
+                        obj.Descriptions = Convert.ToString(ds.Tables[0].Rows[i]["Descriptions"]);
                         obj.SubSection = Convert.ToString(ds.Tables[0].Rows[i]["SubSection"]);
                         obj.SupervisorID = Convert.ToInt32(ds.Tables[0].Rows[i]["SupervisorID"]);
                         obj.SupervisorName = Convert.ToString(ds.Tables[0].Rows[i]["SupervisorName"]);
