@@ -228,6 +228,7 @@ namespace BSLDaman.Models
         public int vErrorCode { get; set; }
         public List<clsOPBreackDownDetail> oList { get; set; }
         public Int64 nEmpId { get; set; }
+        public int OpNo { get; set; }
     }
 
 
