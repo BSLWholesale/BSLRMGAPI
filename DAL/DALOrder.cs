@@ -684,6 +684,10 @@ namespace BSLDaman.DAL
                 {
                     strSql = strSql + " AND OM.ID = @ID ";
                 }
+                if (objReq.OpNo != 0 && objReq.OpNo != null)
+                {
+                    strSql = strSql + " AND OD.OpNo = @OpNo ";
+                }
                 strSql = strSql + " ORDER BY OD.DetailID ASC ";
 
                 SqlCommand cmd = new SqlCommand(strSql, Con);
@@ -700,7 +704,10 @@ namespace BSLDaman.DAL
                 {
                     cmd.Parameters.AddWithValue("@ID", objReq.ID);
                 }
-
+                if (objReq.OpNo != 0 && objReq.OpNo != null)
+                {
+                    cmd.Parameters.AddWithValue("@OpNo", objReq.OpNo);
+                }
                 SqlDataAdapter da = new SqlDataAdapter(cmd);
                 DataSet ds = new DataSet();
                 da.Fill(ds);
@@ -1115,7 +1122,7 @@ namespace BSLDaman.DAL
                 { Con.Open(); }
 
                 string strSql = "SELECT DISTINCT OpNo,Descriptions,Machine,SubSection,StdMin,Rate,Product,Skill,Grade,Folder,Seamlength,";
-                strSql = strSql + " IsDirect,ProgressPoint,IsDispatch,DependOPNO,IsDS, MID FROM OperationBreackDownDetail WHERE 1=1";
+                strSql = strSql + " IsDirect,ProgressPoint,IsDispatch,DependOPNO,IsDS FROM OperationBreackDownDetail WHERE 1=1";
                 if (objReq.OpNo != 0 && objReq.OpNo != null)
                 {
                     strSql = strSql + " AND OpNo = @OpNo ";
@@ -1188,7 +1195,7 @@ namespace BSLDaman.DAL
                     while (ds.Tables[0].Rows.Count > i)
                     {
                         obj = new clsOPBreackDownDetail();
-                        obj.MID = Convert.ToInt32(ds.Tables[0].Rows[i]["MID"]);
+                        //obj.MID = Convert.ToInt32(ds.Tables[0].Rows[i]["MID"]);
                         obj.OpNo = Convert.ToInt32(ds.Tables[0].Rows[i]["OpNo"]);
                         obj.Descriptions = Convert.ToString(ds.Tables[0].Rows[i]["Descriptions"]);
                         obj.Machine = Convert.ToString(ds.Tables[0].Rows[i]["Machine"]);
@@ -1241,19 +1248,29 @@ namespace BSLDaman.DAL
         public clsOPBreackDownDetail Fn_Append_New_OpNo(clsOPBreackDownDetail objReq)
         {
             var objResp = new clsOPBreackDownDetail();
+            var objCheckOPList = new clsOPBreackDownMaster();
+            objCheckOPList.OpNo = objReq.OpNo;
+            objCheckOPList.StyleCode = objReq.Folder;  // this is stylecode here
+            var checkExistOP = new List<clsOPBreackDownDetail>();
+            checkExistOP = Fn_Get_Operation_BreackdownFile(objCheckOPList);
             Logger.ErrorLog(JsonConvert.SerializeObject(objReq), "Request", "Fn_Append_New_OpNo");
             try
             {
 
-                if (objReq.OpNo != 0 && objReq.OpNo != null)
+                if (objReq.OpNo == 0 && objReq.OpNo == null)
                 {
                     objResp.vErrorCode = 400;
                     objResp.vErrorMsg = "Please Enter OpNo";
                 }
-                else if (objReq.MID != 0 && objReq.MID != null)
+                else if (String.IsNullOrWhiteSpace(objReq.Folder))
                 {
                     objResp.vErrorCode = 400;
-                    objResp.vErrorMsg = "Please Enter OpNo";
+                    objResp.vErrorMsg = "Please Enter StyleCode";
+                }
+                else if (checkExistOP[0].OpNo == objReq.OpNo)
+                {
+                    objResp.vErrorCode = 400;
+                    objResp.vErrorMsg = "OpNo already exist";
                 }
                 else
                 {
@@ -1265,7 +1282,8 @@ namespace BSLDaman.DAL
                     SqlCommand cmd = new SqlCommand("USP_OPEARTION_BREACK_DOWN", Con);
                     cmd.CommandType = CommandType.StoredProcedure;
                     cmd.Parameters.AddWithValue("@OpNo", objReq.OpNo);
-                    cmd.Parameters.AddWithValue("@MID", objReq.MID);
+                    //cmd.Parameters.AddWithValue("@MID", objReq.MID);
+                    cmd.Parameters.AddWithValue("@StyleCode", objReq.Folder);
                     cmd.Parameters.AddWithValue("@CreatedBy", objReq.CreatedBy);
                     cmd.Parameters.AddWithValue("@QueryType", "Append_New_Opno");
                     int j = cmd.ExecuteNonQuery();
