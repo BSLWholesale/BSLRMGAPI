@@ -1256,6 +1256,11 @@ namespace BSLDaman.DAL
             Logger.ErrorLog(JsonConvert.SerializeObject(objReq), "Request", "Fn_Append_New_OpNo");
             try
             {
+                if (objReq.DetailID == 0 || objReq.DetailID == null)
+                {
+                    Fn_Get_MXID("OperationBreackDownDetail", "DetailID");
+                    objReq.DetailID = mxID;
+                }
 
                 if (objReq.OpNo == 0 && objReq.OpNo == null)
                 {
@@ -1274,6 +1279,11 @@ namespace BSLDaman.DAL
                 }
                 else
                 {
+                   var objGet = new clsOPBreackDownDetail();
+                    objGet.OpNo = objReq.OpNo;
+                    checkExistOP = new List<clsOPBreackDownDetail>();
+                    checkExistOP = Fn_Filter_OP_Detail(objGet);
+
                     if (Con.State == ConnectionState.Broken)
                     { Con.Close(); }
                     if (Con.State == ConnectionState.Closed)
@@ -1281,10 +1291,25 @@ namespace BSLDaman.DAL
 
                     SqlCommand cmd = new SqlCommand("USP_OPEARTION_BREACK_DOWN", Con);
                     cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("@DetailID", objReq.DetailID);
                     cmd.Parameters.AddWithValue("@OpNo", objReq.OpNo);
-                    //cmd.Parameters.AddWithValue("@MID", objReq.MID);
-                    cmd.Parameters.AddWithValue("@StyleCode", objReq.Folder);
+                    cmd.Parameters.AddWithValue("@Descriptions", checkExistOP[0].Descriptions);
+                    cmd.Parameters.AddWithValue("@Machine", checkExistOP[0].Machine);
+                    cmd.Parameters.AddWithValue("@SubSection", checkExistOP[0].SubSection);
+                    cmd.Parameters.AddWithValue("@StdMin", checkExistOP[0].StdMin);
+                    cmd.Parameters.AddWithValue("@Rate", checkExistOP[0].Rate);
+                    cmd.Parameters.AddWithValue("@Product", checkExistOP[0].Product);
+                    cmd.Parameters.AddWithValue("@Skill", checkExistOP[0].Skill);
+                    cmd.Parameters.AddWithValue("@Grade", checkExistOP[0].Grade);
+                    cmd.Parameters.AddWithValue("@Folder", checkExistOP[0].Folder);
+                    cmd.Parameters.AddWithValue("@Seamlength", objReq.Seamlength);
+                    cmd.Parameters.AddWithValue("@IsDirect", objReq.IsDirect);
+                    cmd.Parameters.AddWithValue("@ProgressPoint", objReq.ProgressPoint);
+                    cmd.Parameters.AddWithValue("@IsDispatch", objReq.IsDispatch);
+                    cmd.Parameters.AddWithValue("@DependOPNO", objReq.DependOPNO);
+                    cmd.Parameters.AddWithValue("@IsDS", objReq.IsDS);
                     cmd.Parameters.AddWithValue("@CreatedBy", objReq.CreatedBy);
+                    cmd.Parameters.AddWithValue("@CreatedOn", objReq.Folder); // StyleCode
                     cmd.Parameters.AddWithValue("@QueryType", "Append_New_Opno");
                     int j = cmd.ExecuteNonQuery();
                     if (j > 0)
