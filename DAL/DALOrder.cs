@@ -1125,31 +1125,31 @@ namespace BSLDaman.DAL
                 strSql = strSql + " IsDirect,ProgressPoint,IsDispatch,DependOPNO,IsDS FROM OperationBreackDownDetail WHERE 1=1";
                 if (objReq.OpNo != 0 && objReq.OpNo != null)
                 {
-                    strSql = strSql + " AND OpNo = @OpNo ";
+                    strSql = strSql + " AND OpNo LIKE @OpNo ";
                 }
                 if (!String.IsNullOrWhiteSpace(objReq.Descriptions))
                 {
-                    strSql = strSql + " AND Descriptions = @Descriptions";
+                    strSql = strSql + " AND Descriptions LIKE @Descriptions";
                 }
                 if (!String.IsNullOrWhiteSpace(objReq.Machine))
                 {
-                    strSql = strSql + " AND Machine = @Machine";
+                    strSql = strSql + " AND Machine LIKE @Machine";
                 }
                 if (!String.IsNullOrWhiteSpace(objReq.SubSection))
                 {
-                    strSql = strSql + " AND SubSection = @SubSection";
+                    strSql = strSql + " AND SubSection LIKE @SubSection";
                 }
                 if (!String.IsNullOrWhiteSpace(objReq.Product))
                 {
-                    strSql = strSql + " AND Product = @Product";
+                    strSql = strSql + " AND Product LIKE @Product";
                 }
                 if (!String.IsNullOrWhiteSpace(objReq.Skill))
                 {
-                    strSql = strSql + " AND Skill = @Skill";
+                    strSql = strSql + " AND Skill LIKE @Skill";
                 }
                 if (!String.IsNullOrWhiteSpace(objReq.Grade))
                 {
-                    strSql = strSql + " AND Grade = @Grade";
+                    strSql = strSql + " AND Grade LIKE @Grade";
                 }
 
                 strSql = strSql + " ORDER BY OpNo ASC ";
@@ -1159,31 +1159,31 @@ namespace BSLDaman.DAL
               
                 if (objReq.OpNo != 0 && objReq.OpNo != null)
                 {
-                    cmd.Parameters.AddWithValue("@OpNo", objReq.OpNo);
+                    cmd.Parameters.AddWithValue("@OpNo", "%" + objReq.OpNo + "%");
                 }
                 if (!String.IsNullOrWhiteSpace(objReq.Descriptions))
                 {
-                    cmd.Parameters.AddWithValue("@Descriptions", objReq.Descriptions);
+                    cmd.Parameters.AddWithValue("@Descriptions", "%" + objReq.Descriptions + "%");
                 }
                 if (!String.IsNullOrWhiteSpace(objReq.Machine))
                 {
-                    cmd.Parameters.AddWithValue("@Machine", objReq.Machine);
+                    cmd.Parameters.AddWithValue("@Machine", "%" + objReq.Machine+ "%");
                 }
                 if (!String.IsNullOrWhiteSpace(objReq.SubSection))
                 {
-                    cmd.Parameters.AddWithValue("@SubSection", objReq.SubSection);
+                    cmd.Parameters.AddWithValue("@SubSection", "%" + objReq.SubSection + "%");
                 }
                 if (!String.IsNullOrWhiteSpace(objReq.Product))
                 {
-                    cmd.Parameters.AddWithValue("@Product", objReq.Product);
+                    cmd.Parameters.AddWithValue("@Product", "%" + objReq.Product + "%");
                 }
                 if (!String.IsNullOrWhiteSpace(objReq.Skill))
                 {
-                    cmd.Parameters.AddWithValue("@Skill", objReq.Skill);
+                    cmd.Parameters.AddWithValue("@Skill", "%" + objReq.Skill + "%");
                 }
                 if (!String.IsNullOrWhiteSpace(objReq.Grade))
                 {
-                    cmd.Parameters.AddWithValue("@Grade", objReq.Grade);
+                    cmd.Parameters.AddWithValue("@Grade", "%" + objReq.Grade + "%");
                 }
 
                 SqlDataAdapter da = new SqlDataAdapter(cmd);
@@ -1340,5 +1340,214 @@ namespace BSLDaman.DAL
         }
 
         #endregion End Fn_Append_New_OpNo 11-JUN-2026
+
+        #region Start Fn_Delete_OpNo_IN_OBD 15-JUN-2026
+
+        public clsOPBreackDownDetail Fn_Delete_OpNo_IN_OBD(clsOPBreackDownDetail objReq)
+        {
+            var objResp = new clsOPBreackDownDetail();
+            var objCheckOPList = new clsOPBreackDownMaster();
+            objCheckOPList.OpNo = objReq.OpNo;
+            objCheckOPList.StyleCode = objReq.Folder;  // this is stylecode here
+            Logger.ErrorLog(JsonConvert.SerializeObject(objReq), "Request", "Fn_Delete_OpNo_IN_OBD");
+            try
+            {
+                
+
+                if (objReq.OpNo == 0 && objReq.OpNo == null)
+                {
+                    objResp.vErrorCode = 400;
+                    objResp.vErrorMsg = "Please Enter OpNo";
+                }
+                else if (String.IsNullOrWhiteSpace(objReq.CreatedOn))
+                {
+                    objResp.vErrorCode = 400;
+                    objResp.vErrorMsg = "Please Enter StyleCode";
+                }
+                else
+                {                    
+
+                    if (Con.State == ConnectionState.Broken)
+                    { Con.Close(); }
+                    if (Con.State == ConnectionState.Closed)
+                    { Con.Open(); }
+
+                    SqlCommand cmd = new SqlCommand("USP_OPEARTION_BREACK_DOWN", Con);
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("@DetailID", objReq.DetailID);
+                    cmd.Parameters.AddWithValue("@ID", objReq.MID);
+                    cmd.Parameters.AddWithValue("@OpNo", objReq.OpNo);
+                    cmd.Parameters.AddWithValue("@CreatedBy", objReq.CreatedBy);
+                    cmd.Parameters.AddWithValue("@CreatedOn", objReq.CreatedOn); // StyleCode
+                    cmd.Parameters.AddWithValue("@QueryType", "DELTE_Opno_IN_OBD");
+                    int j = cmd.ExecuteNonQuery();
+                    if (j > 0)
+                    {
+                        objResp.vErrorCode = 200;
+                        objResp.vErrorMsg = "Success";
+                    }
+                    else
+                    {
+                        objResp.vErrorCode = 400;
+                        objResp.vErrorMsg = "OpNo deleting failed ";
+                        return objResp;
+                    }
+                }
+            }
+            catch (Exception exp)
+            {
+                Logger.WriteLog("Function Name : Fn_Delete_OpNo_IN_OBD", " " + "Error Msg : " + exp.Message.ToString(), new StackTrace(exp, true));
+                objResp.vErrorMsg = exp.Message.ToString();
+                objResp.vErrorCode = 500;
+            }
+            finally
+            {
+                Con.Close();
+            }
+            Logger.ErrorLog(JsonConvert.SerializeObject(objResp), "Response", "Fn_Delete_OpNo_IN_OBD");
+            return objResp;
+        }
+
+        #endregion END Fn_Delete_OpNo_IN_OBD 15-JUN-2026
+
+        #region Start Fn_Add_New_OpNo_IN_OBD 15-JUN-2026
+
+        public clsOPBreackDownDetail Fn_Add_New_OpNo_IN_OBD(clsOPBreackDownDetail objReq)
+        {
+            var objResp = new clsOPBreackDownDetail();
+            var objCheckOPList = new clsOPBreackDownMaster();
+            objCheckOPList.OpNo = objReq.OpNo;
+            objCheckOPList.StyleCode = objReq.CreatedOn;  // this is stylecode here
+            var checkExistOP = new List<clsOPBreackDownDetail>();
+            checkExistOP = Fn_Get_Operation_BreackdownFile(objCheckOPList);
+            Logger.ErrorLog(JsonConvert.SerializeObject(objReq), "Request", "Fn_Add_New_OpNo_IN_OBD");
+            try
+            {
+                if (objReq.DetailID == 0 || objReq.DetailID == null)
+                {
+                    Fn_Get_MXID("OperationBreackDownDetail", "DetailID");
+                    objReq.DetailID = mxID;
+                }
+
+                if (objReq.OpNo == 0 && objReq.OpNo == null)
+                {
+                    objResp.vErrorCode = 400;
+                    objResp.vErrorMsg = "Please Enter OpNo";
+                }
+                else if (String.IsNullOrWhiteSpace(objReq.Descriptions))
+                {
+                    objResp.vErrorCode = 400;
+                    objResp.vErrorMsg = "Please Enter Descriptions";
+                }
+                else if (objReq.SeqNo == 0 && objReq.SeqNo == null)
+                {
+                    objResp.vErrorCode = 400;
+                    objResp.vErrorMsg = "Please Enter SeqNo";
+                }
+                else if (String.IsNullOrWhiteSpace(objReq.Machine))
+                {
+                    objResp.vErrorCode = 400;
+                    objResp.vErrorMsg = "Please Enter Machine";
+                }
+                else if (String.IsNullOrWhiteSpace(objReq.SubSection))
+                {
+                    objResp.vErrorCode = 400;
+                    objResp.vErrorMsg = "Please Enter SubSection";
+                }
+                else if (objReq.Rate == 0 && objReq.Rate == null)
+                {
+                    objResp.vErrorCode = 400;
+                    objResp.vErrorMsg = "Please Enter Rate";
+                }
+                else if (objReq.StdMin == 0 && objReq.StdMin == null)
+                {
+                    objResp.vErrorCode = 400;
+                    objResp.vErrorMsg = "Please Enter StdMin";
+                }
+                else if (String.IsNullOrWhiteSpace(objReq.Product))
+                {
+                    objResp.vErrorCode = 400;
+                    objResp.vErrorMsg = "Please Enter Product";
+                }
+                else if (String.IsNullOrWhiteSpace(objReq.Skill))
+                {
+                    objResp.vErrorCode = 400;
+                    objResp.vErrorMsg = "Please Enter Skill";
+                }
+                else if (String.IsNullOrWhiteSpace(objReq.Grade))
+                {
+                    objResp.vErrorCode = 400;
+                    objResp.vErrorMsg = "Please Enter Grade";
+                }
+                else if (String.IsNullOrWhiteSpace(objReq.CreatedOn))
+                {
+                    objResp.vErrorCode = 400;
+                    objResp.vErrorMsg = "Please Enter StyleCode";
+                }
+                else if (checkExistOP[0].OpNo == objReq.OpNo)
+                {
+                    objResp.vErrorCode = 400;
+                    objResp.vErrorMsg = "OpNo already exist";
+                }
+                else
+                {                    
+
+                    if (Con.State == ConnectionState.Broken)
+                    { Con.Close(); }
+                    if (Con.State == ConnectionState.Closed)
+                    { Con.Open(); }
+
+                    SqlCommand cmd = new SqlCommand("USP_OPEARTION_BREACK_DOWN", Con);
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("@DetailID", objReq.DetailID);
+                    cmd.Parameters.AddWithValue("@OpNo", objReq.OpNo);
+                    cmd.Parameters.AddWithValue("@SeqNo", objReq.SeqNo);
+                    cmd.Parameters.AddWithValue("@Descriptions", objReq.Descriptions);
+                    cmd.Parameters.AddWithValue("@Machine", objReq.Machine);
+                    cmd.Parameters.AddWithValue("@SubSection", objReq.SubSection);
+                    cmd.Parameters.AddWithValue("@StdMin", objReq.StdMin);
+                    cmd.Parameters.AddWithValue("@Rate", objReq.Rate);
+                    cmd.Parameters.AddWithValue("@Product", objReq.Product);
+                    cmd.Parameters.AddWithValue("@Skill", objReq.Skill);
+                    cmd.Parameters.AddWithValue("@Grade", objReq.Grade);
+                    cmd.Parameters.AddWithValue("@Folder", objReq.Folder);
+                    cmd.Parameters.AddWithValue("@Seamlength", objReq.Seamlength);
+                    cmd.Parameters.AddWithValue("@IsDirect", objReq.IsDirect);
+                    cmd.Parameters.AddWithValue("@ProgressPoint", objReq.ProgressPoint);
+                    cmd.Parameters.AddWithValue("@IsDispatch", objReq.IsDispatch);
+                    cmd.Parameters.AddWithValue("@DependOPNO", objReq.DependOPNO);
+                    cmd.Parameters.AddWithValue("@IsDS", objReq.IsDS);
+                    cmd.Parameters.AddWithValue("@CreatedBy", objReq.CreatedBy);
+                    cmd.Parameters.AddWithValue("@CreatedOn", objReq.CreatedOn); // StyleCode
+                    cmd.Parameters.AddWithValue("@QueryType", "Add_New_OpNo_IN_OBD");
+                    int j = cmd.ExecuteNonQuery();
+                    if (j > 0)
+                    {
+                        objResp.vErrorCode = 200;
+                        objResp.vErrorMsg = "Success";
+                    }
+                    else
+                    {
+                        objResp.vErrorCode = 400;
+                        objResp.vErrorMsg = "Operation inserting failed ";
+                        return objResp;
+                    }
+                }
+            }
+            catch (Exception exp)
+            {
+                Logger.WriteLog("Function Name : Fn_Add_New_OpNo_IN_OBD", " " + "Error Msg : " + exp.Message.ToString(), new StackTrace(exp, true));
+                objResp.vErrorMsg = exp.Message.ToString();
+                objResp.vErrorCode = 500;
+            }
+            finally
+            {
+                Con.Close();
+            }
+            Logger.ErrorLog(JsonConvert.SerializeObject(objResp), "Response", "Fn_Add_New_OpNo_IN_OBD");
+            return objResp;
+        }
+
+        #endregion END Fn_Add_New_OpNo_IN_OBD 15-JUN-2026
     }
 }
