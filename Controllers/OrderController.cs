@@ -180,5 +180,31 @@ namespace BSLDaman.Controllers
             return objResp;
         }
         #endregion End Fn_Append_New_OpNo 11-JUN-2026
+
+        #region Start Fn_Delete_OpNo_IN_OBD 15-JUN-2026
+
+        [System.Web.Http.HttpPost]
+        [System.Web.Http.Route("api/Order/Fn_Delete_OpNo_IN_OBD")]
+        public clsOPBreackDownDetail Fn_Delete_OpNo_IN_OBD(clsOPBreackDownDetail objReq)
+        {
+            var objResp = new clsOPBreackDownDetail();
+            objResp = _DALOrder.Fn_Delete_OpNo_IN_OBD(objReq);
+            return objResp;
+        }
+
+        #endregion Start Fn_Delete_OpNo_IN_OBD 15-JUN-2026
+
+        #region Start Fn_Add_New_OpNo_IN_OBD 15-JUN-2026
+
+        [System.Web.Http.HttpPost]
+        [System.Web.Http.Route("api/Order/Fn_Add_New_OpNo_IN_OBD")]
+        public clsOPBreackDownDetail Fn_Add_New_OpNo_IN_OBD(clsOPBreackDownDetail objReq)
+        {
+            var objResp = new clsOPBreackDownDetail();
+            objResp = _DALOrder.Fn_Add_New_OpNo_IN_OBD(objReq);
+            return objResp;
+        }
+
+        #endregion End Fn_Add_New_OpNo_IN_OBD 15-JUN-2026
     }
 }
