@@ -323,7 +323,6 @@ namespace BSLDaman.DAL
         public List<clsBundleCompile> Fn_Get_ActiveBundle(clsBundleCompile objReq)
         {
             var objResp = new List<clsBundleCompile>();
-            //var response = new ApiResponse<clsBundleCompile>();
             try
             {
                 if (Con.State == ConnectionState.Broken)
@@ -398,11 +397,6 @@ namespace BSLDaman.DAL
                     objResp.vErrorMsg = "Please Pass the App Employee/Operator ID";
                     objResp.vErrorCode = 300;
                 }
-                //else if (objReq.LineId == null || objReq.LineId == 0)
-                //{
-                //    objResp.vErrorMsg = "Please Pass Line Id.";
-                //    objResp.vErrorCode = 300;
-                //}
                 else if (String.IsNullOrWhiteSpace(objReq.LineName))
                 {
                     objResp.vErrorMsg = "Please Pass Line Name.";
@@ -432,7 +426,6 @@ namespace BSLDaman.DAL
 
                     SqlCommand cmd = new SqlCommand("USP_MobileMachineLogTransactions", Con);
                     cmd.CommandType = CommandType.StoredProcedure;
-                    //cmd.Parameters.AddWithValue("@LineId", objReq.LineId);
                     cmd.Parameters.AddWithValue("@LineName", objReq.LineName);
                     cmd.Parameters.AddWithValue("@MachineId", objReq.MachineId);
                     cmd.Parameters.AddWithValue("@MachineLogDescription", objReq.MachineLogDescription);
@@ -753,11 +746,6 @@ namespace BSLDaman.DAL
                     objResp.vErrorMsg = "Please Pass the Valid Order No";
                     objResp.vErrorCode = 300;
                 }
-                //else if (string.IsNullOrWhiteSpace(objReq.BundleIDs))
-                //{
-                //    objResp.vErrorMsg = "Please Pass the Valid Bundle IDs";
-                //    objResp.vErrorCode = 300;
-                //}
                 else if (string.IsNullOrWhiteSpace(objReq.OperationNos))
                 {
                     objResp.vErrorMsg = "Please Pass the Operation Numbers";
@@ -768,11 +756,6 @@ namespace BSLDaman.DAL
                     objResp.vErrorMsg = "Please Pass the Sub Section";
                     objResp.vErrorCode = 300;
                 }
-                //else if (objReq.AppEmpID == null || objReq.AppEmpID == 0)
-                //{
-                //    objResp.vErrorMsg = "Please Pass the Valid App Employee/Worker ID";
-                //    objResp.vErrorCode = 300;
-                //}
                 else if (string.IsNullOrWhiteSpace(objReq.AppEmpIDs))
                 {
                     objResp.vErrorMsg = "Please Pass the Valid App Employee/Worker ID";
@@ -789,10 +772,8 @@ namespace BSLDaman.DAL
                     cmd.CommandType = CommandType.StoredProcedure;
                     cmd.Parameters.AddWithValue("@SupervisorID", objReq.SupervisorID);
                     cmd.Parameters.AddWithValue("@OrderNo", objReq.OrderNo);
-                    //cmd.Parameters.AddWithValue("@BundleIDs", objReq.BundleIDs);
                     cmd.Parameters.AddWithValue("@OperationNos", objReq.OperationNos);
                     cmd.Parameters.AddWithValue("@SubSection", objReq.SubSection);
-                    //cmd.Parameters.AddWithValue("@AppEmpID", objReq.AppEmpID);
                     cmd.Parameters.AddWithValue("@AppEmpIDs", objReq.AppEmpIDs);
                     cmd.Parameters.AddWithValue("@QueryType", "UpdateAssignedBundleID");
 
@@ -1861,7 +1842,6 @@ namespace BSLDaman.DAL
                 strSql = strSql + " INNER JOIN OrderMaster AS OM";
                 strSql = strSql + " ON OM.OrderNo = BC.OrderNo";
                 strSql = strSql + " WHERE LM.LineStatus = 'Active'";
-                //strSql = strSql + " WHERE LM.LineStatus = 'Active' AND LM.LineId = " + objReq.LineId;
                 strSql = strSql + " GROUP BY LM.LineId, ED.LineName, LM.LineStatus, OM.OrderNo";
 
                 SqlCommand cmd = new SqlCommand(strSql, Con);
@@ -1922,14 +1902,6 @@ namespace BSLDaman.DAL
                 if (Con.State == ConnectionState.Closed)
                 { Con.Open(); }
 
-                //string strSql = "SELECT OM.Qty AS TotalQty, BC.Qty AS FinishedQty,";
-                //strSql = strSql + " ED.LineName AS LineName, ED.EmpName AS EmpName, BC.OrderNo AS OrderNo";
-                //strSql = strSql + " FROM BundleCompile AS BC";
-                //strSql = strSql + " INNER JOIN EmployeeDetail AS ED";
-                //strSql = strSql + " ON ED.Code = BC.AppEmpID";
-                //strSql = strSql + " INNER JOIN OrderMaster AS OM";
-                //strSql = strSql + " ON OM.OrderNo = BC.OrderNo AND OM.OrderNo = '" + objReq.OrderNo + "'";
-
                 string strSql = "SELECT LM.LineId AS LineId, ED.LineName AS LineName,";
                 strSql = strSql + " LM.LineStatus AS LineStatus, BC.OrderNo AS OrderNo,";
                 strSql = strSql + " BC.AppEmpID AS AppEmpID, ED.EmpName AS AppEmpName,";
@@ -1968,8 +1940,6 @@ namespace BSLDaman.DAL
                     while (ds.Tables[0].Rows.Count > i)
                     {
                         obj = new clsLine();
-                        //obj.Qty = Convert.ToInt32(ds.Tables[0].Rows[i]["TotalQty"]);
-                        //obj.FinishedQty = Convert.ToInt32(ds.Tables[0].Rows[i]["FinishedQty"]);
                         obj.LineId = Convert.ToInt64(ds.Tables[0].Rows[i]["LineId"]);
                         obj.LineName = Convert.ToString(ds.Tables[0].Rows[i]["LineName"]);
                         obj.LineStatus = Convert.ToString(ds.Tables[0].Rows[i]["LineStatus"]);
@@ -2229,19 +2199,9 @@ namespace BSLDaman.DAL
                 if (Con.State == ConnectionState.Closed)
                 { Con.Open(); }
 
-                //string strSql = "SELECT OrderNo, Qty, BundleQty, FORMAT(OrderDate, 'dd-MMM-yyyy HH:mm:ss') AS OrderDate,";
-                //strSql = strSql + " StyleCode, FORMAT(CreatedOn, 'dd-MMM-yyyy HH:mm:ss') AS CreatedOn, CreatedBy,";
-                //strSql = strSql + " FORMAT(ModifiedOn, 'dd-MMM-yyyy HH:mm:ss') AS ModifiedOn, ModifiedBy, OrderStatus";
-                //strSql = strSql + " FROM OrderMaster WHERE 1=1";
-
                 string strSql = "SELECT DISTINCT OrderNo FROM BundleCompile AS BC";
                 strSql = strSql + " INNER JOIN BundleCompileDetail AS BD";
                 strSql = strSql + " ON BD.BundleID = BC.BundleID";
-
-                //if (!String.IsNullOrWhiteSpace(objReq.OrderNo))
-                //{
-                //    strSql = strSql + " AND BC.OrderNo = '" + objReq.OrderNo + "'";
-                //}
 
                 SqlCommand cmd = new SqlCommand(strSql, Con);
                 cmd.CommandType = CommandType.Text;
@@ -2257,32 +2217,6 @@ namespace BSLDaman.DAL
                     {
                         obj = new clsOrderMaster();
                         obj.OrderNo = Convert.ToString(ds.Tables[0].Rows[i]["OrderNo"]);
-                        //obj.Qty = Convert.ToInt32(ds.Tables[0].Rows[i]["Qty"]);
-                        //obj.BundleQty = Convert.ToInt32(ds.Tables[0].Rows[i]["BundleQty"]);
-                        //obj.OrderDate = Convert.ToString(ds.Tables[0].Rows[i]["OrderDate"]);
-                        //obj.StyleCode = Convert.ToString(ds.Tables[0].Rows[i]["StyleCode"]);
-                        //obj.CreatedOn = Convert.ToString(ds.Tables[0].Rows[i]["CreatedOn"]);
-                        //obj.CreatedBy = Convert.ToInt32(ds.Tables[0].Rows[i]["CreatedBy"]);
-
-                        //if (ds.Tables[0].Rows[i]["ModifiedOn"] == null)
-                        //{
-                        //    obj.ModifiedOn = string.Empty;
-                        //}
-                        //else
-                        //{
-                        //    obj.ModifiedOn = Convert.ToString(ds.Tables[0].Rows[i]["ModifiedOn"]);
-                        //}
-
-                        //if (ds.Tables[0].Rows[i]["ModifiedBy"] == DBNull.Value)
-                        //{
-                        //    obj.ModifiedBy = 0;
-                        //}
-                        //else
-                        //{
-                        //    obj.ModifiedBy = Convert.ToInt32(ds.Tables[0].Rows[i]["ModifiedBy"]);
-                        //}
-
-                        //obj.OrderStatus = Convert.ToString(ds.Tables[0].Rows[i]["OrderStatus"]);
 
                         obj.vErrorCode = 200;
                         obj.vErrorMsg = "Success";
@@ -2732,21 +2666,37 @@ namespace BSLDaman.DAL
                 if (Con.State == ConnectionState.Closed)
                 { Con.Open(); }
 
+                //string strSql = "DECLARE @CurrentDate DATE = '" + objReq.CurrentDate + "'";
+                //strSql = strSql + " SELECT BD.OperationNo AS OperationNo, BD.SubSection AS SubSection, BD.BundleID AS BundleID,";
+                //strSql = strSql + " BD.StdRate AS StdRate, BC.Qty AS Qty, (BD.StdRate*BC.Qty) AS TotalAmount, ED.LineName AS LineName,";
+                //strSql = strSql + " BC.StyleCode AS StyleCode, (SELECT DISTINCT(Descriptions) FROM OperationBreackDownDetail WHERE OpNo = BD.OperationNo) AS Descriptions,";
+                //strSql = strSql + " FORMAT(BD.CreatedOn, 'dd-MMM-yyyy HH:mm:ss') AS CreatedOn, BD.CreatedBy,";
+                //strSql = strSql + " FORMAT(BD.ModifiedOn, 'dd-MMM-yyyy HH:mm:ss') AS ModifiedOn, BD.ModifiedBy";
+                //strSql = strSql + " FROM BundleCompileDetail AS BD";
+                //strSql = strSql + " INNER JOIN BundleCompile AS BC";
+                //strSql = strSql + " ON BC.BundleID = BD.BundleID";
+                //strSql = strSql + " INNER JOIN EmployeeDetail AS ED";
+                //strSql = strSql + " ON ED.Code = BD.AppEmpID";
+                //strSql = strSql + " INNER JOIN LineMaster AS LM";
+                //strSql = strSql + " ON LM.LineName = ED.LineName";
+                //strSql = strSql + " WHERE BD.AppEmpID = " + objReq.AppEmpID;
+                //strSql = strSql + " AND BD.ModifiedOn >= @CurrentDate AND BD.ModifiedOn < DATEADD(DAY, 1, @CurrentDate) AND LM.LineName = '" + objReq.LineName + "'";
+
                 string strSql = "DECLARE @CurrentDate DATE = '" + objReq.CurrentDate + "'";
-                strSql = strSql + " SELECT BD.OperationNo AS OperationNo, BD.SubSection AS SubSection, BD.BundleID AS BundleID,";
-                strSql = strSql + " BD.StdRate AS StdRate, BC.Qty AS Qty, (BD.StdRate*BC.Qty) AS TotalAmount, ED.LineName AS LineName,";
-                strSql = strSql + " BC.StyleCode AS StyleCode, (SELECT DISTINCT(Descriptions) FROM OperationBreackDownDetail WHERE OpNo = BD.OperationNo) AS Descriptions,";
-                strSql = strSql + " FORMAT(BD.CreatedOn, 'dd-MMM-yyyy HH:mm:ss') AS CreatedOn, BD.CreatedBy,";
-                strSql = strSql + " FORMAT(BD.ModifiedOn, 'dd-MMM-yyyy HH:mm:ss') AS ModifiedOn, BD.ModifiedBy";
+                strSql = strSql + " SELECT BD.OperationNo, MAX(BD.SubSection) AS SubSection, MAX(BD.StdRate) AS StdRate,";
+                strSql = strSql + " SUM(BC.Qty) AS Qty, (MAX(BD.StdRate) * SUM(BC.Qty)) AS TotalAmount, MAX(ED.LineName) AS LineName,";
+                strSql = strSql + " MAX(BC.StyleCode) AS StyleCode, (SELECT DISTINCT(Descriptions) FROM OperationBreackDownDetail WHERE OpNo = BD.OperationNo) AS Descriptions,";
+                strSql = strSql + " MAX(BC.OrderNo) AS OrderNo";
                 strSql = strSql + " FROM BundleCompileDetail AS BD";
                 strSql = strSql + " INNER JOIN BundleCompile AS BC";
-                strSql = strSql + " ON BC.BundleID = BD.BundleID";
+                strSql = strSql + " ON BD.BundleID = BC.BundleID";
                 strSql = strSql + " INNER JOIN EmployeeDetail AS ED";
                 strSql = strSql + " ON ED.Code = BD.AppEmpID";
                 strSql = strSql + " INNER JOIN LineMaster AS LM";
                 strSql = strSql + " ON LM.LineName = ED.LineName";
                 strSql = strSql + " WHERE BD.AppEmpID = " + objReq.AppEmpID;
                 strSql = strSql + " AND BD.ModifiedOn >= @CurrentDate AND BD.ModifiedOn < DATEADD(DAY, 1, @CurrentDate) AND LM.LineName = '" + objReq.LineName + "'";
+                strSql = strSql + " GROUP BY BD.OperationNo";
 
                 SqlCommand cmd = new SqlCommand(strSql, Con);
                 cmd.CommandType = CommandType.Text;
@@ -2779,6 +2729,7 @@ namespace BSLDaman.DAL
                         obj.LineName = Convert.ToString(ds.Tables[0].Rows[i]["LineName"]);
                         obj.StyleCode = Convert.ToString(ds.Tables[0].Rows[i]["StyleCode"]);
                         obj.Descriptions = Convert.ToString(ds.Tables[0].Rows[i]["Descriptions"]);
+                        obj.OrderNo = Convert.ToString(ds.Tables[0].Rows[i]["OrderNo"]);
                         obj.CreatedOn = Convert.ToString(ds.Tables[0].Rows[i]["CreatedOn"]);
                         obj.CreatedBy = Convert.ToInt32(ds.Tables[0].Rows[i]["CreatedBy"]);
 
@@ -3111,17 +3062,6 @@ namespace BSLDaman.DAL
                 strSql = strSql + " WHERE BAD.AppEmpID = " + objReq.AppEmpID;
                 strSql = strSql + " ORDER BY BAD.SupAssignedDate DESC, BAD.OrderNo, BAD.OperationNo";
 
-                //if (objReq.AppEmpID > 0)
-                //{
-                //    strSql = strSql + " WHERE BAD.AppEmpID = " + objReq.AppEmpID;
-                //}
-                //if (!String.IsNullOrWhiteSpace(objReq.BundleIDStatus))
-                //{
-                //    strSql = strSql + " AND BD.BundleIDStatus = '" + objReq.BundleIDStatus + "'";
-                //}
-
-                //strSql = strSql + " ORDER BY BAD.SupAssignedDate DESC, BAD.OrderNo, BAD.OperationNo";
-
                 SqlCommand cmd = new SqlCommand(strSql, Con);
                 cmd.CommandType = CommandType.Text;
 
@@ -3142,7 +3082,6 @@ namespace BSLDaman.DAL
                         obj.SupervisorName = Convert.ToString(ds.Tables[0].Rows[i]["SupervisorName"]);
                         obj.SupervisorAssignedDate = Convert.ToString(ds.Tables[0].Rows[i]["SupAssignedDate"]);
                         obj.OperationName = Convert.ToString(ds.Tables[0].Rows[i]["OperationName"]);
-                        //obj.BundleIDStatus = Convert.ToString(ds.Tables[0].Rows[i]["BundleIDStatus"]);
                         obj.CreatedBy = Convert.ToInt32(ds.Tables[0].Rows[i]["CreatedBy"]);
                         obj.CreatedOn = Convert.ToString(ds.Tables[0].Rows[i]["CreatedOn"]);
 
@@ -3199,10 +3138,6 @@ namespace BSLDaman.DAL
                 strSql = strSql + " ON BAD.AppEmpID = EM1.EmpId";
                 strSql = strSql + " WHERE EM.EmpRole = 'Supervisor'";
 
-                //if (objReq.SupervisorID > 0)
-                //{
-                //    strSql = strSql + " AND BAD.SupervisorID = " + objReq.SupervisorID;
-                //}
                 if (objReq.AppEmpID > 0)
                 {
                     strSql = strSql + " AND BAD.AppEmpID = " + objReq.AppEmpID;
@@ -3216,7 +3151,6 @@ namespace BSLDaman.DAL
                     strSql = strSql + " AND BAD.OperationNo = " + objReq.OperationNo;
                 }
 
-                //strSql = strSql + " ORDER BY FORMAT(BAD.SupAssignedDate, 'dd-MMM-yyyy HH:mm:ss') DESC, BAD.OrderNo, BAD.OperationNo";
                 strSql = strSql + " ORDER BY BAD.SupAssignedDate DESC, BAD.OrderNo, BAD.OperationNo";
 
                 SqlCommand cmd = new SqlCommand(strSql, Con);
