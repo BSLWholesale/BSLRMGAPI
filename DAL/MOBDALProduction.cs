@@ -2686,7 +2686,9 @@ namespace BSLDaman.DAL
                 strSql = strSql + " SELECT BD.OperationNo, MAX(BD.SubSection) AS SubSection, MAX(BD.StdRate) AS StdRate,";
                 strSql = strSql + " SUM(BC.Qty) AS Qty, (MAX(BD.StdRate) * SUM(BC.Qty)) AS TotalAmount, MAX(ED.LineName) AS LineName,";
                 strSql = strSql + " MAX(BC.StyleCode) AS StyleCode, (SELECT DISTINCT(Descriptions) FROM OperationBreackDownDetail WHERE OpNo = BD.OperationNo) AS Descriptions,";
-                strSql = strSql + " MAX(BC.OrderNo) AS OrderNo";
+                strSql = strSql + " MAX(BC.OrderNo) AS OrderNo,";
+                strSql = strSql + " FORMAT(BD.CreatedOn, 'dd-MMM-yyyy HH:mm:ss') AS CreatedOn, BD.CreatedBy,";
+                strSql = strSql + " FORMAT(BD.ModifiedOn, 'dd-MMM-yyyy HH:mm:ss') AS ModifiedOn, BD.ModifiedBy";
                 strSql = strSql + " FROM BundleCompileDetail AS BD";
                 strSql = strSql + " INNER JOIN BundleCompile AS BC";
                 strSql = strSql + " ON BD.BundleID = BC.BundleID";
