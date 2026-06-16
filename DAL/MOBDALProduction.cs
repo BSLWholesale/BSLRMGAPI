@@ -2686,9 +2686,7 @@ namespace BSLDaman.DAL
                 strSql = strSql + " SELECT BD.OperationNo, MAX(BD.SubSection) AS SubSection, MAX(BD.StdRate) AS StdRate,";
                 strSql = strSql + " SUM(BC.Qty) AS Qty, (MAX(BD.StdRate) * SUM(BC.Qty)) AS TotalAmount, MAX(ED.LineName) AS LineName,";
                 strSql = strSql + " MAX(BC.StyleCode) AS StyleCode, (SELECT DISTINCT(Descriptions) FROM OperationBreackDownDetail WHERE OpNo = BD.OperationNo) AS Descriptions,";
-                strSql = strSql + " MAX(BC.OrderNo) AS OrderNo,";
-                strSql = strSql + " FORMAT(BD.CreatedOn, 'dd-MMM-yyyy HH:mm:ss') AS CreatedOn, BD.CreatedBy,";
-                strSql = strSql + " FORMAT(BD.ModifiedOn, 'dd-MMM-yyyy HH:mm:ss') AS ModifiedOn, BD.ModifiedBy";
+                strSql = strSql + " MAX(BC.OrderNo) AS OrderNo";
                 strSql = strSql + " FROM BundleCompileDetail AS BD";
                 strSql = strSql + " INNER JOIN BundleCompile AS BC";
                 strSql = strSql + " ON BD.BundleID = BC.BundleID";
@@ -2732,26 +2730,27 @@ namespace BSLDaman.DAL
                         obj.StyleCode = Convert.ToString(ds.Tables[0].Rows[i]["StyleCode"]);
                         obj.Descriptions = Convert.ToString(ds.Tables[0].Rows[i]["Descriptions"]);
                         obj.OrderNo = Convert.ToString(ds.Tables[0].Rows[i]["OrderNo"]);
-                        obj.CreatedOn = Convert.ToString(ds.Tables[0].Rows[i]["CreatedOn"]);
-                        obj.CreatedBy = Convert.ToInt32(ds.Tables[0].Rows[i]["CreatedBy"]);
 
-                        if (ds.Tables[0].Rows[i]["ModifiedOn"] == null)
-                        {
-                            obj.ModifiedOn = string.Empty;
-                        }
-                        else
-                        {
-                            obj.ModifiedOn = Convert.ToString(ds.Tables[0].Rows[i]["ModifiedOn"]);
-                        }
+                        //obj.CreatedOn = Convert.ToString(ds.Tables[0].Rows[i]["CreatedOn"]);
+                        //obj.CreatedBy = Convert.ToInt32(ds.Tables[0].Rows[i]["CreatedBy"]);
 
-                        if (ds.Tables[0].Rows[i]["ModifiedBy"] == DBNull.Value)
-                        {
-                            obj.ModifiedBy = 0;
-                        }
-                        else
-                        {
-                            obj.ModifiedBy = Convert.ToInt32(ds.Tables[0].Rows[i]["ModifiedBy"]);
-                        }
+                        //if (ds.Tables[0].Rows[i]["ModifiedOn"] == null)
+                        //{
+                        //    obj.ModifiedOn = string.Empty;
+                        //}
+                        //else
+                        //{
+                        //    obj.ModifiedOn = Convert.ToString(ds.Tables[0].Rows[i]["ModifiedOn"]);
+                        //}
+
+                        //if (ds.Tables[0].Rows[i]["ModifiedBy"] == DBNull.Value)
+                        //{
+                        //    obj.ModifiedBy = 0;
+                        //}
+                        //else
+                        //{
+                        //    obj.ModifiedBy = Convert.ToInt32(ds.Tables[0].Rows[i]["ModifiedBy"]);
+                        //}
 
                         obj.vErrorCode = 200;
                         obj.vErrorMsg = "Success";
