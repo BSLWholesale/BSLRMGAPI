@@ -2713,7 +2713,7 @@ namespace BSLDaman.DAL
                         obj = new clsBundleCompile();
                         obj.OperationNo = Convert.ToInt64(ds.Tables[0].Rows[i]["OperationNo"]);
                         obj.SubSection = Convert.ToString(ds.Tables[0].Rows[i]["SubSection"]);
-                        obj.BundleID = Convert.ToInt64(ds.Tables[0].Rows[i]["BundleID"]);
+                        //obj.BundleID = Convert.ToInt64(ds.Tables[0].Rows[i]["BundleID"]);
                         obj.StdRate = Convert.ToDecimal(ds.Tables[0].Rows[i]["StdRate"]);
                         obj.Qty = Convert.ToInt32(ds.Tables[0].Rows[i]["Qty"]);
 
