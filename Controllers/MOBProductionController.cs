@@ -684,15 +684,6 @@ namespace BSLDaman.Controllers
                 objReq.AppEmpID = 0;
             }
 
-            //if (!string.IsNullOrWhiteSpace(BundleIDStatus))
-            //{
-            //    objReq.BundleIDStatus = BundleIDStatus;
-            //}
-            //else
-            //{
-            //    objReq.BundleIDStatus = null;
-            //}
-
             var objResp = _MOBDALProduction.Fn_Fetch_OperatorAssignOpNumbers(objReq);
             return objResp;
         }
@@ -703,15 +694,6 @@ namespace BSLDaman.Controllers
         public List<clsBundleCompile> Fn_Fetch_SupervisorAssignOpNoToOperators(Int32? AppEmpID = null, string OrderNo = null, Int64? OperationNo = null)
         {
             clsBundleCompile objReq = new clsBundleCompile();
-
-            //if (SupervisorID.HasValue)
-            //{
-            //    objReq.SupervisorID = SupervisorID.Value;
-            //}
-            //else
-            //{
-            //    objReq.SupervisorID = 0;
-            //}
 
             if (AppEmpID.HasValue)
             {
