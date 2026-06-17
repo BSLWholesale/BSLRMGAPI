@@ -446,16 +446,23 @@ namespace BSLDaman.DAL
                         objResp.vEmpMobile = Convert.ToString(ds.Tables[0].Rows[i]["EmpMobile"]);
                         objResp.vEmpPassword = decryptTextPassword;
                         objResp.EmpRole = Convert.ToString(ds.Tables[0].Rows[i]["EmpRole"]);
+                        objResp.bEmpActiveStatus = Convert.ToBoolean(ds.Tables[0].Rows[i]["IsActive"]);
 
                         if (objResp.EmpRole == "Admin" || objResp.EmpRole == "Supervisor")
                         {
-                            objResp.vErrorMsg = "Success";
+                            if (objResp.bEmpActiveStatus == true)
+                            {
+                                objResp.vErrorMsg = "Success";
+                            }
+                            else
+                            {
+                                objResp.vErrorMsg = "Employee Status is Inactive";
+                            }
                         }
                         else
                         {
                             objResp.vErrorMsg = "Only an Admin/Supervisor level can login on this System";
                         }
-                        //objResp.vErrorMsg = "Success";
                     }
                     else
                     {
