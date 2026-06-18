@@ -206,5 +206,44 @@ namespace BSLDaman.Controllers
         }
 
         #endregion End Fn_Add_New_OpNo_IN_OBD 15-JUN-2026
+
+        #region Start Fn_Add_FabricOrder 18-JUN-2026
+
+        [System.Web.Http.HttpPost]
+        [System.Web.Http.Route("api/Order/Fn_Add_FabricOrder")]
+        public clsFabricOrder Fn_Add_FabricOrder(clsFabricOrder objReq)
+        {
+            var objResp = new clsFabricOrder();
+            objResp = _DALOrder.Fn_Add_FabricOrder(objReq);
+            return objResp;
+        }
+
+        #endregion End Fn_Add_FabricOrder 18-JUN-2026
+
+        #region Start Fn_Get_FabricOrder 18-JUN-2026
+
+        [System.Web.Http.HttpPost]
+        [System.Web.Http.Route("api/Order/Fn_Get_FabricOrder")]
+        public List<clsFabricOrder> Fn_Get_FabricOrder(clsFabricOrder objReq)
+        {
+            var objResp = new List<clsFabricOrder>();
+            objResp = _DALOrder.Fn_Get_FabricOrder(objReq);
+            return objResp;
+        }
+
+        #endregion End Fn_Get_FabricOrder 18-JUN-2026
+
+        #region Start Fn_Delete_ItemCode 18-JUN-2026
+
+        [System.Web.Http.HttpPost]
+        [System.Web.Http.Route("api/Order/Fn_Delete_ItemCode")]
+        public clsFabricOrder Fn_Delete_ItemCode(clsFabricOrder objReq)
+        {
+            var objResp = new clsFabricOrder();
+            objResp = _DALOrder.Fn_Delete_ItemCode(objReq);
+            return objResp;
+        }
+
+        #endregion End Fn_Delete_ItemCode 18-JUN-2026
     }
 }

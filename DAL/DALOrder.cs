@@ -1549,5 +1549,241 @@ namespace BSLDaman.DAL
         }
 
         #endregion END Fn_Add_New_OpNo_IN_OBD 15-JUN-2026
+
+        #region Start Fn_Add_FabricOrder 18-JUN-2026
+
+        public clsFabricOrder Fn_Add_FabricOrder(clsFabricOrder objReq)
+        {
+            var objResp = new clsFabricOrder();
+            Logger.ErrorLog(JsonConvert.SerializeObject(objReq), "Request", "Fn_Add_FabricOrder");
+            try
+            {
+                if (Con.State == ConnectionState.Broken)
+                { Con.Close(); }
+                if (Con.State == ConnectionState.Closed)
+                { Con.Open(); }
+
+                SqlCommand cmd = new SqlCommand("USP_FABRIC_ORDER", Con);
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@StyleCode", objReq.StyleCode);
+                cmd.Parameters.AddWithValue("@ItemCode", objReq.ItemCode);
+                cmd.Parameters.AddWithValue("@Descriptions", objReq.Descriptions);
+                cmd.Parameters.AddWithValue("@Contents", objReq.Contents);
+                cmd.Parameters.AddWithValue("@Mill", objReq.Mill);
+                cmd.Parameters.AddWithValue("@FabricColor", objReq.FabricColor);
+                cmd.Parameters.AddWithValue("@FabricCC", objReq.FabricCC);
+                cmd.Parameters.AddWithValue("@Width", objReq.Width);
+                cmd.Parameters.AddWithValue("@WidthTolerance", objReq.WidthTolerance);
+                cmd.Parameters.AddWithValue("@OrderRollLength", objReq.OrderRollLength);
+                cmd.Parameters.AddWithValue("@OrderRollLengthTolerance", objReq.OrderRollLengthTolerance);
+                cmd.Parameters.AddWithValue("@GSM", objReq.GSM);
+                cmd.Parameters.AddWithValue("@GSMTolerance", objReq.GSMTolerance);
+                cmd.Parameters.AddWithValue("@OrderShrinkageWarpLength", objReq.OrderShrinkageWarpLength);
+                cmd.Parameters.AddWithValue("@OrderShrinkageWaftWidth", objReq.OrderShrinkageWaftWidth);
+                cmd.Parameters.AddWithValue("@TotalQuantity", objReq.TotalQuantity);
+                cmd.Parameters.AddWithValue("@Unit", objReq.Unit);
+                cmd.Parameters.AddWithValue("@MarkerType", objReq.MarkerType);
+                cmd.Parameters.AddWithValue("@Price", objReq.Price);
+                cmd.Parameters.AddWithValue("@CreatedBy", objReq.CreatedBy);
+                cmd.Parameters.AddWithValue("@QueryType", objReq.QueryType);
+                int i = 0;
+                i = cmd.ExecuteNonQuery();
+                if (i > 0)
+                {
+                    objResp.vErrorCode = 200;
+                    objResp.vErrorMsg = "Success";
+                }
+                else
+                {
+                    objResp.vErrorCode = 400;
+                    objResp.vErrorMsg = "Inserting Failed";
+                }
+            }
+            catch (Exception exp)
+            {
+                objResp.vErrorCode = 500;
+                Logger.WriteLog("Function Name : Fn_Add_FabricOrder", " " + "Error Msg : " + exp.Message.ToString(), new StackTrace(exp, true));
+                objResp.vErrorMsg = exp.Message.ToString();
+            }
+            finally
+            {
+                Con.Close();
+            }
+            Logger.ErrorLog(JsonConvert.SerializeObject(objResp), "Response", "Fn_Add_FabricOrder");
+            return objResp;
+        }
+
+        #endregion End Fn_Add_FabricOrder 18-JUN-2026
+
+        #region Start Fn_Get_FabricOrder 18-JUN-2026
+
+        public List<clsFabricOrder> Fn_Get_FabricOrder(clsFabricOrder objReq)
+        {
+            var objResp = new List<clsFabricOrder>();
+            var obj = new clsFabricOrder();
+            Logger.ErrorLog(JsonConvert.SerializeObject(objReq), "Request", "Fn_Get_FabricOrder");
+            try
+            {
+                if (Con.State == ConnectionState.Broken)
+                { Con.Close(); }
+                if (Con.State == ConnectionState.Closed)
+                { Con.Open(); }
+
+                string strSql = "SELECT StyleCode, ItemCode, Descriptions, Contents, Mill, FabricColor, FabricCC,";
+                strSql = strSql + " Width, WidthTolerance, OrderRollLength, OrderRollLengthTolerance,";
+                strSql = strSql + " GSM, GSMTolerance, OrderShrinkageWarpLength, OrderShrinkageWaftWidth, TotalQuantity,";
+                strSql = strSql + " Unit, MarkerType, Price, CreatedBy, CreatedOn FROM Fabric_Order WHERE 1=1";
+                
+                if (!String.IsNullOrWhiteSpace(objReq.StyleCode))
+                {
+                    strSql = strSql + " AND StyleCode = @StyleCode";
+                }
+                if (!String.IsNullOrWhiteSpace(objReq.ItemCode))
+                {
+                    strSql = strSql + " AND ItemCode = @ItemCode";
+                }
+                if (!String.IsNullOrWhiteSpace(objReq.Mill))
+                {
+                    strSql = strSql + " AND Mill = @Mill";
+                }
+                if (!String.IsNullOrWhiteSpace(objReq.FabricColor))
+                {
+                    strSql = strSql + " AND FabricColor = @FabricColor";
+                }
+                if (!String.IsNullOrWhiteSpace(objReq.MarkerType))
+                {
+                    strSql = strSql + " AND MarkerType = @MarkerType";
+                }
+                
+                strSql = strSql + " ORDER BY StyleCode, ItemCode ASC ";
+
+                SqlCommand cmd = new SqlCommand(strSql, Con);
+                cmd.CommandType = CommandType.Text;
+                if (!String.IsNullOrWhiteSpace(objReq.StyleCode))
+                {
+                    cmd.Parameters.AddWithValue("@StyleCode", objReq.StyleCode);
+                }
+                if (!String.IsNullOrWhiteSpace(objReq.ItemCode))
+                {
+                    cmd.Parameters.AddWithValue("@ItemCode", objReq.ItemCode);
+                }
+                if (!String.IsNullOrWhiteSpace(objReq.Mill))
+                {
+                    cmd.Parameters.AddWithValue("@Mill", objReq.Mill);
+                }
+                if (!String.IsNullOrWhiteSpace(objReq.FabricColor))
+                {
+                    cmd.Parameters.AddWithValue("@FabricColor", objReq.FabricColor);
+                }
+                if (!String.IsNullOrWhiteSpace(objReq.MarkerType))
+                {
+                    cmd.Parameters.AddWithValue("@MarkerType", objReq.MarkerType);
+                }
+                SqlDataAdapter da = new SqlDataAdapter(cmd);
+                DataSet ds = new DataSet();
+                da.Fill(ds);
+                int i = 0;
+                if (ds.Tables[0].Rows.Count > 0)
+                {
+                    while (ds.Tables[0].Rows.Count > i)
+                    {
+                        obj = new clsFabricOrder();
+                        obj.StyleCode = Convert.ToString(ds.Tables[0].Rows[i]["StyleCode"]);
+                        obj.ItemCode = Convert.ToString(ds.Tables[0].Rows[i]["ItemCode"]);
+                        obj.Descriptions = Convert.ToString(ds.Tables[0].Rows[i]["Descriptions"]);
+                        obj.Contents = Convert.ToString(ds.Tables[0].Rows[i]["Contents"]);
+                        obj.Mill = Convert.ToString(ds.Tables[0].Rows[i]["Mill"]);
+                        obj.FabricColor = Convert.ToString(ds.Tables[0].Rows[i]["FabricColor"]);
+                        obj.FabricCC = Convert.ToDecimal(ds.Tables[0].Rows[i]["FabricCC"]);
+                        obj.Width = Convert.ToDecimal(ds.Tables[0].Rows[i]["Width"]);
+                        obj.WidthTolerance = Convert.ToDecimal(ds.Tables[0].Rows[i]["WidthTolerance"]);
+                        obj.OrderRollLength = Convert.ToDecimal(ds.Tables[0].Rows[i]["OrderRollLength"]);
+                        obj.OrderRollLengthTolerance = Convert.ToDecimal(ds.Tables[0].Rows[i]["OrderRollLengthTolerance"]);
+                        obj.GSM = Convert.ToDecimal(ds.Tables[0].Rows[i]["GSM"]);
+                        obj.GSMTolerance = Convert.ToDecimal(ds.Tables[0].Rows[i]["GSMTolerance"]);
+                        obj.OrderShrinkageWarpLength = Convert.ToDecimal(ds.Tables[0].Rows[i]["OrderShrinkageWarpLength"]);
+                        obj.OrderShrinkageWaftWidth = Convert.ToDecimal(ds.Tables[0].Rows[i]["OrderShrinkageWaftWidth"]);
+                        obj.TotalQuantity = Convert.ToDecimal(ds.Tables[0].Rows[i]["TotalQuantity"]);
+                        obj.Unit = Convert.ToString(ds.Tables[0].Rows[i]["Unit"]);
+                        obj.MarkerType = Convert.ToString(ds.Tables[0].Rows[i]["MarkerType"]);
+                        obj.Price = Convert.ToDecimal(ds.Tables[0].Rows[i]["Price"]);
+                        obj.CreatedBy = Convert.ToInt32(ds.Tables[0].Rows[i]["CreatedBy"]);
+                        obj.vErrorCode = 200;
+                        obj.vErrorMsg = "Success";
+                        objResp.Add(obj);
+                        i++;
+                    }
+                }
+                else
+                {
+                    obj.vErrorCode = 404;
+                    obj.vErrorMsg = "No Record found";
+                    objResp.Add(obj);
+                }
+
+            }
+            catch (Exception exp)
+            {
+                obj.vErrorCode = 500;
+                Logger.WriteLog("Function Name : Fn_Get_FabricOrder", " " + "Error Msg : " + exp.Message.ToString(), new StackTrace(exp, true));
+                obj.vErrorMsg = exp.Message.ToString();
+                objResp.Add(obj);
+            }
+            finally
+            {
+                Con.Close();
+            }
+            Logger.ErrorLog(JsonConvert.SerializeObject(objResp), "Response", "Fn_Get_FabricOrder");
+            return objResp;
+        }
+
+        #endregion End Fn_Get_FabricOrder 18-JUN-2026
+
+        #region Start Fn_Delete_ItemCode 18-JUN-2026
+
+        public clsFabricOrder Fn_Delete_ItemCode(clsFabricOrder objReq)
+        {
+            var objResp = new clsFabricOrder();
+            Logger.ErrorLog(JsonConvert.SerializeObject(objReq), "Request", "Fn_Delete_ItemCode");
+            try
+            {
+                if (Con.State == ConnectionState.Broken)
+                { Con.Close(); }
+                if (Con.State == ConnectionState.Closed)
+                { Con.Open(); }
+
+                SqlCommand cmd = new SqlCommand("USP_FABRIC_ORDER", Con);
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@StyleCode", objReq.StyleCode);
+                cmd.Parameters.AddWithValue("@ItemCode", objReq.ItemCode);
+                cmd.Parameters.AddWithValue("@QueryType", "DELETE_ITEMCODE");
+                int i = 0;
+                i = cmd.ExecuteNonQuery();
+                if (i > 0)
+                {
+                    objResp.vErrorCode = 200;
+                    objResp.vErrorMsg = "Success";
+                }
+                else
+                {
+                    objResp.vErrorCode = 400;
+                    objResp.vErrorMsg = "Deleting Failed";
+                }
+            }
+            catch (Exception exp)
+            {
+                objResp.vErrorCode = 500;
+                Logger.WriteLog("Function Name : Fn_Delete_ItemCode", " " + "Error Msg : " + exp.Message.ToString(), new StackTrace(exp, true));
+                objResp.vErrorMsg = exp.Message.ToString();
+            }
+            finally
+            {
+                Con.Close();
+            }
+            Logger.ErrorLog(JsonConvert.SerializeObject(objResp), "Response", "Fn_Delete_ItemCode");
+            return objResp;
+        }
+
+        #endregion End Fn_Delete_ItemCode 18-JUN-2026
     }
 }
