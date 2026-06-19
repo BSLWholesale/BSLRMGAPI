@@ -523,7 +523,7 @@ namespace BSLDaman.DAL
                 }
                 strSql = strSql + " GROUP BY LineName, StyleCode,  OrderNo, Code, EmpName, OperationNo,  Descriptions,";
                 strSql = strSql + " FORMAT(WorkDate, 'dd-MMM-yyyy'), StdRate, UpdateType, BundleIDStatus ";
-                strSql = strSql + " ORDER BY " + objReq.OrderBy;
+                strSql = strSql + " ORDER BY " + objReq.OrderBy + " , WorkDate ASC ";
                 strSql = strSql + " OFFSET (@PageNumber - 1) * @PageSize ROWS ";
                 strSql = strSql + " FETCH NEXT @PageSize ROWS ONLY ";
 
