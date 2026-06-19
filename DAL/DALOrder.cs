@@ -688,7 +688,7 @@ namespace BSLDaman.DAL
                 {
                     strSql = strSql + " AND OD.OpNo = @OpNo ";
                 }
-                strSql = strSql + " ORDER BY OD.SubSection ASC ";
+                strSql = strSql + " ORDER BY OD.SeqNo, OD.SubSection ASC ";
 
                 SqlCommand cmd = new SqlCommand(strSql, Con);
                 cmd.CommandType = CommandType.Text;
