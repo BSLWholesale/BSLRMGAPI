@@ -139,6 +139,15 @@ namespace BSLDaman.DAL
                                     : false;
                         }
 
+                        if (ds.Tables[0].Rows[i]["Section"] == DBNull.Value)
+                        {
+                            objResp.LineName = string.Empty;
+                        }
+                        else
+                        {
+                            objResp.LineName = Convert.ToString(ds.Tables[0].Rows[i]["Section"]);
+                        }
+
                         if (objResp.IsActive == true)
                         {
                             objResp.vErrorMsg = "Success";
