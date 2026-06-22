@@ -1785,5 +1785,78 @@ namespace BSLDaman.DAL
         }
 
         #endregion End Fn_Delete_ItemCode 18-JUN-2026
+
+        #region Start Fn_Get_Fabric_ColorLits 22-JUN-2026
+
+        public List<clsFabricColor> Fn_Get_Fabric_ColorLits(clsFabricColor objReq)
+        {
+            var objResp = new List<clsFabricColor>();
+            var obj = new clsFabricColor();
+            Logger.ErrorLog(JsonConvert.SerializeObject(objReq), "Request", "Fn_Get_Fabric_ColorLits");
+            try
+            {
+                if (Con.State == ConnectionState.Broken)
+                { Con.Close(); }
+                if (Con.State == ConnectionState.Closed)
+                { Con.Open(); }
+
+                string strSql = "SELECT Distinct Color from OrderDetail OD";
+                strSql = strSql + " INNER JOIN OrderMaster OM ON OD.OrderNo = OM.ID WHERE 1=1 ";
+
+                if (!String.IsNullOrWhiteSpace(objReq.StyleCode))
+                {
+                    strSql = strSql + " AND OM.StyleCode = @StyleCode ";
+                }
+                strSql = strSql + " ORDER BY Color ";
+
+                SqlCommand cmd = new SqlCommand(strSql, Con);
+                cmd.CommandType = CommandType.Text;
+
+                if (!String.IsNullOrWhiteSpace(objReq.StyleCode))
+                {
+                    cmd.Parameters.AddWithValue("@StyleCode", objReq.StyleCode);
+                }
+
+                SqlDataAdapter da = new SqlDataAdapter(cmd);
+                DataSet ds = new DataSet();
+                da.Fill(ds);
+                int i = 0;
+                if (ds.Tables[0].Rows.Count > 0)
+                {
+                    while (ds.Tables[0].Rows.Count > i)
+                    {
+                        obj = new clsFabricColor();
+                        obj.ColorName = Convert.ToString(ds.Tables[0].Rows[i]["Color"]);
+                        obj.vErrorCode = 200;
+                        obj.vErrorMsg = "Success";
+                        objResp.Add(obj);
+                        i++;
+                    }
+                }
+                else
+                {
+                    obj.vErrorCode = 404;
+                    obj.vErrorMsg = "No Record found";
+                    objResp.Add(obj);
+                }
+            }
+            catch (Exception exp)
+            {
+                obj.vErrorCode = 500;
+                Logger.WriteLog("Function Name : Fn_Get_Fabric_ColorLits", " " + "Error Msg : " + exp.Message.ToString(), new StackTrace(exp, true));
+                obj.vErrorMsg = exp.Message.ToString();
+                objResp.Add(obj);
+            }
+            finally
+            {
+                Con.Close();
+            }
+            Logger.ErrorLog(JsonConvert.SerializeObject(objResp), "Response", "Fn_Get_Fabric_ColorLits");
+            return objResp;
+        }
+
+        #endregion End Fn_Get_Fabric_ColorLits 22-JUN-2026 
+
+
     }
 }

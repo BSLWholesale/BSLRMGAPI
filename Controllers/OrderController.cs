@@ -245,5 +245,18 @@ namespace BSLDaman.Controllers
         }
 
         #endregion End Fn_Delete_ItemCode 18-JUN-2026
+
+        #region Start Fn_Get_Fabric_ColorLits 22-JUN-2026 
+
+        [System.Web.Http.HttpPost]
+        [System.Web.Http.Route("api/Order/Fn_Get_Fabric_ColorLits")]
+        public List<clsFabricColor> Fn_Get_Fabric_ColorLits(clsFabricColor objReq)
+        {
+            var objResp = new List<clsFabricColor>();
+            objResp = _DALOrder.Fn_Get_Fabric_ColorLits(objReq);
+            return objResp;
+        }
+
+        #endregion End Fn_Get_Fabric_ColorLits 22-JUN-2026 
     }
 }

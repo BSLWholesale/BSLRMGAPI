@@ -708,4 +708,11 @@ namespace BSLDaman.Models
         public int vErrorCode { get; set; }
     }
 
+    public class clsFabricColor
+    {
+        public string StyleCode { get; set; }
+        public string ColorName { get; set; }
+        public string vErrorMsg { get; set; }
+        public int vErrorCode { get; set; }
+    }
 }
