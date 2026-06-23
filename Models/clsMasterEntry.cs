@@ -418,6 +418,7 @@ namespace BSLDaman.Models
         public Int32 OTNoOfHrs { get; set; }
         public string DayName { get; set; }
         public string AttendanceStatus { get; set; }
+        public string Category { get; set; }
         public string vErrorMsg { get; set; }
         public int vErrorCode { get; set; }
     }
