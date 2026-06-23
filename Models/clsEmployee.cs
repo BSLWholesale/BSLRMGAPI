@@ -715,4 +715,32 @@ namespace BSLDaman.Models
         public string vErrorMsg { get; set; }
         public int vErrorCode { get; set; }
     }
+
+    public class FabricInhouse
+    {
+        public string StyleCode { get; set; }
+        public string ItemCode { get; set; }
+        public int CreatedBy { get; set; }
+        public string CreatedOn { get; set; }
+        public string vErrorMsg { get; set; }
+        public int vErrorCode { get; set; }
+        public List<FabricInhouseList> _oInhouseList { get; set; }
+    }
+    public class FabricInhouseList
+    {
+        public Int64 InHouseId { get; set; }
+        public int Lotno { get; set; }
+        public decimal RollNo { get; set; }
+        public decimal Quantity { get; set; }
+        public string Unit { get; set; }
+        public decimal Width { get; set; }
+        public string ShadeName { get; set; }
+        public decimal GSM { get; set; }
+        public decimal Shrinkage { get; set; }
+        public int CreatedBy { get; set; }
+        public string CreatedOn { get; set; }
+        public string QueryType { get; set; }
+        public string vErrorMsg { get; set; }
+        public int vErrorCode { get; set; }
+    }
 }
