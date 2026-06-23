@@ -1634,7 +1634,7 @@ namespace BSLDaman.DAL
                 strSql = strSql + " GSM, GSMTolerance, OrderShrinkageWarpLength, OrderShrinkageWaftWidth, TotalQuantity,";
                 strSql = strSql + " Unit, MarkerType, Price, CreatedBy, CreatedOn FROM Fabric_Order WHERE 1=1";
                 
-                if (!String.IsNullOrWhiteSpace(objReq.StyleCode))
+                if (!String.IsNullOrWhiteSpace(objReq.StyleCode) && !String.IsNullOrWhiteSpace(objReq.FabricColor))
                 {
                     strSql = strSql + " AND StyleCode = @StyleCode";
                 }
@@ -1646,7 +1646,7 @@ namespace BSLDaman.DAL
                 {
                     strSql = strSql + " AND Mill = @Mill";
                 }
-                if (!String.IsNullOrWhiteSpace(objReq.FabricColor))
+                if (!String.IsNullOrWhiteSpace(objReq.FabricColor) && !String.IsNullOrWhiteSpace(objReq.StyleCode))
                 {
                     strSql = strSql + " AND FabricColor = @FabricColor";
                 }
@@ -1659,7 +1659,7 @@ namespace BSLDaman.DAL
 
                 SqlCommand cmd = new SqlCommand(strSql, Con);
                 cmd.CommandType = CommandType.Text;
-                if (!String.IsNullOrWhiteSpace(objReq.StyleCode))
+                if (!String.IsNullOrWhiteSpace(objReq.StyleCode) && !String.IsNullOrWhiteSpace(objReq.FabricColor))
                 {
                     cmd.Parameters.AddWithValue("@StyleCode", objReq.StyleCode);
                 }
@@ -1671,7 +1671,7 @@ namespace BSLDaman.DAL
                 {
                     cmd.Parameters.AddWithValue("@Mill", objReq.Mill);
                 }
-                if (!String.IsNullOrWhiteSpace(objReq.FabricColor))
+                if (!String.IsNullOrWhiteSpace(objReq.FabricColor) && !String.IsNullOrWhiteSpace(objReq.StyleCode))
                 {
                     cmd.Parameters.AddWithValue("@FabricColor", objReq.FabricColor);
                 }
