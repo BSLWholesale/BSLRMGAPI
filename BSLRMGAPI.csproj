@@ -156,6 +156,7 @@
     <Compile Include="Areas\HelpPage\SampleGeneration\TextSample.cs" />
     <Compile Include="Areas\HelpPage\XmlDocumentationProvider.cs" />
     <Compile Include="Controllers\EmployeeController.cs" />
+    <Compile Include="Controllers\FabricController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\MasterEntryController.cs" />
     <Compile Include="Controllers\MOBEmployeeController.cs" />
@@ -166,6 +167,7 @@
     <Compile Include="Controllers\ReportController.cs" />
     <Compile Include="Controllers\ValuesController.cs" />
     <Compile Include="DAL\DALEmployee.cs" />
+    <Compile Include="DAL\DALFabric.cs" />
     <Compile Include="DAL\DALMasterEntry.cs" />
     <Compile Include="DAL\DALOrder.cs" />
     <Compile Include="DAL\DALProduction.cs" />
@@ -263,6 +265,7 @@
     <Folder Include="Image\QADefectImage\" />
     <Folder Include="Views\EmployeeMob\" />
     <Folder Include="Views\Employee\" />
+    <Folder Include="Views\Fabric\" />
     <Folder Include="Views\MasterEntryMob\" />
     <Folder Include="Views\MasterEntry\" />
     <Folder Include="Views\MOBEmployee\" />
