@@ -3729,6 +3729,7 @@ namespace BSLDaman.DAL
                 cmd.Parameters.AddWithValue("@DOJ", objReq.DOJ);
                 cmd.Parameters.AddWithValue("@DOB", objReq.DOB);
                 cmd.Parameters.AddWithValue("@EmpImageFile", objReq.EmpImageFile);
+                cmd.Parameters.AddWithValue("@Category", objReq.Category);
                 cmd.Parameters.AddWithValue("@IsActive", objReq.IsActive);
                 cmd.Parameters.AddWithValue("@ModifiedBy", objReq.ModifiedBy);
                 cmd.Parameters.AddWithValue("@QueryType", "UpdateWorkerDetails");
@@ -4049,6 +4050,15 @@ namespace BSLDaman.DAL
                     else
                     {
                         objResp.DOB = Convert.ToDateTime(ds.Tables[0].Rows[i]["DOB"]).ToString("dd-MMM-yyyy");
+                    }
+
+                    if (ds.Tables[0].Rows[i]["Category"] == DBNull.Value)
+                    {
+                        objResp.Category = string.Empty;
+                    }
+                    else
+                    {
+                        objResp.Category = Convert.ToString(ds.Tables[0].Rows[i]["Category"]);
                     }
 
                     if (ds.Tables[0].Rows[i]["EmpImageFile"] == DBNull.Value)
