@@ -3456,6 +3456,7 @@ namespace BSLDaman.DAL
                 cmd.Parameters.AddWithValue("@PayRoll", objReq.PayRoll);
                 cmd.Parameters.AddWithValue("@DOJ", objReq.DOJ);
                 cmd.Parameters.AddWithValue("@DOB", objReq.DOB);
+                cmd.Parameters.AddWithValue("@Category", objReq.Category);
                 cmd.Parameters.AddWithValue("@EmpImageFile", objReq.EmpImageFile);
                 cmd.Parameters.AddWithValue("@CreatedBy", objReq.CreatedBy);
                 cmd.Parameters.AddWithValue("@QueryType", "InsertWorker");
