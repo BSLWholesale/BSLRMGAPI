@@ -419,6 +419,7 @@ namespace BSLDaman.Models
         public string DayName { get; set; }
         public string AttendanceStatus { get; set; }
         public string Category { get; set; }
+        public string SearchField { get; set; }
         public string vErrorMsg { get; set; }
         public int vErrorCode { get; set; }
     }
