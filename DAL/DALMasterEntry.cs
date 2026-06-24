@@ -3532,9 +3532,21 @@ namespace BSLDaman.DAL
                 //    strSql = strSql + " AND EM.EmpId = @Code";
                 //}
 
-                if (!String.IsNullOrWhiteSpace(objReq.Code))
+                //if (!String.IsNullOrWhiteSpace(objReq.Code))
+                //{
+                //    strSql = strSql + " AND EmpId = " + objReq.Code;
+                //}
+                //if (!String.IsNullOrWhiteSpace(objReq.Name))
+                //{
+                //    strSql = strSql + " AND EmpName LIKE '%" + objReq.Name + "%'";  
+                //}
+
+                if (!String.IsNullOrWhiteSpace(objReq.SearchField))
                 {
-                    strSql = strSql + " AND EmpId = " + objReq.Code;
+                    strSql = strSql + " AND (";
+                    strSql = strSql + " CAST(EmpId AS VARCHAR(50)) LIKE '%" + objReq.SearchField + "%'";
+                    strSql = strSql + " OR EmpName LIKE '%" + objReq.SearchField + "%'";
+                    strSql = strSql + " )";
                 }
 
                 strSql = strSql + " ORDER BY CreatedOn DESC";
