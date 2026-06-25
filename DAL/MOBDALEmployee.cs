@@ -148,6 +148,15 @@ namespace BSLDaman.DAL
                             objResp.LineName = Convert.ToString(ds.Tables[0].Rows[i]["Section"]);
                         }
 
+                        if (ds.Tables[0].Rows[i]["FieldStatus"].ToString() == "Show")
+                        {
+                            objResp.EarningRateFlag = true;
+                        }
+                        else
+                        {
+                            objResp.EarningRateFlag = false;
+                        }
+
                         if (objResp.IsActive == true)
                         {
                             objResp.vErrorMsg = "Success";
