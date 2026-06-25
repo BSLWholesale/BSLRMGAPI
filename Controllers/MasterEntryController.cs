@@ -764,6 +764,15 @@ namespace BSLDaman.Controllers
         }
 
 
+        [System.Web.Http.HttpPost]
+        [System.Web.Http.Route("api/MasterEntry/Fn_Update_HideShowEarningsRate")]
+        public clsWorker Fn_Update_HideShowEarningsRate(clsWorker objReq)
+        {
+            var objResp = new clsWorker();
+            objResp = _DALMasterEntry.Fn_Update_HideShowEarningsRate(objReq);
+            return objResp;
+        }
+
 
     }
 }
