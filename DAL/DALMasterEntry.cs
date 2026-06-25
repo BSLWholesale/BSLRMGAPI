@@ -4743,5 +4743,50 @@ namespace BSLDaman.DAL
         }
 
 
+        public clsWorker Fn_Update_HideShowEarningsRate(clsWorker objReq)
+        {
+            var objResp = new clsWorker();
+
+            try
+            {
+                if (Con.State == ConnectionState.Broken)
+                { Con.Close(); }
+                if (Con.State == ConnectionState.Closed)
+                { Con.Open(); }
+
+                SqlCommand cmd = new SqlCommand("USP_WORKER", Con);
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@FieldStatus", objReq.EarningRateFlag);
+                cmd.Parameters.AddWithValue("@ModifiedBy", objReq.ModifiedBy);
+                cmd.Parameters.AddWithValue("@QueryType", "UpdateFieldEarningRateStatus");
+
+                int i = 0;
+                i = cmd.ExecuteNonQuery();
+                if (i > 0)
+                {
+                    objResp.vErrorCode = 200;
+                    objResp.vErrorMsg = "Success";
+                }
+                else
+                {
+                    objResp.vErrorCode = 400;
+                    objResp.vErrorMsg = "Failed";
+                }
+            }
+            catch (Exception exp)
+            {
+                objResp.vErrorCode = 500;
+                Logger.WriteLog("Function Name : Fn_Update_HideShowEarningsRate", " " + "Error Msg : " + exp.Message.ToString(), new StackTrace(exp, true));
+                objResp.vErrorMsg = exp.Message.ToString();
+            }
+            finally
+            {
+                Con.Close();
+            }
+            return objResp;
+        }
+
+
+
     }
 }
