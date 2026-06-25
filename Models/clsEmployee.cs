@@ -486,6 +486,7 @@ namespace BSLDaman.Models
         public string DOB { get; set; }
         public bool IsBirthdayWishes { get; set; }
         public bool IsWorkAnniversaryWishes { get; set; }
+        public bool EarningRateFlag { get; set; }
         public string vErrorMsg { get; set; }
         public int vErrorCode { get; set; }
 
