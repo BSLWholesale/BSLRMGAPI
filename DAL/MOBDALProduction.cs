@@ -2666,26 +2666,11 @@ namespace BSLDaman.DAL
                 if (Con.State == ConnectionState.Closed)
                 { Con.Open(); }
 
-                //string strSql = "DECLARE @CurrentDate DATE = '" + objReq.CurrentDate + "'";
-                //strSql = strSql + " SELECT BD.OperationNo AS OperationNo, BD.SubSection AS SubSection, BD.BundleID AS BundleID,";
-                //strSql = strSql + " BD.StdRate AS StdRate, BC.Qty AS Qty, (BD.StdRate*BC.Qty) AS TotalAmount, ED.LineName AS LineName,";
-                //strSql = strSql + " BC.StyleCode AS StyleCode, (SELECT DISTINCT(Descriptions) FROM OperationBreackDownDetail WHERE OpNo = BD.OperationNo) AS Descriptions,";
-                //strSql = strSql + " FORMAT(BD.CreatedOn, 'dd-MMM-yyyy HH:mm:ss') AS CreatedOn, BD.CreatedBy,";
-                //strSql = strSql + " FORMAT(BD.ModifiedOn, 'dd-MMM-yyyy HH:mm:ss') AS ModifiedOn, BD.ModifiedBy";
-                //strSql = strSql + " FROM BundleCompileDetail AS BD";
-                //strSql = strSql + " INNER JOIN BundleCompile AS BC";
-                //strSql = strSql + " ON BC.BundleID = BD.BundleID";
-                //strSql = strSql + " INNER JOIN EmployeeDetail AS ED";
-                //strSql = strSql + " ON ED.Code = BD.AppEmpID";
-                //strSql = strSql + " INNER JOIN LineMaster AS LM";
-                //strSql = strSql + " ON LM.LineName = ED.LineName";
-                //strSql = strSql + " WHERE BD.AppEmpID = " + objReq.AppEmpID;
-                //strSql = strSql + " AND BD.ModifiedOn >= @CurrentDate AND BD.ModifiedOn < DATEADD(DAY, 1, @CurrentDate) AND LM.LineName = '" + objReq.LineName + "'";
-
                 string strSql = "DECLARE @CurrentDate DATE = '" + objReq.CurrentDate + "'";
-                strSql = strSql + " SELECT BD.OperationNo, MAX(BD.SubSection) AS SubSection, MAX(BD.StdRate) AS StdRate,";
+                strSql = strSql + "SELECT BD.OperationNo, MAX(BD.SubSection) AS SubSection, MAX(BD.StdRate) AS StdRate,";
                 strSql = strSql + " SUM(BC.Qty) AS Qty, (MAX(BD.StdRate) * SUM(BC.Qty)) AS TotalAmount, MAX(ED.LineName) AS LineName,";
-                strSql = strSql + " MAX(BC.StyleCode) AS StyleCode, (SELECT DISTINCT(Descriptions) FROM OperationBreackDownDetail WHERE OpNo = BD.OperationNo) AS Descriptions,";
+                strSql = strSql + " MAX(BC.StyleCode) AS StyleCode, MAX(OBD.Descriptions) AS Descriptions,";
+                //strSql = strSql + " MAX(BC.StyleCode) AS StyleCode, (SELECT DISTINCT(Descriptions) FROM OperationBreackDownDetail WHERE OpNo = BD.OperationNo) AS Descriptions,";
                 strSql = strSql + " MAX(BC.OrderNo) AS OrderNo";
                 strSql = strSql + " FROM BundleCompileDetail AS BD";
                 strSql = strSql + " INNER JOIN BundleCompile AS BC";
@@ -2694,6 +2679,10 @@ namespace BSLDaman.DAL
                 strSql = strSql + " ON ED.Code = BD.AppEmpID";
                 strSql = strSql + " INNER JOIN LineMaster AS LM";
                 strSql = strSql + " ON LM.LineName = ED.LineName";
+                strSql = strSql + " INNER JOIN OperationBreackDownDetail AS OBD";
+                strSql = strSql + " ON OBD.OpNo = BD.OperationNo";
+                strSql = strSql + " INNER JOIN OperationBreackDownMaster AS OBM";
+                strSql = strSql + " ON OBM.ID = OBD.MID AND BC.StyleCode = OBM.StyleCode";
                 strSql = strSql + " WHERE BD.AppEmpID = " + objReq.AppEmpID;
                 strSql = strSql + " AND BD.ModifiedOn >= @CurrentDate AND BD.ModifiedOn < DATEADD(DAY, 1, @CurrentDate) AND LM.LineName = '" + objReq.LineName + "'";
                 strSql = strSql + " GROUP BY BD.OperationNo";
@@ -2713,7 +2702,6 @@ namespace BSLDaman.DAL
                         obj = new clsBundleCompile();
                         obj.OperationNo = Convert.ToInt64(ds.Tables[0].Rows[i]["OperationNo"]);
                         obj.SubSection = Convert.ToString(ds.Tables[0].Rows[i]["SubSection"]);
-                        //obj.BundleID = Convert.ToInt64(ds.Tables[0].Rows[i]["BundleID"]);
                         obj.StdRate = Convert.ToDecimal(ds.Tables[0].Rows[i]["StdRate"]);
                         obj.Qty = Convert.ToInt32(ds.Tables[0].Rows[i]["Qty"]);
 
@@ -2730,27 +2718,6 @@ namespace BSLDaman.DAL
                         obj.StyleCode = Convert.ToString(ds.Tables[0].Rows[i]["StyleCode"]);
                         obj.Descriptions = Convert.ToString(ds.Tables[0].Rows[i]["Descriptions"]);
                         obj.OrderNo = Convert.ToString(ds.Tables[0].Rows[i]["OrderNo"]);
-
-                        //obj.CreatedOn = Convert.ToString(ds.Tables[0].Rows[i]["CreatedOn"]);
-                        //obj.CreatedBy = Convert.ToInt32(ds.Tables[0].Rows[i]["CreatedBy"]);
-
-                        //if (ds.Tables[0].Rows[i]["ModifiedOn"] == null)
-                        //{
-                        //    obj.ModifiedOn = string.Empty;
-                        //}
-                        //else
-                        //{
-                        //    obj.ModifiedOn = Convert.ToString(ds.Tables[0].Rows[i]["ModifiedOn"]);
-                        //}
-
-                        //if (ds.Tables[0].Rows[i]["ModifiedBy"] == DBNull.Value)
-                        //{
-                        //    obj.ModifiedBy = 0;
-                        //}
-                        //else
-                        //{
-                        //    obj.ModifiedBy = Convert.ToInt32(ds.Tables[0].Rows[i]["ModifiedBy"]);
-                        //}
 
                         obj.vErrorCode = 200;
                         obj.vErrorMsg = "Success";
