@@ -797,6 +797,15 @@ namespace BSLDaman.Controllers
         }
 
 
+        [System.Web.Http.HttpPost]
+        [System.Web.Http.Route("api/MOBProduction/Fn_Fetch_RateEarningsFlag")]
+        public clsMOBEmployee Fn_Fetch_RateEarningsFlag(clsMOBEmployee objReq)
+        {
+            var objResp = new clsMOBEmployee();
+            objResp = _MOBDALProduction.Fn_Fetch_RateEarningsFlag(objReq);
+            return objResp;
+        }
+
 
     }
 }
