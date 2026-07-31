@@ -584,9 +584,11 @@ namespace BSLDaman.Models
 
     }
     public class clsPieceRateReportResp
-    {
+    {        
         public string LineName { get; set; }
         public string StyleCode { get; set; }
+        public string OrderNo { get; set; }
+        public string SubSection { get; set; }
         public string Code { get; set; }
         public string EmpName { get; set; }
         public int OpNo { get; set; }

@@ -475,7 +475,7 @@ namespace BSLDaman.DAL
                 if (Con.State == ConnectionState.Closed)
                 { Con.Open(); }
 
-                string strSql = "SELECT LineName, StyleCode, OrderNo, Code, EmpName, OperationNo, Descriptions, FORMAT(WorkDate, 'dd-MMM-yyyy') AS WorkDate,";
+                string strSql = "SELECT LineName, StyleCode, OrderNo, SubSection, Code, EmpName, OperationNo, Descriptions, FORMAT(WorkDate, 'dd-MMM-yyyy') AS WorkDate,";
                 strSql = strSql + " SUM(Qty) AS Qty, StdRate, SUM(Qty) * StdRate AS Amount,  UpdateType, BundleIDStatus, COUNT(*) OVER() AS TotalRows,";
                 strSql = strSql + " SUM(SUM(Qty) * StdRate) OVER() AS TotalAMT,";
                 strSql = strSql + " ( SELECT COUNT(DISTINCT Code) FROM vPieceRateReport WHERE 1=1";
@@ -521,7 +521,7 @@ namespace BSLDaman.DAL
                 {
                     strSql = strSql + " AND FORMAT(WorkDate, 'dd-MMM-yyyy') BETWEEN '" + objReq.StartDate + "' AND '" + objReq.EndDate + "'";
                 }
-                strSql = strSql + " GROUP BY LineName, StyleCode,  OrderNo, Code, EmpName, OperationNo,  Descriptions,";
+                strSql = strSql + " GROUP BY LineName, StyleCode,  OrderNo, SubSection, Code, EmpName, OperationNo,  Descriptions,";
                 strSql = strSql + " FORMAT(WorkDate, 'dd-MMM-yyyy'), StdRate, UpdateType, BundleIDStatus ";
                 strSql = strSql + " ORDER BY " + objReq.OrderBy + " , WorkDate ASC ";
                 strSql = strSql + " OFFSET (@PageNumber - 1) * @PageSize ROWS ";
@@ -561,6 +561,8 @@ namespace BSLDaman.DAL
                         obj = new clsPieceRateReportResp();
                         obj.LineName = Convert.ToString(ds.Tables[0].Rows[i]["LineName"]);
                         obj.StyleCode = Convert.ToString(ds.Tables[0].Rows[i]["StyleCode"]);
+                        obj.OrderNo = Convert.ToString(ds.Tables[0].Rows[i]["OrderNo"]);
+                        obj.SubSection = Convert.ToString(ds.Tables[0].Rows[i]["SubSection"]);
                         obj.Code = Convert.ToString(ds.Tables[0].Rows[i]["Code"]);
                         obj.EmpName = Convert.ToString(ds.Tables[0].Rows[i]["EmpName"]);
                         obj.OpNo = Convert.ToInt32(ds.Tables[0].Rows[i]["OperationNo"]);
