@@ -3516,6 +3516,63 @@ namespace BSLDaman.DAL
         }
 
 
+        public clsMOBEmployee Fn_Fetch_RateEarningsFlag(clsMOBEmployee objReq)
+        {
+            var objResp = new clsMOBEmployee();
+            Logger.ErrorLog(JsonConvert.SerializeObject(objReq), "Request", "Fn_Fetch_RateEarningsFlag");
+            try
+            {
+                if (Con.State == ConnectionState.Broken)
+                { Con.Close(); }
+                if (Con.State == ConnectionState.Closed)
+                { Con.Open(); }
+
+                SqlCommand cmd = new SqlCommand("USP_EmployeeMob", Con);
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@QueryType", "RateEarningsFlag");
+
+                SqlDataAdapter da = new SqlDataAdapter(cmd);
+                DataSet ds = new DataSet();
+                da.Fill(ds);
+                int i = 0;
+
+                if (ds.Tables[0].Rows.Count > 0)
+                {
+
+                    if (ds.Tables[0].Rows[i]["FieldStatus"].ToString() == "Show")
+                    {
+                        objResp.EarningRateFlag = true;
+                    }
+                    else
+                    {
+                        objResp.EarningRateFlag = false;
+                    }
+
+                    objResp.vErrorCode = 200;
+                    objResp.vErrorMsg = "Success";
+                }
+                else
+                {
+                    objResp.vErrorCode = 404;
+                    objResp.vErrorMsg = "Earnings or Rate flag value is not found";
+                }
+            }
+            catch (Exception exp)
+            {
+                objResp.vErrorCode = 500;
+                Logger.WriteLog("Function Name : Fn_Fetch_RateEarningsFlag", " " + "Error Msg : " + exp.Message.ToString(), new StackTrace(exp, true));
+                objResp.vErrorMsg = exp.Message.ToString();
+            }
+            finally
+            {
+                Con.Close();
+            }
+            Logger.ErrorLog(JsonConvert.SerializeObject(objResp), "Response", "Fn_Fetch_RateEarningsFlag");
+            return objResp;
+        }
+
+
+
 
     }
 }
