@@ -50,5 +50,14 @@ namespace BSLDaman.Controllers
             objResp = _DALFabric.Fn_Update_Fabric_RollNo(objReq);
             return objResp;
         }
+
+        [System.Web.Http.HttpPost]
+        [System.Web.Http.Route("api/Fabric/Fn_Update_Fabric_LotNo")]
+        public clsFabricOrder Fn_Update_Fabric_LotNo(clsFabricOrder objReq)
+        {
+            var objResp = new clsFabricOrder();
+            objResp = _DALFabric.Fn_Update_Fabric_LotNo(objReq);
+            return objResp;
+        }
     }
 }

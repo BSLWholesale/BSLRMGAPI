@@ -620,7 +620,7 @@ namespace BSLDaman.DAL
                 if (Con.State == ConnectionState.Closed)
                 { Con.Open(); }
 
-                string strSql = "SELECT LineName, Code, EmpName, StyleCode, MIN(WorkDate) AS FromDate, MAX(WorkDate) AS ToDate,";
+                string strSql = "SELECT LineName, Code, EmpName, MIN(WorkDate) AS FromDate, MAX(WorkDate) AS ToDate,";
                 strSql = strSql + " DATEDIFF(DAY, MIN(WorkDate), MAX(WorkDate)) + 1 AS WorkingDays, SUM(Qty) AS TotalQty, ";
                 strSql = strSql + " (SUM(Qty * StdRate)  / (DATEDIFF(DAY, MIN(WorkDate), MAX(WorkDate)) + 1)) AS EarningPerDay, ";
                 strSql = strSql + " SUM(Qty * StdRate) AS TotalEarning FROM vIncentive WHERE 1=1 ";
@@ -644,7 +644,7 @@ namespace BSLDaman.DAL
                 {
                     strSql = strSql + " AND FORMAT(WorkDate, 'dd-MMM-yyyy') BETWEEN '" + objReq.StartDate + "' AND '" + objReq.EndDate + "'";
                 }
-                strSql = strSql + " GROUP BY LineName, Code, EmpName, StyleCode ";
+                strSql = strSql + " GROUP BY LineName, Code, EmpName ";
                 strSql = strSql + " ORDER BY " + objReq.OrderBy;
 
                 SqlCommand cmd = new SqlCommand(strSql, Con);

@@ -383,5 +383,85 @@ namespace BSLDaman.DAL
             Logger.ErrorLog(JsonConvert.SerializeObject(objResp), "Response", "Fn_Update_Fabric_RollNo");
             return objResp;
         }
+
+        public clsFabricOrder Fn_Update_Fabric_LotNo(clsFabricOrder objReq)
+        {
+            var objResp = new clsFabricOrder();
+            Logger.ErrorLog(JsonConvert.SerializeObject(objReq), "Request", "Fn_Update_Fabric_LotNo");
+            try
+            {
+
+                if (String.IsNullOrWhiteSpace(objReq.StyleCode))
+                {
+                    objResp.vErrorCode = 400;
+                    objResp.vErrorMsg = "StyleCode is empty";
+                    return objResp;
+                }
+                else if (String.IsNullOrWhiteSpace(objReq.ItemCode))
+                {
+                    objResp.vErrorCode = 400;
+                    objResp.vErrorMsg = "ItemCode is empty";
+                    return objResp;
+                }
+                else if (objReq.LotNo == 0)
+                {
+                    objResp.vErrorCode = 400;
+                    objResp.vErrorMsg = "LotNo is zero";
+                    return objResp;
+                }
+                else if (objReq.RollNo == 0)
+                {
+                    objResp.vErrorCode = 400;
+                    objResp.vErrorMsg = "Total RollNo is zero";
+                    return objResp;
+                }
+                else if (objReq.SupplierQty == 0)
+                {
+                    objResp.vErrorCode = 400;
+                    objResp.vErrorMsg = "SupplierQty is zero";
+                    return objResp;
+                }
+                else
+                {
+                    if (Con.State == ConnectionState.Broken)
+                    { Con.Close(); }
+                    if (Con.State == ConnectionState.Closed)
+                    { Con.Open(); }
+
+                    SqlCommand cmd = new SqlCommand("USP_FABRIC_ORDER", Con);
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("@StyleCode", objReq.StyleCode);
+                    cmd.Parameters.AddWithValue("@ItemCode", objReq.ItemCode);
+                    cmd.Parameters.AddWithValue("@LotNo", objReq.LotNo);
+                    cmd.Parameters.AddWithValue("@RollNo", objReq.RollNo);
+                    cmd.Parameters.AddWithValue("@SupplierQty", objReq.SupplierQty);
+                    cmd.Parameters.AddWithValue("@QueryType", "Update_Fabric_LotNo");
+                    int j = cmd.ExecuteNonQuery();
+                    if (j > 0)
+                    {
+                        objResp.vErrorCode = 200;
+                        objResp.vErrorMsg = "Success";
+                    }
+                    else
+                    {
+                        objResp.vErrorCode = 400;
+                        objResp.vErrorMsg = "LotNo Updating failed ";
+                        return objResp;
+                    }
+                }
+            }
+            catch (Exception exp)
+            {
+                objResp.vErrorCode = 500;
+                Logger.WriteLog("Function Name : Fn_Update_Fabric_LotNo", " " + "Error Msg : " + exp.Message.ToString(), new StackTrace(exp, true));
+                objResp.vErrorMsg = exp.Message.ToString();
+            }
+            finally
+            {
+                Con.Close();
+            }
+            Logger.ErrorLog(JsonConvert.SerializeObject(objResp), "Response", "Fn_Update_Fabric_LotNo");
+            return objResp;
+        }
     }
 }
