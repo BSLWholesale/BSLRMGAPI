@@ -497,7 +497,7 @@ namespace BSLDaman.DAL
                 }
                 if (!String.IsNullOrWhiteSpace(objReq.StartDate) && !String.IsNullOrWhiteSpace(objReq.EndDate))
                 {
-                    strSql = strSql + " AND FORMAT(WorkDate, 'dd-MMM-yyyy') BETWEEN '" + objReq.StartDate + "' AND '" + objReq.EndDate + "'";
+                    strSql = strSql + " AND WorkDate BETWEEN '" + objReq.StartDate + "' AND '" + objReq.EndDate + "'";
                 }
                 strSql = strSql + " ) AS TotalEmp FROM vPieceRateReport WHERE 1=1";             
 
@@ -519,7 +519,7 @@ namespace BSLDaman.DAL
                 }
                 if (!String.IsNullOrWhiteSpace(objReq.StartDate) && !String.IsNullOrWhiteSpace(objReq.EndDate))
                 {
-                    strSql = strSql + " AND FORMAT(WorkDate, 'dd-MMM-yyyy') BETWEEN '" + objReq.StartDate + "' AND '" + objReq.EndDate + "'";
+                    strSql = strSql + " AND WorkDate BETWEEN '" + objReq.StartDate + "' AND '" + objReq.EndDate + "'";
                 }
                 strSql = strSql + " GROUP BY LineName, StyleCode,  OrderNo, SubSection, Code, EmpName, OperationNo,  Descriptions,";
                 strSql = strSql + " FORMAT(WorkDate, 'dd-MMM-yyyy'), StdRate, UpdateType, BundleIDStatus ";
@@ -624,10 +624,10 @@ namespace BSLDaman.DAL
                 strSql = strSql + " DATEDIFF(DAY, MIN(WorkDate), MAX(WorkDate)) + 1 AS WorkingDays, SUM(Qty) AS TotalQty, ";
                 strSql = strSql + " (SUM(Qty * StdRate)  / (DATEDIFF(DAY, MIN(WorkDate), MAX(WorkDate)) + 1)) AS EarningPerDay, ";
                 strSql = strSql + " SUM(Qty * StdRate) AS TotalEarning FROM vIncentive WHERE 1=1 ";
-                if (!String.IsNullOrWhiteSpace(objReq.StyleCode))
-                {
-                    strSql = strSql + " AND StyleCode = @StyleCode ";
-                }
+                //if (!String.IsNullOrWhiteSpace(objReq.StyleCode))
+                //{
+                //    strSql = strSql + " AND StyleCode = @StyleCode ";
+                //}
                 if (!String.IsNullOrWhiteSpace(objReq.Code))
                 {
                     strSql = strSql + " AND Code = @Code ";
@@ -642,7 +642,7 @@ namespace BSLDaman.DAL
                 }
                 if (!String.IsNullOrWhiteSpace(objReq.StartDate) && !String.IsNullOrWhiteSpace(objReq.EndDate))
                 {
-                    strSql = strSql + " AND FORMAT(WorkDate, 'dd-MMM-yyyy') BETWEEN '" + objReq.StartDate + "' AND '" + objReq.EndDate + "'";
+                    strSql = strSql + " AND WorkDate BETWEEN '" + objReq.StartDate + "' AND '" + objReq.EndDate + "'";
                 }
                 strSql = strSql + " GROUP BY LineName, Code, EmpName ";
                 strSql = strSql + " ORDER BY " + objReq.OrderBy;
@@ -650,10 +650,10 @@ namespace BSLDaman.DAL
                 SqlCommand cmd = new SqlCommand(strSql, Con);
                 cmd.CommandType = CommandType.Text;
 
-                if (!String.IsNullOrWhiteSpace(objReq.StyleCode))
-                {
-                    cmd.Parameters.AddWithValue("@StyleCode", objReq.StyleCode);
-                }
+                //if (!String.IsNullOrWhiteSpace(objReq.StyleCode))
+                //{
+                //    cmd.Parameters.AddWithValue("@StyleCode", objReq.StyleCode);
+                //}
                 if (!String.IsNullOrWhiteSpace(objReq.Code))
                 {
                     cmd.Parameters.AddWithValue("@Code", objReq.Code);
@@ -678,7 +678,7 @@ namespace BSLDaman.DAL
                     {
                         obj = new clsPieceRateIncentive();
                         obj.LineName = Convert.ToString(ds.Tables[0].Rows[i]["LineName"]);
-                        obj.StyleCode = Convert.ToString(ds.Tables[0].Rows[i]["StyleCode"]);
+                        //obj.StyleCode = Convert.ToString(ds.Tables[0].Rows[i]["StyleCode"]);
                         obj.Code = Convert.ToString(ds.Tables[0].Rows[i]["Code"]);
                         obj.EmpName = Convert.ToString(ds.Tables[0].Rows[i]["EmpName"]);
                         obj.FromDate = Convert.ToString(ds.Tables[0].Rows[i]["FromDate"]);
