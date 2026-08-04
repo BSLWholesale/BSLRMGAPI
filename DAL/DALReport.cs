@@ -497,7 +497,7 @@ namespace BSLDaman.DAL
                 }
                 if (!String.IsNullOrWhiteSpace(objReq.StartDate) && !String.IsNullOrWhiteSpace(objReq.EndDate))
                 {
-                    strSql = strSql + " AND WorkDate BETWEEN '" + objReq.StartDate + "' AND '" + objReq.EndDate + "'";
+                    strSql = strSql + " AND FORMAT(WorkDate, 'dd-MMM-yyyy') BETWEEN '" + objReq.StartDate + "' AND '" + objReq.EndDate + "'";
                 }
                 strSql = strSql + " ) AS TotalEmp FROM vPieceRateReport WHERE 1=1";             
 
@@ -519,10 +519,10 @@ namespace BSLDaman.DAL
                 }
                 if (!String.IsNullOrWhiteSpace(objReq.StartDate) && !String.IsNullOrWhiteSpace(objReq.EndDate))
                 {
-                    strSql = strSql + " AND WorkDate BETWEEN '" + objReq.StartDate + "' AND '" + objReq.EndDate + "'";
+                    strSql = strSql + " AND FORMAT(WorkDate, 'dd-MMM-yyyy') BETWEEN '" + objReq.StartDate + "' AND '" + objReq.EndDate + "'";
                 }
                 strSql = strSql + " GROUP BY LineName, StyleCode,  OrderNo, SubSection, Code, EmpName, OperationNo,  Descriptions,";
-                strSql = strSql + " FORMAT(WorkDate, 'dd-MMM-yyyy'), StdRate, UpdateType, BundleIDStatus ";
+                strSql = strSql + " WorkDate, StdRate, UpdateType, BundleIDStatus ";
                 strSql = strSql + " ORDER BY " + objReq.OrderBy + " , WorkDate ASC ";
                 strSql = strSql + " OFFSET (@PageNumber - 1) * @PageSize ROWS ";
                 strSql = strSql + " FETCH NEXT @PageSize ROWS ONLY ";
@@ -623,11 +623,7 @@ namespace BSLDaman.DAL
                 string strSql = "SELECT LineName, Code, EmpName, MIN(WorkDate) AS FromDate, MAX(WorkDate) AS ToDate,";
                 strSql = strSql + " DATEDIFF(DAY, MIN(WorkDate), MAX(WorkDate)) + 1 AS WorkingDays, SUM(Qty) AS TotalQty, ";
                 strSql = strSql + " (SUM(Qty * StdRate)  / (DATEDIFF(DAY, MIN(WorkDate), MAX(WorkDate)) + 1)) AS EarningPerDay, ";
-                strSql = strSql + " SUM(Qty * StdRate) AS TotalEarning FROM vIncentive WHERE 1=1 ";
-                //if (!String.IsNullOrWhiteSpace(objReq.StyleCode))
-                //{
-                //    strSql = strSql + " AND StyleCode = @StyleCode ";
-                //}
+                strSql = strSql + " SUM(Qty * StdRate) AS TotalEarning FROM vIncentive WHERE 1=1 ";                
                 if (!String.IsNullOrWhiteSpace(objReq.Code))
                 {
                     strSql = strSql + " AND Code = @Code ";
@@ -642,18 +638,18 @@ namespace BSLDaman.DAL
                 }
                 if (!String.IsNullOrWhiteSpace(objReq.StartDate) && !String.IsNullOrWhiteSpace(objReq.EndDate))
                 {
-                    strSql = strSql + " AND WorkDate BETWEEN '" + objReq.StartDate + "' AND '" + objReq.EndDate + "'";
+                    strSql = strSql + " AND FORMAT(WorkDate, 'dd-MMM-yyyy') BETWEEN '" + objReq.StartDate + "' AND '" + objReq.EndDate + "'";
                 }
                 strSql = strSql + " GROUP BY LineName, Code, EmpName ";
                 strSql = strSql + " ORDER BY " + objReq.OrderBy;
+                strSql = strSql + " OFFSET (@PageNumber - 1) * @PageSize ROWS ";
+                strSql = strSql + " FETCH NEXT @PageSize ROWS ONLY ";
 
                 SqlCommand cmd = new SqlCommand(strSql, Con);
                 cmd.CommandType = CommandType.Text;
+                cmd.Parameters.AddWithValue("@PageNumber", objReq.PageNumber);
+                cmd.Parameters.AddWithValue("@PageSize", objReq.PageSize);
 
-                //if (!String.IsNullOrWhiteSpace(objReq.StyleCode))
-                //{
-                //    cmd.Parameters.AddWithValue("@StyleCode", objReq.StyleCode);
-                //}
                 if (!String.IsNullOrWhiteSpace(objReq.Code))
                 {
                     cmd.Parameters.AddWithValue("@Code", objReq.Code);
@@ -678,14 +674,12 @@ namespace BSLDaman.DAL
                     {
                         obj = new clsPieceRateIncentive();
                         obj.LineName = Convert.ToString(ds.Tables[0].Rows[i]["LineName"]);
-                        //obj.StyleCode = Convert.ToString(ds.Tables[0].Rows[i]["StyleCode"]);
                         obj.Code = Convert.ToString(ds.Tables[0].Rows[i]["Code"]);
                         obj.EmpName = Convert.ToString(ds.Tables[0].Rows[i]["EmpName"]);
                         obj.FromDate = Convert.ToString(ds.Tables[0].Rows[i]["FromDate"]);
                         obj.ToDate = Convert.ToString(ds.Tables[0].Rows[i]["ToDate"]);
                         obj.WorkingDays = Convert.ToInt64(ds.Tables[0].Rows[i]["WorkingDays"]);
                         obj.TotalQty = Convert.ToInt64(ds.Tables[0].Rows[i]["TotalQty"]);
-                       // obj.StdRate = Convert.ToDouble(ds.Tables[0].Rows[i]["StdRate"]);
                         obj.EarningPerDay = Convert.ToDouble(ds.Tables[0].Rows[i]["EarningPerDay"]);
                         obj.TotalEarning = Convert.ToDouble(ds.Tables[0].Rows[i]["TotalEarning"]);
                         obj.vErrorCode = 200;
