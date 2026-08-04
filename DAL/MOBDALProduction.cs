@@ -462,8 +462,9 @@ namespace BSLDaman.DAL
                             strMsg += "Thanks & Regards,<br>";
                             strMsg += "Banswara Syntex Ltd.";
 
-                            string ToEmail = "hemantnaik@banswarasyntex.com";
+                            string ToEmail = objWorkerDetails.UnitEmailId;
                             string CcEmail = "kanchanparab@banswarasyntex.com";
+
                             gn.TriggerEmailOnly("", strSubject, ToEmail, CcEmail, strMsg);
                         }
                     }
