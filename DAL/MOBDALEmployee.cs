@@ -1135,6 +1135,16 @@ namespace BSLDaman.DAL
                         objResp.Name = Convert.ToString(ds.Tables[0].Rows[i]["EmpName"]);
                         objResp.Unit = Convert.ToString(ds.Tables[0].Rows[i]["Units"]);
                         objResp.LineName = Convert.ToString(ds.Tables[0].Rows[i]["LineName"]);
+                        objResp.UnitEmailId = Convert.ToString(ds.Tables[0].Rows[i]["UnitEmailId"]);
+
+                        if (ds.Tables[0].Rows[i]["Grouping"] == null)
+                        {
+                            objResp.Grouping = string.Empty;
+                        }
+                        else
+                        {
+                            objResp.Grouping = Convert.ToString(ds.Tables[0].Rows[i]["Grouping"]);
+                        }
 
                         objResp.vErrorMsg = "Success";
                         objResp.vErrorCode = 200;
