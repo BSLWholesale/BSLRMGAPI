@@ -621,9 +621,9 @@ namespace BSLDaman.DAL
                 { Con.Open(); }
 
                 string strSql = "SELECT Code, EmpName, MIN(WorkDate) AS FromDate,  MAX(WorkDate) AS ToDate, ";
-                strSql = strSql + " DATEDIFF(DAY, MIN(WorkDate), MAX(WorkDate)) + 1 AS WorkingDays, SUM(Qty) AS TotalQty, ";
+                strSql = strSql + " COUNT(DISTINCT CAST(WorkDate AS DATE)) AS WorkingDays, SUM(Qty) AS TotalQty, ";
                 strSql = strSql + " SUM(Qty * StdRate) AS TotalEarning, ";
-                strSql = strSql + " SUM(Qty * StdRate) * 1.0 / NULLIF(DATEDIFF(DAY, MIN(WorkDate), MAX(WorkDate)) + 1, 0) AS EarningPerDay FROM vIncentive WHERE 1=1 ";                
+                strSql = strSql + " SUM(Qty * StdRate) * 1.0 / NULLIF(COUNT(DISTINCT CAST(WorkDate AS DATE)), 0) AS EarningPerDay FROM vIncentive WHERE 1=1 ";                
                 if (!String.IsNullOrWhiteSpace(objReq.Code))
                 {
                     strSql = strSql + " AND Code = @Code ";
