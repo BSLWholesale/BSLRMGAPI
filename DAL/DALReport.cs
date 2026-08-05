@@ -475,7 +475,7 @@ namespace BSLDaman.DAL
                 if (Con.State == ConnectionState.Closed)
                 { Con.Open(); }
 
-                string strSql = "SELECT LineName, StyleCode, OrderNo, SubSection, Code, EmpName, OperationNo, Descriptions, FORMAT(WorkDate, 'dd-MMM-yyyy') AS WorkDate,";
+                string strSql = "SELECT LineName, StyleCode, OrderNo, SubSection, Code, EmpName, OperationNo, Descriptions, FORMAT(CAST(WorkDate AS DATE), 'dd-MMM-yyyy') AS WorkDate,";
                 strSql = strSql + " SUM(Qty) AS Qty, StdRate, SUM(Qty) * StdRate AS Amount,  UpdateType, BundleIDStatus, COUNT(*) OVER() AS TotalRows,";
                 strSql = strSql + " SUM(SUM(Qty) * StdRate) OVER() AS TotalAMT,";
                 strSql = strSql + " ( SELECT COUNT(DISTINCT Code) FROM vPieceRateReport WHERE 1=1";
@@ -497,7 +497,7 @@ namespace BSLDaman.DAL
                 }
                 if (!String.IsNullOrWhiteSpace(objReq.StartDate) && !String.IsNullOrWhiteSpace(objReq.EndDate))
                 {
-                    strSql = strSql + " AND FORMAT(WorkDate, 'dd-MMM-yyyy') BETWEEN '" + objReq.StartDate + "' AND '" + objReq.EndDate + "'";
+                    strSql = strSql + " AND CAST(WorkDate AS DATE) BETWEEN '" + objReq.StartDate + "' AND '" + objReq.EndDate + "'";
                 }
                 strSql = strSql + " ) AS TotalEmp FROM vPieceRateReport WHERE 1=1";             
 
@@ -519,11 +519,11 @@ namespace BSLDaman.DAL
                 }
                 if (!String.IsNullOrWhiteSpace(objReq.StartDate) && !String.IsNullOrWhiteSpace(objReq.EndDate))
                 {
-                    strSql = strSql + " AND FORMAT(WorkDate, 'dd-MMM-yyyy') BETWEEN '" + objReq.StartDate + "' AND '" + objReq.EndDate + "'";
+                    strSql = strSql + " AND CAST(WorkDate AS DATE) BETWEEN '" + objReq.StartDate + "' AND '" + objReq.EndDate + "'";
                 }
                 strSql = strSql + " GROUP BY LineName, StyleCode,  OrderNo, SubSection, Code, EmpName, OperationNo,  Descriptions,";
-                strSql = strSql + " WorkDate, StdRate, UpdateType, BundleIDStatus ";
-                strSql = strSql + " ORDER BY " + objReq.OrderBy + " , WorkDate ASC ";
+                strSql = strSql + " CAST(WorkDate AS DATE), StdRate, UpdateType, BundleIDStatus ";
+                strSql = strSql + " ORDER BY " + objReq.OrderBy + " , CAST(WorkDate AS DATE) ASC ";
                 strSql = strSql + " OFFSET (@PageNumber - 1) * @PageSize ROWS ";
                 strSql = strSql + " FETCH NEXT @PageSize ROWS ONLY ";
 
@@ -620,17 +620,13 @@ namespace BSLDaman.DAL
                 if (Con.State == ConnectionState.Closed)
                 { Con.Open(); }
 
-                string strSql = "SELECT LineName, Code, EmpName, MIN(WorkDate) AS FromDate, MAX(WorkDate) AS ToDate,";
+                string strSql = "SELECT Code, EmpName, MIN(WorkDate) AS FromDate,  MAX(WorkDate) AS ToDate, ";
                 strSql = strSql + " DATEDIFF(DAY, MIN(WorkDate), MAX(WorkDate)) + 1 AS WorkingDays, SUM(Qty) AS TotalQty, ";
-                strSql = strSql + " (SUM(Qty * StdRate)  / (DATEDIFF(DAY, MIN(WorkDate), MAX(WorkDate)) + 1)) AS EarningPerDay, ";
-                strSql = strSql + " SUM(Qty * StdRate) AS TotalEarning FROM vIncentive WHERE 1=1 ";                
+                strSql = strSql + " SUM(Qty * StdRate) AS TotalEarning, ";
+                strSql = strSql + " SUM(Qty * StdRate) * 1.0 / NULLIF(DATEDIFF(DAY, MIN(WorkDate), MAX(WorkDate)) + 1, 0) AS EarningPerDay FROM vIncentive WHERE 1=1 ";                
                 if (!String.IsNullOrWhiteSpace(objReq.Code))
                 {
                     strSql = strSql + " AND Code = @Code ";
-                }
-                if (!String.IsNullOrWhiteSpace(objReq.LineName))
-                {
-                    strSql = strSql + " AND LineName = @LineName ";
                 }
                 if (!String.IsNullOrWhiteSpace(objReq.StartDate) && String.IsNullOrWhiteSpace(objReq.EndDate))
                 {
@@ -638,10 +634,10 @@ namespace BSLDaman.DAL
                 }
                 if (!String.IsNullOrWhiteSpace(objReq.StartDate) && !String.IsNullOrWhiteSpace(objReq.EndDate))
                 {
-                    strSql = strSql + " AND FORMAT(WorkDate, 'dd-MMM-yyyy') BETWEEN '" + objReq.StartDate + "' AND '" + objReq.EndDate + "'";
+                    strSql = strSql + " AND CAST(WorkDate AS DATE) BETWEEN '" + objReq.StartDate + "' AND '" + objReq.EndDate + "'";
                 }
-                strSql = strSql + " GROUP BY LineName, Code, EmpName ";
-                strSql = strSql + " ORDER BY " + objReq.OrderBy;
+                strSql = strSql + " GROUP BY Code, EmpName ";
+                strSql = strSql + " ORDER BY EmpName ";
                 strSql = strSql + " OFFSET (@PageNumber - 1) * @PageSize ROWS ";
                 strSql = strSql + " FETCH NEXT @PageSize ROWS ONLY ";
 
@@ -653,10 +649,6 @@ namespace BSLDaman.DAL
                 if (!String.IsNullOrWhiteSpace(objReq.Code))
                 {
                     cmd.Parameters.AddWithValue("@Code", objReq.Code);
-                }
-                if (!String.IsNullOrWhiteSpace(objReq.LineName))
-                {
-                    cmd.Parameters.AddWithValue("@LineName", objReq.LineName);
                 }
                 if (!String.IsNullOrWhiteSpace(objReq.StartDate) && String.IsNullOrWhiteSpace(objReq.EndDate))
                 {
@@ -673,7 +665,6 @@ namespace BSLDaman.DAL
                     while (ds.Tables[0].Rows.Count > i)
                     {
                         obj = new clsPieceRateIncentive();
-                        obj.LineName = Convert.ToString(ds.Tables[0].Rows[i]["LineName"]);
                         obj.Code = Convert.ToString(ds.Tables[0].Rows[i]["Code"]);
                         obj.EmpName = Convert.ToString(ds.Tables[0].Rows[i]["EmpName"]);
                         obj.FromDate = Convert.ToString(ds.Tables[0].Rows[i]["FromDate"]);
