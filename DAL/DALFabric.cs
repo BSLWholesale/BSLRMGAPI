@@ -160,6 +160,7 @@ namespace BSLDaman.DAL
                 string strSql = "Select StyleCode, ItemCode, Descriptions, Contents, Mill, FabricColor, FabricCC, Width, ";
                 strSql = strSql + " WidthTolerance, OrderRollLength, OrderRollLengthTolerance, GSM, GSMTolerance, ";
                 strSql = strSql + " OrderShrinkageWarpLength, OrderShrinkageWaftWidth, TotalQuantity, Unit, MarkerType,";
+                strSql = strSql + " TotalRollNo, LotNo, SupplierQty, ";
                 strSql = strSql + " Price, Format(CreatedOn, 'dd-MMM-yyyy') AS CreatedOn from Fabric_Order WHERE 1=1 ";
                 if (!String.IsNullOrWhiteSpace(objReq.StyleCode))
                 {
@@ -212,6 +213,12 @@ namespace BSLDaman.DAL
                         obj.MarkerType = Convert.ToString(ds.Tables[0].Rows[i]["MarkerType"]);
                         obj.Price = Convert.ToDecimal(ds.Tables[0].Rows[i]["Price"]);
                         obj.CreatedOn = Convert.ToString(ds.Tables[0].Rows[i]["CreatedOn"]);
+
+                        //obj.LotNo = Convert.ToInt32(ds.Tables[0].Rows[i]["LotNo"]);
+                        obj.LotNo = ds.Tables[0].Rows[i]["LotNo"] != DBNull.Value  ? Convert.ToInt32(ds.Tables[0].Rows[i]["LotNo"]): 0; // Default value
+                        obj.RollNo = ds.Tables[0].Rows[i]["TotalRollNo"] != DBNull.Value ? Convert.ToInt32(ds.Tables[0].Rows[i]["TotalRollNo"]) : 0;
+                        obj.SupplierQty = ds.Tables[0].Rows[i]["SupplierQty"] != DBNull.Value ? Convert.ToDecimal(ds.Tables[0].Rows[i]["SupplierQty"]) : 0;
+
                         obj.vErrorCode = 200;
                         obj.vErrorMsg = "Success";
                         objResp.Add(obj);
@@ -286,8 +293,8 @@ namespace BSLDaman.DAL
                     while (ds.Tables[0].Rows.Count > i)
                     {
                         obj = new FabricInhouseList();
-                       // obj.StyleCode = Convert.ToString(ds.Tables[0].Rows[i]["StyleCode"]);
-                       // obj.ItemCode = Convert.ToString(ds.Tables[0].Rows[i]["ItemCode"]);
+                        // obj.StyleCode = Convert.ToString(ds.Tables[0].Rows[i]["StyleCode"]);
+                        // obj.ItemCode = Convert.ToString(ds.Tables[0].Rows[i]["ItemCode"]);
                         obj.InHouseId = Convert.ToInt64(ds.Tables[0].Rows[i]["InHouseId"]);
                         obj.RollNo = Convert.ToDecimal(ds.Tables[0].Rows[i]["RollNo"]);
                         obj.Quantity = Convert.ToDecimal(ds.Tables[0].Rows[i]["Quantity"]);
