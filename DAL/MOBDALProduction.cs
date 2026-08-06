@@ -2667,11 +2667,30 @@ namespace BSLDaman.DAL
                 if (Con.State == ConnectionState.Closed)
                 { Con.Open(); }
 
+                //string strSql = "DECLARE @CurrentDate DATE = '" + objReq.CurrentDate + "'";
+                //strSql = strSql + "SELECT BD.OperationNo, MAX(BD.SubSection) AS SubSection, MAX(BD.StdRate) AS StdRate,";
+                //strSql = strSql + " SUM(BC.Qty) AS Qty, (MAX(BD.StdRate) * SUM(BC.Qty)) AS TotalAmount, MAX(ED.LineName) AS LineName,";
+                //strSql = strSql + " MAX(BC.StyleCode) AS StyleCode, MAX(OBD.Descriptions) AS Descriptions,";
+                //strSql = strSql + " MAX(BC.OrderNo) AS OrderNo";
+                //strSql = strSql + " FROM BundleCompileDetail AS BD";
+                //strSql = strSql + " INNER JOIN BundleCompile AS BC";
+                //strSql = strSql + " ON BD.BundleID = BC.BundleID";
+                //strSql = strSql + " INNER JOIN EmployeeDetail AS ED";
+                //strSql = strSql + " ON ED.Code = BD.AppEmpID";
+                //strSql = strSql + " INNER JOIN LineMaster AS LM";
+                //strSql = strSql + " ON LM.LineName = ED.LineName";
+                //strSql = strSql + " INNER JOIN OperationBreackDownDetail AS OBD";
+                //strSql = strSql + " ON OBD.OpNo = BD.OperationNo";
+                //strSql = strSql + " INNER JOIN OperationBreackDownMaster AS OBM";
+                //strSql = strSql + " ON OBM.ID = OBD.MID AND BC.StyleCode = OBM.StyleCode";
+                //strSql = strSql + " WHERE BD.AppEmpID = " + objReq.AppEmpID;
+                //strSql = strSql + " AND BD.ModifiedOn >= @CurrentDate AND BD.ModifiedOn < DATEADD(DAY, 1, @CurrentDate) AND LM.LineName = '" + objReq.LineName + "'";
+                //strSql = strSql + " GROUP BY BD.OperationNo";
+
                 string strSql = "DECLARE @CurrentDate DATE = '" + objReq.CurrentDate + "'";
-                strSql = strSql + "SELECT BD.OperationNo, MAX(BD.SubSection) AS SubSection, MAX(BD.StdRate) AS StdRate,";
+                strSql = strSql + " SELECT BD.OperationNo, MAX(BD.SubSection) AS SubSection, MAX(BD.StdRate) AS StdRate,";
                 strSql = strSql + " SUM(BC.Qty) AS Qty, (MAX(BD.StdRate) * SUM(BC.Qty)) AS TotalAmount, MAX(ED.LineName) AS LineName,";
-                strSql = strSql + " MAX(BC.StyleCode) AS StyleCode, MAX(OBD.Descriptions) AS Descriptions,";
-                //strSql = strSql + " MAX(BC.StyleCode) AS StyleCode, (SELECT DISTINCT(Descriptions) FROM OperationBreackDownDetail WHERE OpNo = BD.OperationNo) AS Descriptions,";
+                strSql = strSql + " MAX(BC.StyleCode) AS StyleCode, MAX(BD.Descriptions) AS Descriptions,";
                 strSql = strSql + " MAX(BC.OrderNo) AS OrderNo";
                 strSql = strSql + " FROM BundleCompileDetail AS BD";
                 strSql = strSql + " INNER JOIN BundleCompile AS BC";
@@ -2680,10 +2699,6 @@ namespace BSLDaman.DAL
                 strSql = strSql + " ON ED.Code = BD.AppEmpID";
                 strSql = strSql + " INNER JOIN LineMaster AS LM";
                 strSql = strSql + " ON LM.LineName = ED.LineName";
-                strSql = strSql + " INNER JOIN OperationBreackDownDetail AS OBD";
-                strSql = strSql + " ON OBD.OpNo = BD.OperationNo";
-                strSql = strSql + " INNER JOIN OperationBreackDownMaster AS OBM";
-                strSql = strSql + " ON OBM.ID = OBD.MID AND BC.StyleCode = OBM.StyleCode";
                 strSql = strSql + " WHERE BD.AppEmpID = " + objReq.AppEmpID;
                 strSql = strSql + " AND BD.ModifiedOn >= @CurrentDate AND BD.ModifiedOn < DATEADD(DAY, 1, @CurrentDate) AND LM.LineName = '" + objReq.LineName + "'";
                 strSql = strSql + " GROUP BY BD.OperationNo";
@@ -3227,14 +3242,16 @@ namespace BSLDaman.DAL
                 //strSql = strSql + " BC.ColorName AS ColorName, BC.Qty AS Qty, BC.SizeName AS SizeName, BC.BundleNo AS BundleNo,";
                 //strSql = strSql + " CONCAT(BC.PlyFrom,'-',BC.PlyTo) AS Ply, BD.AppStartTime AS AppStartTime, BD.AppEndTime AS AppEndTime";
                 //strSql = strSql + " FROM BundleCompileDetail AS BD";
+                //strSql = strSql + " INNER JOIN BundleCompile AS BC";
+                //strSql = strSql + " ON BD.BundleID = BC.BundleID";
                 //strSql = strSql + " INNER JOIN EmployeeMaster AS EM";
                 //strSql = strSql + " ON BD.SupervisorID = EM.EmpId";
                 //strSql = strSql + " INNER JOIN EmployeeMaster AS EM1";
                 //strSql = strSql + " ON BD.AppEmpID = EM1.EmpId";
                 //strSql = strSql + " INNER JOIN OperationBreackDownDetail AS OBD";
                 //strSql = strSql + " ON OBD.OpNo = BD.OperationNo";
-                //strSql = strSql + " INNER JOIN BundleCompile AS BC";
-                //strSql = strSql + " ON BC.BundleID = BD.BundleID";
+                //strSql = strSql + " INNER JOIN OperationBreackDownMaster AS OBM";
+                //strSql = strSql + " ON OBM.ID = OBD.MID AND BC.StyleCode = OBM.StyleCode";
                 //strSql = strSql + " WHERE BD.AppEmpID = " + objReq.AppEmpID;
                 //strSql = strSql + " AND BD.BundleIDStatus = 'Finished' AND CONVERT(DATE, BD.AppEndTime) = CONVERT(DATE, GETDATE())";
                 //strSql = strSql + " ORDER BY BD.AppEndTime DESC, BC.OrderNo, BD.OperationNo";
@@ -3242,7 +3259,7 @@ namespace BSLDaman.DAL
                 string strSql = "SELECT DISTINCT (BD.BundleID) AS BundleID, BD.OperationNo AS OperationNo, BC.OrderNo AS OrderNo,";
                 strSql = strSql + " BD.SubSection AS SubSection, BD.SupervisorID AS SupervisorID, EM.EmpName AS SupervisorName,";
                 strSql = strSql + " BD.SupervisorAssignedDate AS SupAssignedDate, BD.BundleIDStatus AS BundleIDStatus, BD.CreatedBy AS CreatedBy,";
-                strSql = strSql + " FORMAT(BD.CreatedOn, 'dd-MMM-yyyy HH:mm:ss') AS CreatedOn, OBD.Descriptions AS OperationName,";
+                strSql = strSql + " FORMAT(BD.CreatedOn, 'dd-MMM-yyyy HH:mm:ss') AS CreatedOn, BD.Descriptions AS OperationName,";
                 strSql = strSql + " BC.ColorName AS ColorName, BC.Qty AS Qty, BC.SizeName AS SizeName, BC.BundleNo AS BundleNo,";
                 strSql = strSql + " CONCAT(BC.PlyFrom,'-',BC.PlyTo) AS Ply, BD.AppStartTime AS AppStartTime, BD.AppEndTime AS AppEndTime";
                 strSql = strSql + " FROM BundleCompileDetail AS BD";
@@ -3252,10 +3269,6 @@ namespace BSLDaman.DAL
                 strSql = strSql + " ON BD.SupervisorID = EM.EmpId";
                 strSql = strSql + " INNER JOIN EmployeeMaster AS EM1";
                 strSql = strSql + " ON BD.AppEmpID = EM1.EmpId";
-                strSql = strSql + " INNER JOIN OperationBreackDownDetail AS OBD";
-                strSql = strSql + " ON OBD.OpNo = BD.OperationNo";
-                strSql = strSql + " INNER JOIN OperationBreackDownMaster AS OBM";
-                strSql = strSql + " ON OBM.ID = OBD.MID AND BC.StyleCode = OBM.StyleCode";
                 strSql = strSql + " WHERE BD.AppEmpID = " + objReq.AppEmpID;
                 strSql = strSql + " AND BD.BundleIDStatus = 'Finished' AND CONVERT(DATE, BD.AppEndTime) = CONVERT(DATE, GETDATE())";
                 strSql = strSql + " ORDER BY BD.AppEndTime DESC, BC.OrderNo, BD.OperationNo";
