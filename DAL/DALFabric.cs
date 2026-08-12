@@ -260,7 +260,7 @@ namespace BSLDaman.DAL
                 if (Con.State == ConnectionState.Closed)
                 { Con.Open(); }
 
-                string strSql = "Select InHouseId, StyleCode, ItemCode, RollNo, Quantity, Unit, Width, ShadeName, GSM, Shrinkage,";
+                string strSql = "Select InHouseId, StyleCode, ItemCode, RollNo, Quantity, Unit, Width, ShadeName, GSM, Shrinkage, LotNo,";
                 strSql = strSql + " CreatedBy, Format(CreatedOn, 'dd-MMM-yyyy') AS CreatedOn from Fabric_Inhouse WHERE 1=1 ";
                 if (!String.IsNullOrWhiteSpace(objReq.StyleCode))
                 {
@@ -269,6 +269,10 @@ namespace BSLDaman.DAL
                 if (!String.IsNullOrWhiteSpace(objReq.ItemCode))
                 {
                     strSql = strSql + " AND ItemCode = @ItemCode ";
+                }
+                if (objReq.LotNo != 0)
+                {
+                    strSql = strSql + " AND LotNo = @LotNo ";
                 }
                 strSql = strSql + " ORDER BY StyleCode, ItemCode, RollNo ";
 
@@ -282,6 +286,10 @@ namespace BSLDaman.DAL
                 if (!String.IsNullOrWhiteSpace(objReq.ItemCode))
                 {
                     cmd.Parameters.AddWithValue("@ItemCode", objReq.ItemCode);
+                }
+                if (objReq.LotNo != 0)
+                {
+                    cmd.Parameters.AddWithValue("@LotNo", objReq.LotNo);
                 }
 
                 SqlDataAdapter da = new SqlDataAdapter(cmd);
@@ -468,6 +476,150 @@ namespace BSLDaman.DAL
                 Con.Close();
             }
             Logger.ErrorLog(JsonConvert.SerializeObject(objResp), "Response", "Fn_Update_Fabric_LotNo");
+            return objResp;
+        }
+
+        public clsBatch Fn_Make_New_Batch(clsBatch objReq)
+        {
+            var objResp = new clsBatch();
+            Logger.ErrorLog(JsonConvert.SerializeObject(objResp), "Request", "Fn_Make_New_Batch");
+            try
+            {
+                if(objReq.LotNo == 0)
+                {
+                    objResp.vErrorCode = 400;
+                    objResp.vErrorMsg = "LotNo is empty";
+                }
+               else if (objReq.CreatedBy == 0)
+                {
+                    objResp.vErrorCode = 400;
+                    objResp.vErrorMsg = "Login id is empty";
+                }
+                else
+                {
+                    if (Con.State == ConnectionState.Broken)
+                    { Con.Close(); }
+                    if (Con.State == ConnectionState.Closed)
+                    { Con.Open(); }
+
+                    Int64 mxId = Fn_Get_MXID("Fabric_Batch", "BatchNo");
+
+                    objReq.BatchNo = Convert.ToInt32(mxId);
+
+                    SqlCommand cmd = new SqlCommand("USP_FABRIC_BATCH", Con);
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("@LotNo", objReq.LotNo);
+                    cmd.Parameters.AddWithValue("@BatchNo", objReq.BatchNo);
+                    cmd.Parameters.AddWithValue("@CreatedBy", objReq.CreatedBy);
+                    cmd.Parameters.AddWithValue("@QueryType", "INSERT_BATCH");
+                    int i = cmd.ExecuteNonQuery();
+                    if (i > 0)
+                    {
+                        foreach (clsBatchList _oList in objReq._OBatchList)
+                        {
+
+                            SqlCommand cmd1 = new SqlCommand("USP_FABRIC_ORDER", Con);
+                            cmd1.CommandType = CommandType.StoredProcedure;
+                            cmd1.Parameters.AddWithValue("@BatchNo", objReq.BatchNo);
+                            cmd1.Parameters.AddWithValue("@RollNo", _oList.RollNo);
+                            cmd1.Parameters.AddWithValue("@Quantity", _oList.Quantity);
+                            cmd1.Parameters.AddWithValue("@BatchStatus", _oList.BatchStatus);
+                            cmd1.Parameters.AddWithValue("@CreatedBy", objReq.CreatedBy);
+                            cmd1.Parameters.AddWithValue("@QueryType", "INSERT_BATCH_LIST");
+                            int j = cmd1.ExecuteNonQuery();
+                            if (j > 0)
+                            {
+                                objResp.vErrorCode = 200;
+                                objResp.vErrorMsg = "Success";
+                            }
+                            else
+                            {
+                                objResp.vErrorCode = 400;
+                                objResp.vErrorMsg = "Batch List inserting Failed";
+                                return objResp;
+                            }
+                        }
+                        objResp.vErrorCode = 200;
+                        objResp.vErrorMsg = "Success";
+                    }
+                    else
+                    {
+                        objResp.vErrorCode = 400;
+                        objResp.vErrorMsg = "Batch creating failed ";
+                        return objResp;
+                    }
+                }
+            }
+            catch (Exception exp)
+            {
+                objResp.vErrorCode = 500;
+                Logger.WriteLog("Function Name : Fn_Make_New_Batch", " " + "Error Msg : " + exp.Message.ToString(), new StackTrace(exp, true));
+                objResp.vErrorMsg = exp.Message.ToString();
+            }
+            finally
+            {
+                Con.Close();
+            }
+            Logger.ErrorLog(JsonConvert.SerializeObject(objResp), "Response", "Fn_Make_New_Batch");
+            return objResp;
+        }
+
+        public clsBatch Fn_Delete_Batch(clsBatch objReq)
+        {
+            var objResp = new clsBatch();
+            Logger.ErrorLog(JsonConvert.SerializeObject(objResp), "Request", "Fn_Delete_Batch");
+            try
+            {
+                if (objReq.LotNo == 0)
+                {
+                    objResp.vErrorCode = 400;
+                    objResp.vErrorMsg = "LotNo is empty";
+                }
+                else if (objReq.CreatedBy == 0)
+                {
+                    objResp.vErrorCode = 400;
+                    objResp.vErrorMsg = "Login id is empty";
+                }
+                else
+                {
+                    if (Con.State == ConnectionState.Broken)
+                    { Con.Close(); }
+                    if (Con.State == ConnectionState.Closed)
+                    { Con.Open(); }
+
+                   
+
+                    SqlCommand cmd = new SqlCommand("USP_FABRIC_BATCH", Con);
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("@BatchNo", objReq.BatchNo);
+                    cmd.Parameters.AddWithValue("@CreatedBy", objReq.CreatedBy);
+                    cmd.Parameters.AddWithValue("@QueryType", "DELETE_BATCH");
+                    int i = cmd.ExecuteNonQuery();
+                    if (i > 0)
+                    {
+                       
+                        objResp.vErrorCode = 200;
+                        objResp.vErrorMsg = "Success";
+                    }
+                    else
+                    {
+                        objResp.vErrorCode = 400;
+                        objResp.vErrorMsg = "Batch deleting failed ";
+                        return objResp;
+                    }
+                }
+            }
+            catch (Exception exp)
+            {
+                objResp.vErrorCode = 500;
+                Logger.WriteLog("Function Name : Fn_Delete_Batch", " " + "Error Msg : " + exp.Message.ToString(), new StackTrace(exp, true));
+                objResp.vErrorMsg = exp.Message.ToString();
+            }
+            finally
+            {
+                Con.Close();
+            }
+            Logger.ErrorLog(JsonConvert.SerializeObject(objResp), "Response", "Fn_Delete_Batch");
             return objResp;
         }
     }

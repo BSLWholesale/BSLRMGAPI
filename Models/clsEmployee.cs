@@ -726,6 +726,7 @@ namespace BSLDaman.Models
     {
         public string StyleCode { get; set; }
         public string ItemCode { get; set; }
+        public int LotNo { get; set; }
         public int CreatedBy { get; set; }
         public string CreatedOn { get; set; }
         public string vErrorMsg { get; set; }
@@ -735,7 +736,7 @@ namespace BSLDaman.Models
     public class FabricInhouseList
     {
         public Int64 InHouseId { get; set; }
-        public int Lotno { get; set; }
+        public int LotNo { get; set; }
         public decimal RollNo { get; set; }
         public decimal Quantity { get; set; }
         public string Unit { get; set; }
@@ -745,6 +746,35 @@ namespace BSLDaman.Models
         public decimal Shrinkage { get; set; }
         public int CreatedBy { get; set; }
         public string CreatedOn { get; set; }
+        public string QueryType { get; set; }
+        public string vErrorMsg { get; set; }
+        public int vErrorCode { get; set; }
+    }
+
+    public class clsBatch
+    {
+        public int BatchNo { get; set; }
+        public int LotNo { get; set; }
+        public int CreatedBy { get; set; }
+        public string CreatedOn { get; set; }
+        public int ModifiedBy { get; set; }
+        public string ModifiedOn { get; set; }
+        public string QueryType { get; set; }
+        public string vErrorMsg { get; set; }
+        public int vErrorCode { get; set; }
+        public List<clsBatchList> _OBatchList { get; set; }
+    }
+    public class clsBatchList
+    {
+        public int BatchDetailId { get; set; }
+        public int BatchNo { get; set; }
+        public int RollNo { get; set; }
+        public decimal Quantity { get; set; }
+        public string BatchStatus { get; set; }
+        public int CreatedBy { get; set; }
+        public string CreatedOn { get; set; }
+        public int ModifiedBy { get; set; }
+        public string ModifiedOn { get; set; }
         public string QueryType { get; set; }
         public string vErrorMsg { get; set; }
         public int vErrorCode { get; set; }

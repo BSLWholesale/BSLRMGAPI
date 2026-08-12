@@ -59,5 +59,23 @@ namespace BSLDaman.Controllers
             objResp = _DALFabric.Fn_Update_Fabric_LotNo(objReq);
             return objResp;
         }
+
+        [System.Web.Http.HttpPost]
+        [System.Web.Http.Route("api/Fabric/Fn_Make_New_Batch")]
+        public clsBatch Fn_Make_New_Batch(clsBatch objReq)
+        {
+            var objResp = new clsBatch();
+            objResp = _DALFabric.Fn_Make_New_Batch(objReq);
+            return objResp;
+        }
+
+        [System.Web.Http.HttpPost]
+        [System.Web.Http.Route("api/Fabric/Fn_Delete_Batch")]
+        public clsBatch Fn_Delete_Batch(clsBatch objReq)
+        {
+            var objResp = new clsBatch();
+            objResp = _DALFabric.Fn_Delete_Batch(objReq);
+            return objResp;
+        }
     }
 }
