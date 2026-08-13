@@ -584,7 +584,7 @@ namespace BSLDaman.Models
 
     }
     public class clsPieceRateReportResp
-    {        
+    {
         public string LineName { get; set; }
         public string StyleCode { get; set; }
         public string OrderNo { get; set; }
@@ -685,6 +685,7 @@ namespace BSLDaman.Models
 
     public class clsFabricOrder
     {
+        public int FabricOrderId { get; set; }
         public string StyleCode { get; set; }
         public string ItemCode { get; set; }
         public string Descriptions { get; set; }
@@ -724,6 +725,8 @@ namespace BSLDaman.Models
 
     public class FabricInhouse
     {
+        public Int64 InHouseId { get; set; }
+        public int FabricOrderId { get; set; }
         public string StyleCode { get; set; }
         public string ItemCode { get; set; }
         public int LotNo { get; set; }
@@ -753,6 +756,7 @@ namespace BSLDaman.Models
 
     public class clsBatch
     {
+        public Int64 InHouseId { get; set; }
         public int BatchNo { get; set; }
         public int LotNo { get; set; }
         public int CreatedBy { get; set; }

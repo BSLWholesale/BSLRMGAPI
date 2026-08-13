@@ -69,18 +69,13 @@ namespace BSLDaman.DAL
             try
             {
 
-                if (String.IsNullOrWhiteSpace(objReq.StyleCode))
+                if (objReq.FabricOrderId == 0)
                 {
                     objResp.vErrorCode = 400;
-                    objResp.vErrorMsg = "StyleCode is empty";
+                    objResp.vErrorMsg = "FabricOrderId is empty";
                     return objResp;
                 }
-                else if (String.IsNullOrWhiteSpace(objReq.ItemCode))
-                {
-                    objResp.vErrorCode = 400;
-                    objResp.vErrorMsg = "ItemCode is empty";
-                    return objResp;
-                }
+                
                 if (!String.IsNullOrWhiteSpace(objReq.vErrorMsg))
                 {
                     objResp.vErrorCode = objReq.vErrorCode;
@@ -105,8 +100,8 @@ namespace BSLDaman.DAL
 
                         SqlCommand cmd = new SqlCommand("USP_FABRIC_ORDER", Con);
                         cmd.CommandType = CommandType.StoredProcedure;
-                        cmd.Parameters.AddWithValue("@StyleCode", objReq.StyleCode);
-                        cmd.Parameters.AddWithValue("@ItemCode", objReq.ItemCode);
+                        cmd.Parameters.AddWithValue("@FabricOrderId", objReq.FabricOrderId);
+                        cmd.Parameters.AddWithValue("@LotNo", objReq.LotNo);
                         cmd.Parameters.AddWithValue("@RollNo", _oList.RollNo);
                         cmd.Parameters.AddWithValue("@TotalQuantity", _oList.Quantity);
                         cmd.Parameters.AddWithValue("@Unit", _oList.Unit);
@@ -157,7 +152,7 @@ namespace BSLDaman.DAL
                 if (Con.State == ConnectionState.Closed)
                 { Con.Open(); }
 
-                string strSql = "Select StyleCode, ItemCode, Descriptions, Contents, Mill, FabricColor, FabricCC, Width, ";
+                string strSql = "Select FabricOrderId, StyleCode, ItemCode, Descriptions, Contents, Mill, FabricColor, FabricCC, Width, ";
                 strSql = strSql + " WidthTolerance, OrderRollLength, OrderRollLengthTolerance, GSM, GSMTolerance, ";
                 strSql = strSql + " OrderShrinkageWarpLength, OrderShrinkageWaftWidth, TotalQuantity, Unit, MarkerType,";
                 strSql = strSql + " TotalRollNo, LotNo, SupplierQty, ";
@@ -193,6 +188,7 @@ namespace BSLDaman.DAL
                     while (ds.Tables[0].Rows.Count > i)
                     {
                         obj = new clsFabricOrder();
+                        obj.FabricOrderId = Convert.ToInt32(ds.Tables[0].Rows[i]["FabricOrderId"]);
                         obj.StyleCode = Convert.ToString(ds.Tables[0].Rows[i]["StyleCode"]);
                         obj.ItemCode = Convert.ToString(ds.Tables[0].Rows[i]["ItemCode"]);
                         obj.Descriptions = Convert.ToString(ds.Tables[0].Rows[i]["Descriptions"]);
@@ -260,32 +256,24 @@ namespace BSLDaman.DAL
                 if (Con.State == ConnectionState.Closed)
                 { Con.Open(); }
 
-                string strSql = "Select InHouseId, StyleCode, ItemCode, RollNo, Quantity, Unit, Width, ShadeName, GSM, Shrinkage, LotNo,";
+                string strSql = "Select InHouseId, FabricOrderId, RollNo, Quantity, Unit, Width, ShadeName, GSM, Shrinkage, LotNo,";
                 strSql = strSql + " CreatedBy, Format(CreatedOn, 'dd-MMM-yyyy') AS CreatedOn from Fabric_Inhouse WHERE 1=1 ";
-                if (!String.IsNullOrWhiteSpace(objReq.StyleCode))
+                if (objReq.FabricOrderId !=0)
                 {
-                    strSql = strSql + " AND StyleCode = @StyleCode ";
-                }
-                if (!String.IsNullOrWhiteSpace(objReq.ItemCode))
-                {
-                    strSql = strSql + " AND ItemCode = @ItemCode ";
+                    strSql = strSql + " AND FabricOrderId = @FabricOrderId ";
                 }
                 if (objReq.LotNo != 0)
                 {
                     strSql = strSql + " AND LotNo = @LotNo ";
                 }
-                strSql = strSql + " ORDER BY StyleCode, ItemCode, RollNo ";
+                strSql = strSql + " ORDER BY RollNo ";
 
                 SqlCommand cmd = new SqlCommand(strSql, Con);
                 cmd.CommandType = CommandType.Text;
 
-                if (!String.IsNullOrWhiteSpace(objReq.StyleCode))
+                if (objReq.FabricOrderId != 0)
                 {
-                    cmd.Parameters.AddWithValue("@StyleCode", objReq.StyleCode);
-                }
-                if (!String.IsNullOrWhiteSpace(objReq.ItemCode))
-                {
-                    cmd.Parameters.AddWithValue("@ItemCode", objReq.ItemCode);
+                    cmd.Parameters.AddWithValue("@FabricOrderId", objReq.FabricOrderId);
                 }
                 if (objReq.LotNo != 0)
                 {
@@ -301,8 +289,7 @@ namespace BSLDaman.DAL
                     while (ds.Tables[0].Rows.Count > i)
                     {
                         obj = new FabricInhouseList();
-                        // obj.StyleCode = Convert.ToString(ds.Tables[0].Rows[i]["StyleCode"]);
-                        // obj.ItemCode = Convert.ToString(ds.Tables[0].Rows[i]["ItemCode"]);
+                       // obj.FabricOrderId = Convert.ToInt32(ds.Tables[0].Rows[i]["FabricOrderId"]);
                         obj.InHouseId = Convert.ToInt64(ds.Tables[0].Rows[i]["InHouseId"]);
                         obj.RollNo = Convert.ToDecimal(ds.Tables[0].Rows[i]["RollNo"]);
                         obj.Quantity = Convert.ToDecimal(ds.Tables[0].Rows[i]["Quantity"]);
@@ -450,6 +437,7 @@ namespace BSLDaman.DAL
                     cmd.Parameters.AddWithValue("@LotNo", objReq.LotNo);
                     cmd.Parameters.AddWithValue("@RollNo", objReq.RollNo);
                     cmd.Parameters.AddWithValue("@SupplierQty", objReq.SupplierQty);
+                    cmd.Parameters.AddWithValue("@CreatedBy", objReq.CreatedBy);
                     cmd.Parameters.AddWithValue("@QueryType", "Update_Fabric_LotNo");
                     int j = cmd.ExecuteNonQuery();
                     if (j > 0)
@@ -518,7 +506,7 @@ namespace BSLDaman.DAL
                         foreach (clsBatchList _oList in objReq._OBatchList)
                         {
 
-                            SqlCommand cmd1 = new SqlCommand("USP_FABRIC_ORDER", Con);
+                            SqlCommand cmd1 = new SqlCommand("USP_FABRIC_BATCH", Con);
                             cmd1.CommandType = CommandType.StoredProcedure;
                             cmd1.Parameters.AddWithValue("@BatchNo", objReq.BatchNo);
                             cmd1.Parameters.AddWithValue("@RollNo", _oList.RollNo);
@@ -630,7 +618,7 @@ namespace BSLDaman.DAL
             Logger.ErrorLog(JsonConvert.SerializeObject(objResp), "Request", "Fn_Get_Batch");
             try
             {
-                string strSql = "SELECT BatchNo, LotNo, CreatedBy, CreatedOb FROM Fabric_Batch WHERE 1=1";
+                string strSql = "SELECT BatchNo, LotNo, CreatedBy, CreatedOn FROM Fabric_Batch WHERE 1=1";
                 if (objReq.LotNo != 0)
                 {
                     strSql = strSql + " AND LotNo = @LotNo";

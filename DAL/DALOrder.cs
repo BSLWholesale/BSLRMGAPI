@@ -1563,8 +1563,12 @@ namespace BSLDaman.DAL
                 if (Con.State == ConnectionState.Closed)
                 { Con.Open(); }
 
+                Int64 mxID = Fn_Get_MXID("Fabric_Order", "FabricOrderId");
+                objReq.FabricOrderId = Convert.ToInt32(mxID);
+
                 SqlCommand cmd = new SqlCommand("USP_FABRIC_ORDER", Con);
                 cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@FabricOrderId", objReq.FabricOrderId);
                 cmd.Parameters.AddWithValue("@StyleCode", objReq.StyleCode);
                 cmd.Parameters.AddWithValue("@ItemCode", objReq.ItemCode);
                 cmd.Parameters.AddWithValue("@Descriptions", objReq.Descriptions);
@@ -1629,7 +1633,7 @@ namespace BSLDaman.DAL
                 if (Con.State == ConnectionState.Closed)
                 { Con.Open(); }
 
-                string strSql = "SELECT StyleCode, ItemCode, Descriptions, Contents, Mill, FabricColor, FabricCC,";
+                string strSql = "SELECT FabricOrderId, StyleCode, ItemCode, Descriptions, Contents, Mill, FabricColor, FabricCC,";
                 strSql = strSql + " Width, WidthTolerance, OrderRollLength, OrderRollLengthTolerance,";
                 strSql = strSql + " GSM, GSMTolerance, OrderShrinkageWarpLength, OrderShrinkageWaftWidth, TotalQuantity,";
                 strSql = strSql + " Unit, MarkerType, Price, CreatedBy, CreatedOn FROM Fabric_Order WHERE 1=1";
@@ -1688,6 +1692,7 @@ namespace BSLDaman.DAL
                     while (ds.Tables[0].Rows.Count > i)
                     {
                         obj = new clsFabricOrder();
+                        obj.FabricOrderId = Convert.ToInt32(ds.Tables[0].Rows[i]["FabricOrderId"]);
                         obj.StyleCode = Convert.ToString(ds.Tables[0].Rows[i]["StyleCode"]);
                         obj.ItemCode = Convert.ToString(ds.Tables[0].Rows[i]["ItemCode"]);
                         obj.Descriptions = Convert.ToString(ds.Tables[0].Rows[i]["Descriptions"]);
