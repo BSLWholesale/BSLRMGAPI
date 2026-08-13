@@ -622,5 +622,133 @@ namespace BSLDaman.DAL
             Logger.ErrorLog(JsonConvert.SerializeObject(objResp), "Response", "Fn_Delete_Batch");
             return objResp;
         }
+
+        public List<clsBatch> Fn_Get_Batch(clsBatch objReq)
+        {
+            var objResp = new List<clsBatch>();
+            var obj = new clsBatch();
+            Logger.ErrorLog(JsonConvert.SerializeObject(objResp), "Request", "Fn_Get_Batch");
+            try
+            {
+                string strSql = "SELECT BatchNo, LotNo, CreatedBy, CreatedOb FROM Fabric_Batch WHERE 1=1";
+                if (objReq.LotNo != 0)
+                {
+                    strSql = strSql + " AND LotNo = @LotNo";
+                }
+                SqlCommand cmd = new SqlCommand(strSql, Con);
+                cmd.CommandType = CommandType.Text;
+                
+                if (objReq.LotNo != 0)
+                {
+                    cmd.Parameters.AddWithValue("@LotNo", objReq.LotNo);
+                }
+
+                SqlDataAdapter da = new SqlDataAdapter(cmd);
+                DataSet ds = new DataSet();
+                da.Fill(ds);
+                int i = 0;
+                if (ds.Tables[0].Rows.Count > 0)
+                {
+                    while (ds.Tables[0].Rows.Count > i)
+                    {
+                        obj = new clsBatch();
+                        // obj.StyleCode = Convert.ToString(ds.Tables[0].Rows[i]["StyleCode"]);
+                        // obj.ItemCode = Convert.ToString(ds.Tables[0].Rows[i]["ItemCode"]);
+                        obj.BatchNo = Convert.ToInt32(ds.Tables[0].Rows[i]["BatchNo"]);
+                        obj.LotNo = Convert.ToInt32(ds.Tables[0].Rows[i]["LotNo"]);
+                        obj.CreatedBy = Convert.ToInt32(ds.Tables[0].Rows[i]["CreatedBy"]);
+                        obj.CreatedOn = Convert.ToString(ds.Tables[0].Rows[i]["CreatedOn"]);
+                        obj.vErrorCode = 200;
+                        obj.vErrorMsg = "Success";
+                        objResp.Add(obj);
+                        i++;
+                    }
+                }
+                else
+                {
+                    obj.vErrorCode = 404;
+                    obj.vErrorMsg = "No Record found";
+                    objResp.Add(obj);
+                }
+            }
+            catch (Exception exp)
+            {                
+                Logger.WriteLog("Function Name : Fn_Get_Batch", " " + "Error Msg : " + exp.Message.ToString(), new StackTrace(exp, true));
+                obj.vErrorCode = 500;
+                obj.vErrorMsg = exp.Message.ToString();
+                objResp.Add(obj);
+            }
+            finally
+            {
+                Con.Close();
+            }
+            Logger.ErrorLog(JsonConvert.SerializeObject(objResp), "Response", "Fn_Get_Batch");
+            return objResp;
+        }
+
+        public List<clsBatchList> Fn_Get_BatchList(clsBatchList objReq)
+        {
+            var objResp = new List<clsBatchList>();
+            var obj = new clsBatchList();
+            Logger.ErrorLog(JsonConvert.SerializeObject(objResp), "Request", "Fn_Get_BatchList");
+            try
+            {
+                string strSql = "Select BatchDetailId, BatchNo, RollNo, Quantity, BatchStatus, CreatedBy, CreatedOn from Fabric_BatchList WHERE 1=1";
+                if (objReq.BatchNo != 0)
+                {
+                    strSql = strSql + " AND BatchNo = @BatchNo";
+                }
+                SqlCommand cmd = new SqlCommand(strSql, Con);
+                cmd.CommandType = CommandType.Text;
+
+                if (objReq.BatchNo != 0)
+                {
+                    cmd.Parameters.AddWithValue("@BatchNo", objReq.BatchNo);
+                }
+
+                SqlDataAdapter da = new SqlDataAdapter(cmd);
+                DataSet ds = new DataSet();
+                da.Fill(ds);
+                int i = 0;
+                if (ds.Tables[0].Rows.Count > 0)
+                {
+                    while (ds.Tables[0].Rows.Count > i)
+                    {
+                        obj = new clsBatchList();
+                        
+                        obj.BatchDetailId = Convert.ToInt32(ds.Tables[0].Rows[i]["BatchNo"]);
+                        obj.BatchNo = Convert.ToInt32(ds.Tables[0].Rows[i]["BatchNo"]);
+                        obj.RollNo = Convert.ToInt32(ds.Tables[0].Rows[i]["RollNo"]);
+                        obj.Quantity = Convert.ToInt32(ds.Tables[0].Rows[i]["Quantity"]);
+                        obj.BatchStatus = Convert.ToString(ds.Tables[0].Rows[i]["BatchStatus"]);
+                        obj.CreatedBy = Convert.ToInt32(ds.Tables[0].Rows[i]["CreatedBy"]);
+                        obj.CreatedOn = Convert.ToString(ds.Tables[0].Rows[i]["CreatedOn"]);
+                        obj.vErrorCode = 200;
+                        obj.vErrorMsg = "Success";
+                        objResp.Add(obj);
+                        i++;
+                    }
+                }
+                else
+                {
+                    obj.vErrorCode = 404;
+                    obj.vErrorMsg = "No Record found";
+                    objResp.Add(obj);
+                }
+            }
+            catch (Exception exp)
+            {
+                Logger.WriteLog("Function Name : Fn_Get_Batch", " " + "Error Msg : " + exp.Message.ToString(), new StackTrace(exp, true));
+                obj.vErrorCode = 500;
+                obj.vErrorMsg = exp.Message.ToString();
+                objResp.Add(obj);
+            }
+            finally
+            {
+                Con.Close();
+            }
+            Logger.ErrorLog(JsonConvert.SerializeObject(objResp), "Response", "Fn_Get_Batch");
+            return objResp;
+        }
     }
 }

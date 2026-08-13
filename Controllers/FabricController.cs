@@ -77,5 +77,23 @@ namespace BSLDaman.Controllers
             objResp = _DALFabric.Fn_Delete_Batch(objReq);
             return objResp;
         }
+
+        [System.Web.Http.HttpPost]
+        [System.Web.Http.Route("api/Fabric/Fn_Get_Batch")]
+        public List<clsBatch> Fn_Get_Batch(clsBatch objReq)
+        {
+            var objResp = new List<clsBatch>();
+            objResp = _DALFabric.Fn_Get_Batch(objReq);
+            return objResp;
+        }
+
+        [System.Web.Http.HttpPost]
+        [System.Web.Http.Route("api/Fabric/Fn_Get_BatchList")]
+        public List<clsBatchList> Fn_Get_BatchList(clsBatchList objReq)
+        {
+            var objResp = new List<clsBatchList>();
+            objResp = _DALFabric.Fn_Get_BatchList(objReq);
+            return objResp;
+        }
     }
 }
