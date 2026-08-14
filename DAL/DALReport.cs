@@ -737,7 +737,11 @@ namespace BSLDaman.DAL
                 {
                     strSql = strSql + " AND SubSection = @SubSection ";
                 }
-                
+                if (objReq.OpNo != 0)
+                {
+                    strSql = strSql + " AND OpNo = @OpNo ";
+                }
+
                 strSql = strSql + " GROUP BY OpNo, OpName, BundleID, BundleNo, SizeName, ColorName, ShadeName, Qty, PlyFrom, PlyTo, LotNo, ";
                 strSql = strSql + " SubSection, StyleCode, OrderNo, AppEmpID, EmpName, AppStartTime, AppEndTime, BundleStatus, IsPilot";
                 strSql = strSql + " ORDER BY BundleID ASC ";
@@ -765,6 +769,10 @@ namespace BSLDaman.DAL
                 if (!String.IsNullOrWhiteSpace(objReq.SubSection))
                 {
                     cmd.Parameters.AddWithValue("@SubSection", objReq.SubSection);
+                }
+                if (objReq.OpNo != 0)
+                {
+                    cmd.Parameters.AddWithValue("@OpNo", objReq.OpNo);
                 }
 
                 SqlDataAdapter da = new SqlDataAdapter(cmd);
@@ -867,7 +875,12 @@ namespace BSLDaman.DAL
                 if (!String.IsNullOrWhiteSpace(objReq.SubSection))
                 {
                     strSql = strSql + " AND SubSection = @SubSection ";
-                }                
+                }
+                if (objReq.OpNo != 0)
+                {
+                    strSql = strSql + " AND OpNo = @OpNo ";
+                }
+
                 strSql = strSql + " GROUP BY OpNo, OpName, BundleID, BundleNo, SizeName, ColorName, ShadeName, Qty, PlyFrom, PlyTo,";
                 strSql = strSql + " LotNo, SubSection, StyleCode, OrderNo, AppEmpID, EmpName, AppStartTime, AppEndTime,";
                 strSql = strSql + " BundleStatus, SupervisorID, SupervisorName, AssignedDate, IsPilot";
@@ -896,7 +909,11 @@ namespace BSLDaman.DAL
                 {
                     cmd.Parameters.AddWithValue("@SubSection", objReq.SubSection);
                 }
-                
+                if (objReq.OpNo != 0)
+                {
+                    cmd.Parameters.AddWithValue("@OpNo", objReq.OpNo);
+                }
+
                 SqlDataAdapter da = new SqlDataAdapter(cmd);
                 DataSet ds = new DataSet();
                 da.Fill(ds);
