@@ -625,6 +625,7 @@ namespace BSLDaman.Models
 
     public class clsBundleStatusReportReq
     {
+        public int OpNo { get; set; }
         public string OrderNo { get; set; }
         public string SizeName { get; set; }
         public string SubSection { get; set; }
