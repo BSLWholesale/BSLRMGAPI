@@ -784,4 +784,16 @@ namespace BSLDaman.Models
         public string vErrorMsg { get; set; }
         public int vErrorCode { get; set; }
     }
+
+    public class clsQuantityManualEntry
+    {
+        public string OrderNo { get; set; }
+        public int OpNo { get; set; }
+        public int AppEmpID { get; set; }
+        public int Quantity { get; set; }
+        public string AvailableQty { get; set; }
+        public int CreatedBy { get; set; }
+        public string vErrorMsg { get; set; }
+        public int vErrorCode { get; set; }
+    }
 }
