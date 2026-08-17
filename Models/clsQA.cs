@@ -59,6 +59,7 @@ namespace BSLDaman.Models
         public string QAStatus { get; set; }
         public string PlyNo { get; set; }
         public string Opr { get; set; }
+        public string DefectName { get; set; }
         public int CreatedBy { get; set; }
         public string CreatedOn { get; set; }
         public int ModifiedBy { get; set; }
