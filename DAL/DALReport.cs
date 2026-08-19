@@ -880,6 +880,10 @@ namespace BSLDaman.DAL
                 {
                     strSql = strSql + " AND OpNo = @OpNo ";
                 }
+                if (!String.IsNullOrWhiteSpace(objReq.WorkDate))
+                {
+                    strSql = strSql + " AND FORMAT(AppStartTime, 'dd-MMM-yyyy') = @WorkDate ";
+                }
 
                 strSql = strSql + " GROUP BY OpNo, OpName, BundleID, BundleNo, SizeName, ColorName, ShadeName, Qty, PlyFrom, PlyTo,";
                 strSql = strSql + " LotNo, SubSection, StyleCode, OrderNo, AppEmpID, EmpName, AppStartTime, AppEndTime,";
@@ -912,6 +916,10 @@ namespace BSLDaman.DAL
                 if (objReq.OpNo != 0)
                 {
                     cmd.Parameters.AddWithValue("@OpNo", objReq.OpNo);
+                }
+                if (!String.IsNullOrWhiteSpace(objReq.WorkDate))
+                {
+                    cmd.Parameters.AddWithValue("@WorkDate", objReq.WorkDate);
                 }
 
                 SqlDataAdapter da = new SqlDataAdapter(cmd);
@@ -1299,15 +1307,15 @@ namespace BSLDaman.DAL
                         else
                         {
                             objResp.vErrorCode = 400;
-                            objResp.vErrorMsg = "AppEmpId updating Failed";
+                            objResp.vErrorMsg = "Update Manaul Qty Failed";
                             break;
                         }
                     }
                     else
                     {
                         // Requested quantity is less than available quantity
-                        remQty = inputQty;
-                        break;
+                        //remQty = inputQty;
+                        //break;
                     }
                 }
 
@@ -1330,5 +1338,76 @@ namespace BSLDaman.DAL
 
 
         #endregion End Fn_Manual_Entry_QuantityWise 17-AUG_2026
+
+        #region Start Fn_Remove_Manual_Quantity 18-AUG_2026
+        public clsQuantityManualEntry Fn_Remove_Manual_Quantity(clsQuantityManualEntry objReq)
+        {
+            var objResp = new clsQuantityManualEntry();
+            Logger.ErrorLog(JsonConvert.SerializeObject(objReq), "Request", "Fn_Remove_Manual_Entry_QuantityWise");
+            try
+            {
+                string text = objReq.AvailableQty;
+                int inputQty = objReq.Quantity;
+                string[] _List = text.Split(',');
+
+                int remQty = inputQty;
+
+                if (Con.State == ConnectionState.Broken) { Con.Close(); }
+                if (Con.State == ConnectionState.Closed) { Con.Open(); }
+
+                foreach (string list in _List)
+                {
+                    int availableQty = Convert.ToInt32(list);
+
+                    if (inputQty >= availableQty)
+                    {
+                        SqlCommand cmd = new SqlCommand("USP_BUNDLE_LAYER", Con);
+                        cmd.CommandType = CommandType.StoredProcedure;
+
+                        cmd.Parameters.AddWithValue("@OrderNo", objReq.OrderNo);
+                        cmd.Parameters.AddWithValue("@AppEmpID", objReq.AppEmpID);
+                        cmd.Parameters.AddWithValue("@OpNo", objReq.OpNo);
+                        cmd.Parameters.AddWithValue("@Qty", availableQty);
+                        cmd.Parameters.AddWithValue("@CreatedBy", objReq.CreatedBy);
+                        cmd.Parameters.AddWithValue("@QueryType", "Remove_Manaul_Qty");
+
+                        int i = cmd.ExecuteNonQuery();
+
+                        if (i > 0)
+                        {
+                            objResp.vErrorCode = 200;
+                            objResp.vErrorMsg = "Success";
+                            inputQty = inputQty - availableQty;
+                            remQty = inputQty;
+                        }
+                        else
+                        {
+                            objResp.vErrorCode = 400;
+                            objResp.vErrorMsg = "Update Manaul Qty Failed";
+                            break;
+                        }
+                    }
+                    else
+                    {
+                        
+                    }
+                }
+                objResp.Quantity = remQty;
+            }
+            catch (Exception exp)
+            {
+                objResp.vErrorCode = 500;
+                Logger.WriteLog("Function Name : Fn_Remove_Manual_Entry_QuantityWise", "Error Msg : " + exp.Message, new StackTrace(exp, true));
+                objResp.vErrorMsg = exp.Message;
+            }
+            finally
+            {
+                Con.Close();
+            }
+            Logger.ErrorLog(JsonConvert.SerializeObject(objResp), "Response", "Fn_Remove_Manual_Entry_QuantityWise");
+            return objResp;
+        }
+
+        #endregion End Fn_Remove_Manual_Quantity 18-AUG_2026
     }
 }

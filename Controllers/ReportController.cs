@@ -161,5 +161,18 @@ namespace BSLDaman.Controllers
         }
 
         #endregion End Fn_Manual_Entry_QuantityWise 17-AUG_2026
+
+        #region Start Fn_Remove_Manual_Quantity 18-AUG_2026
+
+        [System.Web.Http.HttpPost]
+        [System.Web.Http.Route("api/Report/Fn_Remove_Manual_Quantity")]
+        public clsQuantityManualEntry Fn_Remove_Manual_Quantity(clsQuantityManualEntry objReq)
+        {
+            var objResp = new clsQuantityManualEntry();
+            objResp = _DALReport.Fn_Remove_Manual_Quantity(objReq);
+            return objResp;
+        }
+
+        #endregion End Fn_Remove_Manual_Quantity 18-AUG_2026
     }
 }
