@@ -858,7 +858,7 @@ namespace BSLDaman.DAL
                 string strSql = "SELECT OpNo, OpName, BundleID, BundleNo, SizeName, ColorName, ShadeName, Qty, PlyFrom, PlyTo,";
                 strSql = strSql + " LotNo, SubSection, StyleCode, OrderNo, AppEmpID, EmpName, FORMAT(AppStartTime, 'dd-MMM-yyyy') AS AppStartTime, FORMAT(AppEndTime, 'dd-MMM-yyyy') AS AppEndTime,";
                 strSql = strSql + " BundleStatus, SupervisorID, SupervisorName, FORMAT(AssignedDate, 'dd-MMM-yyyy') AS AssignedDate,";
-                strSql = strSql + " IsPilot, COUNT(*) OVER() AS TotalRows FROM vFinish_BundleStatus WHERE 1=1";
+                strSql = strSql + " IsPilot, LayID, UpdateType, COUNT(*) OVER() AS TotalRows FROM vFinish_BundleStatus WHERE 1=1";
                 
                 if (!String.IsNullOrWhiteSpace(objReq.OrderNo))
                 {
@@ -887,7 +887,7 @@ namespace BSLDaman.DAL
 
                 strSql = strSql + " GROUP BY OpNo, OpName, BundleID, BundleNo, SizeName, ColorName, ShadeName, Qty, PlyFrom, PlyTo,";
                 strSql = strSql + " LotNo, SubSection, StyleCode, OrderNo, AppEmpID, EmpName, AppStartTime, AppEndTime,";
-                strSql = strSql + " BundleStatus, SupervisorID, SupervisorName, AssignedDate, IsPilot";
+                strSql = strSql + " BundleStatus, SupervisorID, SupervisorName, AssignedDate, IsPilot, LayID, UpdateType ";
                 strSql = strSql + " ORDER BY BundleID ASC ";
                 strSql = strSql + " OFFSET (@PageNumber - 1) * @PageSize ROWS ";
                 strSql = strSql + " FETCH NEXT @PageSize ROWS ONLY ";
@@ -964,6 +964,10 @@ namespace BSLDaman.DAL
                         obj.AssignedDate = Convert.ToString(ds.Tables[0].Rows[i]["AssignedDate"]);
                         obj.TotalRows = Convert.ToInt64(ds.Tables[0].Rows[i]["TotalRows"]);
                         obj.IsPilot = Convert.ToBoolean(ds.Tables[0].Rows[i]["IsPilot"]);
+
+                        obj.UpdateType = Convert.ToString(ds.Tables[0].Rows[i]["UpdateType"]);
+                        obj.LayID = Convert.ToInt64(ds.Tables[0].Rows[i]["LayID"]);
+
                         obj.vErrorCode = 200;
                         obj.vErrorMsg = "Success";
                         objResp.Add(obj);
