@@ -720,7 +720,7 @@ namespace BSLDaman.DAL
 
                 string strSql = "SELECT OpNo, OpName, BundleID, BundleNo, SizeName, ColorName, ShadeName, Qty, PlyFrom, PlyTo,";
                 strSql = strSql + " LotNo, SubSection, StyleCode, OrderNo, AppEmpID, EmpName, AppStartTime, AppEndTime, BundleStatus,";
-                strSql = strSql + " IsPilot, COUNT(*) OVER() AS TotalRows FROM vPending_BundleStatus WHERE 1=1";                                
+                strSql = strSql + " IsPilot, LayID, COUNT(*) OVER() AS TotalRows FROM vPending_BundleStatus WHERE 1=1";                                
                 if (!String.IsNullOrWhiteSpace(objReq.OrderNo))
                 {
                     strSql = strSql + " AND OrderNo = @OrderNo ";
@@ -743,7 +743,7 @@ namespace BSLDaman.DAL
                 }
 
                 strSql = strSql + " GROUP BY OpNo, OpName, BundleID, BundleNo, SizeName, ColorName, ShadeName, Qty, PlyFrom, PlyTo, LotNo, ";
-                strSql = strSql + " SubSection, StyleCode, OrderNo, AppEmpID, EmpName, AppStartTime, AppEndTime, BundleStatus, IsPilot";
+                strSql = strSql + " SubSection, StyleCode, OrderNo, AppEmpID, EmpName, AppStartTime, AppEndTime, BundleStatus, IsPilot, LayID ";
                 strSql = strSql + " ORDER BY BundleID ASC ";
                 //strSql = strSql + " ORDER BY BundleID, BundleNo, SizeName, ColorName ";
                 strSql = strSql + " OFFSET (@PageNumber - 1) * @PageSize ROWS ";
@@ -810,6 +810,9 @@ namespace BSLDaman.DAL
                         obj.BundleStatus = Convert.ToString(ds.Tables[0].Rows[i]["BundleStatus"]);
                         obj.TotalRows = Convert.ToInt64(ds.Tables[0].Rows[i]["TotalRows"]);
                         obj.IsPilot = Convert.ToBoolean(ds.Tables[0].Rows[i]["IsPilot"]);
+
+                        obj.LayID = Convert.ToInt64(ds.Tables[0].Rows[i]["LayID"]);
+
                         obj.vErrorCode = 200;
                         obj.vErrorMsg = "Success";
                         objResp.Add(obj);
