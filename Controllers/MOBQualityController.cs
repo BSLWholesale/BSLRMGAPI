@@ -122,5 +122,6 @@ namespace BSLDaman.Controllers
             objResp = _MOBDALQuality.Fn_Get_QAReport(objReq);
             return objResp;
         }
+
     }
 }

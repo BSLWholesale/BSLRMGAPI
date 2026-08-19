@@ -531,6 +531,11 @@ namespace BSLDaman.DAL
                     objResp.vErrorCode = 400;
                     objResp.vErrorMsg = "List is empty";
                 }
+                if (objReq.PlyNo == "" || objReq.PlyNo == "0")
+                {
+                    objResp.vErrorCode = 400;
+                    objResp.vErrorMsg = "Ply Number should not be empty or zero";
+                }
                 else
                 {
                     SqlCommand cmd = new SqlCommand("USP_MobileQualityAnalysis", Con);
@@ -569,7 +574,7 @@ namespace BSLDaman.DAL
 
                                         byte[] imageBytes = Convert.FromBase64String(imgFile.Split(',')[1]);
 
-                                        string filePath = HttpContext.Current.Server.MapPath(string.Format("~/Image/DefectImage/{0}.jpg", fileName));
+                                        string filePath = HttpContext.Current.Server.MapPath(string.Format("~/Image/QADefectImage/{0}.jpg", fileName));
                                         System.IO.File.WriteAllBytes(filePath, imageBytes);
                                         oList.ImageName = fileName + ".jpg";
 
@@ -609,6 +614,7 @@ namespace BSLDaman.DAL
                         objResp.SizeName = objReq.SizeName;
                         objResp.Qty = objReq.Qty;
                         objResp.QAStatus = objReq.QAStatus;
+                        objResp.PlyNo = objReq.PlyNo;
                         objResp.vErrorCode = 200;
                         objResp.vErrorMsg = "Success";
 
