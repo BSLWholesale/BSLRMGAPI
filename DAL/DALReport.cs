@@ -1416,5 +1416,96 @@ namespace BSLDaman.DAL
         }
 
         #endregion End Fn_Remove_Manual_Quantity 18-AUG_2026
+
+
+        #region Start Fn_Get_QAQCDHUReport 20-AUG-2026
+        public List<clsQADHUReport> Fn_Get_QAQCDHUReport(clsQADHUReport objReq)
+        {
+            var objResp = new List<clsQADHUReport>();
+            var obj = new clsQADHUReport();
+            Logger.ErrorLog(JsonConvert.SerializeObject(objReq), "Request", "Fn_Get_QAQCDHUReport");
+            try
+            {
+                if (String.IsNullOrWhiteSpace(objReq.SelectDate))
+                {
+                    objReq.vErrorMsg = "Please Select the Date";
+                    objReq.vErrorCode = 300;
+                }
+                else if (String.IsNullOrWhiteSpace(objReq.LineName))
+                {
+                    objReq.vErrorMsg = "Please Select the Line Name";
+                    objReq.vErrorCode = 300;
+                }
+                else
+                {
+                    if (Con.State == ConnectionState.Broken)
+                    { Con.Close(); }
+                    if (Con.State == ConnectionState.Closed)
+                    { Con.Open(); }
+
+                    SqlCommand cmd = new SqlCommand("", Con);
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("@SelectDate", objReq.SelectDate);
+                    cmd.Parameters.AddWithValue("@LineName", objReq.LineName);
+                    cmd.Parameters.AddWithValue("", "");
+
+                    SqlDataAdapter da = new SqlDataAdapter(cmd);
+                    DataSet ds = new DataSet();
+                    da.Fill(ds);
+                    int i = 0;
+
+                    if (ds.Tables[0].Rows.Count > 0)
+                    {
+                        while (ds.Tables[0].Rows.Count > i)
+                        {
+                            obj = new clsQADHUReport();
+                            obj.StyleCode = Convert.ToString(ds.Tables[0].Rows[i][""]);
+                            obj.OrderNo = Convert.ToString(ds.Tables[0].Rows[i][""]);
+                            obj.ColorName = Convert.ToString(ds.Tables[0].Rows[i][""]);
+                            obj.OrderQty = Convert.ToInt64(ds.Tables[0].Rows[i][""]);
+                            obj.SubSection = Convert.ToString(ds.Tables[0].Rows[i][""]);
+                            obj.FTP = Convert.ToString(ds.Tables[0].Rows[i][""]);
+                            obj.Reject = Convert.ToString(ds.Tables[0].Rows[i][""]);
+                            obj.Repair = Convert.ToString(ds.Tables[0].Rows[i][""]);
+                            obj.Altered = Convert.ToString(ds.Tables[0].Rows[i][""]);
+                            obj.Defectives = Convert.ToString(ds.Tables[0].Rows[i][""]);
+                            obj.Pass = Convert.ToString(ds.Tables[0].Rows[i][""]);
+                            obj.TotalChecked = Convert.ToString(ds.Tables[0].Rows[i][""]);
+                            obj.FTPPercentage = Convert.ToString(ds.Tables[0].Rows[i][""]);
+                            obj.RejectPercentage = Convert.ToString(ds.Tables[0].Rows[i][""]);
+                            obj.TotalDefect = Convert.ToString(ds.Tables[0].Rows[i][""]);
+                            obj.DHUPercentage = Convert.ToString(ds.Tables[0].Rows[i][""]);
+
+                            obj.vErrorCode = 200;
+                            obj.vErrorMsg = "Success";
+                            objResp.Add(obj);
+                            i++;
+                        }
+                    }
+                    else
+                    {
+                        obj.vErrorCode = 404;
+                        obj.vErrorMsg = "No DHU Reports records found.";
+                        objResp.Add(obj);
+                    }
+                }
+            }
+            catch (Exception exp)
+            {
+                obj.vErrorCode = 500;
+                Logger.WriteLog("Function Name : Fn_Get_QAQCDHUReport", " " + "Error Msg : " + exp.Message.ToString(), new StackTrace(exp, true));
+                obj.vErrorMsg = exp.Message.ToString();
+                objResp.Add(obj);
+            }
+            finally
+            {
+                Con.Close();
+            }
+            Logger.ErrorLog(JsonConvert.SerializeObject(objResp), "Response", "Fn_Get_QAQCDHUReport");
+            return objResp;
+        }
+        #endregion End Fn_Get_QAQCDHUReport 20-AUG-2026
+
+
     }
 }
