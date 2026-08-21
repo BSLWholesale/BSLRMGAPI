@@ -174,5 +174,21 @@ namespace BSLDaman.Controllers
         }
 
         #endregion End Fn_Remove_Manual_Quantity 18-AUG_2026
+
+
+        #region Start Fn_Get_QAQCDHUReport 20-AUG-2026
+
+        [System.Web.Http.HttpPost]
+        [System.Web.Http.Route("api/Report/Fn_Get_QAQCDHUReport")]
+        public List<clsQADHUReport> Fn_Get_QAQCDHUReport(clsQADHUReport objReq)
+        {
+            var objResp = new List<clsQADHUReport>();
+            objResp = _DALReport.Fn_Get_QAQCDHUReport(objReq);
+            return objResp;
+        }
+
+        #endregion End Fn_Get_QAQCDHUReport 20-AUG-2026
+
+
     }
 }
