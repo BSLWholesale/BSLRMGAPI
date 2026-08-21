@@ -127,4 +127,35 @@ namespace BSLDaman.Models
         public int vErrorCode { get; set; }
         public string vErrorMsg { get; set; }
     }
+
+
+    public class clsQADHUReport
+    {
+        public string StyleCode { get; set; }
+        public string OrderNo { get; set; }
+        public string SizeName { get; set; }
+        public Int64 OrderQty { get; set; }
+        public string SubSection { get; set; }
+        public string ColorName { get; set; }
+        public string FTP { get; set; }
+        public string Reject { get; set; }
+        public string Repair { get; set; }
+        public string Altered { get; set; }
+        public string Pass { get; set; }
+        public string SendRepair { get; set; }
+        public string SelectDate { get; set; }
+        public string LineName { get; set; }
+        public string Defectives { get; set; }
+        public string TotalChecked { get; set; }
+        public string FTPPercentage { get; set; }
+        public string RejectPercentage { get; set; }
+        public string TotalDefect { get; set; }
+        public string DHUPercentage { get; set; }
+        public int PageNumber { get; set; }
+        public int PageSize { get; set; }
+        public int vErrorCode { get; set; }
+        public string vErrorMsg { get; set; }
+    }
+
+
 }
