@@ -1300,6 +1300,8 @@ namespace BSLDaman.DAL
                         cmd.Parameters.AddWithValue("@OpNo", objReq.OpNo);
                         cmd.Parameters.AddWithValue("@Qty", availableQty);
                         cmd.Parameters.AddWithValue("@CreatedBy", objReq.CreatedBy);
+                        cmd.Parameters.AddWithValue("@CreatedOn", objReq.CreatedOn);
+                        cmd.Parameters.AddWithValue("@ModifiedBy", objReq.ModifiedBy);
                         cmd.Parameters.AddWithValue("@QueryType", "Update_Manaul_Qty");
 
                         int i = cmd.ExecuteNonQuery();
