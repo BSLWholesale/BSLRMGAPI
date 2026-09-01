@@ -540,7 +540,7 @@ namespace BSLDaman.DAL
                 if (filteredList.Count == 0)
                 {
                     objResp.vErrorCode = 400;
-                    objResp.vErrorMsg = "Please Post Assmbly in SubSection";
+                    objResp.vErrorMsg = "Please Add Post Assmbly in SubSection";
                     return objResp;
                 }
                 else
