@@ -95,5 +95,14 @@ namespace BSLDaman.Controllers
             objResp = _DALFabric.Fn_Get_BatchList(objReq);
             return objResp;
         }
+
+        [System.Web.Http.HttpPost]
+        [System.Web.Http.Route("api/Fabric/Fn_Get_Fabric_Defects")]
+        public List<clsQADefects> Fn_Get_Fabric_Defects(clsQADefects objReq)
+        {
+            var objResp = new List<clsQADefects>();
+            objResp = _DALFabric.Fn_Get_Fabric_Defects(objReq);
+            return objResp;
+        }
     }
 }
