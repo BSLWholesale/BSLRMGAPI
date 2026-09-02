@@ -1862,6 +1862,81 @@ namespace BSLDaman.DAL
 
         #endregion End Fn_Get_Fabric_ColorLits 22-JUN-2026 
 
+        #region Start Fn_Update_OpNo_IN_OBD 02-SEP-2026
 
+        public clsOPBreackDownDetail Fn_Update_OpNo_IN_OBD(clsOPBreackDownDetail objReq)
+        {
+            var objResp = new clsOPBreackDownDetail();            
+            Logger.ErrorLog(JsonConvert.SerializeObject(objReq), "Request", "Fn_Update_OpNo_IN_OBD");
+            try
+            {
+
+                if (objReq.OpNo == 0 && objReq.OpNo == null)
+                {
+                    objResp.vErrorCode = 400;
+                    objResp.vErrorMsg = "Please Enter OpNo";
+                }
+                else if (String.IsNullOrWhiteSpace(objReq.CreatedOn))
+                {
+                    objResp.vErrorCode = 400;
+                    objResp.vErrorMsg = "Please Enter StyleCode";
+                }
+                else if (String.IsNullOrWhiteSpace(objReq.SubSection) || objReq.SubSection == "0")
+                {
+                    objResp.vErrorCode = 400;
+                    objResp.vErrorMsg = "Please Select SubSection";
+                }
+                else if (objReq.Rate <= 0)
+                {
+                    objResp.vErrorCode = 400;
+                    objResp.vErrorMsg = "Please Enter a valid Rate";
+                }
+                else
+                {
+
+                    if (Con.State == ConnectionState.Broken)
+                    { Con.Close(); }
+                    if (Con.State == ConnectionState.Closed)
+                    { Con.Open(); }
+
+                    SqlCommand cmd = new SqlCommand("USP_OPEARTION_BREACK_DOWN", Con);
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("@DetailID", objReq.DetailID);
+                    cmd.Parameters.AddWithValue("@ID", objReq.MID);
+                    cmd.Parameters.AddWithValue("@OpNo", objReq.OpNo);
+                    cmd.Parameters.AddWithValue("@Rate", objReq.Rate);
+                    cmd.Parameters.AddWithValue("@SubSection", objReq.SubSection);
+                    cmd.Parameters.AddWithValue("@CreatedBy", objReq.CreatedBy);
+                    cmd.Parameters.AddWithValue("@CreatedOn", objReq.CreatedOn); // StyleCode
+                    cmd.Parameters.AddWithValue("@QueryType", "Update_Opno_IN_OBD");
+                    int j = cmd.ExecuteNonQuery();
+                    if (j > 0)
+                    {
+                        objResp.vErrorCode = 200;
+                        objResp.vErrorMsg = "Success";
+                    }
+                    else
+                    {
+                        objResp.vErrorCode = 400;
+                        objResp.vErrorMsg = "OpNo Updating failed ";
+                        return objResp;
+                    }
+                }
+            }
+            catch (Exception exp)
+            {
+                Logger.WriteLog("Function Name : Fn_Update_OpNo_IN_OBD", " " + "Error Msg : " + exp.Message.ToString(), new StackTrace(exp, true));
+                objResp.vErrorMsg = exp.Message.ToString();
+                objResp.vErrorCode = 500;
+            }
+            finally
+            {
+                Con.Close();
+            }
+            Logger.ErrorLog(JsonConvert.SerializeObject(objResp), "Response", "Fn_Update_OpNo_IN_OBD");
+            return objResp;
+        }
+
+        #endregion End Fn_Update_OpNo_IN_OBD 02-SEP-2026
     }
 }
