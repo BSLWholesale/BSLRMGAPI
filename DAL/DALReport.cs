@@ -1508,6 +1508,54 @@ namespace BSLDaman.DAL
         }
         #endregion End Fn_Get_QAQCDHUReport 20-AUG-2026
 
+        #region Start Fn_Get_Rate_OpNo 03-SEP-2026 Added by Ankit
+        public clsOPBreackDownDetail Fn_Get_Rate_By_OpNo(clsOPBreackDownMaster objReq)
+        {
+            var objResp = new clsOPBreackDownDetail();
+            Logger.ErrorLog(JsonConvert.SerializeObject(objReq), "Request", "Fn_Get_Rate_By_OpNo");
+            try
+            {
+                if (Con.State == ConnectionState.Broken)
+                { Con.Close(); }
+                if (Con.State == ConnectionState.Closed)
+                { Con.Open(); }
+                
+                SqlCommand cmd = new SqlCommand("USP_OPEARTION_BREACK_DOWN", Con);
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@StyleCode", objReq.StyleCode);
+                cmd.Parameters.AddWithValue("@OpNo", objReq.OpNo);
+                cmd.Parameters.AddWithValue("@QueryType", "Get_Rate_By_OpNo");
 
+                SqlDataAdapter da = new SqlDataAdapter(cmd);
+                DataSet ds = new DataSet();
+                da.Fill(ds);
+                if (ds.Tables[0].Rows.Count > 0)
+                {
+                    objResp.Rate = Convert.ToDecimal(ds.Tables[0].Rows[0]["StdRate"]);
+                    objResp.vErrorCode = 200;
+                    objResp.vErrorMsg = "Success";
+                }
+                else
+                {
+                    objResp.vErrorCode = 404;
+                    objResp.vErrorMsg = "No Record found";
+                }
+
+            }
+            catch (Exception exp)
+            {
+                objResp.vErrorCode = 500;
+                Logger.WriteLog("Function Name : Fn_Get_Rate_By_OpNo", " " + "Error Msg : " + exp.Message.ToString(), new StackTrace(exp, true));
+                objResp.vErrorMsg = exp.Message.ToString();
+            }
+            finally
+            {
+                Con.Close();
+            }
+            Logger.ErrorLog(JsonConvert.SerializeObject(objResp), "Response", "Fn_Get_Rate_By_OpNo");
+            return objResp;
+        }
+
+        #endregion End Fn_Get_Rate_OpNo 03-SEP-2026 Added by Ankit
     }
 }
