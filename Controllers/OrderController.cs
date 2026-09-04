@@ -258,5 +258,18 @@ namespace BSLDaman.Controllers
         }
 
         #endregion End Fn_Get_Fabric_ColorLits 22-JUN-2026 
+
+        #region Start Fn_Update_OpNo_IN_OBD 02-SEP-2026
+
+        [System.Web.Http.HttpPost]
+        [System.Web.Http.Route("api/Order/Fn_Update_OpNo_IN_OBD")]
+        public clsOPBreackDownDetail Fn_Update_OpNo_IN_OBD(clsOPBreackDownDetail objReq)
+        {
+            var objResp = new clsOPBreackDownDetail();
+            objResp = _DALOrder.Fn_Update_OpNo_IN_OBD(objReq);
+            return objResp;
+        }
+
+        #endregion End Fn_Update_OpNo_IN_OBD 02-SEP-2026
     }
 }

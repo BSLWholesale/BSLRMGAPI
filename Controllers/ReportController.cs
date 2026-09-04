@@ -190,5 +190,17 @@ namespace BSLDaman.Controllers
         #endregion End Fn_Get_QAQCDHUReport 20-AUG-2026
 
 
+        #region Start Fn_Get_Rate_By_OpNo 03-SEP-2026 Added by Ankit
+
+        [System.Web.Http.HttpPost]
+        [System.Web.Http.Route("api/Report/Fn_Get_Rate_By_OpNo")]
+        public clsOPBreackDownDetail Fn_Get_Rate_By_OpNo(clsOPBreackDownMaster objReq)
+        {
+            var objResp = new clsOPBreackDownDetail();
+            objResp = _DALReport.Fn_Get_Rate_By_OpNo(objReq);
+            return objResp;
+        }
+
+        #endregion End Fn_Get_Rate_By_OpNo 03-SEP-2026 Added by Ankit
     }
 }

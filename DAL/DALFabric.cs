@@ -738,5 +738,76 @@ namespace BSLDaman.DAL
             Logger.ErrorLog(JsonConvert.SerializeObject(objResp), "Response", "Fn_Get_Batch");
             return objResp;
         }
+
+        public List<clsQADefects> Fn_Get_Fabric_Defects(clsQADefects objReq)
+        {
+            var objResp = new List<clsQADefects>();
+            var obj = new clsQADefects();
+            Logger.ErrorLog(JsonConvert.SerializeObject(objReq), "Request", "Fn_Get_Fabric_Defects");
+            try
+            {
+                if (Con.State == ConnectionState.Broken)
+                { Con.Close(); }
+                if (Con.State == ConnectionState.Closed)
+                { Con.Open(); }
+
+                string strSql = "SELECT DISTINCT DefectID, Defect from FabricDefectMaster WHERE 1=1";
+                if (!String.IsNullOrWhiteSpace(objReq.Defects))
+                {
+                    strSql = strSql + " AND Defect = @Defect";
+                }
+                
+                strSql = strSql + " ORDER BY Defect ";
+
+
+                SqlCommand cmd = new SqlCommand(strSql, Con);
+                cmd.CommandType = CommandType.Text;
+                if (!String.IsNullOrWhiteSpace(objReq.Defects))
+                {
+                    cmd.Parameters.AddWithValue("@Defect", objReq.Defects);
+                }
+                
+
+                SqlDataAdapter da = new SqlDataAdapter(cmd);
+                DataSet ds = new DataSet();
+                da.Fill(ds);
+                int i = 0;
+               
+                if (ds.Tables[0].Rows.Count > 0)
+                {
+                    while (ds.Tables[0].Rows.Count > i)
+                    {
+                        obj = new clsQADefects();
+                        obj.ID = Convert.ToInt64(ds.Tables[0].Rows[i]["DefectID"]);
+                        obj.Defects = Convert.ToString(ds.Tables[0].Rows[i]["Defect"]);
+                        
+                        obj.vErrorCode = 200;
+                        obj.vErrorMsg = "Success";
+                        objResp.Add(obj);
+                        i++;
+                    }
+                }
+                else
+                {
+                    obj.vErrorCode = 404;
+                    obj.vErrorMsg = "No Record found";
+                    objResp.Add(obj);
+                }
+
+            }
+            catch (Exception exp)
+            {
+                obj.vErrorCode = 500;
+                Logger.WriteLog("Function Name : Fn_Get_Fabric_Defects", " " + "Error Msg : " + exp.Message.ToString(), new StackTrace(exp, true));
+                obj.vErrorMsg = exp.Message.ToString();
+                objResp.Add(obj);
+            }
+            finally
+            {
+                Con.Close();
+            }
+            Logger.ErrorLog(JsonConvert.SerializeObject(objResp), "Response", "Fn_Get_Fabric_Defects");
+            return objResp;
+        }
     }
 }
