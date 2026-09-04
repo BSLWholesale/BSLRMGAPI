@@ -3250,7 +3250,7 @@ namespace BSLDaman.DAL
                 //strSql = strSql + " AND BD.BundleIDStatus = 'Finished' AND CONVERT(DATE, BD.AppEndTime) = CONVERT(DATE, GETDATE())";
                 //strSql = strSql + " ORDER BY BD.AppEndTime DESC, BC.OrderNo, BD.OperationNo";
 
-                string strSql = "SELECT DISTINCT (BD.BundleID) AS BundleID, BD.OperationNo AS OperationNo, BC.OrderNo AS OrderNo,";
+                string strSql = "SELECT DISTINCT TOP 10 BD.BundleID AS BundleID, BD.OperationNo AS OperationNo, BC.OrderNo AS OrderNo,";
                 strSql = strSql + " BD.SubSection AS SubSection, BD.SupervisorID AS SupervisorID, EM.EmpName AS SupervisorName,";
                 strSql = strSql + " BD.SupervisorAssignedDate AS SupAssignedDate, BD.BundleIDStatus AS BundleIDStatus, BD.CreatedBy AS CreatedBy,";
                 strSql = strSql + " FORMAT(BD.CreatedOn, 'dd-MMM-yyyy HH:mm:ss') AS CreatedOn, BD.Descriptions AS OperationName,";
