@@ -1905,7 +1905,6 @@ namespace BSLDaman.DAL
                     cmd.Parameters.AddWithValue("@ID", objReq.MID);
                     cmd.Parameters.AddWithValue("@OpNo", objReq.OpNo);
                     cmd.Parameters.AddWithValue("@Rate", objReq.Rate);
-                    cmd.Parameters.AddWithValue("@SubSection", objReq.SubSection);
                     cmd.Parameters.AddWithValue("@CreatedBy", objReq.CreatedBy);
                     cmd.Parameters.AddWithValue("@CreatedOn", objReq.CreatedOn); // StyleCode
                     cmd.Parameters.AddWithValue("@QueryType", "Update_Opno_IN_OBD");
