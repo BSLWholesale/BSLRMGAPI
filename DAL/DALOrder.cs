@@ -1881,11 +1881,6 @@ namespace BSLDaman.DAL
                     objResp.vErrorCode = 400;
                     objResp.vErrorMsg = "Please Enter StyleCode";
                 }
-                else if (String.IsNullOrWhiteSpace(objReq.SubSection) || objReq.SubSection == "0")
-                {
-                    objResp.vErrorCode = 400;
-                    objResp.vErrorMsg = "Please Select SubSection";
-                }
                 else if (objReq.Rate <= 0)
                 {
                     objResp.vErrorCode = 400;
