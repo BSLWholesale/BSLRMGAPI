@@ -104,5 +104,14 @@ namespace BSLDaman.Controllers
             objResp = _DALFabric.Fn_Get_Fabric_Defects(objReq);
             return objResp;
         }
+
+        [System.Web.Http.HttpPost]
+        [System.Web.Http.Route("api/Fabric/Fn_Add_Fabric_Defect_Inspection")]
+        public Fabric_Defect_Inspection Fn_Add_Fabric_Defect_Inspection(Fabric_Defect_Inspection objReq)
+        {
+            var objResp = new Fabric_Defect_Inspection();
+            objResp = _DALFabric.Fn_Add_Fabric_Defect_Inspection(objReq);
+            return objResp;
+        }
     }
 }
