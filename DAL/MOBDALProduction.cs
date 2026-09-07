@@ -2596,13 +2596,15 @@ namespace BSLDaman.DAL
                 strSql = strSql + " FROM BundleCompileDetail AS BD";
                 strSql = strSql + " INNER JOIN BundleCompile AS BC";
                 strSql = strSql + " ON BC.BundleID = BD.BundleID";
-                strSql = strSql + " WHERE CONVERT(DATE, BD.ModifiedOn) = CONVERT(DATE, @CurDate) AND BD.AppEmpId = " + objReq.AppEmpID;
+                //strSql = strSql + " WHERE CONVERT(DATE, BD.ModifiedOn) = CONVERT(DATE, @CurDate) AND BD.AppEmpId = " + objReq.AppEmpID;
+                strSql = strSql + " WHERE CONVERT(DATE, BD.AppEndTime) = CONVERT(DATE, @CurDate) AND BD.AppEmpId = " + objReq.AppEmpID;
                 strSql = strSql + " UNION";
                 strSql = strSql + " SELECT SUM(BD.StdRate*BC.Qty) AS Earnings, DATENAME(MONTH, @CurDate) AS Months,'Month' AS TimePeriod";
                 strSql = strSql + " FROM BundleCompileDetail AS BD";
                 strSql = strSql + " INNER JOIN BundleCompile AS BC";
                 strSql = strSql + " ON BC.BundleID = BD.BundleID";
-                strSql = strSql + " WHERE MONTH(BD.ModifiedOn) = MONTH(@CurDate) AND BD.AppEmpId = " + objReq.AppEmpID;
+                //strSql = strSql + " WHERE MONTH(BD.ModifiedOn) = MONTH(@CurDate) AND BD.AppEmpId = " + objReq.AppEmpID;
+                strSql = strSql + " WHERE MONTH(BD.AppEndTime) = MONTH(@CurDate) AND BD.AppEmpId = " + objReq.AppEmpID;
 
                 SqlCommand cmd = new SqlCommand(strSql, Con);
                 cmd.CommandType = CommandType.Text;
@@ -2667,22 +2669,6 @@ namespace BSLDaman.DAL
                 if (Con.State == ConnectionState.Closed)
                 { Con.Open(); }
 
-                //string strSql = "DECLARE @CurrentDate DATE = '" + objReq.CurrentDate + "'";
-                //strSql = strSql + " SELECT BD.OperationNo, MAX(BD.SubSection) AS SubSection, MAX(BD.StdRate) AS StdRate,";
-                //strSql = strSql + " SUM(BC.Qty) AS Qty, (MAX(BD.StdRate) * SUM(BC.Qty)) AS TotalAmount, MAX(ED.LineName) AS LineName,";
-                //strSql = strSql + " MAX(BC.StyleCode) AS StyleCode, MAX(BD.Descriptions) AS Descriptions,";
-                //strSql = strSql + " MAX(BC.OrderNo) AS OrderNo";
-                //strSql = strSql + " FROM BundleCompileDetail AS BD";
-                //strSql = strSql + " INNER JOIN BundleCompile AS BC";
-                //strSql = strSql + " ON BD.BundleID = BC.BundleID";
-                //strSql = strSql + " INNER JOIN EmployeeDetail AS ED";
-                //strSql = strSql + " ON ED.Code = BD.AppEmpID";
-                //strSql = strSql + " INNER JOIN LineMaster AS LM";
-                //strSql = strSql + " ON LM.LineName = ED.LineName";
-                //strSql = strSql + " WHERE BD.AppEmpID = " + objReq.AppEmpID;
-                //strSql = strSql + " AND BD.ModifiedOn >= @CurrentDate AND BD.ModifiedOn < DATEADD(DAY, 1, @CurrentDate) AND LM.LineName = '" + objReq.LineName + "'";
-                //strSql = strSql + " GROUP BY BD.OperationNo";
-
                 string strSql = "DECLARE @CurrentDate DATE = '" + objReq.CurrentDate + "'";
                 strSql = strSql + " SELECT BC.StyleCode, BC.OrderNo, BD.OperationNo, BD.Descriptions, SUM(BC.Qty) AS Qty,";
                 strSql = strSql + " BD.StdRate, BD.StdRate * SUM(BC.Qty) AS TotalAmount, LM.LineName";
@@ -2694,7 +2680,8 @@ namespace BSLDaman.DAL
                 strSql = strSql + " INNER JOIN LineMaster AS LM";
                 strSql = strSql + " ON LM.LineName = ED.LineName";
                 strSql = strSql + " WHERE BD.AppEmpID = " + objReq.AppEmpID;
-                strSql = strSql + " AND BD.ModifiedOn >= @CurrentDate AND BD.ModifiedOn < DATEADD(DAY, 1, @CurrentDate) AND LM.LineName = '" + objReq.LineName + "'";
+                //strSql = strSql + " AND BD.ModifiedOn >= @CurrentDate AND BD.ModifiedOn < DATEADD(DAY, 1, @CurrentDate) AND LM.LineName = '" + objReq.LineName + "'";
+                strSql = strSql + " AND BD.AppEndTime >= @CurrentDate AND BD.AppEndTime < DATEADD(DAY, 1, @CurrentDate) AND LM.LineName = '" + objReq.LineName + "'";
                 strSql = strSql + " GROUP BY BC.StyleCode, BC.OrderNo, BD.OperationNo, BD.Descriptions, BD.StdRate, LM.LineName";
                 strSql = strSql + " ORDER BY BC.StyleCode, BC.OrderNo, BD.OperationNo";
 
