@@ -97,11 +97,11 @@ namespace BSLDaman.Controllers
         }
 
         [System.Web.Http.HttpPost]
-        [System.Web.Http.Route("api/Fabric/Fn_Get_Fabric_Defects")]
-        public List<clsQADefects> Fn_Get_Fabric_Defects(clsQADefects objReq)
+        [System.Web.Http.Route("api/Fabric/Fn_Get_Fabric_Defects_Master")]
+        public List<clsQADefects> Fn_Get_Fabric_Defects_Master(clsQADefects objReq)
         {
             var objResp = new List<clsQADefects>();
-            objResp = _DALFabric.Fn_Get_Fabric_Defects(objReq);
+            objResp = _DALFabric.Fn_Get_Fabric_Defects_Master(objReq);
             return objResp;
         }
 
@@ -113,5 +113,24 @@ namespace BSLDaman.Controllers
             objResp = _DALFabric.Fn_Add_Fabric_Defect_Inspection(objReq);
             return objResp;
         }
+
+        [System.Web.Http.HttpPost]
+        [System.Web.Http.Route("api/Fabric/Fn_Get_Fabric_Defect_Inspection")]
+        public List<Fabric_Defect_Inspection> Fn_Get_Fabric_Defect_Inspection(Fabric_Defect_Inspection objReq)
+        {
+            var objResp = new List<Fabric_Defect_Inspection>();
+            objResp = _DALFabric.Fn_Get_Fabric_Defect_Inspection(objReq);
+            return objResp;
+        }
+
+        [System.Web.Http.HttpPost]
+        [System.Web.Http.Route("api/Fabric/Fn_Delete_Fabric_Defect_Inspection")]
+        public Fabric_Defect_Inspection Fn_Delete_Fabric_Defect_Inspection(Fabric_Defect_Inspection objReq)
+        {
+            var objResp = new Fabric_Defect_Inspection();
+            objResp = _DALFabric.Fn_Delete_Fabric_Defect_Inspection(objReq);
+            return objResp;
+        }
+
     }
 }

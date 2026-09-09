@@ -704,7 +704,7 @@ namespace BSLDaman.DAL
                     {
                         obj = new clsBatchList();
 
-                        obj.BatchDetailId = Convert.ToInt32(ds.Tables[0].Rows[i]["BatchNo"]);
+                        obj.BatchDetailId = Convert.ToInt32(ds.Tables[0].Rows[i]["BatchDetailId"]);
                         obj.BatchNo = Convert.ToInt32(ds.Tables[0].Rows[i]["BatchNo"]);
                         obj.RollNo = Convert.ToInt32(ds.Tables[0].Rows[i]["RollNo"]);
                         obj.Quantity = Convert.ToInt32(ds.Tables[0].Rows[i]["Quantity"]);
@@ -739,11 +739,11 @@ namespace BSLDaman.DAL
             return objResp;
         }
 
-        public List<clsQADefects> Fn_Get_Fabric_Defects(clsQADefects objReq)
+        public List<clsQADefects> Fn_Get_Fabric_Defects_Master(clsQADefects objReq)
         {
             var objResp = new List<clsQADefects>();
             var obj = new clsQADefects();
-            Logger.ErrorLog(JsonConvert.SerializeObject(objReq), "Request", "Fn_Get_Fabric_Defects");
+            Logger.ErrorLog(JsonConvert.SerializeObject(objReq), "Request", "Fn_Get_Fabric_Defects_Master");
             try
             {
                 if (Con.State == ConnectionState.Broken)
@@ -798,7 +798,7 @@ namespace BSLDaman.DAL
             catch (Exception exp)
             {
                 obj.vErrorCode = 500;
-                Logger.WriteLog("Function Name : Fn_Get_Fabric_Defects", " " + "Error Msg : " + exp.Message.ToString(), new StackTrace(exp, true));
+                Logger.WriteLog("Function Name : Fn_Get_Fabric_Defects_Master", " " + "Error Msg : " + exp.Message.ToString(), new StackTrace(exp, true));
                 obj.vErrorMsg = exp.Message.ToString();
                 objResp.Add(obj);
             }
@@ -806,7 +806,7 @@ namespace BSLDaman.DAL
             {
                 Con.Close();
             }
-            Logger.ErrorLog(JsonConvert.SerializeObject(objResp), "Response", "Fn_Get_Fabric_Defects");
+            Logger.ErrorLog(JsonConvert.SerializeObject(objResp), "Response", "Fn_Get_Fabric_Defects_Master");
             return objResp;
         }
 
@@ -852,7 +852,7 @@ namespace BSLDaman.DAL
                     {
                         //if (string.IsNullOrWhiteSpace(defectId))
                         //    continue;
-                        Int64 mxId = Fn_Get_MXID("Fabric_Batch", "FabDefectId");
+                        Int64 mxId = Fn_Get_MXID("Fabric_Defect_Inspection", "FabDefectId");
                         objReq.FabDefectId = Convert.ToInt32(mxId);
 
                         SqlCommand cmd = new SqlCommand("USP_FABRIC_BATCH", Con);
@@ -865,7 +865,7 @@ namespace BSLDaman.DAL
                         cmd.Parameters.AddWithValue("@DefectLocation", objReq.DefectLocation);
                         cmd.Parameters.AddWithValue("@FabDefect_Image", objReq.FabDefect_Image);
                         cmd.Parameters.AddWithValue("@CreatedBy", objReq.CreatedBy);
-                        cmd.Parameters.AddWithValue("@QueryType", "INSERT_BATCH");
+                        cmd.Parameters.AddWithValue("@QueryType", "INSERT_FAB_DEFECT");
                         int i = cmd.ExecuteNonQuery();
                         if (i <= 0)
                         {
@@ -895,5 +895,126 @@ namespace BSLDaman.DAL
         }
 
         #endregion End Fn_Add_Fabric_Defect_Inspection 07-SEP_2026
+
+        #region Start Fn_Get_Fabric_Defect_Inspection 08-SEP_2026
+
+        public List<Fabric_Defect_Inspection> Fn_Get_Fabric_Defect_Inspection(Fabric_Defect_Inspection objReq)
+        {
+            var objResp = new List<Fabric_Defect_Inspection>();
+            var obj = new Fabric_Defect_Inspection();
+            Logger.ErrorLog(JsonConvert.SerializeObject(objResp), "Request", "Fn_Get_Fabric_Defect_Inspection");
+            try
+            {
+                if (Con.State == ConnectionState.Broken) { Con.Close(); }
+                if (Con.State == ConnectionState.Closed) { Con.Open(); }
+
+                SqlCommand cmd = new SqlCommand("USP_FABRIC_BATCH", Con);
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@BatchDetailId", objReq.BatchDetailId);
+                cmd.Parameters.AddWithValue("@QueryType", "SELECT_FAB_DEFECT");
+
+                SqlDataAdapter da = new SqlDataAdapter(cmd);
+                DataSet ds = new DataSet();
+                da.Fill(ds);
+                int i = 0;
+
+                if (ds.Tables[0].Rows.Count > 0)
+                {
+                    while (ds.Tables[0].Rows.Count > i)
+                    {
+                        obj = new Fabric_Defect_Inspection();
+                        obj.FabDefectId = Convert.ToInt32(ds.Tables[0].Rows[i]["FabDefectId"]);
+                        obj.BatchDetailId = Convert.ToInt32(ds.Tables[0].Rows[i]["BatchDetailId"]);
+                        obj.DefectLocation = Convert.ToString(ds.Tables[0].Rows[i]["DefectLocation"]);
+                        obj.DefectList = Convert.ToString(ds.Tables[0].Rows[i]["Defect"]);
+                        obj.DefectID = Convert.ToInt32(ds.Tables[0].Rows[i]["DefectID"]);
+                        obj.PositionMTR = Convert.ToString(ds.Tables[0].Rows[i]["PositionMTR"]);
+                        obj.PenaltyPoints = Convert.ToInt32(ds.Tables[0].Rows[i]["PenaltyPoints"]);
+                        obj.FabDefect_Image = Convert.ToString(ds.Tables[0].Rows[i]["FabDefect_Image"]);
+                        obj.CreatedBy = Convert.ToInt32(ds.Tables[0].Rows[i]["CreatedBy"]);
+                        obj.CreatedOn = Convert.ToString(ds.Tables[0].Rows[i]["CreatedOn"]);
+
+                        obj.vErrorCode = 200;
+                        obj.vErrorMsg = "Success";
+                        objResp.Add(obj);
+                        i++;
+                    }
+                }
+                else
+                {
+                    obj.vErrorCode = 404;
+                    obj.vErrorMsg = "No Record found";
+                    objResp.Add(obj);
+                }
+            }
+            catch (Exception exp)
+            {
+                obj.vErrorCode = 500;
+                Logger.WriteLog("Function Name : Fn_Get_Fabric_Defect_Inspection", " " + "Error Msg : " + exp.Message.ToString(), new StackTrace(exp, true));
+                obj.vErrorMsg = exp.Message.ToString();
+                objResp.Add(obj);
+            }
+            finally
+            {
+                Con.Close();
+            }
+            Logger.ErrorLog(JsonConvert.SerializeObject(objResp), "Response", "Fn_Get_Fabric_Defect_Inspection");
+            return objResp;
+        }
+
+        #endregion End Fn_Get_Fabric_Defect_Inspection 08-SEP_2026
+
+        public Fabric_Defect_Inspection Fn_Delete_Fabric_Defect_Inspection(Fabric_Defect_Inspection objReq)
+        {
+            var objResp = new Fabric_Defect_Inspection();
+            Logger.ErrorLog(JsonConvert.SerializeObject(objResp), "Request", "Fn_Delete_Fabric_Defect_Inspection");
+            try
+            {
+                if (objReq.FabDefectId == 0)
+                {
+                    objResp.vErrorCode = 400;
+                    objResp.vErrorMsg = "Please send FabDefectId";
+                }
+                else if (objReq.BatchDetailId == 0)
+                {
+                    objResp.vErrorCode = 400;
+                    objResp.vErrorMsg = "Please send BatchDetailId";
+                }
+                else
+                {
+                    if (Con.State == ConnectionState.Broken) { Con.Close(); }
+                    if (Con.State == ConnectionState.Closed) { Con.Open(); }
+
+                    SqlCommand cmd = new SqlCommand("USP_FABRIC_BATCH", Con);
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("@FabDefectId", objReq.FabDefectId);
+                    cmd.Parameters.AddWithValue("@BatchDetailId", objReq.BatchDetailId);
+                    cmd.Parameters.AddWithValue("@QueryType", "DELETE_FAB_DEFECT");
+                    int i = cmd.ExecuteNonQuery();
+                    if (i <= 0)
+                    {
+                        objResp.vErrorCode = 200;
+                        objResp.vErrorMsg = "Success";
+                    }
+                    else
+                    {
+                        objResp.vErrorCode = 400;
+                        objResp.vErrorMsg = "Inserting error";
+                    }
+                }
+            }
+            catch (Exception exp)
+            {
+                objResp.vErrorCode = 500;
+                Logger.WriteLog("Function Name : Fn_Delete_Fabric_Defect_Inspection", " " + "Error Msg : " + exp.Message.ToString(), new StackTrace(exp, true));
+                objResp.vErrorMsg = exp.Message.ToString();
+            }
+            finally
+            {
+                Con.Close();
+            }
+            Logger.ErrorLog(JsonConvert.SerializeObject(objResp), "Response", "Fn_Delete_Fabric_Defect_Inspection");
+            return objResp;
+        }
     }
 }
