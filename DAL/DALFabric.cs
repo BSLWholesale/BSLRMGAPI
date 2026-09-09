@@ -828,7 +828,7 @@ namespace BSLDaman.DAL
                     objResp.vErrorCode = 400;
                     objResp.vErrorMsg = "Please select one defect";
                 }
-                else if (string.IsNullOrWhiteSpace(objReq.PositionMTR))
+                else if (objReq.PositionMTR == 0)
                 {
                     objResp.vErrorCode = 400;
                     objResp.vErrorMsg = "Please enter Position";
@@ -928,7 +928,7 @@ namespace BSLDaman.DAL
                         obj.DefectLocation = Convert.ToString(ds.Tables[0].Rows[i]["DefectLocation"]);
                         obj.DefectList = Convert.ToString(ds.Tables[0].Rows[i]["Defect"]);
                         obj.DefectID = Convert.ToInt32(ds.Tables[0].Rows[i]["DefectID"]);
-                        obj.PositionMTR = Convert.ToString(ds.Tables[0].Rows[i]["PositionMTR"]);
+                        obj.PositionMTR = Convert.ToDecimal(ds.Tables[0].Rows[i]["PositionMTR"]);
                         obj.PenaltyPoints = Convert.ToInt32(ds.Tables[0].Rows[i]["PenaltyPoints"]);
                         obj.FabDefect_Image = Convert.ToString(ds.Tables[0].Rows[i]["FabDefect_Image"]);
                         obj.CreatedBy = Convert.ToInt32(ds.Tables[0].Rows[i]["CreatedBy"]);
@@ -1016,5 +1016,103 @@ namespace BSLDaman.DAL
             Logger.ErrorLog(JsonConvert.SerializeObject(objResp), "Response", "Fn_Delete_Fabric_Defect_Inspection");
             return objResp;
         }
+
+        #region Start Fn_Add_Fabric_Defect_CheckPoint 09-SEP-2026
+
+        public Fabric_Defect_CheckPoint Fn_Add_Fabric_Defect_CheckPoint(Fabric_Defect_CheckPoint objReq)
+        {
+            var objResp = new Fabric_Defect_CheckPoint();
+            Logger.ErrorLog(JsonConvert.SerializeObject(objResp), "Request", "Fn_Add_Fabric_Defect_CheckPoint");
+            try
+            {
+                if (objReq.BatchDetailId == 0)
+                {
+                    objResp.vErrorCode = 400;
+                    objResp.vErrorMsg = "Please Send BatchDetailId";
+                }
+                else if (objReq.ActualLength == 0)
+                {
+                    objResp.vErrorCode = 400;
+                    objResp.vErrorMsg = "Please Enter Actual Length";
+                }
+                else if (objReq.ActualWidth == 0)
+                {
+                    objResp.vErrorCode = 400;
+                    objResp.vErrorMsg = "Please Enter Actual Width";
+                }
+                else if (objReq.SupplierLength == 0)
+                {
+                    objResp.vErrorCode = 400;
+                    objResp.vErrorMsg = "Please Enter Supplier Length";
+                }
+                else if (objReq.CutStart == 0)
+                {
+                    objResp.vErrorCode = 400;
+                    objResp.vErrorMsg = "Please Enter Cut Start";
+                }
+                else if (objReq.CutMid == 0)
+                {
+                    objResp.vErrorCode = 400;
+                    objResp.vErrorMsg = "Please Enter Cut Mid";
+                }
+                else if (objReq.CutEnd == 0)
+                {
+                    objResp.vErrorCode = 400;
+                    objResp.vErrorMsg = "Please Enter CutEnd";
+                }
+                else
+                {
+                    if (Con.State == ConnectionState.Broken) { Con.Close(); }
+                    if (Con.State == ConnectionState.Closed) { Con.Open(); }
+
+                    Int64 mxId = Fn_Get_MXID("Fabric_Defect_CheckPoint", "InfoId");
+                    objReq.InfoId = Convert.ToInt32(mxId);
+
+                    SqlCommand cmd = new SqlCommand("USP_FABRIC_BATCH", Con);
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("@InfoId", objReq.InfoId);
+                    cmd.Parameters.AddWithValue("@ActualLength", objReq.ActualLength);
+                    cmd.Parameters.AddWithValue("@ActualWeight", objReq.ActualWeight);
+                    cmd.Parameters.AddWithValue("@ActualWidth", objReq.ActualWidth);
+                    cmd.Parameters.AddWithValue("@GSM", objReq.GSM);
+                    cmd.Parameters.AddWithValue("@SupplierWeight", objReq.SupplierWeight);
+                    cmd.Parameters.AddWithValue("@SupplierLength", objReq.SupplierLength);
+                    cmd.Parameters.AddWithValue("@CutStart", objReq.CutStart);
+                    cmd.Parameters.AddWithValue("@CutMid", objReq.CutMid);
+                    cmd.Parameters.AddWithValue("@CutEnd", objReq.CutEnd);
+                    cmd.Parameters.AddWithValue("@Bowing", objReq.Bowing);
+                    cmd.Parameters.AddWithValue("@Skewing", objReq.Skewing);
+                    cmd.Parameters.AddWithValue("@Shade", objReq.Shade);
+                    cmd.Parameters.AddWithValue("@Descriptions", objReq.Descriptions);
+                    cmd.Parameters.AddWithValue("@CreatedBy", objReq.CreatedBy);
+                    cmd.Parameters.AddWithValue("@QueryType", "INSERT_FAB_DEFECT_CHECK_POINT");
+                    int i = cmd.ExecuteNonQuery();
+                    if (i <= 0)
+                    {
+                        objResp.vErrorCode = 200;
+                        objResp.vErrorMsg = "Success";
+                    }
+                    else
+                    {
+                        objResp.vErrorCode = 400;
+                        objResp.vErrorMsg = "Inserting error";
+                    }
+                }
+            }
+            catch (Exception exp)
+            {
+                objResp.vErrorCode = 500;
+                Logger.WriteLog("Function Name : Fn_Add_Fabric_Defect_CheckPoint", " " + "Error Msg : " + exp.Message.ToString(), new StackTrace(exp, true));
+                objResp.vErrorMsg = exp.Message.ToString();
+            }
+            finally
+            {
+                Con.Close();
+            }
+            Logger.ErrorLog(JsonConvert.SerializeObject(objResp), "Response", "Fn_Add_Fabric_Defect_CheckPoint");
+            return objResp;
+        }
+
+        #endregion End Fn_Add_Fabric_Defect_CheckPoint 09-SEP-2026
     }
 }

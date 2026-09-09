@@ -132,5 +132,14 @@ namespace BSLDaman.Controllers
             return objResp;
         }
 
+        [System.Web.Http.HttpPost]
+        [System.Web.Http.Route("api/Fabric/Fn_Add_Fabric_Defect_CheckPoint")]
+        public Fabric_Defect_CheckPoint Fn_Add_Fabric_Defect_CheckPoint(Fabric_Defect_CheckPoint objReq)
+        {
+            var objResp = new Fabric_Defect_CheckPoint();
+            objResp = _DALFabric.Fn_Add_Fabric_Defect_CheckPoint(objReq);
+            return objResp;
+        }
+
     }
 }
