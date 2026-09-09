@@ -802,4 +802,48 @@ namespace BSLDaman.Models
         public string vErrorMsg { get; set; }
         public int vErrorCode { get; set; }
     }
+
+    public class Fabric_Defect_Inspection
+    {
+        public int FabDefectId { get; set; }
+        public int BatchDetailId { get; set; }
+        public int DefectID { get; set; }
+        public string DefectList { get; set; }
+        public decimal PositionMTR { get; set; }
+        public int PenaltyPoints { get; set; }
+        public string DefectLocation { get; set; }
+        public string FabDefect_Image { get; set; }
+        public int CreatedBy { get; set; }
+        public string CreatedOn { get; set; }
+        public int ModifiedBy { get; set; }
+        public string ModifiedOn { get; set; }
+        public string vErrorMsg { get; set; }
+        public int vErrorCode { get; set; }
+    }
+
+    public class Fabric_Defect_CheckPoint
+    {
+        public int InfoId { get; set; }
+        public int BatchDetailId { get; set; }
+        public decimal ActualLength { get; set; }
+        public decimal ActualWeight { get; set; }
+        public decimal ActualWidth { get; set; }
+        public decimal GSM { get; set; }
+        public decimal SupplierWeight { get; set; }
+        public decimal SupplierLength { get; set; }
+        public decimal CutStart { get; set; }
+        public decimal CutMid { get; set; }
+        public decimal CutEnd { get; set; }
+        public string Bowing { get; set; }
+        public string Skewing { get; set; }
+        public string Shade { get; set; }
+        public string Descriptions { get; set; }
+        public int CreatedBy { get; set; }
+        public string CreatedOn { get; set; }
+        public int ModifiedBy { get; set; }
+        public string ModifiedOn { get; set; }
+        public string vErrorMsg { get; set; }
+        public int vErrorCode { get; set; }
+
+    }
 }

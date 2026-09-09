@@ -840,14 +840,14 @@ namespace BSLDaman.DAL
                 }
                 else
                 {
-                    if(Con.State == ConnectionState.Broken) { Con.Close(); }
+                    if (Con.State == ConnectionState.Broken) { Con.Close(); }
                     if (Con.State == ConnectionState.Closed) { Con.Open(); }
 
                     string arrDefect = objReq.DefectList;
 
                     // Split comma-separated Defect IDs
                     string[] defectIds = arrDefect.Split(',');
-                   
+
                     foreach (string defectId in defectIds)
                     {
                         //if (string.IsNullOrWhiteSpace(defectId))
@@ -866,8 +866,9 @@ namespace BSLDaman.DAL
                         cmd.Parameters.AddWithValue("@FabDefect_Image", objReq.FabDefect_Image);
                         cmd.Parameters.AddWithValue("@CreatedBy", objReq.CreatedBy);
                         cmd.Parameters.AddWithValue("@QueryType", "INSERT_FAB_DEFECT");
-                        int i = cmd.ExecuteNonQuery();
-                        if (i <= 0)
+                        int i = 0;
+                        i = cmd.ExecuteNonQuery();
+                        if (i > 0)
                         {
                             objResp.vErrorCode = 200;
                             objResp.vErrorMsg = "Success";
@@ -991,7 +992,7 @@ namespace BSLDaman.DAL
                     cmd.Parameters.AddWithValue("@BatchDetailId", objReq.BatchDetailId);
                     cmd.Parameters.AddWithValue("@QueryType", "DELETE_FAB_DEFECT");
                     int i = cmd.ExecuteNonQuery();
-                    if (i <= 0)
+                    if (i > 0)
                     {
                         objResp.vErrorCode = 200;
                         objResp.vErrorMsg = "Success";
@@ -999,7 +1000,7 @@ namespace BSLDaman.DAL
                     else
                     {
                         objResp.vErrorCode = 400;
-                        objResp.vErrorMsg = "Inserting error";
+                        objResp.vErrorMsg = "Deleting Failed";
                     }
                 }
             }
@@ -1071,6 +1072,7 @@ namespace BSLDaman.DAL
                     SqlCommand cmd = new SqlCommand("USP_FABRIC_BATCH", Con);
                     cmd.CommandType = CommandType.StoredProcedure;
                     cmd.Parameters.AddWithValue("@InfoId", objReq.InfoId);
+                    cmd.Parameters.AddWithValue("@BatchDetailId", objReq.BatchDetailId);
                     cmd.Parameters.AddWithValue("@ActualLength", objReq.ActualLength);
                     cmd.Parameters.AddWithValue("@ActualWeight", objReq.ActualWeight);
                     cmd.Parameters.AddWithValue("@ActualWidth", objReq.ActualWidth);
@@ -1086,8 +1088,9 @@ namespace BSLDaman.DAL
                     cmd.Parameters.AddWithValue("@Descriptions", objReq.Descriptions);
                     cmd.Parameters.AddWithValue("@CreatedBy", objReq.CreatedBy);
                     cmd.Parameters.AddWithValue("@QueryType", "INSERT_FAB_DEFECT_CHECK_POINT");
-                    int i = cmd.ExecuteNonQuery();
-                    if (i <= 0)
+                    int i = 0;
+                    i = cmd.ExecuteNonQuery();
+                    if (i > 0)
                     {
                         objResp.vErrorCode = 200;
                         objResp.vErrorMsg = "Success";
