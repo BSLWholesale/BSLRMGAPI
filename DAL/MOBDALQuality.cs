@@ -719,11 +719,36 @@ namespace BSLDaman.DAL
                         obj.SubSection = Convert.ToString(ds.Tables[0].Rows[i]["SubSection"]);
                         obj.Qty = Convert.ToInt64(ds.Tables[0].Rows[i]["Qty"]);
                         obj.QAStatus = Convert.ToString(ds.Tables[0].Rows[i]["QAStatus"]);
-                        obj.PlyNo = Convert.ToString(ds.Tables[0].Rows[i]["PlyNo"]);
-                        obj.Opr = Convert.ToString(ds.Tables[0].Rows[i]["Opr"]);
+                        
+                        if (obj.PlyNo == null || obj.PlyNo == "")
+                        {
+                            obj.PlyNo = string.Empty;
+                        }
+                        else
+                        {
+                            obj.PlyNo = Convert.ToString(ds.Tables[0].Rows[i]["PlyNo"]);
+                        }
+
+                        if (obj.Opr == null || obj.Opr == "")
+                        {
+                            obj.Opr = string.Empty;
+                        }
+                        else
+                        {
+                            obj.Opr = Convert.ToString(ds.Tables[0].Rows[i]["Opr"]);
+                        }
+
                         obj.CreatedBy = Convert.ToInt32(ds.Tables[0].Rows[i]["CreatedBy"]);
                         obj.CreatedOn = Convert.ToString(ds.Tables[0].Rows[i]["CreatedOn"]);
-                        obj.DefectName = Convert.ToString(ds.Tables[0].Rows[i]["DefectName"]);
+
+                        if (obj.DefectName == null || obj.DefectName == "")
+                        {
+                            obj.DefectName = string.Empty;
+                        }
+                        else
+                        {
+                            obj.DefectName = Convert.ToString(ds.Tables[0].Rows[i]["DefectName"]);
+                        }
 
                         obj.vErrorCode = 200;
                         obj.vErrorMsg = "Success";
