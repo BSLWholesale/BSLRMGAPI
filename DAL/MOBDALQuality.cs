@@ -663,9 +663,9 @@ namespace BSLDaman.DAL
                 strSql = strSql + " QCP.Qty AS Qty, QCP.QAStatus AS QAStatus, QCP.PlyNo AS PlyNo, QCP.Opr AS Opr, QCP.CreatedBy AS CreatedBy,";
                 strSql = strSql + " FORMAT(QCP.CreatedOn, 'dd-MMM-yyyy') AS CreatedOn, QPM.Defects AS DefectName";
                 strSql = strSql + " FROM QA_Order_CheckPoint AS QCP";
-                strSql = strSql + " INNER JOIN QA_Order_DefectList AS QDL";
+                strSql = strSql + " LEFT JOIN QA_Order_DefectList AS QDL";
                 strSql = strSql + " ON QDL.QAID = QCP.QAID";
-                strSql = strSql + " INNER JOIN QACheckPointMaster AS QPM";
+                strSql = strSql + " LEFT JOIN QACheckPointMaster AS QPM";
                 strSql = strSql + " ON QPM.DefectsID = QDL.DefectID WHERE 1=1";
 
                 if (!String.IsNullOrWhiteSpace(objReq.SubSection))
