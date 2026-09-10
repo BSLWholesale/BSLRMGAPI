@@ -620,13 +620,21 @@ namespace BSLDaman.DAL
                 if (Con.State == ConnectionState.Closed)
                 { Con.Open(); }
 
-                string strSql = "SELECT Code, EmpName, MIN(WorkDate) AS FromDate,  MAX(WorkDate) AS ToDate, ";
+                string strSql = "SELECT Code, EmpName, LineName, MIN(WorkDate) AS FromDate,  MAX(WorkDate) AS ToDate, ";
                 strSql = strSql + " COUNT(DISTINCT CAST(WorkDate AS DATE)) AS WorkingDays, SUM(Qty) AS TotalQty, ";
                 strSql = strSql + " SUM(Qty * StdRate) AS TotalEarning, ";
                 strSql = strSql + " SUM(Qty * StdRate) * 1.0 / NULLIF(COUNT(DISTINCT CAST(WorkDate AS DATE)), 0) AS EarningPerDay FROM vIncentive WHERE 1=1 ";                
                 if (!String.IsNullOrWhiteSpace(objReq.Code))
                 {
                     strSql = strSql + " AND Code = @Code ";
+                }
+                if (!String.IsNullOrWhiteSpace(objReq.LineName))
+                {
+                    strSql = strSql + " AND LineName = @LineName ";
+                }
+                if (!String.IsNullOrWhiteSpace(objReq.StyleCode))
+                {
+                    strSql = strSql + " AND StyleCode = @StyleCode ";
                 }
                 if (!String.IsNullOrWhiteSpace(objReq.StartDate) && String.IsNullOrWhiteSpace(objReq.EndDate))
                 {
@@ -636,8 +644,8 @@ namespace BSLDaman.DAL
                 {
                     strSql = strSql + " AND CAST(WorkDate AS DATE) BETWEEN '" + objReq.StartDate + "' AND '" + objReq.EndDate + "'";
                 }
-                strSql = strSql + " GROUP BY Code, EmpName ";
-                strSql = strSql + " ORDER BY EmpName ";
+                strSql = strSql + " GROUP BY Code, EmpName, LineName ";
+                strSql = strSql + " ORDER BY EmpName, LineName ";
                 strSql = strSql + " OFFSET (@PageNumber - 1) * @PageSize ROWS ";
                 strSql = strSql + " FETCH NEXT @PageSize ROWS ONLY ";
 
@@ -649,6 +657,14 @@ namespace BSLDaman.DAL
                 if (!String.IsNullOrWhiteSpace(objReq.Code))
                 {
                     cmd.Parameters.AddWithValue("@Code", objReq.Code);
+                }
+                if (!String.IsNullOrWhiteSpace(objReq.LineName))
+                {
+                    cmd.Parameters.AddWithValue("@LineName", objReq.LineName);
+                }
+                if (!String.IsNullOrWhiteSpace(objReq.StyleCode))
+                {
+                    cmd.Parameters.AddWithValue("@StyleCode", objReq.StyleCode);
                 }
                 if (!String.IsNullOrWhiteSpace(objReq.StartDate) && String.IsNullOrWhiteSpace(objReq.EndDate))
                 {
@@ -667,6 +683,7 @@ namespace BSLDaman.DAL
                         obj = new clsPieceRateIncentive();
                         obj.Code = Convert.ToString(ds.Tables[0].Rows[i]["Code"]);
                         obj.EmpName = Convert.ToString(ds.Tables[0].Rows[i]["EmpName"]);
+                        obj.LineName = Convert.ToString(ds.Tables[0].Rows[i]["LineName"]);
                         obj.FromDate = Convert.ToString(ds.Tables[0].Rows[i]["FromDate"]);
                         obj.ToDate = Convert.ToString(ds.Tables[0].Rows[i]["ToDate"]);
                         obj.WorkingDays = Convert.ToInt64(ds.Tables[0].Rows[i]["WorkingDays"]);
@@ -744,7 +761,7 @@ namespace BSLDaman.DAL
 
                 strSql = strSql + " GROUP BY OpNo, OpName, BundleID, BundleNo, SizeName, ColorName, ShadeName, Qty, PlyFrom, PlyTo, LotNo, ";
                 strSql = strSql + " SubSection, StyleCode, OrderNo, AppEmpID, EmpName, AppStartTime, AppEndTime, BundleStatus, IsPilot, LayID ";
-                strSql = strSql + " ORDER BY BundleID ASC ";
+                strSql = strSql + " ORDER BY BundleID ASC, BundleNo ASC, LayID ASC ";
                 //strSql = strSql + " ORDER BY BundleID, BundleNo, SizeName, ColorName ";
                 strSql = strSql + " OFFSET (@PageNumber - 1) * @PageSize ROWS ";
                 strSql = strSql + " FETCH NEXT @PageSize ROWS ONLY ";
