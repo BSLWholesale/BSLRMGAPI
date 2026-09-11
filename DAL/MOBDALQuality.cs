@@ -656,35 +656,26 @@ namespace BSLDaman.DAL
                 if (Con.State == ConnectionState.Closed)
                 { Con.Open(); }
 
-                //string strSql = "SELECT QAID, OrderNo, SizeName, SubSection, Qty, QAStatus, PlyNo, Opr, CreatedBy,";
-                //strSql = strSql + " FORMAT(CreatedOn, 'dd-MMM-yyyy') AS CreatedOn FROM QA_Order_CheckPoint WHERE 1=1";
-
-                string strSql = "SELECT QCP.QAID AS QAID, QCP.OrderNo AS OrderNo, QCP.SizeName AS SizeName, QCP.SubSection AS SubSection,";
-                strSql = strSql + " QCP.Qty AS Qty, QCP.QAStatus AS QAStatus, QCP.PlyNo AS PlyNo, QCP.Opr AS Opr, QCP.CreatedBy AS CreatedBy,";
-                strSql = strSql + " FORMAT(QCP.CreatedOn, 'dd-MMM-yyyy') AS CreatedOn, QPM.Defects AS DefectName";
-                strSql = strSql + " FROM QA_Order_CheckPoint AS QCP";
-                strSql = strSql + " LEFT JOIN QA_Order_DefectList AS QDL";
-                strSql = strSql + " ON QDL.QAID = QCP.QAID";
-                strSql = strSql + " LEFT JOIN QACheckPointMaster AS QPM";
-                strSql = strSql + " ON QPM.DefectsID = QDL.DefectID WHERE 1=1";
+                string strSql = "SELECT QAID, OrderNo, SizeName, SubSection, Qty, QAStatus, PlyNo, Opr, CreatedBy,";
+                strSql = strSql + " FORMAT(CreatedOn, 'dd-MMM-yyyy') AS CreatedOn FROM QA_Order_CheckPoint WHERE 1=1";                
 
                 if (!String.IsNullOrWhiteSpace(objReq.SubSection))
                 {
-                    strSql = strSql + " AND QCP.SubSection = @SubSection";
+                    strSql = strSql + " AND SubSection = @SubSection";
                 }
                 if (!String.IsNullOrWhiteSpace(objReq.SizeName))
                 {
-                    strSql = strSql + " AND QCP.SizeName = @SizeName";
+                    strSql = strSql + " AND SizeName = @SizeName";
                 }
                 if (!String.IsNullOrWhiteSpace(objReq.QAStatus))
                 {
-                    strSql = strSql + " AND QCP.QAStatus = @QAStatus";
+                    strSql = strSql + " AND QAStatus = @QAStatus";
                 }
                 if (!String.IsNullOrWhiteSpace(objReq.OrderNo))
                 {
-                    strSql = strSql + " AND QCP.OrderNo = @OrderNo ";
+                    strSql = strSql + " AND OrderNo = @OrderNo ";
                 }
-                strSql = strSql + " ORDER BY QCP.QAID DESC";
+                strSql = strSql + " ORDER BY QAID DESC";
 
                 SqlCommand cmd = new SqlCommand(strSql, Con);
                 cmd.CommandType = CommandType.Text;
@@ -719,37 +710,10 @@ namespace BSLDaman.DAL
                         obj.SubSection = Convert.ToString(ds.Tables[0].Rows[i]["SubSection"]);
                         obj.Qty = Convert.ToInt64(ds.Tables[0].Rows[i]["Qty"]);
                         obj.QAStatus = Convert.ToString(ds.Tables[0].Rows[i]["QAStatus"]);
-                        
-                        if (obj.PlyNo == null || obj.PlyNo == "")
-                        {
-                            obj.PlyNo = string.Empty;
-                        }
-                        else
-                        {
-                            obj.PlyNo = Convert.ToString(ds.Tables[0].Rows[i]["PlyNo"]);
-                        }
-
-                        if (obj.Opr == null || obj.Opr == "")
-                        {
-                            obj.Opr = string.Empty;
-                        }
-                        else
-                        {
-                            obj.Opr = Convert.ToString(ds.Tables[0].Rows[i]["Opr"]);
-                        }
-
+                        obj.PlyNo = Convert.ToString(ds.Tables[0].Rows[i]["PlyNo"]);
+                        obj.Opr = Convert.ToString(ds.Tables[0].Rows[i]["Opr"]);
                         obj.CreatedBy = Convert.ToInt32(ds.Tables[0].Rows[i]["CreatedBy"]);
                         obj.CreatedOn = Convert.ToString(ds.Tables[0].Rows[i]["CreatedOn"]);
-
-                        if (obj.DefectName == null || obj.DefectName == "")
-                        {
-                            obj.DefectName = string.Empty;
-                        }
-                        else
-                        {
-                            obj.DefectName = Convert.ToString(ds.Tables[0].Rows[i]["DefectName"]);
-                        }
-
                         obj.vErrorCode = 200;
                         obj.vErrorMsg = "Success";
                         objResp.Add(obj);
