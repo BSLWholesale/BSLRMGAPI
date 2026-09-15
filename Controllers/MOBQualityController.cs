@@ -123,5 +123,35 @@ namespace BSLDaman.Controllers
             return objResp;
         }
 
+        #region Start 15-SEP-2026 added by ankit
+
+        [System.Web.Http.HttpPost]
+        [System.Web.Http.Route("api/MOBQuality/Fn_Insert_QA_Measurement")]
+        public clsUploadMeasurement Fn_Insert_QA_Measurement(clsUploadMeasurement objReq)
+        {
+            var objResp = new clsUploadMeasurement();
+            objResp = _MOBDALQuality.Fn_Insert_QA_Measurement(objReq);
+            return objResp;
+        }
+
+        [System.Web.Http.HttpDelete]
+        [System.Web.Http.Route("api/MOBQuality/Fn_Delete_QA_Measurement")]
+        public clsUploadMeasurement Fn_Delete_QA_Measurement(clsUploadMeasurement objReq)
+        {
+            var objResp = new clsUploadMeasurement();
+            objResp = _MOBDALQuality.Fn_Delete_QA_Measurement(objReq);
+            return objResp;
+        }
+
+        [System.Web.Http.HttpGet]
+        [System.Web.Http.Route("api/MOBQuality/Fn_Get_QA_Measurement")]
+        public List<clsUploadMeasurement> Fn_Get_QA_Measurement(clsUploadMeasurement objReq)
+        {
+            var objResp = new List<clsUploadMeasurement>();
+            objResp = _MOBDALQuality.Fn_Get_QA_Measurement(objReq);
+            return objResp;
+        }
+
+        #endregion End 15-SEP-2026 added by ankit
     }
 }

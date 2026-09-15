@@ -657,7 +657,7 @@ namespace BSLDaman.DAL
                 { Con.Open(); }
 
                 string strSql = "SELECT QAID, OrderNo, SizeName, SubSection, Qty, QAStatus, PlyNo, Opr, CreatedBy,";
-                strSql = strSql + " FORMAT(CreatedOn, 'dd-MMM-yyyy') AS CreatedOn FROM QA_Order_CheckPoint WHERE 1=1";                
+                strSql = strSql + " FORMAT(CreatedOn, 'dd-MMM-yyyy') AS CreatedOn FROM QA_Order_CheckPoint WHERE 1=1";
 
                 if (!String.IsNullOrWhiteSpace(objReq.SubSection))
                 {
@@ -1047,5 +1047,223 @@ namespace BSLDaman.DAL
         }
 
         #endregion End Fn_Get_QAReport 05-MAY-2026
+
+        #region Start Fn_Insert_QA_Measurement 15-SEP-2026
+
+        public clsUploadMeasurement Fn_Insert_QA_Measurement(clsUploadMeasurement objReq)
+        {
+            var objResp = new clsUploadMeasurement();
+            Logger.ErrorLog(JsonConvert.SerializeObject(objReq), "Request", "Fn_Insert_QA_Measurement");
+            try
+            {
+
+                if (Con.State == ConnectionState.Broken)
+                { Con.Close(); }
+                if (Con.State == ConnectionState.Closed)
+                { Con.Open(); }
+
+
+                if (String.IsNullOrWhiteSpace(objReq.OrderNo))
+                {
+                    objResp.vErrorCode = 400;
+                    objResp.vErrorMsg = "OrderNo is empty";
+                }
+                else if (String.IsNullOrWhiteSpace(objReq.MeasurementImage))
+                {
+                    objResp.vErrorCode = 400;
+                    objResp.vErrorMsg = "MeasurementImage is empty";
+                }
+                else if (objReq.CreatedBy == 0)
+                {
+                    objResp.vErrorCode = 400;
+                    objResp.vErrorMsg = "CreatedBy is empty";
+                }
+                else
+                {
+                    #region upload Image                       
+
+                    // Generate unique GUID
+                    string guid = Guid.NewGuid().ToString("N");
+                    string imageName = guid + ".jpg";
+                    string imgFile = objReq.MeasurementImage;
+                    byte[] imageBytes = Convert.FromBase64String(imgFile.Split(',')[1]);
+                    string directoryPath = HttpContext.Current.Server.MapPath("~/Image/MeasurementImage/");
+                    if (!System.IO.Directory.Exists(directoryPath))
+                    {
+                        System.IO.Directory.CreateDirectory(directoryPath);
+                    }
+                    string filePath = System.IO.Path.Combine(directoryPath, imageName);
+                    System.IO.File.WriteAllBytes(filePath, imageBytes);
+                    objResp.MeasurementImage = imageName;
+
+                    #endregion upload Image
+
+                    objReq.MeasurementImage = imageName;
+
+                    SqlCommand cmd = new SqlCommand("USP_MobileQualityAnalysis", Con);
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("@OrderNo", objReq.OrderNo);
+                    cmd.Parameters.AddWithValue("@ImageName", objReq.MeasurementImage);
+                    cmd.Parameters.AddWithValue("@CreatedBy", objReq.CreatedBy);
+                    cmd.Parameters.AddWithValue("@QueryType", "Insert_QA_MeasurementImage");
+                    int i = 0;
+                    i = cmd.ExecuteNonQuery();
+                    if (i > 0)
+                    {                       
+                        objResp.OrderNo = objReq.OrderNo;
+                        objResp.vErrorCode = 200;
+                        objResp.vErrorMsg = "Success";
+
+                    }
+                    else
+                    {
+                        objResp.vErrorCode = 400;
+                        objResp.vErrorMsg = "QA Measurement Image Failed";
+                    }
+                }
+            }
+            catch (Exception exp)
+            {
+                objResp.vErrorCode = 500;
+                Logger.WriteLog("Function Name : Fn_Insert_QA_Measurement", " " + "Error Msg : " + exp.Message.ToString(), new StackTrace(exp, true));
+                objResp.vErrorMsg = exp.Message.ToString();
+            }
+            finally
+            {
+                Con.Close();
+            }
+            Logger.ErrorLog(JsonConvert.SerializeObject(objResp), "Response", "Fn_Insert_QA_Measurement");
+            return objResp;
+        }
+        
+        #endregion End Fn_Insert_QA_Measurement 15-SEP-2026
+
+
+        #region End Fn_Delete_QA_Measurement 15-SEP-2026
+
+        public clsUploadMeasurement Fn_Delete_QA_Measurement(clsUploadMeasurement objReq)
+        {
+            var objResp = new clsUploadMeasurement();
+            Logger.ErrorLog(JsonConvert.SerializeObject(objReq), "Request", "Fn_Delete_QA_Measurement");
+            try
+            {
+
+                if (Con.State == ConnectionState.Broken)
+                { Con.Close(); }
+                if (Con.State == ConnectionState.Closed)
+                { Con.Open(); }
+
+
+                if (String.IsNullOrWhiteSpace(objReq.OrderNo))
+                {
+                    objResp.vErrorCode = 400;
+                    objResp.vErrorMsg = "OrderNo is empty";
+                }
+                else if (objReq.Id == 0)
+                {
+                    objResp.vErrorCode = 400;
+                    objResp.vErrorMsg = "Id is empty";
+                }
+                else
+                {
+                    SqlCommand cmd = new SqlCommand("USP_MobileQualityAnalysis", Con);
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("@QAID", objReq.Id);
+                    cmd.Parameters.AddWithValue("@OrderNo", objReq.OrderNo);
+                    cmd.Parameters.AddWithValue("@QueryType", "DELETE_QA_MeasurementImage");
+                    int i = 0;
+                    i = cmd.ExecuteNonQuery();
+                    if (i > 0)
+                    {
+                        objResp.Id = objReq.Id;
+                        objResp.vErrorCode = 200;
+                        objResp.vErrorMsg = "Success";
+                    }
+                    else
+                    {
+                        objResp.vErrorCode = 400;
+                        objResp.vErrorMsg = "QA Measurement deleting Failed";
+                    }
+                }
+            }
+            catch (Exception exp)
+            {
+                objResp.vErrorCode = 500;
+                Logger.WriteLog("Function Name : Fn_Delete_QA_Measurement", " " + "Error Msg : " + exp.Message.ToString(), new StackTrace(exp, true));
+                objResp.vErrorMsg = exp.Message.ToString();
+            }
+            finally
+            {
+                Con.Close();
+            }
+            Logger.ErrorLog(JsonConvert.SerializeObject(objResp), "Response", "Fn_Delete_QA_Measurement");
+            return objResp;
+        }
+
+        #endregion End Fn_Delete_QA_Measurement 15-SEP-2026
+
+        #region End Fn_Get_QA_Measurement 15-SEP-2026
+
+        public List<clsUploadMeasurement> Fn_Get_QA_Measurement(clsUploadMeasurement objReq)
+        {
+            var objResp = new List<clsUploadMeasurement>();
+            var obj = new clsUploadMeasurement();
+            Logger.ErrorLog(JsonConvert.SerializeObject(objReq), "Request", "Fn_Get_QA_Measurement");
+            try
+            {
+
+                if (Con.State == ConnectionState.Broken)
+                { Con.Close(); }
+                if (Con.State == ConnectionState.Closed)
+                { Con.Open(); }
+
+
+                SqlCommand cmd = new SqlCommand("USP_MobileQualityAnalysis", Con);
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@OrderNo", objReq.OrderNo);
+                cmd.Parameters.AddWithValue("@QueryType", "SELECT_QA_MeasurementImage");
+                SqlDataAdapter da = new SqlDataAdapter(cmd);
+                DataSet ds = new DataSet();
+                da.Fill(ds);
+                int i = 0;
+                if (ds.Tables[0].Rows.Count > 0)
+                {
+                    while (ds.Tables[0].Rows.Count > i)
+                    {
+                        obj = new clsUploadMeasurement();
+                        obj.Id = Convert.ToInt32(ds.Tables[0].Rows[i]["ID"]);
+                        obj.OrderNo = Convert.ToString(ds.Tables[0].Rows[i]["OrderNo"]);
+                        obj.MeasurementImage = Convert.ToString(ds.Tables[0].Rows[i]["MeasurementImage"]);
+                        obj.CreatedBy = Convert.ToInt32(ds.Tables[0].Rows[i]["CreatedBy"]);
+                        obj.CreatedOn = Convert.ToString(ds.Tables[0].Rows[i]["CreatedOn"]);
+                        obj.vErrorCode = 200;
+                        obj.vErrorMsg = "Success";
+                        objResp.Add(obj);
+                        i++;
+                    }
+                }
+                else
+                {
+                    obj.vErrorCode = 404;
+                    obj.vErrorMsg = "No Record found";
+                    objResp.Add(obj);
+                }
+            }
+            catch (Exception exp)
+            {
+                obj.vErrorCode = 500;
+                Logger.WriteLog("Function Name : Fn_Get_QA_Measurement", " " + "Error Msg : " + exp.Message.ToString(), new StackTrace(exp, true));
+                obj.vErrorMsg = exp.Message.ToString();
+                objResp.Add(obj);
+            }
+            finally
+            {
+                Con.Close();
+            }
+            Logger.ErrorLog(JsonConvert.SerializeObject(objResp), "Response", "Fn_Get_QA_Measurement");
+            return objResp;
+        }
+
+        #endregion End Fn_Get_QA_Measurement 15-SEP-2026
     }
 }

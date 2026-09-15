@@ -157,4 +157,14 @@ namespace BSLDaman.Models
         public string vErrorMsg { get; set; }
     }    
 
+    public class clsUploadMeasurement
+    {
+        public int Id { get; set; }
+        public string OrderNo { get; set; }
+        public string MeasurementImage { get; set; }
+        public int CreatedBy { get; set; }
+        public string CreatedOn { get; set; }
+        public string vErrorMsg { get; set; }
+        public int vErrorCode { get; set; }
+    }
 }
