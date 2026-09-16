@@ -2316,10 +2316,12 @@ namespace BSLDaman.DAL
                 }
                 if (!String.IsNullOrWhiteSpace(objReq.SubSection))
                 {
-                    // strSql = strSql + " AND SubSection IN (@SubSection) ";
                     strSql = strSql + " AND SubSection IN (" + objReq.SubSection + ") ";
                 }
-
+                if (objReq.BundleNo != 0 && objReq.BundleNo != null)
+                {
+                    strSql = strSql + " AND BundleNo = @BundleNo";
+                }
                 strSql = strSql + " ORDER BY LayID, BundleNo, SubSection ASC ";
 
                 SqlCommand cmd = new SqlCommand(strSql, Con);
@@ -2341,10 +2343,10 @@ namespace BSLDaman.DAL
                     cmd.Parameters.AddWithValue("@PlyFrom", objReq.PlyFrom);
                     cmd.Parameters.AddWithValue("@PlyTo", objReq.PlyTo);
                 }
-                //if (!String.IsNullOrWhiteSpace(objReq.SubSection))
-                //{
-                //    cmd.Parameters.AddWithValue("@SubSection",  objReq.SubSection);
-                //}
+                if (objReq.BundleNo != 0 && objReq.BundleNo != null)
+                {
+                    cmd.Parameters.AddWithValue("@BundleNo", objReq.BundleNo);
+                }
 
                 SqlDataAdapter da = new SqlDataAdapter(cmd);
                 DataSet ds = new DataSet();
