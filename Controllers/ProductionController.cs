@@ -299,5 +299,18 @@ namespace BSLDaman.Controllers
         }
 
         #endregion End Fn_Get_Sum_Laywise_Plies 23-APR-2026
+
+        #region Start Fn_Update_Print_layarDate 17-SEP-2026
+
+        [System.Web.Http.HttpPost]
+        [System.Web.Http.Route("api/Production/Fn_Update_Print_layarDate")]
+        public clsBundleLayerMaster Fn_Update_Print_layarDate(clsBundleLayerMaster objReq)
+        {
+            var objResp = new clsBundleLayerMaster();
+            objResp = _DALProduction.Fn_Update_Print_layarDate(objReq);
+            return objResp;
+        }
+
+        #endregion End Fn_Update_Print_layarDate 17-SEP-2026
     }
 }

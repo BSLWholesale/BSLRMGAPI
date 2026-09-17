@@ -2602,6 +2602,53 @@ namespace BSLDaman.DAL
             return objResp;
         }
 
+        #region Start Fn_Update_Print_layarDate 17-SEP-2026
 
+        public clsBundleLayerMaster Fn_Update_Print_layarDate(clsBundleLayerMaster objReq)
+        {
+            var objResp = new clsBundleLayerMaster();
+            Logger.ErrorLog(JsonConvert.SerializeObject(objReq), "Request", "Fn_Update_Print_layarDate");
+            try
+            {
+
+                if (Con.State == ConnectionState.Broken)
+                { Con.Close(); }
+                if (Con.State == ConnectionState.Closed)
+                { Con.Open(); }
+
+                SqlCommand cmd = new SqlCommand("USP_BUNDLE_LAYER", Con);
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@LayID", objReq.LayID);
+                cmd.Parameters.AddWithValue("@OrderNo", objReq.OrderNo);
+                cmd.Parameters.AddWithValue("@CreatedBy", objReq.CreatedBy);
+                cmd.Parameters.AddWithValue("@QueryType", "UpdateLayerPrintDate");
+                int i = 0;
+                i = cmd.ExecuteNonQuery();
+                if (i > 0)
+                {
+                    objResp.vErrorCode = 200;
+                    objResp.vErrorMsg = "Success";
+                }
+                else
+                {
+                    objResp.vErrorCode = 400;
+                    objResp.vErrorMsg = "Layer print date updating failed";
+                }
+            }
+            catch (Exception exp)
+            {
+                objResp.vErrorCode = 500;
+                Logger.WriteLog("Function Name : Fn_Update_Print_layarDate", " " + "Error Msg : " + exp.Message.ToString(), new StackTrace(exp, true));
+                objResp.vErrorMsg = exp.Message.ToString();
+            }
+            finally
+            {
+                Con.Close();
+            }
+            Logger.ErrorLog(JsonConvert.SerializeObject(objResp), "Response", "Fn_Update_Print_layarDate");
+            return objResp;
+        }
+
+        #endregion End Fn_Update_Print_layarDate 17-SEP-2026
     }
 }
