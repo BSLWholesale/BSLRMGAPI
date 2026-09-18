@@ -2297,7 +2297,7 @@ namespace BSLDaman.DAL
                 { Con.Open(); }
 
                 string strSql = "SELECT Distinct BundleID, ColorName, Qty, BundleNo, SubSection, StyleCode, OrderNo, PlyFrom, PlyTo, SizeName, LayID,";
-                strSql = strSql + " CreatedBy, FORMAT(CreatedOn, 'dd-MMM-yyy') AS CreatedOn FROM BundleCompile WHERE 1=1";
+                strSql = strSql + " CreatedBy, FORMAT(CreatedOn, 'dd-MMM-yyy') AS CreatedOn, ShadeName FROM BundleCompile WHERE 1=1";
                 if (!String.IsNullOrWhiteSpace(objReq.StyleCode))
                 {
                     strSql = strSql + " AND StyleCode = @StyleCode";
@@ -2368,6 +2368,7 @@ namespace BSLDaman.DAL
                         obj.SizeName = Convert.ToString(ds.Tables[0].Rows[i]["SizeName"]);
                         obj.LayID = Convert.ToInt32(ds.Tables[0].Rows[i]["LayID"]);
                         obj.ColorName = Convert.ToString(ds.Tables[0].Rows[i]["ColorName"]);
+                        obj.ShadeName = Convert.ToString(ds.Tables[0].Rows[i]["ShadeName"]);
                         obj.Qty = Convert.ToInt32(ds.Tables[0].Rows[i]["Qty"]);
                         obj.CreatedBy = Convert.ToInt32(ds.Tables[0].Rows[i]["CreatedBy"]);
                         obj.CreatedOn = Convert.ToString(ds.Tables[0].Rows[i]["CreatedOn"]);
