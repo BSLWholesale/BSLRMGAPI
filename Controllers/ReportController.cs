@@ -71,6 +71,19 @@ namespace BSLDaman.Controllers
 
         #endregion End Fn_Get_Piece_Rate_Report 20-May-2026
 
+        #region Start Fn_Get_Piece_Rate_Report_Summary 24-Sep-2026
+
+        [System.Web.Http.HttpPost]
+        [System.Web.Http.Route("api/Report/Fn_Get_Piece_Rate_Report_Summary")]
+        public List<clsPieceRateReportResp> Fn_Get_Piece_Rate_Report_Summary(clsPieceRateReportReq objReq)
+        {
+            var objResp = new List<clsPieceRateReportResp>();
+            objResp = _DALReport.Fn_Get_Piece_Rate_Report_Summary(objReq);
+            return objResp;
+        }
+
+        #endregion End Fn_Get_Piece_Rate_Report_Summary 24-Sep-2026
+
         #region Start Fn_Get_Peice_Rate_Incentive 21-May-2026
 
         [System.Web.Http.HttpPost]
@@ -186,20 +199,7 @@ namespace BSLDaman.Controllers
             return objResp;
         }
 
-        #endregion End Fn_Get_Rate_By_OpNo 03-SEP-2026 Added by Ankit
-
-        #region Start Fn_Get_Piece_Rate_Report_Summary 24-Sep-2026
-
-        [System.Web.Http.HttpPost]
-        [System.Web.Http.Route("api/Report/Fn_Get_Piece_Rate_Report_Summary")]
-        public List<clsPieceRateReportResp> Fn_Get_Piece_Rate_Report_Summary(clsPieceRateReportReq objReq)
-        {
-            var objResp = new List<clsPieceRateReportResp>();
-            objResp = _DALReport.Fn_Get_Piece_Rate_Report_Summary(objReq);
-            return objResp;
-        }
-
-        #endregion End Fn_Get_Piece_Rate_Report_Summary 24-Sep-2026
+        #endregion End Fn_Get_Rate_By_OpNo 03-SEP-2026 Added by Ankit        
 
         #region Start Fn_Get_QAQCDHUReport 20-AUG-2026
 

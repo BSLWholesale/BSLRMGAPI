@@ -618,6 +618,169 @@ namespace BSLDaman.DAL
 
         #endregion End Fn_Get_Piece_Rate_Report 20-May-2026
 
+        #region Start Fn_Get_Piece_Rate_Report_Summary 24-Sep-2026
+
+        public List<clsPieceRateReportResp> Fn_Get_Piece_Rate_Report_Summary(clsPieceRateReportReq objReq)
+        {
+            var objResp = new List<clsPieceRateReportResp>();
+            var obj = new clsPieceRateReportResp();
+            Logger.ErrorLog(JsonConvert.SerializeObject(objReq), "Request", "Fn_Get_Piece_Rate_Report_Summary");
+            try
+            {
+                if (Con.State == ConnectionState.Broken)
+                { Con.Close(); }
+                if (Con.State == ConnectionState.Closed)
+                { Con.Open(); }
+
+                string strSql = "SELECT LineName, StyleCode, OrderNo, SubSection, Code, EmpName, OperationNo, Descriptions,";
+                strSql = strSql + " SUM(Qty) AS Qty, StdRate, SUM(Qty) * StdRate AS Amount,  UpdateType, BundleIDStatus, COUNT(*) OVER() AS TotalRows,";
+                strSql = strSql + " SUM(SUM(Qty) * StdRate) OVER() AS TotalAMT,";
+                strSql = strSql + " ( SELECT COUNT(DISTINCT Code) FROM vPieceRateReport WHERE 1=1";
+                if (!String.IsNullOrWhiteSpace(objReq.StyleCode))
+                {
+                    strSql = strSql + " AND StyleCode = @StyleCode ";
+                }
+                if (!String.IsNullOrWhiteSpace(objReq.SubSection))
+                {
+                    strSql = strSql + " AND SubSection = @SubSection ";
+                }
+                if (!String.IsNullOrWhiteSpace(objReq.Code))
+                {
+                    strSql = strSql + " AND Code = @Code ";
+                }
+                if (!String.IsNullOrWhiteSpace(objReq.LineName))
+                {
+                    strSql = strSql + " AND LineName = @LineName ";
+                }
+                if (!String.IsNullOrWhiteSpace(objReq.StartDate) && String.IsNullOrWhiteSpace(objReq.EndDate))
+                {
+                    strSql = strSql + " AND WorkDate = @StartDate ";
+                }
+                if (!String.IsNullOrWhiteSpace(objReq.StartDate) && !String.IsNullOrWhiteSpace(objReq.EndDate))
+                {
+                    strSql = strSql + " AND CAST(WorkDate AS DATE) BETWEEN '" + objReq.StartDate + "' AND '" + objReq.EndDate + "'";
+                }
+                strSql = strSql + " ) AS TotalEmp FROM vPieceRateReport WHERE 1=1";
+
+                if (!String.IsNullOrWhiteSpace(objReq.StyleCode))
+                {
+                    strSql = strSql + " AND StyleCode = @StyleCode ";
+                }
+                if (!String.IsNullOrWhiteSpace(objReq.SubSection))
+                {
+                    strSql = strSql + " AND SubSection = @SubSection ";
+                }
+                if (!String.IsNullOrWhiteSpace(objReq.Code))
+                {
+                    strSql = strSql + " AND Code = @Code ";
+                }
+                if (!String.IsNullOrWhiteSpace(objReq.LineName))
+                {
+                    strSql = strSql + " AND LineName = @LineName ";
+                }
+                if (!String.IsNullOrWhiteSpace(objReq.StartDate) && String.IsNullOrWhiteSpace(objReq.EndDate))
+                {
+                    strSql = strSql + " AND WorkDate = @StartDate ";
+                }
+                if (!String.IsNullOrWhiteSpace(objReq.StartDate) && !String.IsNullOrWhiteSpace(objReq.EndDate))
+                {
+                    strSql = strSql + " AND CAST(WorkDate AS DATE) BETWEEN '" + objReq.StartDate + "' AND '" + objReq.EndDate + "'";
+                }
+                strSql = strSql + " GROUP BY LineName, StyleCode,  OrderNo, SubSection, Code, EmpName, OperationNo,  Descriptions,";
+                strSql = strSql + " StdRate, UpdateType, BundleIDStatus ";
+                if (objReq.OrderBy == "WorkDate")
+                {
+                    strSql = strSql + " ORDER BY Code";
+                }
+                else
+                {
+                    strSql = strSql + " ORDER BY " + objReq.OrderBy;
+                }
+                strSql = strSql + " OFFSET (@PageNumber - 1) * @PageSize ROWS ";
+                strSql = strSql + " FETCH NEXT @PageSize ROWS ONLY ";
+
+                SqlCommand cmd = new SqlCommand(strSql, Con);
+                cmd.CommandType = CommandType.Text;
+                cmd.Parameters.AddWithValue("@PageNumber", objReq.PageNumber);
+                cmd.Parameters.AddWithValue("@PageSize", objReq.PageSize);
+
+                if (!String.IsNullOrWhiteSpace(objReq.StyleCode))
+                {
+                    cmd.Parameters.AddWithValue("@StyleCode", objReq.StyleCode);
+                }
+                if (!String.IsNullOrWhiteSpace(objReq.SubSection))
+                {
+                    cmd.Parameters.AddWithValue("@SubSection", objReq.SubSection);
+                }
+                if (!String.IsNullOrWhiteSpace(objReq.Code))
+                {
+                    cmd.Parameters.AddWithValue("@Code", objReq.Code);
+                }
+                if (!String.IsNullOrWhiteSpace(objReq.LineName))
+                {
+                    cmd.Parameters.AddWithValue("@LineName", objReq.LineName);
+                }
+                if (!String.IsNullOrWhiteSpace(objReq.StartDate) && String.IsNullOrWhiteSpace(objReq.EndDate))
+                {
+                    cmd.Parameters.AddWithValue("@StartDate", objReq.StartDate);
+                }
+
+
+                SqlDataAdapter da = new SqlDataAdapter(cmd);
+                DataSet ds = new DataSet();
+                da.Fill(ds);
+                int i = 0;
+                if (ds.Tables[0].Rows.Count > 0)
+                {
+                    while (ds.Tables[0].Rows.Count > i)
+                    {
+                        obj = new clsPieceRateReportResp();
+                        obj.LineName = Convert.ToString(ds.Tables[0].Rows[i]["LineName"]);
+                        obj.StyleCode = Convert.ToString(ds.Tables[0].Rows[i]["StyleCode"]);
+                        obj.OrderNo = Convert.ToString(ds.Tables[0].Rows[i]["OrderNo"]);
+                        obj.SubSection = Convert.ToString(ds.Tables[0].Rows[i]["SubSection"]);
+                        obj.Code = Convert.ToString(ds.Tables[0].Rows[i]["Code"]);
+                        obj.EmpName = Convert.ToString(ds.Tables[0].Rows[i]["EmpName"]);
+                        obj.OpNo = Convert.ToInt32(ds.Tables[0].Rows[i]["OperationNo"]);
+                        obj.OpName = Convert.ToString(ds.Tables[0].Rows[i]["Descriptions"]);
+                        obj.Qty = Convert.ToDouble(ds.Tables[0].Rows[i]["Qty"]);
+                        obj.Rate = Convert.ToDouble(ds.Tables[0].Rows[i]["StdRate"]);
+                        obj.Amount = Convert.ToDouble(ds.Tables[0].Rows[i]["Amount"]);
+                        obj.UpdateType = Convert.ToString(ds.Tables[0].Rows[i]["UpdateType"]);
+                        obj.TotalRows = Convert.ToInt64(ds.Tables[0].Rows[i]["TotalRows"]);
+                        obj.TotalAmount = Convert.ToDouble(ds.Tables[0].Rows[i]["TotalAMT"]);
+                        obj.TotalEmp = Convert.ToInt32(ds.Tables[0].Rows[i]["TotalEmp"]);
+                        obj.vErrorCode = 200;
+                        obj.vErrorMsg = "Success";
+                        objResp.Add(obj);
+                        i++;
+                    }
+                }
+                else
+                {
+                    obj.vErrorCode = 404;
+                    obj.vErrorMsg = "No Record found";
+                    objResp.Add(obj);
+                }
+
+            }
+            catch (Exception exp)
+            {
+                obj.vErrorCode = 500;
+                Logger.WriteLog("Function Name : Fn_Get_Piece_Rate_Report_Summary", " " + "Error Msg : " + exp.Message.ToString(), new StackTrace(exp, true));
+                obj.vErrorMsg = exp.Message.ToString();
+                objResp.Add(obj);
+            }
+            finally
+            {
+                Con.Close();
+            }
+            Logger.ErrorLog(JsonConvert.SerializeObject(objResp), "Response", "Fn_Get_Piece_Rate_Report_Summary");
+            return objResp;
+        }
+
+        #endregion End Fn_Get_Piece_Rate_Report_Summary 24-Sep-2026
+
         #region Start Fn_Get_Peice_Rate_Incentive 21-May-2026
 
         public List<clsPieceRateIncentive> Fn_Get_Peice_Rate_Incentive(clsPieceRateReportReq objReq)
@@ -1498,169 +1661,7 @@ namespace BSLDaman.DAL
         }
 
         #endregion End Fn_Get_Rate_OpNo 03-SEP-2026 Added by Ankit
-
-        #region Start Fn_Get_Piece_Rate_Report_Summary 24-Sep-2026
-
-        public List<clsPieceRateReportResp> Fn_Get_Piece_Rate_Report_Summary(clsPieceRateReportReq objReq)
-        {
-            var objResp = new List<clsPieceRateReportResp>();
-            var obj = new clsPieceRateReportResp();
-            Logger.ErrorLog(JsonConvert.SerializeObject(objReq), "Request", "Fn_Get_Piece_Rate_Report_Summary");
-            try
-            {
-                if (Con.State == ConnectionState.Broken)
-                { Con.Close(); }
-                if (Con.State == ConnectionState.Closed)
-                { Con.Open(); }
-
-                string strSql = "SELECT LineName, StyleCode, OrderNo, SubSection, Code, EmpName, OperationNo, Descriptions,";
-                strSql = strSql + " SUM(Qty) AS Qty, StdRate, SUM(Qty) * StdRate AS Amount,  UpdateType, BundleIDStatus, COUNT(*) OVER() AS TotalRows,";
-                strSql = strSql + " SUM(SUM(Qty) * StdRate) OVER() AS TotalAMT,";
-                strSql = strSql + " ( SELECT COUNT(DISTINCT Code) FROM vPieceRateReport WHERE 1=1";
-                if (!String.IsNullOrWhiteSpace(objReq.StyleCode))
-                {
-                    strSql = strSql + " AND StyleCode = @StyleCode ";
-                }
-                if (!String.IsNullOrWhiteSpace(objReq.SubSection))
-                {
-                    strSql = strSql + " AND SubSection = @SubSection ";
-                }
-                if (!String.IsNullOrWhiteSpace(objReq.Code))
-                {
-                    strSql = strSql + " AND Code = @Code ";
-                }
-                if (!String.IsNullOrWhiteSpace(objReq.LineName))
-                {
-                    strSql = strSql + " AND LineName = @LineName ";
-                }
-                if (!String.IsNullOrWhiteSpace(objReq.StartDate) && String.IsNullOrWhiteSpace(objReq.EndDate))
-                {
-                    strSql = strSql + " AND WorkDate = @StartDate ";
-                }
-                if (!String.IsNullOrWhiteSpace(objReq.StartDate) && !String.IsNullOrWhiteSpace(objReq.EndDate))
-                {
-                    strSql = strSql + " AND CAST(WorkDate AS DATE) BETWEEN '" + objReq.StartDate + "' AND '" + objReq.EndDate + "'";
-                }
-                strSql = strSql + " ) AS TotalEmp FROM vPieceRateReport WHERE 1=1";
-
-                if (!String.IsNullOrWhiteSpace(objReq.StyleCode))
-                {
-                    strSql = strSql + " AND StyleCode = @StyleCode ";
-                }
-                if (!String.IsNullOrWhiteSpace(objReq.SubSection))
-                {
-                    strSql = strSql + " AND SubSection = @SubSection ";
-                }
-                if (!String.IsNullOrWhiteSpace(objReq.Code))
-                {
-                    strSql = strSql + " AND Code = @Code ";
-                }
-                if (!String.IsNullOrWhiteSpace(objReq.LineName))
-                {
-                    strSql = strSql + " AND LineName = @LineName ";
-                }
-                if (!String.IsNullOrWhiteSpace(objReq.StartDate) && String.IsNullOrWhiteSpace(objReq.EndDate))
-                {
-                    strSql = strSql + " AND WorkDate = @StartDate ";
-                }
-                if (!String.IsNullOrWhiteSpace(objReq.StartDate) && !String.IsNullOrWhiteSpace(objReq.EndDate))
-                {
-                    strSql = strSql + " AND CAST(WorkDate AS DATE) BETWEEN '" + objReq.StartDate + "' AND '" + objReq.EndDate + "'";
-                }
-                strSql = strSql + " GROUP BY LineName, StyleCode,  OrderNo, SubSection, Code, EmpName, OperationNo,  Descriptions,";
-                strSql = strSql + " StdRate, UpdateType, BundleIDStatus ";
-                if (objReq.OrderBy == "WorkDate")
-                {
-                    strSql = strSql + " ORDER BY Code";
-                }
-                else
-                {
-                    strSql = strSql + " ORDER BY " + objReq.OrderBy;
-                }
-                strSql = strSql + " OFFSET (@PageNumber - 1) * @PageSize ROWS ";
-                strSql = strSql + " FETCH NEXT @PageSize ROWS ONLY ";
-
-                SqlCommand cmd = new SqlCommand(strSql, Con);
-                cmd.CommandType = CommandType.Text;
-                cmd.Parameters.AddWithValue("@PageNumber", objReq.PageNumber);
-                cmd.Parameters.AddWithValue("@PageSize", objReq.PageSize);
-
-                if (!String.IsNullOrWhiteSpace(objReq.StyleCode))
-                {
-                    cmd.Parameters.AddWithValue("@StyleCode", objReq.StyleCode);
-                }
-                if (!String.IsNullOrWhiteSpace(objReq.SubSection))
-                {
-                    cmd.Parameters.AddWithValue("@SubSection", objReq.SubSection);
-                }
-                if (!String.IsNullOrWhiteSpace(objReq.Code))
-                {
-                    cmd.Parameters.AddWithValue("@Code", objReq.Code);
-                }
-                if (!String.IsNullOrWhiteSpace(objReq.LineName))
-                {
-                    cmd.Parameters.AddWithValue("@LineName", objReq.LineName);
-                }
-                if (!String.IsNullOrWhiteSpace(objReq.StartDate) && String.IsNullOrWhiteSpace(objReq.EndDate))
-                {
-                    cmd.Parameters.AddWithValue("@StartDate", objReq.StartDate);
-                }
-
-
-                SqlDataAdapter da = new SqlDataAdapter(cmd);
-                DataSet ds = new DataSet();
-                da.Fill(ds);
-                int i = 0;
-                if (ds.Tables[0].Rows.Count > 0)
-                {
-                    while (ds.Tables[0].Rows.Count > i)
-                    {
-                        obj = new clsPieceRateReportResp();
-                        obj.LineName = Convert.ToString(ds.Tables[0].Rows[i]["LineName"]);
-                        obj.StyleCode = Convert.ToString(ds.Tables[0].Rows[i]["StyleCode"]);
-                        obj.OrderNo = Convert.ToString(ds.Tables[0].Rows[i]["OrderNo"]);
-                        obj.SubSection = Convert.ToString(ds.Tables[0].Rows[i]["SubSection"]);
-                        obj.Code = Convert.ToString(ds.Tables[0].Rows[i]["Code"]);
-                        obj.EmpName = Convert.ToString(ds.Tables[0].Rows[i]["EmpName"]);
-                        obj.OpNo = Convert.ToInt32(ds.Tables[0].Rows[i]["OperationNo"]);
-                        obj.OpName = Convert.ToString(ds.Tables[0].Rows[i]["Descriptions"]);
-                        obj.Qty = Convert.ToDouble(ds.Tables[0].Rows[i]["Qty"]);
-                        obj.Rate = Convert.ToDouble(ds.Tables[0].Rows[i]["StdRate"]);
-                        obj.Amount = Convert.ToDouble(ds.Tables[0].Rows[i]["Amount"]);
-                        obj.UpdateType = Convert.ToString(ds.Tables[0].Rows[i]["UpdateType"]);
-                        obj.TotalRows = Convert.ToInt64(ds.Tables[0].Rows[i]["TotalRows"]);
-                        obj.TotalAmount = Convert.ToDouble(ds.Tables[0].Rows[i]["TotalAMT"]);
-                        obj.TotalEmp = Convert.ToInt32(ds.Tables[0].Rows[i]["TotalEmp"]);
-                        obj.vErrorCode = 200;
-                        obj.vErrorMsg = "Success";
-                        objResp.Add(obj);
-                        i++;
-                    }
-                }
-                else
-                {
-                    obj.vErrorCode = 404;
-                    obj.vErrorMsg = "No Record found";
-                    objResp.Add(obj);
-                }
-
-            }
-            catch (Exception exp)
-            {
-                obj.vErrorCode = 500;
-                Logger.WriteLog("Function Name : Fn_Get_Piece_Rate_Report_Summary", " " + "Error Msg : " + exp.Message.ToString(), new StackTrace(exp, true));
-                obj.vErrorMsg = exp.Message.ToString();
-                objResp.Add(obj);
-            }
-            finally
-            {
-                Con.Close();
-            }
-            Logger.ErrorLog(JsonConvert.SerializeObject(objResp), "Response", "Fn_Get_Piece_Rate_Report_Summary");
-            return objResp;
-        }
-
-        #endregion End Fn_Get_Piece_Rate_Report_Summary 24-Sep-2026
+        
 
         #region Start Fn_Get_QAQCDHUReport 20-AUG-2026
         public List<clsQADHUReport> Fn_Get_QAQCDHUReport(clsQADHUReport objReq)
