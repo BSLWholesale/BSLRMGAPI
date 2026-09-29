@@ -3183,6 +3183,7 @@ namespace BSLDaman.DAL
                         obj.SupervisorAssignedDate = Convert.ToString(ds.Tables[0].Rows[i]["SupAssignedDate"]);
                         obj.AppEmpID = Convert.ToInt32(ds.Tables[0].Rows[i]["AppEmpID"]);
                         obj.AppEmpName = Convert.ToString(ds.Tables[0].Rows[i]["AppEmpName"]);
+                        obj.LineName = Convert.ToString(ds.Tables[0].Rows[i]["LineName"]);
                         obj.CreatedBy = Convert.ToInt32(ds.Tables[0].Rows[i]["CreatedBy"]);
                         obj.CreatedOn = Convert.ToString(ds.Tables[0].Rows[i]["CreatedOn"]);
 
