@@ -762,6 +762,11 @@ namespace BSLDaman.DAL
                     objResp.vErrorMsg = "Please Pass the Valid App Employee/Worker ID";
                     objResp.vErrorCode = 300;
                 }
+                else if (string.IsNullOrWhiteSpace(objReq.LineName))
+                {
+                    objResp.vErrorMsg = "Please Pass the Line Name";
+                    objResp.vErrorCode = 300;
+                }
                 else
                 {
                     if (Con.State == ConnectionState.Broken)
@@ -776,6 +781,7 @@ namespace BSLDaman.DAL
                     cmd.Parameters.AddWithValue("@OperationNos", objReq.OperationNos);
                     cmd.Parameters.AddWithValue("@SubSection", objReq.SubSection);
                     cmd.Parameters.AddWithValue("@AppEmpIDs", objReq.AppEmpIDs);
+                    cmd.Parameters.AddWithValue("@LineName", objReq.LineName);
                     cmd.Parameters.AddWithValue("@QueryType", "UpdateAssignedBundleID");
 
                     using (SqlDataReader dr = cmd.ExecuteReader())
@@ -3115,7 +3121,7 @@ namespace BSLDaman.DAL
                 //strSql = strSql + " BAD.SupervisorID AS SupervisorID, EM.EmpName AS SupervisorName, BAD.SupAssignedDate AS SupAssignedDate,";
                 //strSql = strSql + " BAD.AppEmpID AS AppEmpID, EM1.EmpName AS AppEmpName, BAD.CreatedBy AS CreatedBy,";
                 //strSql = strSql + " FORMAT(BAD.CreatedOn, 'dd-MMM-yyyy HH:mm:ss') AS CreatedOn,";
-                //strSql = strSql + " (SELECT TOP 1 Descriptions FROM OperationBreackDownDetail WHERE OpNo = BAD.OperationNo) AS Descriptions";
+                //strSql = strSql + " (SELECT TOP 1 BCD.Descriptions FROM BundleCompileDetail AS BCD WHERE BCD.OperationNo = BAD.OperationNo) AS Descriptions";
                 //strSql = strSql + " FROM BundleCompileAssignDetail AS BAD";
                 //strSql = strSql + " INNER JOIN EmployeeMaster AS EM";
                 //strSql = strSql + " ON BAD.SupervisorID = EM.EmpId";
@@ -3127,7 +3133,8 @@ namespace BSLDaman.DAL
                 strSql = strSql + " BAD.SupervisorID AS SupervisorID, EM.EmpName AS SupervisorName, BAD.SupAssignedDate AS SupAssignedDate,";
                 strSql = strSql + " BAD.AppEmpID AS AppEmpID, EM1.EmpName AS AppEmpName, BAD.CreatedBy AS CreatedBy,";
                 strSql = strSql + " FORMAT(BAD.CreatedOn, 'dd-MMM-yyyy HH:mm:ss') AS CreatedOn,";
-                strSql = strSql + " (SELECT TOP 1 BCD.Descriptions FROM BundleCompileDetail AS BCD WHERE BCD.OperationNo = BAD.OperationNo) AS Descriptions";
+                strSql = strSql + " (SELECT TOP 1 BCD.Descriptions FROM BundleCompileDetail AS BCD WHERE BCD.OperationNo = BAD.OperationNo) AS Descriptions,";
+                strSql = strSql + " BAD.LineName AS LineName";
                 strSql = strSql + " FROM BundleCompileAssignDetail AS BAD";
                 strSql = strSql + " INNER JOIN EmployeeMaster AS EM";
                 strSql = strSql + " ON BAD.SupervisorID = EM.EmpId";
@@ -3146,6 +3153,10 @@ namespace BSLDaman.DAL
                 if (objReq.OperationNo > 0)
                 {
                     strSql = strSql + " AND BAD.OperationNo = " + objReq.OperationNo;
+                }
+                if (!String.IsNullOrWhiteSpace(objReq.LineName))
+                {
+                    strSql = strSql + " AND BAD.LineName = '" + objReq.LineName + "'";
                 }
 
                 strSql = strSql + " ORDER BY BAD.SupAssignedDate DESC, BAD.OrderNo, BAD.OperationNo";
