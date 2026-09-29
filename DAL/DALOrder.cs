@@ -509,7 +509,7 @@ namespace BSLDaman.DAL
         {
             var objResp = new clsOPBreackDownMaster();
             Logger.ErrorLog(JsonConvert.SerializeObject(objReq), "Request", "Fn_Upload_Operation_BreackdownFile");
-            var filteredList = objReq.oList.Where(x => x.SubSection == "Post Assmbly" || x.SubSection == "POST ASSEMBLY").ToList();            
+            //var filteredList = objReq.oList.Where(x => x.SubSection == "Post Assmbly" || x.SubSection == "POST ASSEMBLY").ToList();
             try
             {
 
@@ -528,7 +528,7 @@ namespace BSLDaman.DAL
                 else if (objReq.oList == null || objReq.oList.Count == 0)
                 {
                     objResp.vErrorCode = 400;
-                    objResp.vErrorMsg = "Please select List";
+                    objResp.vErrorMsg = "Please add operation List";
                     return objResp;
                 }
                 if (!String.IsNullOrWhiteSpace(objReq.vErrorMsg))
@@ -537,12 +537,12 @@ namespace BSLDaman.DAL
                     objResp.vErrorMsg = objReq.vErrorMsg;
                     return objResp;
                 }
-                if (filteredList.Count == 0)
-                {
-                    objResp.vErrorCode = 400;
-                    objResp.vErrorMsg = "Please Add Post Assmbly in SubSection";
-                    return objResp;
-                }
+                //if (filteredList.Count == 0)
+                //{
+                //    objResp.vErrorCode = 400;
+                //    objResp.vErrorMsg = "Please Add Post Assmbly in SubSection";
+                //    return objResp;
+                //}
                 else
                 {
                     if (Con.State == ConnectionState.Broken)
@@ -608,14 +608,6 @@ namespace BSLDaman.DAL
                                     cm1.Parameters.AddWithValue("@StdMin", _oList.StdMin);
                                     cm1.Parameters.AddWithValue("@Rate", _oList.Rate);
                                     cm1.Parameters.AddWithValue("@Product", _oList.Product);
-                                    cm1.Parameters.AddWithValue("@Skill", _oList.Skill);
-                                    cm1.Parameters.AddWithValue("@Grade", _oList.Grade);
-                                    cm1.Parameters.AddWithValue("@Folder", _oList.Folder);
-                                    cm1.Parameters.AddWithValue("@Seamlength", _oList.Seamlength);
-                                    cm1.Parameters.AddWithValue("@IsDirect", _oList.IsDirect);
-                                    cm1.Parameters.AddWithValue("@ProgressPoint", _oList.ProgressPoint);
-                                    cm1.Parameters.AddWithValue("@IsDispatch", _oList.IsDispatch);
-                                    cm1.Parameters.AddWithValue("@IsDS", _oList.IsDS);
                                     cm1.Parameters.AddWithValue("@CreatedBy", objReq.CreatedBy);
                                     cm1.Parameters.AddWithValue("@QueryType", "InsertOperationDetail");
                                     int j = cm1.ExecuteNonQuery();
@@ -668,8 +660,7 @@ namespace BSLDaman.DAL
                 { Con.Open(); }
 
                 string strSql = "SELECT OD.MID, OD.DetailID, OD.SeqNo, OD.OpNo, OD.Descriptions, OD.Machine, OD.SubSection,";
-                strSql = strSql + " OD.StdMin, OD.Rate, OD.Product, OD.Skill, OD.Grade, OD.Folder, OD.Seamlength, OD.IsDirect,";
-                strSql = strSql + " OD.ProgressPoint, OD.IsDispatch, OD.DependOPNO, OD.IsDS, OD.CreatedBy, OM.StyleCode, OM.ProcessName,";
+                strSql = strSql + " OD.StdMin, OD.Rate, OD.Product, OD.CreatedBy, OM.StyleCode, OM.ProcessName,";
                 strSql = strSql + " FORMAT(OD.CreatedOn, 'dd-MMM-yyy') AS CreatedOn FROM OperationBreackDownDetail OD";
                 strSql = strSql + " INNER JOIN OperationBreackDownMaster OM ON OD.MID = OM.ID WHERE 1=1";
                 if (!String.IsNullOrWhiteSpace(objReq.ProcessName))
@@ -727,15 +718,6 @@ namespace BSLDaman.DAL
                         obj.StdMin = Convert.ToDecimal(ds.Tables[0].Rows[i]["StdMin"]);
                         obj.Rate = Convert.ToDecimal(ds.Tables[0].Rows[i]["Rate"]);
                         obj.Product = Convert.ToString(ds.Tables[0].Rows[i]["Product"]);
-                        obj.Skill = Convert.ToString(ds.Tables[0].Rows[i]["Skill"]);
-                        obj.Grade = Convert.ToString(ds.Tables[0].Rows[i]["Grade"]);
-                        obj.Folder = Convert.ToString(ds.Tables[0].Rows[i]["Folder"]);
-                        obj.Seamlength = Convert.ToString(ds.Tables[0].Rows[i]["Seamlength"]);
-                        obj.IsDirect = Convert.ToBoolean(ds.Tables[0].Rows[i]["IsDirect"]);
-                        obj.ProgressPoint = Convert.ToString(ds.Tables[0].Rows[i]["ProgressPoint"]);
-                        obj.IsDispatch = Convert.ToBoolean(ds.Tables[0].Rows[i]["IsDispatch"]);
-                        obj.DependOPNO = Convert.ToString(ds.Tables[0].Rows[i]["DependOPNO"]);
-                        obj.IsDS = Convert.ToBoolean(ds.Tables[0].Rows[i]["IsDS"]);
                         obj.CreatedOn = Convert.ToString(ds.Tables[0].Rows[i]["CreatedOn"]);
                         obj.CreatedBy = Convert.ToInt32(ds.Tables[0].Rows[i]["CreatedBy"]);
 
@@ -864,7 +846,7 @@ namespace BSLDaman.DAL
                 {
                     strSql = strSql + " AND SubProduct = @Product";
                 }
-                
+
                 strSql = strSql + " ORDER BY SubSection, OpNo ASC ";
 
                 SqlCommand cmd = new SqlCommand(strSql, Con);
@@ -873,7 +855,7 @@ namespace BSLDaman.DAL
                 {
                     cmd.Parameters.AddWithValue("@Product", objReq.Product);
                 }
-                
+
 
                 SqlDataAdapter da = new SqlDataAdapter(cmd);
                 DataSet ds = new DataSet();
@@ -982,7 +964,7 @@ namespace BSLDaman.DAL
 
         #region Start Fn_Add_New_OpNo 03-APR-2026
 
-        public clsOPBreackDownDetail Fn_Add_New_OpNo (clsOPBreackDownDetail objReq)
+        public clsOPBreackDownDetail Fn_Add_New_OpNo(clsOPBreackDownDetail objReq)
         {
             var objResp = new clsOPBreackDownDetail();
             Logger.ErrorLog(JsonConvert.SerializeObject(objReq), "Request", "Fn_Add_New_OpNo");
@@ -1049,7 +1031,7 @@ namespace BSLDaman.DAL
 
                 string strSql = "Select SUM(BC.Qty) AS Qty, Format(BD.AppStartTime,'MMM') AS SMonth, BC.OrderNo from BundleCompileDetail BD";
                 strSql = strSql + " INNER JOIN BundleCompile BC ON BC.BundleID = BD.BundleID where 1=1 AND BD.BundleIDStatus = 'Finished'";
-               
+
                 if (!String.IsNullOrWhiteSpace(objReq.OrderNo))
                 {
                     strSql = strSql + " AND OrderNo = @OrderNo";
@@ -1121,8 +1103,8 @@ namespace BSLDaman.DAL
                 if (Con.State == ConnectionState.Closed)
                 { Con.Open(); }
 
-                string strSql = "SELECT DISTINCT OpNo,Descriptions,Machine,SubSection,StdMin,Rate,Product,Skill,Grade,Folder,Seamlength,";
-                strSql = strSql + " IsDirect,ProgressPoint,IsDispatch,DependOPNO,IsDS FROM OperationBreackDownDetail WHERE 1=1";
+                string strSql = "SELECT DISTINCT OpNo,Descriptions,Machine,SubSection,StdMin,Rate,";
+                strSql = strSql + " Product FROM OperationBreackDownDetail WHERE 1=1";
                 if (objReq.OpNo != 0 && objReq.OpNo != null)
                 {
                     strSql = strSql + " AND OpNo LIKE @OpNo ";
@@ -1143,20 +1125,13 @@ namespace BSLDaman.DAL
                 {
                     strSql = strSql + " AND Product LIKE @Product";
                 }
-                if (!String.IsNullOrWhiteSpace(objReq.Skill))
-                {
-                    strSql = strSql + " AND Skill LIKE @Skill";
-                }
-                if (!String.IsNullOrWhiteSpace(objReq.Grade))
-                {
-                    strSql = strSql + " AND Grade LIKE @Grade";
-                }
+
 
                 strSql = strSql + " ORDER BY OpNo ASC ";
 
                 SqlCommand cmd = new SqlCommand(strSql, Con);
                 cmd.CommandType = CommandType.Text;
-              
+
                 if (objReq.OpNo != 0 && objReq.OpNo != null)
                 {
                     cmd.Parameters.AddWithValue("@OpNo", "%" + objReq.OpNo + "%");
@@ -1167,7 +1142,7 @@ namespace BSLDaman.DAL
                 }
                 if (!String.IsNullOrWhiteSpace(objReq.Machine))
                 {
-                    cmd.Parameters.AddWithValue("@Machine", "%" + objReq.Machine+ "%");
+                    cmd.Parameters.AddWithValue("@Machine", "%" + objReq.Machine + "%");
                 }
                 if (!String.IsNullOrWhiteSpace(objReq.SubSection))
                 {
@@ -1177,14 +1152,7 @@ namespace BSLDaman.DAL
                 {
                     cmd.Parameters.AddWithValue("@Product", "%" + objReq.Product + "%");
                 }
-                if (!String.IsNullOrWhiteSpace(objReq.Skill))
-                {
-                    cmd.Parameters.AddWithValue("@Skill", "%" + objReq.Skill + "%");
-                }
-                if (!String.IsNullOrWhiteSpace(objReq.Grade))
-                {
-                    cmd.Parameters.AddWithValue("@Grade", "%" + objReq.Grade + "%");
-                }
+
 
                 SqlDataAdapter da = new SqlDataAdapter(cmd);
                 DataSet ds = new DataSet();
@@ -1203,15 +1171,6 @@ namespace BSLDaman.DAL
                         obj.StdMin = Convert.ToDecimal(ds.Tables[0].Rows[i]["StdMin"]);
                         obj.Rate = Convert.ToDecimal(ds.Tables[0].Rows[i]["Rate"]);
                         obj.Product = Convert.ToString(ds.Tables[0].Rows[i]["Product"]);
-                        obj.Skill = Convert.ToString(ds.Tables[0].Rows[i]["Skill"]);
-                        obj.Grade = Convert.ToString(ds.Tables[0].Rows[i]["Grade"]);
-                        obj.Folder = Convert.ToString(ds.Tables[0].Rows[i]["Folder"]);
-                        obj.Seamlength = Convert.ToString(ds.Tables[0].Rows[i]["Seamlength"]);
-                        obj.IsDirect = Convert.ToBoolean(ds.Tables[0].Rows[i]["IsDirect"]);
-                        obj.ProgressPoint = Convert.ToString(ds.Tables[0].Rows[i]["ProgressPoint"]);
-                        obj.IsDispatch = Convert.ToBoolean(ds.Tables[0].Rows[i]["IsDispatch"]);
-                        obj.DependOPNO = Convert.ToString(ds.Tables[0].Rows[i]["DependOPNO"]);
-                        obj.IsDS = Convert.ToBoolean(ds.Tables[0].Rows[i]["IsDS"]);
 
                         obj.vErrorCode = 200;
                         obj.vErrorMsg = "Success";
@@ -1279,7 +1238,7 @@ namespace BSLDaman.DAL
                 }
                 else
                 {
-                   var objGet = new clsOPBreackDownDetail();
+                    var objGet = new clsOPBreackDownDetail();
                     objGet.OpNo = objReq.OpNo;
                     checkExistOP = new List<clsOPBreackDownDetail>();
                     checkExistOP = Fn_Filter_OP_Detail(objGet);
@@ -1299,15 +1258,6 @@ namespace BSLDaman.DAL
                     cmd.Parameters.AddWithValue("@StdMin", checkExistOP[0].StdMin);
                     cmd.Parameters.AddWithValue("@Rate", checkExistOP[0].Rate);
                     cmd.Parameters.AddWithValue("@Product", checkExistOP[0].Product);
-                    cmd.Parameters.AddWithValue("@Skill", checkExistOP[0].Skill);
-                    cmd.Parameters.AddWithValue("@Grade", checkExistOP[0].Grade);
-                    cmd.Parameters.AddWithValue("@Folder", checkExistOP[0].Folder);
-                    cmd.Parameters.AddWithValue("@Seamlength", objReq.Seamlength);
-                    cmd.Parameters.AddWithValue("@IsDirect", objReq.IsDirect);
-                    cmd.Parameters.AddWithValue("@ProgressPoint", objReq.ProgressPoint);
-                    cmd.Parameters.AddWithValue("@IsDispatch", objReq.IsDispatch);
-                    cmd.Parameters.AddWithValue("@DependOPNO", objReq.DependOPNO);
-                    cmd.Parameters.AddWithValue("@IsDS", objReq.IsDS);
                     cmd.Parameters.AddWithValue("@CreatedBy", objReq.CreatedBy);
                     cmd.Parameters.AddWithValue("@CreatedOn", objReq.Folder); // StyleCode
                     cmd.Parameters.AddWithValue("@QueryType", "Append_New_Opno");
@@ -1326,7 +1276,7 @@ namespace BSLDaman.DAL
                 }
             }
             catch (Exception exp)
-            {               
+            {
                 Logger.WriteLog("Function Name : Fn_Append_New_OpNo", " " + "Error Msg : " + exp.Message.ToString(), new StackTrace(exp, true));
                 objResp.vErrorMsg = exp.Message.ToString();
                 objResp.vErrorCode = 500;
@@ -1352,7 +1302,7 @@ namespace BSLDaman.DAL
             Logger.ErrorLog(JsonConvert.SerializeObject(objReq), "Request", "Fn_Delete_OpNo_IN_OBD");
             try
             {
-                
+
 
                 if (objReq.OpNo == 0 && objReq.OpNo == null)
                 {
@@ -1365,7 +1315,7 @@ namespace BSLDaman.DAL
                     objResp.vErrorMsg = "Please Enter StyleCode";
                 }
                 else
-                {                    
+                {
 
                     if (Con.State == ConnectionState.Broken)
                     { Con.Close(); }
@@ -1469,16 +1419,6 @@ namespace BSLDaman.DAL
                     objResp.vErrorCode = 400;
                     objResp.vErrorMsg = "Please Enter Product";
                 }
-                else if (String.IsNullOrWhiteSpace(objReq.Skill))
-                {
-                    objResp.vErrorCode = 400;
-                    objResp.vErrorMsg = "Please Enter Skill";
-                }
-                else if (String.IsNullOrWhiteSpace(objReq.Grade))
-                {
-                    objResp.vErrorCode = 400;
-                    objResp.vErrorMsg = "Please Enter Grade";
-                }
                 else if (String.IsNullOrWhiteSpace(objReq.CreatedOn))
                 {
                     objResp.vErrorCode = 400;
@@ -1490,7 +1430,7 @@ namespace BSLDaman.DAL
                     objResp.vErrorMsg = "OpNo already exist";
                 }
                 else
-                {                    
+                {
 
                     if (Con.State == ConnectionState.Broken)
                     { Con.Close(); }
@@ -1508,15 +1448,6 @@ namespace BSLDaman.DAL
                     cmd.Parameters.AddWithValue("@StdMin", objReq.StdMin);
                     cmd.Parameters.AddWithValue("@Rate", objReq.Rate);
                     cmd.Parameters.AddWithValue("@Product", objReq.Product);
-                    cmd.Parameters.AddWithValue("@Skill", objReq.Skill);
-                    cmd.Parameters.AddWithValue("@Grade", objReq.Grade);
-                    cmd.Parameters.AddWithValue("@Folder", objReq.Folder);
-                    cmd.Parameters.AddWithValue("@Seamlength", objReq.Seamlength);
-                    cmd.Parameters.AddWithValue("@IsDirect", objReq.IsDirect);
-                    cmd.Parameters.AddWithValue("@ProgressPoint", objReq.ProgressPoint);
-                    cmd.Parameters.AddWithValue("@IsDispatch", objReq.IsDispatch);
-                    cmd.Parameters.AddWithValue("@DependOPNO", objReq.DependOPNO);
-                    cmd.Parameters.AddWithValue("@IsDS", objReq.IsDS);
                     cmd.Parameters.AddWithValue("@CreatedBy", objReq.CreatedBy);
                     cmd.Parameters.AddWithValue("@CreatedOn", objReq.CreatedOn); // StyleCode
                     cmd.Parameters.AddWithValue("@QueryType", "Add_New_OpNo_IN_OBD");
@@ -1637,7 +1568,7 @@ namespace BSLDaman.DAL
                 strSql = strSql + " Width, WidthTolerance, OrderRollLength, OrderRollLengthTolerance,";
                 strSql = strSql + " GSM, GSMTolerance, OrderShrinkageWarpLength, OrderShrinkageWaftWidth, TotalQuantity,";
                 strSql = strSql + " Unit, MarkerType, Price, CreatedBy, CreatedOn FROM Fabric_Order WHERE 1=1";
-                
+
                 if (!String.IsNullOrWhiteSpace(objReq.StyleCode) && !String.IsNullOrWhiteSpace(objReq.FabricColor))
                 {
                     strSql = strSql + " AND StyleCode = @StyleCode";
@@ -1658,7 +1589,7 @@ namespace BSLDaman.DAL
                 {
                     strSql = strSql + " AND MarkerType = @MarkerType";
                 }
-                
+
                 strSql = strSql + " ORDER BY StyleCode, ItemCode ASC ";
 
                 SqlCommand cmd = new SqlCommand(strSql, Con);
@@ -1866,7 +1797,7 @@ namespace BSLDaman.DAL
 
         public clsOPBreackDownDetail Fn_Update_OpNo_IN_OBD(clsOPBreackDownDetail objReq)
         {
-            var objResp = new clsOPBreackDownDetail();            
+            var objResp = new clsOPBreackDownDetail();
             Logger.ErrorLog(JsonConvert.SerializeObject(objReq), "Request", "Fn_Update_OpNo_IN_OBD");
             try
             {
