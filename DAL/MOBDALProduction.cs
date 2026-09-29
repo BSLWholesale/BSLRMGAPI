@@ -762,11 +762,11 @@ namespace BSLDaman.DAL
                     objResp.vErrorMsg = "Please Pass the Valid App Employee/Worker ID";
                     objResp.vErrorCode = 300;
                 }
-                else if (string.IsNullOrWhiteSpace(objReq.LineName))
-                {
-                    objResp.vErrorMsg = "Please Pass the Line Name";
-                    objResp.vErrorCode = 300;
-                }
+                //else if (string.IsNullOrWhiteSpace(objReq.LineName))
+                //{
+                //    objResp.vErrorMsg = "Please Pass the Line Name";
+                //    objResp.vErrorCode = 300;
+                //}
                 else
                 {
                     if (Con.State == ConnectionState.Broken)
