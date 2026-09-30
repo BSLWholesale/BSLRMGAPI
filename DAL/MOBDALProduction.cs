@@ -814,11 +814,11 @@ namespace BSLDaman.DAL
         }
 
 
-        public clsBundleCompile Fn_Update_AppEmpStartBundleIDStatus(clsBundleCompile objReq)
+        public clsBundleCompile Fn_Update_AppEmpStartBundleIDStatus_OldBKP(clsBundleCompile objReq)
         {
             Boolean ConfigField = Convert.ToBoolean(ConfigurationManager.AppSettings["BundleCompileValue"]);
             var objResp = new clsBundleCompile();
-            Logger.ErrorLog(JsonConvert.SerializeObject(objReq), "Request", "Fn_Update_AppEmpStartBundleIDStatus");
+            Logger.ErrorLog(JsonConvert.SerializeObject(objReq), "Request", "Fn_Update_AppEmpStartBundleIDStatus_OldBKP");
             try
             {
                 if (ConfigField)
@@ -882,6 +882,65 @@ namespace BSLDaman.DAL
                     objBundleCompile = _MOBDALProduction.Fn_Update_AppEmpStartEndBundleIDStatus(objBundleCompile);
                     objResp.vErrorCode = objBundleCompile.vErrorCode;
                     objResp.vErrorMsg = objBundleCompile.vErrorMsg;
+                }
+            }
+            catch (Exception exp)
+            {
+                objResp.vErrorCode = 500;
+                Logger.WriteLog("Function Name : Fn_Update_AppEmpStartBundleIDStatus_OldBKP", " " + "Error Msg : " + exp.Message.ToString(), new StackTrace(exp, true));
+                objResp.vErrorMsg = exp.Message.ToString();
+            }
+            finally
+            {
+                Con.Close();
+            }
+            Logger.ErrorLog(JsonConvert.SerializeObject(objResp), "Response", "Fn_Update_AppEmpStartBundleIDStatus_OldBKP");
+            return objResp;
+        }
+
+
+        public clsBundleCompile Fn_Update_AppEmpStartBundleIDStatus(clsBundleCompile objReq)
+        {
+            var objResp = new clsBundleCompile();
+            Logger.ErrorLog(JsonConvert.SerializeObject(objReq), "Request", "Fn_Update_AppEmpStartBundleIDStatus");
+            try
+            {
+                if (objReq.AppEmpID == null || objReq.AppEmpID == 0)
+                {
+                    objResp.vErrorMsg = "Please Pass the Valid App Employee ID";
+                    objResp.vErrorCode = 300;
+                }
+                else if (objReq.BundleID == null || objReq.BundleID == 0)
+                {
+                    objResp.vErrorMsg = "Please Pass the Valid Bundle ID";
+                    objResp.vErrorCode = 300;
+                }
+                else
+                {
+                    if (Con.State == ConnectionState.Broken)
+                    { Con.Close(); }
+                    if (Con.State == ConnectionState.Closed)
+                    { Con.Open(); }
+
+                    SqlCommand cmd = new SqlCommand("USP_MobileBundleApp", Con);
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("@AppEmpID", objReq.AppEmpID);
+                    cmd.Parameters.AddWithValue("@BundleID", objReq.BundleID);
+                    cmd.Parameters.AddWithValue("@QueryType", "UpdateAppEmpStartEndBundleIDStatus");
+
+                    using (SqlDataReader dr = cmd.ExecuteReader())
+                    {
+                        if (dr.Read())
+                        {
+                            objResp.vErrorCode = Convert.ToInt32(dr["ErrorCode"]);
+                            objResp.vErrorMsg = dr["ErrorMessage"].ToString();
+                        }
+                        else
+                        {
+                            objResp.vErrorCode = 400;
+                            objResp.vErrorMsg = "Supervisor needs to assigned the Bundle ID to Operator/Worker/Employee";
+                        }
+                    }
                 }
             }
             catch (Exception exp)
