@@ -232,6 +232,16 @@ namespace BSLDaman.Controllers
 
 
         [System.Web.Http.HttpPut]
+        [System.Web.Http.Route("api/MOBProduction/Fn_Update_AppEmpStartBundleIDStatus_OldBKP")]
+        public clsBundleCompile Fn_Update_AppEmpStartBundleIDStatus_OldBKP(clsBundleCompile objReq)
+        {
+            var objResp = new clsBundleCompile();
+            objResp = _MOBDALProduction.Fn_Update_AppEmpStartBundleIDStatus_OldBKP(objReq);
+            return objResp;
+        }
+
+
+        [System.Web.Http.HttpPut]
         [System.Web.Http.Route("api/MOBProduction/Fn_Update_AppEmpStartBundleIDStatus")]
         public clsBundleCompile Fn_Update_AppEmpStartBundleIDStatus(clsBundleCompile objReq)
         {
