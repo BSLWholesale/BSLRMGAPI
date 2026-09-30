@@ -295,7 +295,6 @@ namespace BSLDaman.Models
         public string ModifiedOn { get; set; }
         public string vErrorMsg { get; set; }
         public int vErrorCode { get; set; }
-        public string Marker { get; set; }
     }
 
 
@@ -311,7 +310,6 @@ namespace BSLDaman.Models
         public string ModifiedOn { get; set; }
         public string vErrorMsg { get; set; }
         public int vErrorCode { get; set; }
-        public string Marker { get; set; }
     }
 
 
@@ -329,7 +327,6 @@ namespace BSLDaman.Models
         public string ModifiedOn { get; set; }
         public string vErrorMsg { get; set; }
         public int vErrorCode { get; set; }
-        public string Marker { get; set; }
     }
 
 
@@ -400,8 +397,6 @@ namespace BSLDaman.Models
         //public bool HasPreviousPage { get; set; }
         public string vErrorMsg { get; set; }
         public int vErrorCode { get; set; }
-        public string Marker { get; set; }
-        public string MarkerVal { get; set; }
     }
 
 
@@ -567,7 +562,6 @@ namespace BSLDaman.Models
         public int Plies { get; set; }
         public string vErrorMsg { get; set; }
         public int vErrorCode { get; set; }
-        public string Marker { get; set; }
     }
 
     public class clsBundleSizeList
