@@ -3393,24 +3393,24 @@ namespace BSLDaman.DAL
             Logger.ErrorLog(JsonConvert.SerializeObject(objReq), "Request", "Fn_Remove_OperationNumberBySupervisor");
             try
             {
-                if (String.IsNullOrWhiteSpace(objReq.OrderNo))
-                {
-                    objResp.vErrorMsg = "Pass the Valid Order Number";
-                    objResp.vErrorCode = 300;
-                }
-                else if (objReq.AppEmpID == null || objReq.AppEmpID == 0)
+                //if (String.IsNullOrWhiteSpace(objReq.OrderNo))
+                //{
+                //    objResp.vErrorMsg = "Pass the Valid Order Number";
+                //    objResp.vErrorCode = 300;
+                //}
+                if (objReq.AppEmpID == null || objReq.AppEmpID == 0)
                 {
                     objResp.vErrorMsg = "Please Pass the Valid Employee/Operator ID";
                     objResp.vErrorCode = 300;
                 }
-                else if (objReq.OperationNo == null || objReq.OperationNo == 0)
-                {
-                    objResp.vErrorMsg = "Please Pass the Valid Operation Number";
-                    objResp.vErrorCode = 300;
-                }
+                //else if (objReq.OperationNo == null || objReq.OperationNo == 0)
+                //{
+                //    objResp.vErrorMsg = "Please Pass the Valid Operation Number";
+                //    objResp.vErrorCode = 300;
+                //}
                 else if (objReq.SupervisorID == null || objReq.SupervisorID == 0)
                 {
-                    objResp.vErrorMsg = "Please Pass the Valid Supervisore ID";
+                    objResp.vErrorMsg = "Please Pass the Valid Supervisor ID";
                     objResp.vErrorCode = 300;
                 }
                 else
@@ -3422,21 +3422,21 @@ namespace BSLDaman.DAL
 
                     SqlCommand cmd = new SqlCommand("USP_MobileBundleApp", Con);
                     cmd.CommandType = CommandType.StoredProcedure;
-                    cmd.Parameters.AddWithValue("@OrderNo", objReq.OrderNo);
+                    //cmd.Parameters.AddWithValue("@OrderNo", objReq.OrderNo);
                     cmd.Parameters.AddWithValue("@AppEmpID", objReq.AppEmpID);
-                    cmd.Parameters.AddWithValue("@OperationNo", objReq.OperationNo);
+                    //cmd.Parameters.AddWithValue("@OperationNo", objReq.OperationNo);
                     cmd.Parameters.AddWithValue("@SupervisorID", objReq.SupervisorID);
                     cmd.Parameters.AddWithValue("@QueryType", "RemoveOpNumber");
                     int i = 0;
                     i = cmd.ExecuteNonQuery();
                     if (i > 0)
                     {
-                        objResp.vErrorMsg = "The Operation Number has been remove";
+                        objResp.vErrorMsg = "The Operation Numbers has been remove successfully";
                         objResp.vErrorCode = 200;
                     }
                     else
                     {
-                        objResp.vErrorMsg = "Operation Number can not be remove";
+                        objResp.vErrorMsg = "Operation Numbers can not be remove";
                         objResp.vErrorCode = 404;
                     }
                 }
