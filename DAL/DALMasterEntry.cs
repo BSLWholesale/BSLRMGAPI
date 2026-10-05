@@ -672,6 +672,10 @@ namespace BSLDaman.DAL
                 {
                     strSql = strSql + " AND LineName LIKE '%@LineName%'";
                 }
+                if (objReq.LineId != 0 && objReq.LineId != null)
+                {
+                    strSql = strSql + " AND LineId = @LineId";
+                }
 
 
                 SqlCommand cmd = new SqlCommand(strSql, Con);
@@ -683,6 +687,10 @@ namespace BSLDaman.DAL
                 if (objReq.LineName != "" && objReq.LineName != null)
                 {
                     cmd.Parameters.AddWithValue("@LineName", objReq.LineName);
+                }
+                if (objReq.LineId != 0 && objReq.LineId != null)
+                {
+                    cmd.Parameters.AddWithValue("@LineId", objReq.LineId);
                 }
                 SqlDataAdapter da = new SqlDataAdapter(cmd);
                 DataSet ds = new DataSet();

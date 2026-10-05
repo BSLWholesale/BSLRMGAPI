@@ -495,6 +495,10 @@ namespace BSLDaman.DAL
                 {
                     strSql = strSql + " AND LineName = @LineName ";
                 }
+                if (objReq.OpNo != 0 && objReq.OpNo != null)
+                {
+                    strSql = strSql + " AND OperationNo = @OpNo ";
+                }
                 if (!String.IsNullOrWhiteSpace(objReq.StartDate) && String.IsNullOrWhiteSpace(objReq.EndDate))
                 {
                     strSql = strSql + " AND WorkDate = @StartDate ";
@@ -520,6 +524,10 @@ namespace BSLDaman.DAL
                 if (!String.IsNullOrWhiteSpace(objReq.LineName))
                 {
                     strSql = strSql + " AND LineName = @LineName ";
+                }
+                if (objReq.OpNo != 0 && objReq.OpNo != null)
+                {
+                    strSql = strSql + " AND OperationNo = @OpNo ";
                 }
                 if (!String.IsNullOrWhiteSpace(objReq.StartDate) && String.IsNullOrWhiteSpace(objReq.EndDate))
                 {
@@ -555,6 +563,10 @@ namespace BSLDaman.DAL
                 if (!String.IsNullOrWhiteSpace(objReq.LineName))
                 {
                     cmd.Parameters.AddWithValue("@LineName", objReq.LineName);
+                }
+                if (objReq.OpNo != 0 && objReq.OpNo != null)
+                {
+                    cmd.Parameters.AddWithValue("@OpNo", objReq.OpNo);
                 }
                 if (!String.IsNullOrWhiteSpace(objReq.StartDate) && String.IsNullOrWhiteSpace(objReq.EndDate))
                 {
@@ -652,6 +664,10 @@ namespace BSLDaman.DAL
                 {
                     strSql = strSql + " AND LineName = @LineName ";
                 }
+                if (objReq.OpNo != 0 && objReq.OpNo != null)
+                {
+                    strSql = strSql + " AND OpNo = @OpNo ";
+                }
                 if (!String.IsNullOrWhiteSpace(objReq.StartDate) && String.IsNullOrWhiteSpace(objReq.EndDate))
                 {
                     strSql = strSql + " AND WorkDate = @StartDate ";
@@ -677,6 +693,10 @@ namespace BSLDaman.DAL
                 if (!String.IsNullOrWhiteSpace(objReq.LineName))
                 {
                     strSql = strSql + " AND LineName = @LineName ";
+                }
+                if (objReq.OpNo != 0 && objReq.OpNo != null)
+                {
+                    strSql = strSql + " AND OpNo = @OpNo ";
                 }
                 if (!String.IsNullOrWhiteSpace(objReq.StartDate) && String.IsNullOrWhiteSpace(objReq.EndDate))
                 {
@@ -719,6 +739,10 @@ namespace BSLDaman.DAL
                 if (!String.IsNullOrWhiteSpace(objReq.LineName))
                 {
                     cmd.Parameters.AddWithValue("@LineName", objReq.LineName);
+                }
+                if (objReq.OpNo != 0 && objReq.OpNo != null)
+                {
+                    cmd.Parameters.AddWithValue("@OpNo", objReq.OpNo);
                 }
                 if (!String.IsNullOrWhiteSpace(objReq.StartDate) && String.IsNullOrWhiteSpace(objReq.EndDate))
                 {

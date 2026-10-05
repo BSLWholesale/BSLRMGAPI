@@ -582,6 +582,7 @@ namespace BSLDaman.Models
         public int PageNumber { get; set; }
         public int PageSize { get; set; }
         public string SubSection { get; set; }
+        public int OpNo { get; set; }
 
     }
     public class clsPieceRateReportResp
