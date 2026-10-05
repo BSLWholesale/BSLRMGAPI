@@ -666,7 +666,7 @@ namespace BSLDaman.DAL
                 }
                 if (objReq.OpNo != 0 && objReq.OpNo != null)
                 {
-                    strSql = strSql + " AND OpNo = @OpNo ";
+                    strSql = strSql + " AND OperationNo = @OpNo ";
                 }
                 if (!String.IsNullOrWhiteSpace(objReq.StartDate) && String.IsNullOrWhiteSpace(objReq.EndDate))
                 {
@@ -696,7 +696,7 @@ namespace BSLDaman.DAL
                 }
                 if (objReq.OpNo != 0 && objReq.OpNo != null)
                 {
-                    strSql = strSql + " AND OpNo = @OpNo ";
+                    strSql = strSql + " AND OperationNo = @OpNo ";
                 }
                 if (!String.IsNullOrWhiteSpace(objReq.StartDate) && String.IsNullOrWhiteSpace(objReq.EndDate))
                 {
