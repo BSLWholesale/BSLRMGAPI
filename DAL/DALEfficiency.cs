@@ -34,6 +34,8 @@ namespace BSLDaman.DAL
                 cmd.Parameters.AddWithValue("@OrderNo", objReq.OrderNo);
                 cmd.Parameters.AddWithValue("@LineName", objReq.LineName);
                 cmd.Parameters.AddWithValue("@EmpID", objReq.Code);
+                cmd.Parameters.AddWithValue("@PageNumber", objReq.PageNumber);
+                cmd.Parameters.AddWithValue("@PageSize", objReq.PageSize);
                 cmd.Parameters.AddWithValue("@QueryType", objReq.QueryType);
                 SqlDataAdapter da = new SqlDataAdapter(cmd);
                 DataSet ds = new DataSet();
