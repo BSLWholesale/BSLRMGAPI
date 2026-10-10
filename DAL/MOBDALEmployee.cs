@@ -42,25 +42,63 @@ namespace BSLDaman.DAL
                     { Con.Open(); }
 
                     string encryptPassword = Generic.EncryptText(objReq.vEmpPassword);
+                    string encryptDeviceId = string.IsNullOrWhiteSpace(objReq.DeviceId) ? null : Generic.EncryptText(objReq.DeviceId);
 
                     SqlCommand cmd = new SqlCommand("USP_EmployeeMob", Con);
                     cmd.CommandType = CommandType.StoredProcedure;
                     cmd.Parameters.AddWithValue("@EmpId", objReq.nEmpId);
                     cmd.Parameters.AddWithValue("@EmpPassword", encryptPassword);
-                    cmd.Parameters.AddWithValue("@QueryType", "LogIn");
+                    cmd.Parameters.AddWithValue("@DeviceId", (object)encryptDeviceId ?? DBNull.Value);
+
+                    cmd.Parameters.AddWithValue("@DeviceOperatingSystem",
+                        String.IsNullOrWhiteSpace(objReq.DeviceOperatingSystem)
+                            ? (object)DBNull.Value
+                            : objReq.DeviceOperatingSystem
+                    );
+
+                    cmd.Parameters.AddWithValue(
+                        "@DeviceModel",
+                        String.IsNullOrWhiteSpace(objReq.DeviceModel)
+                            ? (object)DBNull.Value
+                            : objReq.DeviceModel
+                    );
+
+                    cmd.Parameters.AddWithValue("@QueryType", "LogInMobileApp");
 
                     SqlDataAdapter da = new SqlDataAdapter(cmd);
                     DataSet ds = new DataSet();
                     da.Fill(ds);
                     int i = 0;
 
-                    if (ds.Tables[0].Rows.Count > 0)
+                    if (ds.Tables.Count == 0 || ds.Tables[0].Rows.Count == 0)
+                    {
+                        objResp.vErrorMsg = "Entered Credentials has been invalid.";
+                        objResp.vErrorCode = 300;
+                        return objResp;
+                    }
+
+                    string loginStatus = Convert.ToString(ds.Tables[0].Rows[i]["LoginStatus"]);
+
+                    if (loginStatus == "DEVICEID_MISMATCH")
+                    {
+                        objResp.vErrorMsg = "This Device ID does not match the registered Operator/Employee ID.";
+                        objResp.vErrorCode = 300;
+                        return objResp;
+                    }
+
+                    if (loginStatus == "INVALID_CREDENTIALS")
+                    {
+                        objResp.vErrorMsg = "Entered Credentials has been invalid.";
+                        objResp.vErrorCode = 300;
+                        return objResp;
+                    }
+                  
+                    if (loginStatus == "LOGIN_SUCCESS")
                     {
                         string decryptPassword = Generic.DecryptText(Convert.ToString(ds.Tables[0].Rows[i]["EmpPassword"]));
                         objResp.nEmpId = Convert.ToInt32(ds.Tables[0].Rows[i]["EmpId"]);
                         objResp.vEmpName = Convert.ToString(ds.Tables[0].Rows[i]["EmpName"]);
                         objResp.EmpRole = Convert.ToString(ds.Tables[0].Rows[i]["EmpRole"]);
-                        objResp.DeviceId = Convert.ToString(ds.Tables[0].Rows[i]["DeviceId"]);
                         objResp.TokenId = Convert.ToString(ds.Tables[0].Rows[i]["TokenId"]);
                         objResp.vEmpPassword = decryptPassword;
 
@@ -157,6 +195,34 @@ namespace BSLDaman.DAL
                             objResp.EarningRateFlag = false;
                         }
 
+                        if (ds.Tables[0].Rows[i]["DeviceId"] == DBNull.Value)
+                        {
+                            objResp.DeviceId = string.Empty;
+                        }
+                        else
+                        {
+                            string decryptDeviceId = Generic.DecryptText(Convert.ToString(ds.Tables[0].Rows[i]["DeviceId"]));
+                            objResp.DeviceId = decryptDeviceId;
+                        }
+
+                        if (ds.Tables[0].Rows[i]["DeviceOperatingSystem"] == DBNull.Value)
+                        {
+                            objResp.DeviceOperatingSystem = string.Empty;
+                        }
+                        else
+                        {
+                            objResp.DeviceOperatingSystem = Convert.ToString(ds.Tables[0].Rows[0]["DeviceOperatingSystem"]);
+                        }
+
+                        if (ds.Tables[0].Rows[i]["DeviceModel"] == DBNull.Value)
+                        {
+                            objResp.DeviceModel = string.Empty;
+                        }
+                        else
+                        {
+                            objResp.DeviceModel = Convert.ToString(ds.Tables[0].Rows[0]["DeviceModel"]);
+                        }
+
                         if (objResp.IsActive == true)
                         {
                             objResp.vErrorMsg = "Success";
@@ -167,11 +233,6 @@ namespace BSLDaman.DAL
                             objResp.vErrorMsg = "Operator/Employee ID is Inactive.";
                             objResp.vErrorCode = 300;
                         }
-                    }
-                    else
-                    {
-                        objResp.vErrorMsg = "Entered Credentials has been invalid.";
-                        objResp.vErrorCode = 300;
                     }
                 }
             }
@@ -229,7 +290,7 @@ namespace BSLDaman.DAL
                 {
                     objResp.nEmpId = Convert.ToInt32(ds.Tables[0].Rows[0]["EmpId"]);
                     objResp.vEmpName = Convert.ToString(ds.Tables[0].Rows[0]["EmpName"]);
-                    
+
                     if (ds.Tables[0].Rows[0]["EmpMobile"] == null)
                     {
                         objResp.vEmpMobile = string.Empty;
@@ -238,9 +299,9 @@ namespace BSLDaman.DAL
                     {
                         objResp.vEmpMobile = Convert.ToString(ds.Tables[0].Rows[0]["EmpMobile"]);
                     }
-                    
+
                     objResp.EmpRole = Convert.ToString(ds.Tables[0].Rows[0]["EmpRole"]);
-                    
+
                     if (ds.Tables[0].Rows[0]["EmpGrade"] == null)
                     {
                         objResp.vEmpGrade = string.Empty;
@@ -553,7 +614,7 @@ namespace BSLDaman.DAL
             }
             return objResp;
         }
-        
+
 
         public List<clsMOBEmployee> Fn_Get_All_EmployeeList(clsMOBEmployee objReq)
         {
@@ -583,7 +644,7 @@ namespace BSLDaman.DAL
                         objResp = new clsMOBEmployee();
 
                         objResp.nEmpId = Convert.ToInt64(ds.Tables[0].Rows[i]["EmpId"]);
-                        objResp.vEmpName = Convert.ToString(ds.Tables[0].Rows[i]["EmpName"]);                        
+                        objResp.vEmpName = Convert.ToString(ds.Tables[0].Rows[i]["EmpName"]);
 
                         if (ds.Tables[0].Rows[0]["EmpMobile"] == null)
                         {
@@ -674,7 +735,7 @@ namespace BSLDaman.DAL
                     objResp.vErrorMsg = "No Employee Records found.";
                     objRespList.Add(objResp);
                     objResp.vErrorCode = 300;
-                }               
+                }
             }
             catch (Exception exp)
             {
