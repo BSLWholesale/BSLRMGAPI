@@ -470,7 +470,6 @@ namespace BSLDaman.Models
         public string L1ManagerName { get; set; }
         public string EmpShift { get; set; }
         public Int64 ID { get; set; }
-        public string DeviceId { get; set; }
         public string TokenId { get; set; }
         public bool IsActive { get; set; }
         public Int64 EmpOperatorCount { get; set; }
@@ -487,6 +486,11 @@ namespace BSLDaman.Models
         public bool IsBirthdayWishes { get; set; }
         public bool IsWorkAnniversaryWishes { get; set; }
         public bool EarningRateFlag { get; set; }
+        public string DeviceId { get; set; }
+        public string DeviceOperatingSystem { get; set; }
+        public string DeviceModel { get; set; }
+        public Int32 DModifiedBy { get; set; }
+        public string DModifiedOn { get; set; }
         public string vErrorMsg { get; set; }
         public int vErrorCode { get; set; }
 
