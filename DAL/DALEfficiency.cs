@@ -64,7 +64,7 @@ namespace BSLDaman.DAL
                         obj.LastBundleScanTime = Convert.ToString(ds.Tables[0].Rows[i]["LastBundleScanTime"]);
                         obj.ManualQty = Convert.ToInt32(ds.Tables[0].Rows[i]["ManualQty"]);
                         obj.QrScanQty = Convert.ToInt32(ds.Tables[0].Rows[i]["QrScanQty"]);
-                        
+                        obj.TotalRows = Convert.ToInt64(ds.Tables[0].Rows[i]["TotalRows"]);
 
                         obj.vErrorCode = 200;
                         obj.vErrorMsg = "Success";
