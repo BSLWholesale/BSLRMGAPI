@@ -59,9 +59,33 @@ namespace BSLDaman.Models
         public Int32 PageSize { get; set; }
         public string SortBy { get; set; }
         public string SortDirection { get; set; }
+        public string SubSection { get; set; }
         public string vErrorMsg { get; set; }
         public int vErrorCode { get; set; }
     }
 
+
+    public class clsPostAssemblyOrderList
+    {
+        public string OrderNo { get; set; }
+        public string Product { get; set; }
+        public Int64 Qty { get; set; }
+        public string vErrorMsg { get; set; }
+        public int vErrorCode { get; set; }
+    }
+
+
+    public class clsPostAssemblyLines
+    {
+        public Int64 LineId { get; set; }
+        public Int32 SeqNo { get; set; }
+        public string LineName { get; set; }
+        public string LineCode { get; set; }
+        public string LineSupervisorName { get; set; }
+        public string SectionName { get; set; }
+        public string LineStatus { get; set; }
+        public string vErrorMsg { get; set; }
+        public int vErrorCode { get; set; }
+    }
 
 }
