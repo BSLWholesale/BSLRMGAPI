@@ -12,13 +12,8 @@ namespace BSLDaman.Controllers
     public class MOBPostAssemblyController : ApiController
     {
         // GET: MOBPostAssembly
-        //public ActionResult Index()
-        //{
-        //    return View();
-        //}
 
         MOBDALPostAssembly _MOBDALPostAssembly = new MOBDALPostAssembly();
-
 
         [System.Web.Http.HttpGet]
         [System.Web.Http.Route("api/MOBPostAssembly/Fn_Fetch_AllOrderNumbers")]
