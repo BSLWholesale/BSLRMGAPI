@@ -35,12 +35,51 @@ namespace BSLDaman.Controllers
         }
 
 
-        [System.Web.Http.HttpPut]
-        [System.Web.Http.Route("api/MOBPostAssembly/Fn_Update_PostAssemblySinglePcsAssign")]
-        public clsPostAssembly Fn_Update_PostAssemblySinglePcsAssign(clsPostAssembly objReq)
+        [System.Web.Http.HttpGet]
+        [System.Web.Http.Route("api/MOBPostAssembly/Fn_Fetch_LineNameByOperatorID")]
+        public List<clsPostAssemblyLines> Fn_Fetch_LineNameByOperatorID(Int32? AppEmpID = null)
         {
-            var objResp = new clsPostAssembly();
-            objResp = _MOBDALPostAssembly.Fn_Update_PostAssemblySinglePcsAssign(objReq);
+            clsPostAssemblyLines objReq = new clsPostAssemblyLines();
+
+            if (AppEmpID.HasValue)
+            {
+                objReq.AppEmpID = AppEmpID.Value;
+            }
+            else
+            {
+                objReq.AppEmpID = 0;
+            }
+
+            var objResp = _MOBDALPostAssembly.Fn_Fetch_LineNameByOperatorID(objReq);
+            return objResp;
+        }
+
+
+        [System.Web.Http.HttpGet]
+        [System.Web.Http.Route("api/MOBPostAssembly/Fn_Fetch_DescByOpIDLineName")]
+        public List<clsPostAssemblyLines> Fn_Fetch_DescByOpIDLineName(Int32? AppEmpID = null, string LineName = null)
+        {
+            clsPostAssemblyLines objReq = new clsPostAssemblyLines();
+
+            if (AppEmpID.HasValue)
+            {
+                objReq.AppEmpID = AppEmpID.Value;
+            }
+            else
+            {
+                objReq.AppEmpID = 0;
+            }
+
+            if (!string.IsNullOrWhiteSpace(LineName))
+            {
+                objReq.LineName = LineName;
+            }
+            else
+            {
+                objReq.LineName = null;
+            }
+
+            var objResp = _MOBDALPostAssembly.Fn_Fetch_DescByOpIDLineName(objReq);
             return objResp;
         }
 
@@ -63,6 +102,7 @@ namespace BSLDaman.Controllers
             objResp = _MOBDALPostAssembly.Fn_Fetch_OperatorFinishedPostAssemblyBundleID(objReq);
             return objResp;
         }
+
 
 
     }
