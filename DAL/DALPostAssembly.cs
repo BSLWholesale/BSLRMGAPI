@@ -109,10 +109,12 @@ namespace BSLDaman.DAL
                     {
                         obj = new clsPostAssembly();
                         obj.AppEmpID = Convert.ToInt32(ds.Tables[0].Rows[i]["AppEmpID"]);
+                        obj.AppEmpName = Convert.ToString(ds.Tables[0].Rows[i]["AppEmpName"]);
                         obj.OperationNo = Convert.ToInt64(ds.Tables[0].Rows[i]["OperationNo"]);
                         obj.OperationName = Convert.ToString(ds.Tables[0].Rows[i]["Descriptions"]);
                         obj.LineName = Convert.ToString(ds.Tables[0].Rows[i]["LineName"]);
                         obj.SupervisorID = Convert.ToInt32(ds.Tables[0].Rows[i]["SupervisorID"]);
+                        obj.SupervisorName = Convert.ToString(ds.Tables[0].Rows[i]["SupervisorName"]);
                         obj.SupervisorAssignedDate = Convert.ToString(ds.Tables[0].Rows[i]["SupAssignedDate"]);
 
                         obj.vErrorCode = 200;
