@@ -84,6 +84,9 @@ namespace BSLDaman.Models
         public string LineSupervisorName { get; set; }
         public string SectionName { get; set; }
         public string LineStatus { get; set; }
+        public Int32 AppEmpID { get; set; }
+        public Int64 OperationNo { get; set; }
+        public string OperationName { get; set; }
         public string vErrorMsg { get; set; }
         public int vErrorCode { get; set; }
     }
