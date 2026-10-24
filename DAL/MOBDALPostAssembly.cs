@@ -138,62 +138,125 @@ namespace BSLDaman.DAL
         }
 
 
-
-        public clsPostAssembly Fn_Update_PostAssemblySinglePcsAssign(clsPostAssembly objReq)
+        public List<clsPostAssemblyLines> Fn_Fetch_LineNameByOperatorID(clsPostAssemblyLines objReq)
         {
-            var objResp = new clsPostAssembly();
-            Logger.ErrorLog(JsonConvert.SerializeObject(objReq), "Request", "Fn_Update_PostAssemblySinglePcsAssign");
+            var objResp = new List<clsPostAssemblyLines>();
+            var obj = new clsPostAssemblyLines();
+            Logger.ErrorLog(JsonConvert.SerializeObject(objReq), "Request", "Fn_Fetch_LineNameByOperatorID");
             try
             {
-                if (objReq.SupervisorID == null || objReq.SupervisorID == 0)
+                if (Con.State == ConnectionState.Broken)
+                { Con.Close(); }
+                if (Con.State == ConnectionState.Closed)
+                { Con.Open(); }
+
+                SqlCommand cmd = new SqlCommand("USP_MobilePostAssemblyApp", Con);
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@AppEmpID", objReq.AppEmpID);
+                cmd.Parameters.AddWithValue("@QueryType", "FetchOperatorLineName");
+
+                SqlDataAdapter da = new SqlDataAdapter(cmd);
+                DataSet ds = new DataSet();
+                da.Fill(ds);
+                int i = 0;
+
+                if (ds.Tables[0].Rows.Count > 0)
                 {
-                    objResp.vErrorMsg = "Please Pass the Valid Supervisor ID";
-                    objResp.vErrorCode = 300;
-                }
-                else if (objReq.AppEmpID == null || objReq.AppEmpID == 0)
-                {
-                    objResp.vErrorMsg = "Please Pass the Valid App Employee ID";
-                    objResp.vErrorCode = 300;
+                    while (ds.Tables[0].Rows.Count > i)
+                    {
+
+                        obj = new clsPostAssemblyLines();
+                        obj.LineName = Convert.ToString(ds.Tables[0].Rows[i]["LineName"]);
+                        obj.AppEmpID = Convert.ToInt32(ds.Tables[0].Rows[i]["AppEmpID"]);
+
+                        obj.vErrorCode = 200;
+                        obj.vErrorMsg = "Success";
+                        objResp.Add(obj);
+                        i++;
+                    }
                 }
                 else
                 {
-                    if (Con.State == ConnectionState.Broken)
-                    { Con.Close(); }
-                    if (Con.State == ConnectionState.Closed)
-                    { Con.Open(); }
-
-                    SqlCommand cmd = new SqlCommand("AssignPostAssemOpNo", Con);
-                    cmd.CommandType = CommandType.StoredProcedure;
-                    cmd.Parameters.AddWithValue("@SupervisorID", objReq.SupervisorID);
-                    cmd.Parameters.AddWithValue("@AppEmpID", objReq.AppEmpID);
-                    cmd.Parameters.AddWithValue("@OperationNo", objReq.OperationNo);
-                    cmd.Parameters.AddWithValue("@QueryType", "AssignPostAssemOpNo");
-
-                    int i = 0;
-                    i = cmd.ExecuteNonQuery();
-                    if (i > 0)
-                    {
-                        objResp.vErrorCode = 200;
-                        objResp.vErrorMsg = "Success";
-                    }
-                    else
-                    {
-                        objResp.vErrorCode = 400;
-                        objResp.vErrorMsg = "Failed";
-                    }
+                    obj.vErrorCode = 404;
+                    obj.vErrorMsg = "Line Names records are not found.";
+                    objResp.Add(obj);
                 }
             }
             catch (Exception exp)
             {
-                objResp.vErrorCode = 500;
-                Logger.WriteLog("Function Name : Fn_Update_PostAssemblySinglePcsAssign", " " + "Error Msg : " + exp.Message.ToString(), new StackTrace(exp, true));
-                objResp.vErrorMsg = exp.Message.ToString();
+                obj.vErrorCode = 500;
+                Logger.WriteLog("Function Name : Fn_Fetch_LineNameByOperatorID", " " + "Error Msg : " + exp.Message.ToString(), new StackTrace(exp, true));
+                obj.vErrorMsg = exp.Message.ToString();
+                objResp.Add(obj);
             }
             finally
             {
                 Con.Close();
             }
-            Logger.ErrorLog(JsonConvert.SerializeObject(objResp), "Response", "Fn_Update_PostAssemblySinglePcsAssign");
+            Logger.ErrorLog(JsonConvert.SerializeObject(objResp), "Response", "Fn_Fetch_LineNameByOperatorID");
+            return objResp;
+        }
+
+
+        public List<clsPostAssemblyLines> Fn_Fetch_DescByOpIDLineName(clsPostAssemblyLines objReq)
+        {
+            var objResp = new List<clsPostAssemblyLines>();
+            var obj = new clsPostAssemblyLines();
+            Logger.ErrorLog(JsonConvert.SerializeObject(objReq), "Request", "Fn_Fetch_DescByOpIDLineName");
+            try
+            {
+                if (Con.State == ConnectionState.Broken)
+                { Con.Close(); }
+                if (Con.State == ConnectionState.Closed)
+                { Con.Open(); }
+
+                SqlCommand cmd = new SqlCommand("USP_MobilePostAssemblyApp", Con);
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@AppEmpID", objReq.AppEmpID);
+                cmd.Parameters.AddWithValue("@LineName", objReq.LineName);
+                cmd.Parameters.AddWithValue("@QueryType", "FetchDescByOpIDLineName");
+
+                SqlDataAdapter da = new SqlDataAdapter(cmd);
+                DataSet ds = new DataSet();
+                da.Fill(ds);
+                int i = 0;
+
+                if (ds.Tables[0].Rows.Count > 0)
+                {
+                    while (ds.Tables[0].Rows.Count > i)
+                    {
+
+                        obj = new clsPostAssemblyLines();
+                        obj.AppEmpID = Convert.ToInt32(ds.Tables[0].Rows[i]["AppEmpID"]);
+                        obj.LineName = Convert.ToString(ds.Tables[0].Rows[i]["LineName"]);
+                        obj.OperationNo = Convert.ToInt64(ds.Tables[0].Rows[i]["OperationNo"]);
+                        obj.OperationName = Convert.ToString(ds.Tables[0].Rows[i]["Descriptions"]);
+
+                        obj.vErrorCode = 200;
+                        obj.vErrorMsg = "Success";
+                        objResp.Add(obj);
+                        i++;
+                    }
+                }
+                else
+                {
+                    obj.vErrorCode = 404;
+                    obj.vErrorMsg = "Operation Name/Descriptions records are not found.";
+                    objResp.Add(obj);
+                }
+            }
+            catch (Exception exp)
+            {
+                obj.vErrorCode = 500;
+                Logger.WriteLog("Function Name : Fn_Fetch_DescByOpIDLineName", " " + "Error Msg : " + exp.Message.ToString(), new StackTrace(exp, true));
+                obj.vErrorMsg = exp.Message.ToString();
+                objResp.Add(obj);
+            }
+            finally
+            {
+                Con.Close();
+            }
+            Logger.ErrorLog(JsonConvert.SerializeObject(objResp), "Response", "Fn_Fetch_DescByOpIDLineName");
             return objResp;
         }
 
@@ -209,9 +272,19 @@ namespace BSLDaman.DAL
                     objResp.vErrorMsg = "Please Pass the Valid App Employee ID";
                     objResp.vErrorCode = 300;
                 }
+                else if (String.IsNullOrWhiteSpace(objReq.LineName))
+                {
+                    objResp.vErrorMsg = "Please Pass the Line Name";
+                    objResp.vErrorCode = 300;
+                }
+                else if (objReq.OperationNo == null || objReq.OperationNo == 0)
+                {
+                    objResp.vErrorMsg = "Please Pass the Operation Number";
+                    objResp.vErrorCode = 300;
+                }
                 else if (objReq.BundleID == null || objReq.BundleID == 0)
                 {
-                    objResp.vErrorMsg = "Please Pass the Valid Bundle ID";
+                    objResp.vErrorMsg = "Please Pass the Valid Bundle ID or QR Code";
                     objResp.vErrorCode = 300;
                 }
                 else
@@ -224,22 +297,25 @@ namespace BSLDaman.DAL
                     SqlCommand cmd = new SqlCommand("USP_MobilePostAssemblyApp", Con);
                     cmd.CommandType = CommandType.StoredProcedure;
                     cmd.Parameters.AddWithValue("@AppEmpID", objReq.AppEmpID);
-                    cmd.Parameters.AddWithValue("@BundleID", objReq.BundleID);
+                    cmd.Parameters.AddWithValue("@LineName", objReq.LineName);
                     cmd.Parameters.AddWithValue("@OperationNo", objReq.OperationNo);
+                    cmd.Parameters.AddWithValue("@BundleID", objReq.BundleID);
                     cmd.Parameters.AddWithValue("@QueryType", "UpdatePostAssemblyBundleID");
 
-                    int i = 0;
-                    i = cmd.ExecuteNonQuery();
-                    if (i > 0)
+                    using (SqlDataReader dr = cmd.ExecuteReader())
                     {
-                        objResp.vErrorCode = 200;
-                        objResp.vErrorMsg = "Success";
+                        if (dr.Read())
+                        {
+                            objResp.vErrorCode = Convert.ToInt32(dr["ErrorCode"]);
+                            objResp.vErrorMsg = dr["ErrorMessage"].ToString();
+                        }
+                        else
+                        {
+                            objResp.vErrorCode = 400;
+                            objResp.vErrorMsg = "Supervisor needs to assigned the Bundle ID to Operator/Worker/Employee";
+                        }
                     }
-                    else
-                    {
-                        objResp.vErrorCode = 400;
-                        objResp.vErrorMsg = "Failed";
-                    }
+
                 }
             }
             catch (Exception exp)
@@ -322,7 +398,6 @@ namespace BSLDaman.DAL
             Logger.ErrorLog(JsonConvert.SerializeObject(objResp), "Response", "Fn_Fetch_OperatorFinishedPostAssemblyBundleID");
             return objResp;
         }
-
 
 
     }
