@@ -32,9 +32,9 @@ namespace BSLDaman.Controllers
 
         [System.Web.Http.HttpPost]
         [System.Web.Http.Route("api/Efficiency/Fn_Get_Linewise_Employee_MonthlyEff")]
-        public List<clsEmployeeWiseEfficiency> Fn_Get_Linewise_Employee_MonthlyEff(clsEfficiencyReq objReq)
+        public List<LinewiseEmployeeMonthlyEfficiency> Fn_Get_Linewise_Employee_MonthlyEff(clsEfficiencyReq objReq)
         {
-            var objResp = new List<clsEmployeeWiseEfficiency>();
+            var objResp = new List<LinewiseEmployeeMonthlyEfficiency>();
             objResp = _DALEfficiency.Fn_Get_Linewise_Employee_MonthlyEff(objReq);
             return objResp;
         }

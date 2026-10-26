@@ -95,12 +95,12 @@ namespace BSLDaman.DAL
             return objResp;
         }
 
-        #region Start Fn_Get_Linewise_Employee_MonthlyEff  22-Oct-2026 by Ankit
+        #region Start Fn_Get_Linewise_Employee_MonthlyEff  22-Oct-2026 by Ankit       
 
-        public List<clsEmployeeWiseEfficiency> Fn_Get_Linewise_Employee_MonthlyEff(clsEfficiencyReq objReq)
+        public List<LinewiseEmployeeMonthlyEfficiency> Fn_Get_Linewise_Employee_MonthlyEff(clsEfficiencyReq objReq)
         {
-            var objResp = new List<clsEmployeeWiseEfficiency>();
-            var obj = new clsEmployeeWiseEfficiency();
+            var objResp = new List<LinewiseEmployeeMonthlyEfficiency>();
+            var obj = new LinewiseEmployeeMonthlyEfficiency();
             Logger.ErrorLog(JsonConvert.SerializeObject(objReq), "Request", "Fn_Get_Linewise_Employee_MonthlyEff");
             try
             {
@@ -118,28 +118,40 @@ namespace BSLDaman.DAL
                 cmd.Parameters.AddWithValue("@PageNumber", objReq.PageNumber);
                 cmd.Parameters.AddWithValue("@PageSize", objReq.PageSize);
                 cmd.Parameters.AddWithValue("@QueryType", objReq.QueryType);
+
                 SqlDataAdapter da = new SqlDataAdapter(cmd);
                 DataSet ds = new DataSet();
                 da.Fill(ds);
                 int i = 0;
-                if (ds.Tables[0].Rows.Count > 0)
+                if (ds.Tables.Count > 0 && ds.Tables[0].Rows.Count > 0)
                 {
-                    while (ds.Tables[0].Rows.Count > i)
+                    DataTable dt = ds.Tables[0];
+
+                    foreach (DataRow row in dt.Rows)
                     {
-                        obj = new clsEmployeeWiseEfficiency();
-                       
-                        obj.LineName = Convert.ToString(ds.Tables[0].Rows[i]["LineName"]);
-                        obj.WorkDate = Convert.ToString(ds.Tables[0].Rows[i]["WorkDate"]);
-                        obj.Code = Convert.ToInt64(ds.Tables[0].Rows[i]["Code"]);
-                        obj.EmpName = Convert.ToString(ds.Tables[0].Rows[i]["EmpName"]);
-                        obj.ProductionMinute = Convert.ToDecimal(ds.Tables[0].Rows[i]["ProductionMinute"]);
-                        obj.Efficiency = Convert.ToDecimal(ds.Tables[0].Rows[i]["Efficiency"]);
-                        obj.TotalRows = Convert.ToInt64(ds.Tables[0].Rows[i]["TotalRows"]);
+                        obj = new LinewiseEmployeeMonthlyEfficiency();
+                        obj.LineName = Convert.ToString(row["LineName"]);
+                        obj.WorkDate = Convert.ToString(row["WorkDate"]);
+                        obj.TotalRows = dt.Columns.Contains("TotalRows") ? Convert.ToInt32(row["TotalRows"]) : 0;
+
+                        obj.DynamicColumns = new Dictionary<string, string>();
+
+                        for (int col = 2; col < dt.Columns.Count; col++)
+                        {
+                            string columnName = dt.Columns[col].ColumnName;
+                            if (columnName.Equals("TotalRows", StringComparison.OrdinalIgnoreCase))
+                            {
+                                continue;
+                            }
+
+                            string value = row.IsNull(col) ? "" : Convert.ToString(row[col]);
+                            obj.DynamicColumns.Add(columnName, value);
+                        }
 
                         obj.vErrorCode = 200;
                         obj.vErrorMsg = "Success";
+
                         objResp.Add(obj);
-                        i++;
                     }
                 }
                 else
@@ -148,7 +160,6 @@ namespace BSLDaman.DAL
                     obj.vErrorMsg = "No Record found";
                     objResp.Add(obj);
                 }
-
             }
             catch (Exception exp)
             {
