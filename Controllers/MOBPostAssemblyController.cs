@@ -92,17 +92,100 @@ namespace BSLDaman.Controllers
             objResp = _MOBDALPostAssembly.Fn_Update_PostAssemblySinglePcsScan(objReq);
             return objResp;
         }
-
+            
 
         [System.Web.Http.HttpGet]
         [System.Web.Http.Route("api/MOBPostAssembly/Fn_Fetch_OperatorFinishedPostAssemblyBundleID")]
-        public List<clsPostAssembly> Fn_Fetch_OperatorFinishedPostAssemblyBundleID(clsPostAssembly objReq)
+        public List<clsPostAssembly> Fn_Fetch_OperatorFinishedPostAssemblyBundleID(Int32? AppEmpID = null)
         {
-            var objResp = new List<clsPostAssembly>();
-            objResp = _MOBDALPostAssembly.Fn_Fetch_OperatorFinishedPostAssemblyBundleID(objReq);
+            clsPostAssembly objReq = new clsPostAssembly();
+            if (AppEmpID.HasValue)
+            {
+                objReq.AppEmpID = AppEmpID.Value;
+            }
+            else
+            {
+                objReq.AppEmpID = 0;
+            }
+
+            var objResp = _MOBDALPostAssembly.Fn_Fetch_OperatorFinishedPostAssemblyBundleID(objReq);
             return objResp;
         }
 
+
+        [System.Web.Http.HttpGet]
+        [System.Web.Http.Route("api/MOBPostAssembly/Fn_Fetch_OperatorOrderColorSizeWiseDetails")]
+        public List<clsPostAssembly> Fn_Fetch_OperatorOrderColorSizeWiseDetails(Int32? AppEmpID = null, string OrderNo = null, string ColorName = null, string SizeName = null)
+        {
+            clsPostAssembly objReq = new clsPostAssembly();
+            if (AppEmpID.HasValue)
+            {
+                objReq.AppEmpID = AppEmpID.Value;
+            }
+            else
+            {
+                objReq.AppEmpID = 0;
+            }
+
+            if (!string.IsNullOrWhiteSpace(OrderNo))
+            {
+                objReq.OrderNo = OrderNo;
+            }
+            else
+            {
+                objReq.OrderNo = null;
+            }
+
+            if (!string.IsNullOrWhiteSpace(ColorName))
+            {
+                objReq.ColorName = ColorName;
+            }
+            else
+            {
+                objReq.ColorName = null;
+            }
+
+            if (!string.IsNullOrWhiteSpace(SizeName))
+            {
+                objReq.SizeName = SizeName;
+            }
+            else
+            {
+                objReq.SizeName = null;
+            }
+
+            var objResp = _MOBDALPostAssembly.Fn_Fetch_OperatorOrderColorSizeWiseDetails(objReq);
+            return objResp;
+        }
+
+
+        [System.Web.Http.HttpGet]
+        [System.Web.Http.Route("api/MOBPostAssembly/Fn_Get_OperatorPostAssemblyCount")]
+        public List<clsPostAssmeblyCount> Fn_Get_OperatorPostAssemblyCount(Int32? AppEmpID = null, string CurrentDate = null)
+        {
+            clsPostAssmeblyCount objReq = new clsPostAssmeblyCount();
+            if (AppEmpID.HasValue)
+            {
+                objReq.AppEmpID = AppEmpID.Value;
+            }
+            else
+            {
+                objReq.AppEmpID = 0;
+            }
+
+            if (!string.IsNullOrWhiteSpace(CurrentDate))
+            {
+                objReq.CurrentDate = CurrentDate;
+            }
+            else
+            {
+                objReq.CurrentDate = null;
+            }
+
+
+            var objResp = _MOBDALPostAssembly.Fn_Get_OperatorPostAssemblyCount(objReq);
+            return objResp;
+        }
 
 
     }
