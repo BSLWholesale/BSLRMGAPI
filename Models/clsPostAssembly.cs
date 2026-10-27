@@ -60,6 +60,8 @@ namespace BSLDaman.Models
         public string SortBy { get; set; }
         public string SortDirection { get; set; }
         public string SubSection { get; set; }
+        public string FromDate { get; set; }
+        public string ToDate { get; set; }
         public string vErrorMsg { get; set; }
         public int vErrorCode { get; set; }
     }
@@ -70,6 +72,8 @@ namespace BSLDaman.Models
         public string OrderNo { get; set; }
         public string Product { get; set; }
         public Int64 Qty { get; set; }
+        public string ColorName { get; set; }
+        public string SizeName { get; set; }
         public string vErrorMsg { get; set; }
         public int vErrorCode { get; set; }
     }
@@ -89,6 +93,17 @@ namespace BSLDaman.Models
         public string OperationName { get; set; }
         public string vErrorMsg { get; set; }
         public int vErrorCode { get; set; }
+    }
+
+
+    public class clsPostAssmeblyCount
+    {
+        public Int32 AppEmpID { get; set; }
+        public Int32 TotalQty { get; set; }
+        public string CurrentDate { get; set; }
+        public string vErrorMsg { get; set; }
+        public int vErrorCode { get; set; }
+
     }
 
 }
