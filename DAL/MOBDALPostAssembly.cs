@@ -45,8 +45,10 @@ namespace BSLDaman.DAL
                     {
                         obj = new clsPostAssemblyOrderList();
                         obj.OrderNo = Convert.ToString(ds.Tables[0].Rows[i]["OrderNo"]);
-                        obj.Product = Convert.ToString(ds.Tables[0].Rows[i]["Product"]);
+                        //obj.Product = Convert.ToString(ds.Tables[0].Rows[i]["Product"]);
                         obj.Qty = Convert.ToInt64(ds.Tables[0].Rows[i]["Qty"]);
+                        obj.ColorName = Convert.ToString(ds.Tables[0].Rows[i]["ColorName"]);
+                        obj.SizeName = Convert.ToString(ds.Tables[0].Rows[i]["SizeName"]);
 
                         obj.vErrorCode = 200;
                         obj.vErrorMsg = "Success";
@@ -81,7 +83,7 @@ namespace BSLDaman.DAL
         {
             var objResp = new List<clsPostAssemblyLines>();
             var obj = new clsPostAssemblyLines();
-            Logger.ErrorLog(JsonConvert.SerializeObject(objReq), "Request", "Fn_Fetch_AllLine");
+            Logger.ErrorLog(JsonConvert.SerializeObject(objReq), "Request", "Fn_Fetch_AllLineNames");
             try
             {
                 if (Con.State == ConnectionState.Broken)
@@ -348,7 +350,7 @@ namespace BSLDaman.DAL
                 SqlCommand cmd = new SqlCommand("USP_MobilePostAssemblyApp", Con);
                 cmd.CommandType = CommandType.StoredProcedure;
                 cmd.Parameters.AddWithValue("@AppEmpID", objReq.AppEmpID);
-                cmd.Parameters.AddWithValue("@QueryType", "FetchScanPostAssemblyBundleID");
+                cmd.Parameters.AddWithValue("@QueryType", "FetchScanPostAssemBundleID");
 
                 SqlDataAdapter da = new SqlDataAdapter(cmd);
                 DataSet ds = new DataSet();
@@ -361,15 +363,16 @@ namespace BSLDaman.DAL
                     {
                         obj = new clsPostAssembly();
                         obj.BundleID = Convert.ToInt64(ds.Tables[0].Rows[i]["BundleID"]);
+                        obj.AppEndTime = Convert.ToString(ds.Tables[0].Rows[i]["AppEndTime"]);
                         obj.StyleCode = Convert.ToString(ds.Tables[0].Rows[i]["StyleCode"]);
                         obj.OrderNo = Convert.ToString(ds.Tables[0].Rows[i]["OrderNo"]);
-                        obj.OperationNo = Convert.ToInt32(ds.Tables[0].Rows[i]["OperationNo"]);
-                        obj.SubSection = Convert.ToString(ds.Tables[0].Rows[i]["SubSection"]);
                         obj.ColorName = Convert.ToString(ds.Tables[0].Rows[i]["ColorName"]);
                         obj.SizeName = Convert.ToString(ds.Tables[0].Rows[i]["SizeName"]);
                         obj.Qty = Convert.ToInt32(ds.Tables[0].Rows[i]["Qty"]);
-                        obj.AppStartTime = Convert.ToString(ds.Tables[0].Rows[i]["AppStartTime"]);
-                        obj.AppEndTime = Convert.ToString(ds.Tables[0].Rows[i]["AppEndTime"]);
+                        obj.BundleNo = Convert.ToInt32(ds.Tables[0].Rows[i]["BundleNo"]);
+                        obj.OperationNo = Convert.ToInt64(ds.Tables[0].Rows[i]["OperationNo"]);
+                        obj.AppEmpID = Convert.ToInt32(ds.Tables[0].Rows[i]["AppEmpID"]);
+                        obj.BundleIDStatus = Convert.ToString(ds.Tables[0].Rows[i]["BundleIDStatus"]);
 
                         obj.vErrorCode = 200;
                         obj.vErrorMsg = "Success";
@@ -398,6 +401,131 @@ namespace BSLDaman.DAL
             Logger.ErrorLog(JsonConvert.SerializeObject(objResp), "Response", "Fn_Fetch_OperatorFinishedPostAssemblyBundleID");
             return objResp;
         }
+
+
+        public List<clsPostAssembly> Fn_Fetch_OperatorOrderColorSizeWiseDetails(clsPostAssembly objReq)
+        {
+            var objResp = new List<clsPostAssembly>();
+            var obj = new clsPostAssembly();
+            Logger.ErrorLog(JsonConvert.SerializeObject(objReq), "Request", "Fn_Fetch_OperatorOrderColorSizeWiseDetails");
+            try
+            {
+                if (Con.State == ConnectionState.Broken)
+                { Con.Close(); }
+                if (Con.State == ConnectionState.Closed)
+                { Con.Open(); }
+
+                SqlCommand cmd = new SqlCommand("USP_MobilePostAssemblyApp", Con);
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@AppEmpID", objReq.AppEmpID);
+                cmd.Parameters.AddWithValue("@OrderNo", objReq.OrderNo);
+                cmd.Parameters.AddWithValue("@ColorName", objReq.ColorName);
+                cmd.Parameters.AddWithValue("@SizeName", objReq.SizeName);
+                cmd.Parameters.AddWithValue("@FromDate", objReq.FromDate);
+                cmd.Parameters.AddWithValue("@ToDate", objReq.ToDate);
+                cmd.Parameters.AddWithValue("@QueryType", "FetchOrderColorSizeWise");
+
+                SqlDataAdapter da = new SqlDataAdapter(cmd);
+                DataSet ds = new DataSet();
+                da.Fill(ds);
+                int i = 0;
+
+                if (ds.Tables[0].Rows.Count > 0)
+                {
+                    while (ds.Tables[0].Rows.Count > i)
+                    {
+                        obj = new clsPostAssembly();
+                        obj.StyleCode = Convert.ToString(ds.Tables[0].Rows[i]["StyleCode"]);
+                        obj.OrderNo = Convert.ToString(ds.Tables[0].Rows[i]["OrderNo"]);
+                        obj.ColorName = Convert.ToString(ds.Tables[0].Rows[i]["ColorName"]);
+                        obj.SizeName = Convert.ToString(ds.Tables[0].Rows[i]["SizeName"]);
+                        obj.Qty = Convert.ToInt32(ds.Tables[0].Rows[i]["Qty"]);
+
+                        obj.vErrorCode = 200;
+                        obj.vErrorMsg = "Success";
+                        objResp.Add(obj);
+                        i++;
+                    }
+                }
+                else
+                {
+                    obj.vErrorCode = 404;
+                    obj.vErrorMsg = "No records found.";
+                    objResp.Add(obj);
+                }
+            }
+            catch (Exception exp)
+            {
+                obj.vErrorCode = 500;
+                Logger.WriteLog("Function Name : Fn_Fetch_OperatorOrderColorSizeWiseDetails", " " + "Error Msg : " + exp.Message.ToString(), new StackTrace(exp, true));
+                obj.vErrorMsg = exp.Message.ToString();
+                objResp.Add(obj);
+            }
+            finally
+            {
+                Con.Close();
+            }
+            Logger.ErrorLog(JsonConvert.SerializeObject(objResp), "Response", "Fn_Fetch_OperatorOrderColorSizeWiseDetails");
+            return objResp;
+        }
+
+
+
+        public List<clsPostAssmeblyCount> Fn_Get_OperatorPostAssemblyCount(clsPostAssmeblyCount objReq)
+        {
+            var objResp = new List<clsPostAssmeblyCount>();
+            var obj = new clsPostAssmeblyCount();
+            Logger.ErrorLog(JsonConvert.SerializeObject(objReq), "Request", "Fn_Get_OperatorPostAssemblyCount");
+            try
+            {
+                if (Con.State == ConnectionState.Broken)
+                { Con.Close(); }
+                if (Con.State == ConnectionState.Closed)
+                { Con.Open(); }
+
+                SqlCommand cmd = new SqlCommand("USP_MobilePostAssemblyApp", Con);
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@AppEmpID", objReq.AppEmpID);
+                cmd.Parameters.AddWithValue("@CurrentDate", objReq.CurrentDate);
+                cmd.Parameters.AddWithValue("@QueryType", "GetPostAssemblyQtyCount");
+
+                SqlDataAdapter da = new SqlDataAdapter(cmd);
+                DataSet ds = new DataSet();
+                da.Fill(ds);
+                int i = 0;
+
+                if (ds.Tables[0].Rows.Count > 0)
+                {
+                    while (ds.Tables[0].Rows.Count > i)
+                    {
+                        obj = new clsPostAssmeblyCount();
+                        obj.AppEmpID = Convert.ToInt32(ds.Tables[0].Rows[i]["AppEmpID"]);
+                        obj.TotalQty = Convert.ToInt32(ds.Tables[0].Rows[i]["Qty"]);
+
+                        obj.vErrorCode = 200;
+                        obj.vErrorMsg = "Success";
+                        objResp.Add(obj);
+                        i++;
+                    }
+                }
+                else
+                {
+                    obj.vErrorCode = 404;
+                    obj.vErrorMsg = "No Total Quantity records found.";
+                    objResp.Add(obj);
+                }
+            }
+            catch (Exception exp)
+            {
+                obj.vErrorCode = 500;
+                Logger.WriteLog("Function Name : Fn_Get_OperatorPostAssemblyCount", " " + "Error Msg : " + exp.Message.ToString(), new StackTrace(exp, true));
+                obj.vErrorMsg = exp.Message.ToString();
+                objResp.Add(obj);
+            }
+            Logger.ErrorLog(JsonConvert.SerializeObject(objResp), "Response", "Fn_Get_OperatorPostAssemblyCount");
+            return objResp;
+        }
+
 
 
     }
