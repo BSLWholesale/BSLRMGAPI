@@ -108,6 +108,7 @@ namespace BSLDaman.DAL
                     while (ds.Tables[0].Rows.Count > i)
                     {
                         obj = new clsPostAssembly();
+                        obj.PostAssemId = Convert.ToInt32(ds.Tables[0].Rows[i]["ID"]);
                         obj.AppEmpID = Convert.ToInt32(ds.Tables[0].Rows[i]["AppEmpID"]);
                         obj.AppEmpName = Convert.ToString(ds.Tables[0].Rows[i]["AppEmpName"]);
                         obj.OperationNo = Convert.ToInt64(ds.Tables[0].Rows[i]["OperationNo"]);
@@ -145,6 +146,53 @@ namespace BSLDaman.DAL
             return objResp;
         }
 
+
+        public clsPostAssembly Fn_Remove_PostAssemblyOpNoBySupervisor(clsPostAssembly objReq)
+        {
+            var objResp = new clsPostAssembly();
+            Logger.ErrorLog(JsonConvert.SerializeObject(objReq), "Request", "Fn_Remove_PostAssemblyOpNoBySupervisor");
+            try
+            {
+                if (Con.State == ConnectionState.Broken)
+                { Con.Close(); }
+                if (Con.State == ConnectionState.Closed)
+                { Con.Open(); }
+
+                SqlCommand cmd = new SqlCommand("USP_MobilePostAssemblyApp", Con);
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@ID", objReq.PostAssemId);
+                cmd.Parameters.AddWithValue("@AppEmpID", objReq.AppEmpID);
+                cmd.Parameters.AddWithValue("@OperationNo", objReq.OperationNo);
+                cmd.Parameters.AddWithValue("@LineName", objReq.LineName);
+                cmd.Parameters.AddWithValue("@SupervisorRemoveID", objReq.SupervisorRemoveID);
+                cmd.Parameters.AddWithValue("@QueryType", "RemovePostAssemblyOpNumber");
+
+                int i = 0;
+                i = cmd.ExecuteNonQuery();
+                if (i > 0)
+                {
+                    objResp.vErrorMsg = "Success";
+                    objResp.vErrorCode = 200;
+                }
+                else
+                {
+                    objResp.vErrorMsg = "Post Assembly Operation Numbers can not be remove";
+                    objResp.vErrorCode = 404;
+                }
+            }
+            catch (Exception exp)
+            {
+                Logger.WriteLog("Function Name : Fn_Remove_PostAssemblyOpNoBySupervisor", " " + "Error Msg : " + exp.Message.ToString(), new StackTrace(exp, true));
+                objResp.vErrorMsg = exp.Message.ToString();
+                objResp.vErrorCode = 500;
+            }
+            finally
+            {
+                Con.Close();
+            }
+            Logger.ErrorLog(JsonConvert.SerializeObject(objResp), "Response", "Fn_Remove_PostAssemblyOpNoBySupervisor");
+            return objResp;
+        }
 
 
     }
