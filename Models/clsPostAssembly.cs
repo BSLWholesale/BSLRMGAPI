@@ -62,6 +62,8 @@ namespace BSLDaman.Models
         public string SubSection { get; set; }
         public string FromDate { get; set; }
         public string ToDate { get; set; }
+        public Int32 SupervisorRemoveID { get; set; }
+        public Int64 PostAssemId { get; set; }
         public string vErrorMsg { get; set; }
         public int vErrorCode { get; set; }
     }
