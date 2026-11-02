@@ -941,6 +941,10 @@ namespace BSLDaman.DAL
                 {
                     strSql = strSql + " AND OrderNo = @OrderNo ";
                 }
+                if (objReq.LayID != 0)
+                {
+                    strSql = strSql + " AND LayID = @LayID ";
+                }
                 if (objReq.AppEmpID != 0)
                 {
                     strSql = strSql + " AND AppEmpID = @AppEmpID ";
@@ -973,6 +977,10 @@ namespace BSLDaman.DAL
                 if (!String.IsNullOrWhiteSpace(objReq.OrderNo))
                 {
                     cmd.Parameters.AddWithValue("@OrderNo", objReq.OrderNo);
+                }
+                if (objReq.LayID != 0)
+                {
+                    cmd.Parameters.AddWithValue("@LayID", objReq.LayID);
                 }
                 if (objReq.AppEmpID != 0)
                 {
@@ -1083,6 +1091,10 @@ namespace BSLDaman.DAL
                 {
                     strSql = strSql + " AND OrderNo = @OrderNo ";
                 }
+                if (objReq.LayID != 0)
+                {
+                    strSql = strSql + " AND LayID = @LayID ";
+                }
                 if (objReq.AppEmpID != 0)
                 {
                     strSql = strSql + " AND AppEmpID = @AppEmpID ";
@@ -1119,6 +1131,10 @@ namespace BSLDaman.DAL
                 if (!String.IsNullOrWhiteSpace(objReq.OrderNo))
                 {
                     cmd.Parameters.AddWithValue("@OrderNo", objReq.OrderNo);
+                }
+                if (objReq.LayID != 0)
+                {
+                    cmd.Parameters.AddWithValue("@LayID", objReq.LayID);
                 }
                 if (objReq.AppEmpID != 0)
                 {
