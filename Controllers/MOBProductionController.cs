@@ -826,5 +826,16 @@ namespace BSLDaman.Controllers
         }
 
 
+        [System.Web.Http.HttpPost]
+        [System.Web.Http.Route("api/MOBProduction/Fn_Check_BundleIDScanOpNumberAssign")]
+        public clsBundleCompile Fn_Check_BundleIDScanOpNumberAssign(clsBundleCompile objReq)
+        {
+            var objResp = new clsBundleCompile();
+            objResp = _MOBDALProduction.Fn_Check_BundleIDScanOpNumberAssign(objReq);
+            return objResp;
+        }
+
+
+
     }
 }
