@@ -903,6 +903,11 @@ namespace BSLDaman.DAL
         {
             var objResp = new clsBundleCompile();
             Logger.ErrorLog(JsonConvert.SerializeObject(objReq), "Request", "Fn_Update_AppEmpStartBundleIDStatus");
+            var objCheck = new clsBundleCompile();
+            objCheck.BundleID = objReq.BundleID;
+            objCheck.AppEmpID = objReq.AppEmpID;
+            MOBDALProduction _MOBDALProduction = new MOBDALProduction();
+            var objCheckResp = _MOBDALProduction.Fn_Check_BundleIDScanOpNumberAssign(objCheck);
             try
             {
                 if (objReq.AppEmpID == null || objReq.AppEmpID == 0)
@@ -914,6 +919,11 @@ namespace BSLDaman.DAL
                 {
                     objResp.vErrorMsg = "Please Pass the Valid Bundle ID";
                     objResp.vErrorCode = 300;
+                }
+                else if (objCheckResp.vErrorCode == 300)
+                {
+                    objResp.vErrorMsg = objCheckResp.vErrorMsg;
+                    objResp.vErrorCode = objCheckResp.vErrorCode;
                 }
                 else
                 {
@@ -3651,6 +3661,51 @@ namespace BSLDaman.DAL
         }
 
 
+
+        public clsBundleCompile Fn_Check_BundleIDScanOpNumberAssign(clsBundleCompile objReq)
+        {
+            var objResp = new clsBundleCompile();
+            Logger.ErrorLog(JsonConvert.SerializeObject(objReq), "Request", "Fn_Check_BundleIDScanOpNumberAssign");
+            try
+            {
+                if (Con.State == ConnectionState.Broken)
+                { Con.Close(); }
+                if (Con.State == ConnectionState.Closed)
+                { Con.Open(); }
+
+                SqlCommand cmd = new SqlCommand("USP_MobileBundleApp", Con);
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@BundleID", objReq.BundleID);
+                cmd.Parameters.AddWithValue("@AppEmpID", objReq.AppEmpID);
+                cmd.Parameters.AddWithValue("@QueryType", "CheckBundleIDScanOpNumberAssign");
+
+                using (SqlDataReader dr = cmd.ExecuteReader())
+                {
+                    if (dr.Read())
+                    {
+                        objResp.vErrorCode = Convert.ToInt32(dr["ErrorCode"]);
+                        objResp.vErrorMsg = dr["ErrorMessage"].ToString();
+                    }
+                    else
+                    {
+                        objResp.vErrorCode = 200;
+                        objResp.vErrorMsg = "Bundle ID is available for scanning";
+                    }
+                }                   
+            }
+            catch (Exception exp)
+            {
+                objResp.vErrorCode = 500;
+                Logger.WriteLog("Function Name : Fn_Check_BundleIDScanOpNumberAssign", " " + "Error Msg : " + exp.Message.ToString(), new StackTrace(exp, true));
+                objResp.vErrorMsg = exp.Message.ToString();
+            }
+            finally
+            {
+                Con.Close();
+            }
+            Logger.ErrorLog(JsonConvert.SerializeObject(objResp), "Response", "Fn_Check_BundleIDScanOpNumberAssign");
+            return objResp;
+        }
 
 
     }
