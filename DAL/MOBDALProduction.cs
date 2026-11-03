@@ -903,11 +903,11 @@ namespace BSLDaman.DAL
         {
             var objResp = new clsBundleCompile();
             Logger.ErrorLog(JsonConvert.SerializeObject(objReq), "Request", "Fn_Update_AppEmpStartBundleIDStatus");
-            var objCheck = new clsBundleCompile();
-            objCheck.BundleID = objReq.BundleID;
-            objCheck.AppEmpID = objReq.AppEmpID;
-            MOBDALProduction _MOBDALProduction = new MOBDALProduction();
-            var objCheckResp = _MOBDALProduction.Fn_Check_BundleIDScanOpNumberAssign(objCheck);
+            //var objCheck = new clsBundleCompile();
+            //objCheck.BundleID = objReq.BundleID;
+            //objCheck.AppEmpID = objReq.AppEmpID;
+            //MOBDALProduction _MOBDALProduction = new MOBDALProduction();
+            //var objCheckResp = _MOBDALProduction.Fn_Check_BundleIDScanOpNumberAssign(objCheck);
             try
             {
                 if (objReq.AppEmpID == null || objReq.AppEmpID == 0)
@@ -920,11 +920,11 @@ namespace BSLDaman.DAL
                     objResp.vErrorMsg = "Please Pass the Valid Bundle ID";
                     objResp.vErrorCode = 300;
                 }
-                else if (objCheckResp.vErrorCode == 300)
-                {
-                    objResp.vErrorMsg = objCheckResp.vErrorMsg;
-                    objResp.vErrorCode = objCheckResp.vErrorCode;
-                }
+                //else if (objCheckResp.vErrorCode == 300)
+                //{
+                //    objResp.vErrorMsg = objCheckResp.vErrorMsg;
+                //    objResp.vErrorCode = objCheckResp.vErrorCode;
+                //}
                 else
                 {
                     if (Con.State == ConnectionState.Broken)
