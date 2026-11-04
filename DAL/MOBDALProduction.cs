@@ -383,7 +383,7 @@ namespace BSLDaman.DAL
         }
 
 
-        
+
         public clsMachineLogLostTimeTransactions Fn_Insert_MachineLogTransaction(clsMachineLogLostTimeTransactions objReq)
         {
             var objResp = new clsMachineLogLostTimeTransactions();
@@ -938,18 +938,18 @@ namespace BSLDaman.DAL
                     cmd.Parameters.AddWithValue("@BundleID", objReq.BundleID);
                     cmd.Parameters.AddWithValue("@QueryType", "UpdateAppEmpStartEndBundleIDStatus");
 
-                    using (SqlDataReader dr = cmd.ExecuteReader())
+                    SqlDataAdapter da = new SqlDataAdapter(cmd);
+                    DataSet ds = new DataSet();
+                    da.Fill(ds);
+                    if (ds.Tables[0].Rows.Count > 0)
                     {
-                        if (dr.Read())
-                        {
-                            objResp.vErrorCode = Convert.ToInt32(dr["ErrorCode"]);
-                            objResp.vErrorMsg = dr["ErrorMessage"].ToString();
-                        }
-                        else
-                        {
-                            objResp.vErrorCode = 400;
-                            objResp.vErrorMsg = "Supervisor needs to assigned the Bundle ID to Operator/Worker/Employee";
-                        }
+                        objResp.vErrorCode = Convert.ToInt32(ds.Tables[0].Rows[0]["ErrorCode"]);
+                        objResp.vErrorMsg = Convert.ToString(ds.Tables[0].Rows[0]["ErrorMessage"]);
+                    }
+                    else
+                    {
+                        objResp.vErrorCode = 400;
+                        objResp.vErrorMsg = "Supervisor needs to assigned the Bundle ID to Operator/Worker/Employee";
                     }
                 }
             }
@@ -1843,12 +1843,12 @@ namespace BSLDaman.DAL
                     strSql = strSql + " INNER JOIN BundleCompile AS BC";
                     strSql = strSql + " ON BC.AppEmpID = ED.Code";
                     strSql = strSql + " INNER JOIN LineMaster AS LM";
-                    strSql = strSql + " ON LM.LineName = ED.LineName";                    
+                    strSql = strSql + " ON LM.LineName = ED.LineName";
                     strSql = strSql + " WHERE BC.BundleIDStatus = 'In Process' AND LM.LineId = " + objReq.LineId;
                     strSql = strSql + " GROUP BY EM.EmpName, BC.BundleID, BC.SubSection, BC.Qty";
 
                     SqlCommand cmd = new SqlCommand(strSql, Con);
-                    cmd.CommandType = CommandType.Text;                    
+                    cmd.CommandType = CommandType.Text;
 
                     SqlDataAdapter da = new SqlDataAdapter(cmd);
                     DataSet ds = new DataSet();
@@ -2036,7 +2036,7 @@ namespace BSLDaman.DAL
                     obj.vErrorCode = 404;
                     obj.vErrorMsg = "Line ID/Name wise Order No details are not found.";
                     objResp.Add(obj);
-                }                
+                }
             }
             catch (Exception exp)
             {
@@ -2624,7 +2624,7 @@ namespace BSLDaman.DAL
                         {
                             obj.AppEmpID = Convert.ToInt32(ds.Tables[0].Rows[i]["AppEmpID"]);
                         }
-                        
+
                         obj.OperationNo = Convert.ToInt64(ds.Tables[0].Rows[i]["OperationNo"]);
 
                         obj.vErrorCode = 200;
@@ -3071,7 +3071,7 @@ namespace BSLDaman.DAL
             {
                 Con.Close();
             }
-            return objResp;      
+            return objResp;
         }
 
 
@@ -3678,20 +3678,19 @@ namespace BSLDaman.DAL
                 cmd.Parameters.AddWithValue("@BundleID", objReq.BundleID);
                 cmd.Parameters.AddWithValue("@AppEmpID", objReq.AppEmpID);
                 cmd.Parameters.AddWithValue("@QueryType", "CheckBundleIDScanOpNumberAssign");
-
-                using (SqlDataReader dr = cmd.ExecuteReader())
+                SqlDataAdapter da = new SqlDataAdapter(cmd);
+                DataSet ds = new DataSet();
+                da.Fill(ds);
+                if (ds.Tables[0].Rows.Count > 0)
                 {
-                    if (dr.Read())
-                    {
-                        objResp.vErrorCode = Convert.ToInt32(dr["ErrorCode"]);
-                        objResp.vErrorMsg = dr["ErrorMessage"].ToString();
-                    }
-                    else
-                    {
-                        objResp.vErrorCode = 200;
-                        objResp.vErrorMsg = "Bundle ID is available for scanning";
-                    }
-                }                   
+                    objResp.vErrorCode = Convert.ToInt32(ds.Tables[0].Rows[0]["ErrorCode"]);
+                    objResp.vErrorMsg = Convert.ToString(ds.Tables[0].Rows[0]["ErrorMessage"]);
+                }
+                else
+                {
+                    objResp.vErrorCode = 200;
+                    objResp.vErrorMsg = "Bundle ID is available for scanning";
+                }                
             }
             catch (Exception exp)
             {
