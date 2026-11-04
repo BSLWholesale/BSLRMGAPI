@@ -903,11 +903,6 @@ namespace BSLDaman.DAL
         {
             var objResp = new clsBundleCompile();
             Logger.ErrorLog(JsonConvert.SerializeObject(objReq), "Request", "Fn_Update_AppEmpStartBundleIDStatus");
-            var objCheck = new clsBundleCompile();
-            objCheck.BundleID = objReq.BundleID;
-            objCheck.AppEmpID = objReq.AppEmpID;
-            MOBDALProduction _MOBDALProduction = new MOBDALProduction();
-            var objCheckResp = _MOBDALProduction.Fn_Check_BundleIDScanOpNumberAssign(objCheck);
             try
             {
                 if (objReq.AppEmpID == null || objReq.AppEmpID == 0)
@@ -919,11 +914,6 @@ namespace BSLDaman.DAL
                 {
                     objResp.vErrorMsg = "Please Pass the Valid Bundle ID";
                     objResp.vErrorCode = 300;
-                }
-                else if (objCheckResp.vErrorCode == 300)
-                {
-                    objResp.vErrorMsg = objCheckResp.vErrorMsg;
-                    objResp.vErrorCode = objCheckResp.vErrorCode;
                 }
                 else
                 {
@@ -938,18 +928,18 @@ namespace BSLDaman.DAL
                     cmd.Parameters.AddWithValue("@BundleID", objReq.BundleID);
                     cmd.Parameters.AddWithValue("@QueryType", "UpdateAppEmpStartEndBundleIDStatus");
 
-                    SqlDataAdapter da = new SqlDataAdapter(cmd);
-                    DataSet ds = new DataSet();
-                    da.Fill(ds);
-                    if (ds.Tables[0].Rows.Count > 0)
+                    using (SqlDataReader dr = cmd.ExecuteReader())
                     {
-                        objResp.vErrorCode = Convert.ToInt32(ds.Tables[0].Rows[0]["ErrorCode"]);
-                        objResp.vErrorMsg = Convert.ToString(ds.Tables[0].Rows[0]["ErrorMessage"]);
-                    }
-                    else
-                    {
-                        objResp.vErrorCode = 400;
-                        objResp.vErrorMsg = "Supervisor needs to assigned the Bundle ID to Operator/Worker/Employee";
+                        if (dr.Read())
+                        {
+                            objResp.vErrorCode = Convert.ToInt32(dr["ErrorCode"]);
+                            objResp.vErrorMsg = dr["ErrorMessage"].ToString();
+                        }
+                        else
+                        {
+                            objResp.vErrorCode = 400;
+                            objResp.vErrorMsg = "Supervisor needs to assigned the Bundle ID to Operator/Worker/Employee";
+                        }
                     }
                 }
             }
