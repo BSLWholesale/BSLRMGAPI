@@ -522,7 +522,73 @@ namespace BSLDaman.DAL
                 obj.vErrorMsg = exp.Message.ToString();
                 objResp.Add(obj);
             }
+            finally
+            {
+                Con.Close();
+            }
             Logger.ErrorLog(JsonConvert.SerializeObject(objResp), "Response", "Fn_Get_OperatorPostAssemblyCount");
+            return objResp;
+        }
+
+
+
+        public List<clsPostAssmeblyCount> Fn_Fetch_PostAssembLineNameWiseCount(clsPostAssmeblyCount objReq)
+        {
+            var objResp = new List<clsPostAssmeblyCount>();
+            var obj = new clsPostAssmeblyCount();
+            Logger.ErrorLog(JsonConvert.SerializeObject(objReq), "Request", "Fn_Fetch_PostAssembLineNameWiseCount");
+            try
+            {
+                if (Con.State == ConnectionState.Broken)
+                { Con.Close(); }
+                if (Con.State == ConnectionState.Closed)
+                { Con.Open(); }
+
+                SqlCommand cmd = new SqlCommand("USP_MobilePostAssemblyApp", Con);
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@AppEmpID", objReq.AppEmpID);
+                cmd.Parameters.AddWithValue("@CurrentDate", objReq.CurrentDate);
+                cmd.Parameters.AddWithValue("@QueryType", "FetchLineNameWiseQtyCount");
+
+                SqlDataAdapter da = new SqlDataAdapter(cmd);
+                DataSet ds = new DataSet();
+                da.Fill(ds);
+                int i = 0;
+
+                if (ds.Tables[0].Rows.Count > 0)
+                {
+                    while (ds.Tables[0].Rows.Count > i)
+                    {
+                        obj = new clsPostAssmeblyCount();
+                        obj.AppEmpID = Convert.ToInt32(ds.Tables[0].Rows[i]["AppEmpID"]);
+                        obj.LineName = Convert.ToString(ds.Tables[0].Rows[i]["LineName"]);
+                        obj.LineNameWiseQty = Convert.ToInt32(ds.Tables[0].Rows[i]["Qty"]);
+
+                        obj.vErrorCode = 200;
+                        obj.vErrorMsg = "Success";
+                        objResp.Add(obj);
+                        i++;
+                    }
+                }
+                else
+                {
+                    obj.vErrorCode = 404;
+                    obj.vErrorMsg = "Line Name wise Quantity records are not found.";
+                    objResp.Add(obj);
+                }
+            }
+            catch (Exception exp)
+            {
+                obj.vErrorCode = 500;
+                Logger.WriteLog("Function Name : Fn_Fetch_PostAssembLineNameWiseCount", " " + "Error Msg : " + exp.Message.ToString(), new StackTrace(exp, true));
+                obj.vErrorMsg = exp.Message.ToString();
+                objResp.Add(obj);
+            }
+            finally
+            {
+                Con.Close();
+            }
+            Logger.ErrorLog(JsonConvert.SerializeObject(objResp), "Response", "Fn_Fetch_PostAssembLineNameWiseCount");
             return objResp;
         }
 
