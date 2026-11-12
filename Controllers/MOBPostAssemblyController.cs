@@ -115,7 +115,7 @@ namespace BSLDaman.Controllers
 
         [System.Web.Http.HttpGet]
         [System.Web.Http.Route("api/MOBPostAssembly/Fn_Fetch_OperatorOrderColorSizeWiseDetails")]
-        public List<clsPostAssembly> Fn_Fetch_OperatorOrderColorSizeWiseDetails(Int32? AppEmpID = null, string OrderNo = null, string ColorName = null, string SizeName = null)
+        public List<clsPostAssembly> Fn_Fetch_OperatorOrderColorSizeWiseDetails(Int32? AppEmpID = null, string OrderNo = null, string ColorName = null, string SizeName = null, string FromDate = null, string ToDate = null)
         {
             clsPostAssembly objReq = new clsPostAssembly();
             if (AppEmpID.HasValue)
@@ -154,6 +154,24 @@ namespace BSLDaman.Controllers
                 objReq.SizeName = null;
             }
 
+            if (!string.IsNullOrWhiteSpace(FromDate))
+            {
+                objReq.FromDate = FromDate;
+            }
+            else
+            {
+                objReq.FromDate = null;
+            }
+
+            if (!string.IsNullOrWhiteSpace(ToDate))
+            {
+                objReq.ToDate = ToDate;
+            }
+            else
+            {
+                objReq.ToDate = null;
+            }
+
             var objResp = _MOBDALPostAssembly.Fn_Fetch_OperatorOrderColorSizeWiseDetails(objReq);
             return objResp;
         }
@@ -184,6 +202,35 @@ namespace BSLDaman.Controllers
 
 
             var objResp = _MOBDALPostAssembly.Fn_Get_OperatorPostAssemblyCount(objReq);
+            return objResp;
+        }
+
+
+        [System.Web.Http.HttpGet]
+        [System.Web.Http.Route("api/MOBPostAssembly/Fn_Fetch_PostAssembLineNameWiseCount")]
+        public List<clsPostAssmeblyCount> Fn_Fetch_PostAssembLineNameWiseCount(Int32? AppEmpID = null, string CurrentDate = null)
+        {
+            clsPostAssmeblyCount objReq = new clsPostAssmeblyCount();
+
+            if (AppEmpID.HasValue)
+            {
+                objReq.AppEmpID = AppEmpID.Value;
+            }
+            else
+            {
+                objReq.AppEmpID = 0;
+            }
+
+            if (!string.IsNullOrWhiteSpace(CurrentDate))
+            {
+                objReq.CurrentDate = CurrentDate;
+            }
+            else
+            {
+                objReq.CurrentDate = null;
+            }
+
+            var objResp = _MOBDALPostAssembly.Fn_Fetch_PostAssembLineNameWiseCount(objReq);
             return objResp;
         }
 
