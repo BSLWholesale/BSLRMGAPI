@@ -103,6 +103,8 @@ namespace BSLDaman.Models
         public Int32 AppEmpID { get; set; }
         public Int32 TotalQty { get; set; }
         public string CurrentDate { get; set; }
+        public string LineName { get; set; }
+        public Int32 LineNameWiseQty { get; set; }
         public string vErrorMsg { get; set; }
         public int vErrorCode { get; set; }
 
