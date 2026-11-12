@@ -45,6 +45,15 @@ namespace BSLDaman.Controllers
         }
 
 
+        [System.Web.Http.HttpPost]
+        [System.Web.Http.Route("api/PostAssembly/Fn_Check_PostAssemOpNoAlreadyAssign")]
+        public clsPostAssembly Fn_Check_PostAssemOpNoAlreadyAssign(clsPostAssembly objReq)
+        {
+            var objResp = new clsPostAssembly();
+            objResp = _DALPostAssembly.Fn_Check_PostAssemOpNoAlreadyAssign(objReq);
+            return objResp;
+        }
+
 
     }
 }
