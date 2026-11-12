@@ -20,9 +20,20 @@ namespace BSLDaman.DAL
         {
             var objResp = new clsPostAssembly();
             Logger.ErrorLog(JsonConvert.SerializeObject(objReq), "Request", "Fn_Insert_PostAssemblySinglePcsAssign");
+            var objCheck = new clsPostAssembly();
+            objCheck.AppEmpID = objReq.AppEmpID;
+            objCheck.OperationNo = objReq.OperationNo;
+            objCheck.LineName = objReq.LineName;
+            DALPostAssembly _DALPostAssembly = new DALPostAssembly();
+            var objCheckResp = _DALPostAssembly.Fn_Check_PostAssemOpNoAlreadyAssign(objCheck);
             try
             {
-                if (objReq.OperationNo == null || objReq.OperationNo == 0)
+                if (objCheckResp.vErrorCode == 200)
+                {
+                    objResp.vErrorMsg = objCheckResp.vErrorMsg;
+                    objResp.vErrorCode = objCheckResp.vErrorCode;
+                }
+                else if (objReq.OperationNo == null || objReq.OperationNo == 0)
                 {
                     objResp.vErrorMsg = "Please Select the Valid Operation Number";
                     objResp.vErrorCode = 300;
@@ -191,6 +202,51 @@ namespace BSLDaman.DAL
                 Con.Close();
             }
             Logger.ErrorLog(JsonConvert.SerializeObject(objResp), "Response", "Fn_Remove_PostAssemblyOpNoBySupervisor");
+            return objResp;
+        }
+
+
+        public clsPostAssembly Fn_Check_PostAssemOpNoAlreadyAssign(clsPostAssembly objReq)
+        {
+            var objResp = new clsPostAssembly();
+            Logger.ErrorLog(JsonConvert.SerializeObject(objReq), "Request", "Fn_Check_PostAssemOpNoAlreadyAssign");
+            try
+            {
+                if (Con.State == ConnectionState.Broken)
+                { Con.Close(); }
+                if (Con.State == ConnectionState.Closed)
+                { Con.Open(); }
+
+                SqlCommand cmd = new SqlCommand("USP_MobilePostAssemblyApp", Con);
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@AppEmpID", objReq.AppEmpID);
+                cmd.Parameters.AddWithValue("@OperationNo", objReq.OperationNo);
+                cmd.Parameters.AddWithValue("@LineName", objReq.LineName);
+                cmd.Parameters.AddWithValue("@QueryType", "CheckPostAssemOpNoAlreadyAssign");
+
+                SqlDataReader dr = cmd.ExecuteReader();
+                if (dr.HasRows)
+                {
+                    dr.Read();
+                    objResp.vErrorMsg = "Post Assmebly Operation Number Already Assign for this line";
+                    objResp.vErrorCode = 200;
+                }
+                else
+                {
+                    objResp.vErrorMsg = "Failed";
+                    objResp.vErrorCode = 400;
+                }
+            }
+            catch (Exception exp)
+            {
+                Logger.WriteLog("Function Name : Fn_Check_PostAssemOpNoAlreadyAssign", " " + "Error Msg : " + exp.Message.ToString(), new StackTrace(exp, true));
+                objResp.vErrorMsg = exp.Message.ToString();
+                objResp.vErrorCode = 500;
+            }
+            finally
+            {
+                Con.Close();
+            }
             return objResp;
         }
 
