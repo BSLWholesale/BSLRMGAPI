@@ -392,6 +392,17 @@ namespace BSLDaman.Models
         public Int32 PageSize { get; set; }
         public string SortBy { get; set; }
         public string SortDirection { get; set; }
+        //public Int32 HourlyQtyCount { get; set; }
+        public string ReportDate { get; set; }
+        public string NineThirty { get; set; }
+        public string TenThirty { get; set; }
+        public string ElevenThirty { get; set; }
+        public string OneClock { get; set; }
+        public string TwoClock { get; set; }
+        public string ThreeClock { get; set; }
+        public string FourClock { get; set; }
+        public string FiveClock { get; set; }
+        public string SixClock { get; set; }
 
         //public string SortBy { get; set; } = "BundleID";        // Default sort column
         //public string SortDirection { get; set; } = "ASC";      // ASC or DESC        
@@ -858,4 +869,30 @@ namespace BSLDaman.Models
         public int vErrorCode { get; set; }
 
     }
+
+
+    public class clsSupervisorHourlyReport
+    {
+        public string OrderNo { get; set; }
+        public string LineName { get; set; }
+        public string Section { get; set; }
+        public string OperationName { get; set; }
+        public string Descriptions { get; set; }
+        public string ReportDate { get; set; }
+        public Int32 AppEmpID { get; set; }
+        public string NineThirty { get; set; }
+        public string TenThirty { get; set; }
+        public string ElevenThirty { get; set; }
+        public string OneClock { get; set; }
+        public string TwoClock { get; set; }
+        public string ThreeClock { get; set; }
+        public string FourClock { get; set; }
+        public string FiveClock { get; set; }
+        public string SixClock { get; set; }
+        public string vErrorMsg { get; set; }
+        public int vErrorCode { get; set; }
+
+    }
+
+
 }
