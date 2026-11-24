@@ -837,5 +837,35 @@ namespace BSLDaman.Controllers
 
 
 
+        [System.Web.Http.HttpGet]
+        [System.Web.Http.Route("api/MOBProduction/Fn_Fetch_OrderNoWiseHourlyReport")]
+        public List<clsSupervisorHourlyReport> Fn_Fetch_OrderNoWiseHourlyReport(string OrderNo = null, string ReportDate = null)
+        {
+            clsSupervisorHourlyReport objReq = new clsSupervisorHourlyReport();
+
+            if (!string.IsNullOrWhiteSpace(OrderNo))
+            {
+                objReq.OrderNo = OrderNo;
+            }
+            else
+            {
+                objReq.OrderNo = null;
+            }
+
+            if (!string.IsNullOrWhiteSpace(ReportDate))
+            {
+                objReq.ReportDate = ReportDate;
+            }
+            else
+            {
+                objReq.ReportDate = null;
+            }
+
+            var objResp = _MOBDALProduction.Fn_Fetch_OrderNoWiseHourlyReport(objReq);
+            return objResp; 
+        }
+
+
+
     }
 }
