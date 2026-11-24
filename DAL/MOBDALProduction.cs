@@ -945,14 +945,14 @@ namespace BSLDaman.DAL
                     //}
 
                     using (var con = new SqlConnection(ConStr))     // new connection per call
-                    using (var cmd = new SqlCommand("USP_UPDBID", Con))
+                    using (var cmd = new SqlCommand("USP_UPDBID", con))
                     {
                         cmd.CommandType = CommandType.StoredProcedure;
                         cmd.CommandTimeout = 30;
                         cmd.Parameters.AddWithValue("@AppEmpID", objReq.AppEmpID);
                         cmd.Parameters.AddWithValue("@BundleID", objReq.BundleID);
 
-                        Con.Open();
+                        con.Open();
                         try
                         {
                             using (var dr = cmd.ExecuteReader())
@@ -973,7 +973,7 @@ namespace BSLDaman.DAL
                         {
                             try
                             {
-                                using (var rb = new SqlCommand("IF @@TRANCOUNT > 0 ROLLBACK;", Con))
+                                using (var rb = new SqlCommand("IF @@TRANCOUNT > 0 ROLLBACK;", con))
                                 {
                                     rb.ExecuteNonQuery();
                                 }
