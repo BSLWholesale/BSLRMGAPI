@@ -15,6 +15,7 @@ namespace BSLDaman.DAL
     {
 
         SqlConnection Con = new SqlConnection(ConfigurationManager.ConnectionStrings["BSL"].ConnectionString);
+        private static readonly string ConStr = System.Configuration.ConfigurationManager.ConnectionStrings["BSL"].ConnectionString;
 
         Generic gn = new Generic();
 
@@ -902,7 +903,8 @@ namespace BSLDaman.DAL
         public clsBundleCompile Fn_Update_AppEmpStartBundleIDStatus(clsBundleCompile objReq)
         {
             var objResp = new clsBundleCompile();
-            Logger.ErrorLog(JsonConvert.SerializeObject(objReq), "Request", "Fn_Update_AppEmpStartBundleIDStatus");
+            var sw = System.Diagnostics.Stopwatch.StartNew();
+            Logger.ErrorLog(JsonConvert.SerializeObject(objReq), "Request AppEmpID : " + objReq.AppEmpID + " AND Bundle ID : " + objReq.BundleID, "Fn_Update_AppEmpStartBundleIDStatus");
             try
             {
                 if (objReq.AppEmpID == null || objReq.AppEmpID == 0)
@@ -917,28 +919,70 @@ namespace BSLDaman.DAL
                 }
                 else
                 {
-                    if (Con.State == ConnectionState.Broken)
-                    { Con.Close(); }
-                    if (Con.State == ConnectionState.Closed)
-                    { Con.Open(); }
+                    //if (Con.State == ConnectionState.Broken)
+                    //{ Con.Close(); }
+                    //if (Con.State == ConnectionState.Closed)
+                    //{ Con.Open(); }
 
-                    SqlCommand cmd = new SqlCommand("USP_MobileBundleApp", Con);
-                    cmd.CommandType = CommandType.StoredProcedure;
-                    cmd.Parameters.AddWithValue("@AppEmpID", objReq.AppEmpID);
-                    cmd.Parameters.AddWithValue("@BundleID", objReq.BundleID);
-                    cmd.Parameters.AddWithValue("@QueryType", "UpdateAppEmpStartEndBundleIDStatus");
+                    //SqlCommand cmd = new SqlCommand("USP_UPDBID", Con);
+                    //cmd.CommandType = CommandType.StoredProcedure;
+                    //cmd.Parameters.AddWithValue("@AppEmpID", objReq.AppEmpID);
+                    //cmd.Parameters.AddWithValue("@BundleID", objReq.BundleID);
+                    ////cmd.Parameters.AddWithValue("@QueryType", "UpdateAppEmpStartEndBundleIDStatus");
 
-                    using (SqlDataReader dr = cmd.ExecuteReader())
+                    //using (SqlDataReader dr = cmd.ExecuteReader())
+                    //{
+                    //    if (dr.Read())
+                    //    {
+                    //        objResp.vErrorCode = Convert.ToInt32(dr["ErrorCode"]);
+                    //        objResp.vErrorMsg = dr["ErrorMessage"].ToString();
+                    //    }
+                    //    else
+                    //    {
+                    //        objResp.vErrorCode = 400;
+                    //        objResp.vErrorMsg = "Supervisor needs to assigned the Bundle ID to Operator/Worker/Employee";
+                    //    }
+                    //}
+
+                    using (var con = new SqlConnection(ConStr))     // new connection per call
+                    using (var cmd = new SqlCommand("USP_UPDBID", Con))
                     {
-                        if (dr.Read())
+                        cmd.CommandType = CommandType.StoredProcedure;
+                        cmd.CommandTimeout = 30;
+                        cmd.Parameters.AddWithValue("@AppEmpID", objReq.AppEmpID);
+                        cmd.Parameters.AddWithValue("@BundleID", objReq.BundleID);
+
+                        Con.Open();
+                        try
                         {
-                            objResp.vErrorCode = Convert.ToInt32(dr["ErrorCode"]);
-                            objResp.vErrorMsg = dr["ErrorMessage"].ToString();
+                            using (var dr = cmd.ExecuteReader())
+                            {
+                                if (dr.Read())
+                                {
+                                    objResp.vErrorCode = Convert.ToInt32(dr["ErrorCode"]);
+                                    objResp.vErrorMsg = dr["ErrorMessage"].ToString();
+                                }
+                                else
+                                {
+                                    objResp.vErrorCode = 400;
+                                    objResp.vErrorMsg = "Supervisor needs to assigned the Bundle ID to Operator/Worker/Employee";
+                                }
+                            }
                         }
-                        else
+                        catch (SqlException)
                         {
-                            objResp.vErrorCode = 400;
-                            objResp.vErrorMsg = "Supervisor needs to assigned the Bundle ID to Operator/Worker/Employee";
+                            try
+                            {
+                                using (var rb = new SqlCommand("IF @@TRANCOUNT > 0 ROLLBACK;", Con))
+                                {
+                                    rb.ExecuteNonQuery();
+                                }
+                            }
+                            catch (Exception ex)
+                            {
+                                ex.Message.ToString();
+                            }
+                            throw;
                         }
                     }
                 }
@@ -953,7 +997,8 @@ namespace BSLDaman.DAL
             {
                 Con.Close();
             }
-            Logger.ErrorLog(JsonConvert.SerializeObject(objResp), "Response", "Fn_Update_AppEmpStartBundleIDStatus");
+            sw.Stop();
+            Logger.ErrorLog(JsonConvert.SerializeObject(objResp), "Response AppEmpID : " + objReq.AppEmpID + " AND Bundle ID : " + objReq.BundleID, "Fn_Update_AppEmpStartBundleIDStatus");
             return objResp;
         }
 
@@ -3680,7 +3725,7 @@ namespace BSLDaman.DAL
                 {
                     objResp.vErrorCode = 200;
                     objResp.vErrorMsg = "Bundle ID is available for scanning";
-                }                
+                }
             }
             catch (Exception exp)
             {
@@ -3695,6 +3740,76 @@ namespace BSLDaman.DAL
             Logger.ErrorLog(JsonConvert.SerializeObject(objResp), "Response", "Fn_Check_BundleIDScanOpNumberAssign");
             return objResp;
         }
+
+
+
+        public List<clsSupervisorHourlyReport> Fn_Fetch_OrderNoWiseHourlyReport(clsSupervisorHourlyReport objReq)
+        {
+            var objResp = new List<clsSupervisorHourlyReport>();
+            var obj = new clsSupervisorHourlyReport();
+            Logger.ErrorLog(JsonConvert.SerializeObject(objReq), "Request", "Fn_Fetch_OrderNoWiseHourlyReport");
+            try
+            {
+                if (Con.State == ConnectionState.Broken)
+                { Con.Close(); }
+                if (Con.State == ConnectionState.Closed)
+                { Con.Open(); }
+
+                SqlCommand cmd = new SqlCommand("USP_HourlyProductionReport", Con);
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@OrderNumber", objReq.OrderNo);
+                cmd.Parameters.AddWithValue("@ReportDate", objReq.ReportDate);
+
+                SqlDataAdapter da = new SqlDataAdapter(cmd);
+                DataSet ds = new DataSet();
+                da.Fill(ds);
+                int i = 0;
+
+                if (ds.Tables[0].Rows.Count > 0)
+                {
+                    while (ds.Tables[0].Rows.Count > i)
+                    {
+                        obj = new clsSupervisorHourlyReport();
+
+                        obj.Section = Convert.ToString(ds.Tables[0].Rows[i]["SECTION"]);
+                        obj.NineThirty = Convert.ToString(ds.Tables[0].Rows[i]["09:30"]);
+                        obj.TenThirty = Convert.ToString(ds.Tables[0].Rows[i]["10:30"]);
+                        obj.ElevenThirty = Convert.ToString(ds.Tables[0].Rows[i]["11:30"]);
+                        obj.OneClock = Convert.ToString(ds.Tables[0].Rows[i]["01:00"]);
+                        obj.TwoClock = Convert.ToString(ds.Tables[0].Rows[i]["02:00"]);
+                        obj.ThreeClock = Convert.ToString(ds.Tables[0].Rows[i]["03:00"]);
+                        obj.FourClock = Convert.ToString(ds.Tables[0].Rows[i]["04:00"]);
+                        obj.FiveClock = Convert.ToString(ds.Tables[0].Rows[i]["05:00"]);
+                        obj.SixClock = Convert.ToString(ds.Tables[0].Rows[i]["06:00"]);
+
+                        obj.vErrorCode = 200;
+                        obj.vErrorMsg = "Success";
+                        objResp.Add(obj);
+                        i++;
+                    }
+                }
+                else
+                {
+                    obj.vErrorCode = 404;
+                    obj.vErrorMsg = "Hourly Report records are not found.";
+                    objResp.Add(obj);
+                }
+            }
+            catch (Exception exp)
+            {
+                obj.vErrorCode = 500;
+                Logger.WriteLog("Function Name : Fn_Fetch_OrderNoWiseHourlyReport", " " + "Error Msg : " + exp.Message.ToString(), new StackTrace(exp, true));
+                obj.vErrorMsg = exp.Message.ToString();
+                objResp.Add(obj);
+            }
+            finally
+            {
+                Con.Close();
+            }
+            Logger.ErrorLog(JsonConvert.SerializeObject(objResp), "Response", "Fn_Fetch_OrderNoWiseHourlyReport");
+            return objResp;
+        }
+
 
 
     }
