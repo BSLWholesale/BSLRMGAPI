@@ -84,7 +84,7 @@ namespace BSLDaman.DAL
                     objReq.SizeSelectionID = mxID;
                 }
 
-                SqlCommand cmd = new SqlCommand("USP_BUNDLE_LAYER_TEST", Con);
+                SqlCommand cmd = new SqlCommand("USP_BUNDLE_COMPILE", Con);
                 cmd.CommandType = CommandType.StoredProcedure;
                 cmd.Parameters.AddWithValue("@LayID", objReq.LayID);
                 cmd.Parameters.AddWithValue("@SizeSelectionID", objReq.SizeSelectionID);
@@ -140,7 +140,7 @@ namespace BSLDaman.DAL
                     objReq.ColorSelectionID = mxID;
                 }
 
-                SqlCommand cmd = new SqlCommand("USP_BUNDLE_LAYER_TEST", Con);
+                SqlCommand cmd = new SqlCommand("USP_BUNDLE_COMPILE", Con);
                 cmd.CommandType = CommandType.StoredProcedure;
                 cmd.Parameters.AddWithValue("@ColorSelectionID", objReq.ColorSelectionID);
                 cmd.Parameters.AddWithValue("@LayID", objReq.LayID);
@@ -195,7 +195,7 @@ namespace BSLDaman.DAL
                     objReq.LayID = mxID;
                 }
 
-                SqlCommand cmd = new SqlCommand("USP_BUNDLE_LAYER_TEST", Con);
+                SqlCommand cmd = new SqlCommand("USP_BUNDLE_COMPILE", Con);
                 cmd.CommandType = CommandType.StoredProcedure;
                 cmd.Parameters.AddWithValue("@LayID", objReq.LayID);
                 cmd.Parameters.AddWithValue("@Qty", objReq.Qty);
@@ -246,7 +246,7 @@ namespace BSLDaman.DAL
                 if (Con.State == ConnectionState.Closed)
                 { Con.Open(); }
 
-                SqlCommand cmd = new SqlCommand("USP_BUNDLE_LAYER_TEST", Con);
+                SqlCommand cmd = new SqlCommand("USP_BUNDLE_COMPILE", Con);
                 cmd.CommandType = CommandType.StoredProcedure;
                 cmd.Parameters.AddWithValue("@LayID", objReq.LayID);
                 cmd.Parameters.AddWithValue("@OrderNo", objReq.OrderNo);
@@ -395,7 +395,7 @@ namespace BSLDaman.DAL
                 if (Con.State == ConnectionState.Closed)
                 { Con.Open(); }
 
-                SqlCommand cmd = new SqlCommand("USP_BUNDLE_LAYER_TEST", Con);
+                SqlCommand cmd = new SqlCommand("USP_BUNDLE_COMPILE", Con);
                 cmd.CommandType = CommandType.StoredProcedure;
                 cmd.Parameters.AddWithValue("@SizeSelectionID", objReq.SizeSelectionID);
                 cmd.Parameters.AddWithValue("@OrderNo", objReq.OrderNo);
@@ -645,7 +645,7 @@ namespace BSLDaman.DAL
                 if (Con.State == ConnectionState.Closed)
                 { Con.Open(); }
 
-                SqlCommand cmd = new SqlCommand("USP_BUNDLE_LAYER_TEST", Con);
+                SqlCommand cmd = new SqlCommand("USP_BUNDLE_COMPILE", Con);
                 cmd.CommandType = CommandType.StoredProcedure;
                 cmd.Parameters.AddWithValue("@ColorSelectionID", objReq.ColorSelectionID);
                 cmd.Parameters.AddWithValue("@OrderNo", objReq.OrderNo);
@@ -697,7 +697,7 @@ namespace BSLDaman.DAL
                     objReq.ShadeSelectionID = mxID;
                 }
 
-                SqlCommand cmd = new SqlCommand("USP_BUNDLE_LAYER_TEST", Con);
+                SqlCommand cmd = new SqlCommand("USP_BUNDLE_COMPILE", Con);
                 cmd.CommandType = CommandType.StoredProcedure;
                 cmd.Parameters.AddWithValue("@ColorSelectionID", objReq.ColorSelectionID);
                 cmd.Parameters.AddWithValue("@ShadeSelectionID", objReq.ShadeSelectionID);
@@ -858,7 +858,7 @@ namespace BSLDaman.DAL
                 if (Con.State == ConnectionState.Closed)
                 { Con.Open(); }
 
-                SqlCommand cmd = new SqlCommand("USP_BUNDLE_LAYER_TEST", Con);
+                SqlCommand cmd = new SqlCommand("USP_BUNDLE_COMPILE", Con);
                 cmd.CommandType = CommandType.StoredProcedure;
                 cmd.Parameters.AddWithValue("@ShadeSelectionID", objReq.ShadeSelectionID);
                 cmd.Parameters.AddWithValue("@OrderNo", objReq.OrderNo);
@@ -1088,7 +1088,7 @@ namespace BSLDaman.DAL
 
                                         objReq.BundleID = objMxId.nMAXID;
 
-                                        using (SqlCommand cmd = new SqlCommand("USP_BUNDLE_LAYER_TEST", Con))
+                                        using (SqlCommand cmd = new SqlCommand("USP_BUNDLE_COMPILE", Con))
                                         {
                                             if (Con.State == ConnectionState.Broken) { Con.Close(); }
                                             if (Con.State == ConnectionState.Closed) { Con.Open(); }
@@ -1609,7 +1609,7 @@ namespace BSLDaman.DAL
                 if (Con.State == ConnectionState.Closed)
                 { Con.Open(); }
 
-                SqlCommand cmd = new SqlCommand("USP_BUNDLE_LAYER_TEST", Con);
+                SqlCommand cmd = new SqlCommand("USP_BUNDLE_COMPILE", Con);
                 cmd.CommandType = CommandType.StoredProcedure;
                 cmd.Parameters.AddWithValue("@LayID", objReq.LayID);
                 cmd.Parameters.AddWithValue("@OrderNo", objReq.OrderNo);
@@ -1800,7 +1800,7 @@ namespace BSLDaman.DAL
                 if (Con.State == ConnectionState.Closed)
                 { Con.Open(); }
 
-                SqlCommand cmd = new SqlCommand("USP_BUNDLE_LAYER_TEST", Con);
+                SqlCommand cmd = new SqlCommand("USP_BUNDLE_COMPILE", Con);
                 cmd.CommandType = CommandType.StoredProcedure;
                 cmd.Parameters.AddWithValue("@LayID", objReq.LayID);
                 cmd.Parameters.AddWithValue("@Qty", objReq.Qty);

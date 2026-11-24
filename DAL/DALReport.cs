@@ -1083,7 +1083,7 @@ namespace BSLDaman.DAL
                 { Con.Open(); }
 
                 string strSql = "SELECT OpNo, OpName, BundleID, BundleNo, SizeName, ColorName, ShadeName, Qty, PlyFrom, PlyTo,";
-                strSql = strSql + " LotNo, SubSection, StyleCode, OrderNo, AppEmpID, EmpName, FORMAT(AppStartTime, 'dd-MMM-yyyy') AS AppStartTime, FORMAT(AppEndTime, 'dd-MMM-yyyy') AS AppEndTime,";
+                strSql = strSql + " LotNo, SubSection, StyleCode, OrderNo, AppEmpID, EmpName, FORMAT(AppStartTime, 'dd-MMM-yyyy hh:mm:tt') AS AppStartTime, FORMAT(AppEndTime, 'dd-MMM-yyyy') AS AppEndTime,";
                 strSql = strSql + " BundleStatus, SupervisorID, SupervisorName, FORMAT(AssignedDate, 'dd-MMM-yyyy') AS AssignedDate,";
                 strSql = strSql + " IsPilot, LayID, UpdateType, COUNT(*) OVER() AS TotalRows FROM vFinish_BundleStatus WHERE 1=1";
                 
