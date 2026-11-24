@@ -392,18 +392,6 @@ namespace BSLDaman.Models
         public Int32 PageSize { get; set; }
         public string SortBy { get; set; }
         public string SortDirection { get; set; }
-        //public Int32 HourlyQtyCount { get; set; }
-        public string ReportDate { get; set; }
-        public string NineThirty { get; set; }
-        public string TenThirty { get; set; }
-        public string ElevenThirty { get; set; }
-        public string OneClock { get; set; }
-        public string TwoClock { get; set; }
-        public string ThreeClock { get; set; }
-        public string FourClock { get; set; }
-        public string FiveClock { get; set; }
-        public string SixClock { get; set; }
-
         //public string SortBy { get; set; } = "BundleID";        // Default sort column
         //public string SortDirection { get; set; } = "ASC";      // ASC or DESC        
         //public Int32 TotalRecords { get; set; }                 // Pagination metadata (for response)
